@@ -18,7 +18,8 @@
         <b>net.sf.hibernate.cache.CacheProvider</b> is the extension point for 
         user-defined cache integration.</p>
         
-        <p>Hibernate 2.1 beta 6 or higher is required.</p>        
+        <p><a href="http://www.hibernate.org/6.html">Hibernate 2.1.1</a> or 
+        higher is required.</p>        
         
         <h3>hibernate.cache.provider_class</h3>
 
@@ -50,10 +51,10 @@ com.mypackage.model.Customer.cron = * * 31 Feb *
 com.mypackage.model.Customer.capacity = 500
 </pre>
 
-        <p>The com.mypackage.model.Customer is Hibernate's internal <b>cache 
-        region</b>, which defaults to the classname, but which can be specified 
-        in the Hibernate mapping files (region attribute of class-cache element 
-        or collection-cache element).</p>
+        <p>The <code>com.mypackage.model.Customer</code> is Hibernate's internal 
+        <b>cache region</b>, which defaults to the classname, but which can be 
+        specified in the Hibernate mapping files (region attribute of class-
+        cache element or collection-cache element).</p>
 
     </body>
 </html>
