@@ -3,8 +3,23 @@
 <title>OSCache Changelog</title>
 </head>
 
-<body bgcolor="#FFFFFF">
+<body>
 
+<h3>OSCache 2.0.2</h3>
+<p><i>(22th January 2004 - by <a href="mailto:pathos at pandora dot be">Mathias Bogaert</a>)</i></p>
+<b>Bug Fixes:</b>
+<ul>
+  <li>[CACHE-63] NullPointerException in GeneralCacheAdministrator#destroy().</li>
+  <li>[CACHE-44] Multi threading issues with LRU Cache.</li>
+  <li>[CACHE-66] DiskPersistenceListener is not Serializable.</li>
+  <li>GeneralCacheAdministrator now creates the cache from within the constructor. This prevents possible
+  threading issues if the cache is not initialized during application startup.</li>
+</ul>
+<b>Improvements:</b>
+<ul>
+  <li>Website documentation updates.</li>
+  <li>Added <a href="deployments.html">OSCache in the Wild</a>.</li>
+</ul>
 
 <h3>OSCache 2.0.1</h3>
 <p><i>(4th November 2003 - by <a href="&#109;a&#105;&#108;&#116;&#111;:chris&#64;swebtec.&#99;&#111;&#109;">Chris Miller</a>)</i></p>
