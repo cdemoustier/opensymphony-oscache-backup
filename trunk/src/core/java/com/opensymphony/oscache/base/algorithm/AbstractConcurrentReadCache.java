@@ -463,8 +463,6 @@ public abstract class AbstractConcurrentReadCache extends AbstractMap implements
                 e.value = null;
 
                 /** OpenSymphony BEGIN */
-                persistRemove(e.key);
-
                 itemRemoved(e.key);
 
                 /** OpenSymphony END */
@@ -472,6 +470,9 @@ public abstract class AbstractConcurrentReadCache extends AbstractMap implements
 
             tab[i] = null;
         }
+
+        // Clean out the entire disk cache
+        persistClear();
 
         count = 0;
         recordModification(tab);
@@ -980,8 +981,8 @@ public abstract class AbstractConcurrentReadCache extends AbstractMap implements
         if (persistenceListener != null) {
             try {
                 persistenceListener.remove((String) key);
-            } catch (CachePersistenceException cpe) {
-                log.error("[oscache] Exception removing from persistence: " + cpe);
+            } catch (CachePersistenceException e) {
+                log.error("[oscache] Exception removing cache entry with key '" + key + "' from persistence", e);
             }
         }
     }
@@ -1000,7 +1001,7 @@ public abstract class AbstractConcurrentReadCache extends AbstractMap implements
             try {
                 persistenceListener.removeGroup(groupName);
             } catch (CachePersistenceException e) {
-                log.error("[oscache] Exception removing group " + groupName + ": " + e);
+                log.error("[oscache] Exception removing group " + groupName, e);
             }
         }
     }
@@ -1022,7 +1023,7 @@ public abstract class AbstractConcurrentReadCache extends AbstractMap implements
                 entry = persistenceListener.retrieve((String) key);
             } catch (CachePersistenceException e) {
                 /**
-                 * It is normal that we get an exception occasionnaly.
+                 * It is normal that we get an exception occasionally.
                  * It happens when the item is invalidated (written or removed)
                  * during read. The logic is constructed so that read is retried.
                  */
@@ -1046,7 +1047,7 @@ public abstract class AbstractConcurrentReadCache extends AbstractMap implements
             try {
                 return persistenceListener.retrieveGroup(groupName);
             } catch (CachePersistenceException e) {
-                log.error("[oscache] Exception retrieving group " + groupName + ": " + e);
+                log.error("[oscache] Exception retrieving group " + groupName, e);
             }
         }
 
@@ -1068,7 +1069,7 @@ public abstract class AbstractConcurrentReadCache extends AbstractMap implements
             try {
                 persistenceListener.store((String) key, obj);
             } catch (CachePersistenceException e) {
-                log.error("[oscache] Exception persisting " + key + ": " + e);
+                log.error("[oscache] Exception persisting " + key, e);
             }
         }
     }
@@ -1092,7 +1093,25 @@ public abstract class AbstractConcurrentReadCache extends AbstractMap implements
                     persistenceListener.storeGroup(groupName, group);
                 }
             } catch (CachePersistenceException e) {
-                log.error("[oscache] Exception persisting group " + groupName + ": " + e);
+                log.error("[oscache] Exception persisting group " + groupName, e);
+            }
+        }
+    }
+
+    /**
+     * Removes the entire cache from persistent storage.
+     */
+    protected void persistClear() {
+        if (log.isDebugEnabled()) {
+            log.debug("persistClear called");
+            ;
+        }
+
+        if (persistenceListener != null) {
+            try {
+                persistenceListener.clear();
+            } catch (CachePersistenceException e) {
+                log.error("[oscache] Exception clearing persistent cache", e);
             }
         }
     }
