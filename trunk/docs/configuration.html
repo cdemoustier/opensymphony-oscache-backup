@@ -46,14 +46,18 @@ will block until the data is added to the cache by the thread that is responsibl
 
 <h3>cache.unlimited.disk</h3>
 <p>Indicates whether the disk cache should be treated as unlimited or not. The default value is
-<code>false</code>.</p>
+<code>false</code>.  In this case, the disk cache capacity will be equal to the memory cache capacity set by
+cache.capacity.</p>
 
 <h3>cache.persistence.class</h3>
 <p>Specifies the class to use for persisting cache entries. This class must implement the <code>PersistenceListener</code>
 interface. OSCache comes with an implementation that provides filesystem based persistence. Set this property
-to <code>com.opensymphony.oscache.plugins.diskpersistence.DiskPersistenceListener</code> to enable this
-implementation. By specifying your own class here you should be able to persist cache data using say JDBC or LDAP.</p>
-<p>The <code>DiskPersistenceListener</code> class requires the following extra configuration property to be
+to <code>com.opensymphony.oscache.plugins.diskpersistence.HashDiskPersistenceListener</code> to enable this
+implementation. By specifying your own class here you should be able to persist cache data using say JDBC or LDAP.  
+NOTE: This class hashes the toString() of the object being cached to produce the file name of the entry.  If you
+prefer readable file names, the parent DIskPersistenceListener can still be used but it will have issues with illegal 
+filesystem characters or long names.</p>
+<p>The <code>HashDiskPersistenceListener</code> class requires the following extra configuration property to be
 set:
 <blockquote>
 <h3>cache.path</h3>
@@ -65,11 +69,11 @@ doesn't already exist, but remember that OSCache must have permission to write t
 <p><code>cache.path=/opt/myapp/cache</code></p>
 </blockquote>
 
-<h3>cache.persistence.overflow.only</h3>
+<h3><B>NEW! </B>cache.persistence.overflow.only</h3>
 <p>Indicates whether the persistence should only happen once the memory cache capacity has been reached. 
 The default value is <code>false</code> for backwards compatibility but the recommended value is 
-<CODE>true</CODE> when the memory cache is enabled.  This drastically changes the behavior of the cache in that 
-the persisted cache will now be different then what is in memory.</p>
+<CODE>true</CODE> when the memory cache is enabled.  This property drastically changes the behavior of the 
+cache in that the persisted cache will now be different then what is in memory.</p>
 
 <h3>cache.event.listeners</h3>
 <p>This takes a comma-delimited list of fully-qualified class names. Each class in the list <em>must</em>

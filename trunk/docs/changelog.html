@@ -5,6 +5,33 @@
 
 <body>
 
+<h3>OSCache 2.1</h3>
+<p><i>(26th September 2004 - by <a href="mailto:oscache at andresmarch dot com">Andres March</a>)</i></p>
+<b>Bug Fixes:</b>
+<ul>
+  <li>[<a href='http://jira.opensymphony.com/browse/CACHE-70'>CACHE-70</a>] - last modified problem</li>
+<li>[<a href='http://jira.opensymphony.com/browse/CACHE-73'>CACHE-73</a>] - NullpointerException after deserialization of AbstractConcurrentReadCache</li>
+<li>[<a href='http://jira.opensymphony.com/browse/CACHE-85'>CACHE-85</a>] - JavaGroups changed package name</li>
+<li>[<a href='http://jira.opensymphony.com/browse/CACHE-98'>CACHE-98</a>] - Disk cache not getting served first time for long keys</li>
+<li>[<a href='http://jira.opensymphony.com/browse/CACHE-107'>CACHE-107</a>] - flushEntry does not behave correctly in cluster</li>
+</ul>
+<b>Improvements:</b>
+<ul>
+  <li>Website documentation updates.</li>
+  <LI>Added HashDiskPersistenceListner that hashes file names in order to
+  eliminate nasty characters and overly long names</LI>
+  <LI>Added property that allows cache entries to only be persisted when 
+  the memory capacity has been exceeded.  The property is called: cache.persistence.overflow.only.
+  It defaults to false for backwards compatibility meaning all cache entries are persisted when
+  a listener has been registered.</LI>
+  <li>[<a href='http://jira.opensymphony.com/browse/CACHE-58'>CACHE-58</a>] - If-Modified-Since ignored in cache filter</li>
+<li>[<a href='http://jira.opensymphony.com/browse/CACHE-92'>CACHE-92</a>] - public access for configuration properties</li>
+<li>[<a href='http://jira.opensymphony.com/browse/CACHE-94'>CACHE-94</a>] - More evenly distributed disk caching</li>
+<li>[<a href='http://jira.opensymphony.com/browse/CACHE-95'>CACHE-95</a>] - Output the scope name's in toString()</li>
+<li>[<a href='http://jira.opensymphony.com/browse/CACHE-104'>CACHE-104</a>] - Destroy cache</li>
+<li>[<a href='http://jira.opensymphony.com/browse/CACHE-105'>CACHE-105</a>] - call get() method on put() method call</li>
+</ul>
+
 <h3>OSCache 2.0.2</h3>
 <p><i>(22nd January 2004 - by <a href="mailto:pathos at pandora dot be">Mathias Bogaert</a>)</i></p>
 <b>Bug Fixes:</b>
