@@ -33,77 +33,77 @@ public abstract class AbstractDiskPersistenceListener implements PersistenceList
     protected final static String CACHE_PATH_KEY = "cache.path";
 
     /**
- * File extension for disk cache file
- */
+    * File extension for disk cache file
+    */
     protected final static String CACHE_EXTENSION = "cache";
 
     /**
- * The directory that cache groups are stored under
- */
+    * The directory that cache groups are stored under
+    */
     protected final static String GROUP_DIRECTORY = "__groups__";
 
     /**
- * Sub path name for application cache
- */
+    * Sub path name for application cache
+    */
     protected final static String APPLICATION_CACHE_SUBPATH = "application";
 
     /**
- * Sub path name for session cache
- */
+    * Sub path name for session cache
+    */
     protected final static String SESSION_CACHE_SUBPATH = "session";
 
     /**
- * Property to get the temporary working directory of the servlet container.
- */
+    * Property to get the temporary working directory of the servlet container.
+    */
     protected static final String CONTEXT_TMPDIR = "javax.servlet.context.tempdir";
     private static transient final Log log = LogFactory.getLog(AbstractDiskPersistenceListener.class);
 
     /**
- * Base path where the disk cache reside.
- */
+    * Base path where the disk cache reside.
+    */
     private File cachePath = null;
     private File contextTmpDir;
 
     /**
- * Root path for disk cache
- */
+    * Root path for disk cache
+    */
     private String root = null;
 
     /**
- *        Get the physical cache path on disk.
- *
- *        @return        A file representing the physical cache location.
- */
+    *        Get the physical cache path on disk.
+    *
+    *        @return        A file representing the physical cache location.
+    */
     public File getCachePath() {
         return cachePath;
     }
 
     /**
-   *        Get the root directory for persisting the cache on disk.
-   *        This path includes scope and sessionId, if any.
-   *
-   *        @return        A String representing the root directory.
-   */
+    *        Get the root directory for persisting the cache on disk.
+    *        This path includes scope and sessionId, if any.
+    *
+    *        @return        A String representing the root directory.
+    */
     public String getRoot() {
         return root;
     }
 
     /**
- *        Get the servlet context tmp directory.
- *
- *        @return        A file representing the servlet context tmp directory.
- */
+    *        Get the servlet context tmp directory.
+    *
+    *        @return        A file representing the servlet context tmp directory.
+    */
     public File getContextTmpDir() {
         return contextTmpDir;
     }
 
     /**
- * Verify if a group exists in the cache
- *
- * @param group The group name to check
- * @return True if it exists
- * @throws CachePersistenceException
- */
+    * Verify if a group exists in the cache
+    *
+    * @param group The group name to check
+    * @return True if it exists
+    * @throws CachePersistenceException
+    */
     public boolean isGroupStored(String group) throws CachePersistenceException {
         try {
             File file = getCacheGroupFile(group);
@@ -115,12 +115,12 @@ public abstract class AbstractDiskPersistenceListener implements PersistenceList
     }
 
     /**
- * Verify if an object is currently stored in the cache
- *
- * @param key The object key
- * @return True if it exists
- * @throws CachePersistenceException
- */
+    * Verify if an object is currently stored in the cache
+    *
+    * @param key The object key
+    * @return True if it exists
+    * @throws CachePersistenceException
+    */
     public boolean isStored(String key) throws CachePersistenceException {
         try {
             File file = getCacheFile(key);
@@ -132,20 +132,20 @@ public abstract class AbstractDiskPersistenceListener implements PersistenceList
     }
 
     /**
- * Clears the whole cache directory, starting from the root
- *
- * @throws CachePersistenceException
- */
+    * Clears the whole cache directory, starting from the root
+    *
+    * @throws CachePersistenceException
+    */
     public void clear() throws CachePersistenceException {
         clear(root);
     }
 
     /**
- * Initialises this <tt>BasicDiskPersistenceListener</tt> using the supplied
- * configuration.
- *
- * @param config The OSCache configuration
- */
+    * Initialises this <tt>BasicDiskPersistenceListener</tt> using the supplied
+    * configuration.
+    *
+    * @param config The OSCache configuration
+    */
     public PersistenceListener configure(Config config) {
         String sessionId = null;
         int scope = 0;
@@ -175,47 +175,47 @@ public abstract class AbstractDiskPersistenceListener implements PersistenceList
     }
 
     /**
- * Delete a single cache entry.
- *
- * @param key The object key to delete
- * @throws CachePersistenceException
- */
+    * Delete a single cache entry.
+    *
+    * @param key The object key to delete
+    * @throws CachePersistenceException
+    */
     public void remove(String key) throws CachePersistenceException {
         File file = getCacheFile(key);
         remove(file);
     }
 
     /**
- * Deletes an entire group from the cache.
- *
- * @param groupName The name of the group to delete
- * @throws CachePersistenceException
- */
+    * Deletes an entire group from the cache.
+    *
+    * @param groupName The name of the group to delete
+    * @throws CachePersistenceException
+    */
     public void removeGroup(String groupName) throws CachePersistenceException {
         File file = getCacheGroupFile(groupName);
         remove(file);
     }
 
     /**
- * Retrieve an object from the disk
- *
- * @param key The object key
- * @return The retrieved object
- * @throws CachePersistenceException
- */
+    * Retrieve an object from the disk
+    *
+    * @param key The object key
+    * @return The retrieved object
+    * @throws CachePersistenceException
+    */
     public Object retrieve(String key) throws CachePersistenceException {
         return retrieve(getCacheFile(key));
     }
 
     /**
- * Retrieves a group from the cache, or <code>null</code> if the group
- * file could not be found.
- *
- * @param groupName The name of the group to retrieve.
- * @return A <code>Set</code> containing keys of all of the cache
- * entries that belong to this group.
- * @throws CachePersistenceException
- */
+    * Retrieves a group from the cache, or <code>null</code> if the group
+    * file could not be found.
+    *
+    * @param groupName The name of the group to retrieve.
+    * @return A <code>Set</code> containing keys of all of the cache
+    * entries that belong to this group.
+    * @throws CachePersistenceException
+    */
     public Set retrieveGroup(String groupName) throws CachePersistenceException {
         File groupFile = getCacheGroupFile(groupName);
 
@@ -227,33 +227,33 @@ public abstract class AbstractDiskPersistenceListener implements PersistenceList
     }
 
     /**
- * Stores an object in cache
- *
- * @param key The object's key
- * @param obj The object to store
- * @throws CachePersistenceException
- */
+    * Stores an object in cache
+    *
+    * @param key The object's key
+    * @param obj The object to store
+    * @throws CachePersistenceException
+    */
     public void store(String key, Object obj) throws CachePersistenceException {
         File file = getCacheFile(key);
         store(file, obj);
     }
 
     /**
- * Stores a group in the persistent cache. This will overwrite any existing
- * group with the same name
- */
+    * Stores a group in the persistent cache. This will overwrite any existing
+    * group with the same name
+    */
     public void storeGroup(String groupName, Set group) throws CachePersistenceException {
         File groupFile = getCacheGroupFile(groupName);
         store(groupFile, group);
     }
 
     /**
- * Allows to translate to the temp dir of the servlet container if cachePathStr
- * is javax.servlet.context.tempdir.
- *
- * @param cachePathStr  Cache path read from the properties file.
- * @return Adjusted cache path
- */
+    * Allows to translate to the temp dir of the servlet container if cachePathStr
+    * is javax.servlet.context.tempdir.
+    *
+    * @param cachePathStr  Cache path read from the properties file.
+    * @return Adjusted cache path
+    */
     protected String adjustFileCachePath(String cachePathStr) {
         if (cachePathStr.compareToIgnoreCase(CONTEXT_TMPDIR) == 0) {
             cachePathStr = contextTmpDir.getAbsolutePath();
@@ -263,10 +263,10 @@ public abstract class AbstractDiskPersistenceListener implements PersistenceList
     }
 
     /**
- *        Set caching to file on or off.
- *  If the <code>cache.path</code> property exists, we assume file caching is turned on.
- *        By the same token, to turn off file caching just remove this property.
- */
+    *        Set caching to file on or off.
+    *  If the <code>cache.path</code> property exists, we assume file caching is turned on.
+    *        By the same token, to turn off file caching just remove this property.
+    */
     protected void initFileCaching(String cachePathStr) {
         if (cachePathStr != null) {
             cachePath = new File(cachePathStr);
@@ -311,12 +311,12 @@ public abstract class AbstractDiskPersistenceListener implements PersistenceList
     }
 
     /**
- * Stores an object using the supplied file object
- *
- * @param file The file to use for storing the object
- * @param obj the object to store
- * @throws CachePersistenceException
- */
+    * Stores an object using the supplied file object
+    *
+    * @param file The file to use for storing the object
+    * @param obj the object to store
+    * @throws CachePersistenceException
+    */
     protected void store(File file, Object obj) throws CachePersistenceException {
         // check if the directory structure required exists and create it if it doesn't
         File filepath = new File(file.getParent());
@@ -362,11 +362,11 @@ public abstract class AbstractDiskPersistenceListener implements PersistenceList
     }
 
     /**
- * Build fully qualified cache file for the specified cache entry key.
- *
- * @param key   Cache Entry Key.
- * @return File reference.
- */
+    * Build fully qualified cache file for the specified cache entry key.
+    *
+    * @param key   Cache Entry Key.
+    * @return File reference.
+    */
     protected File getCacheFile(String key) {
         char[] fileChars = getCacheFileName(key);
 
@@ -376,19 +376,19 @@ public abstract class AbstractDiskPersistenceListener implements PersistenceList
     }
 
     /**
- * Build cache file name for the specified cache entry key.
- *
- * @param key   Cache Entry Key.
- * @return char[] file name.
- */
+    * Build cache file name for the specified cache entry key.
+    *
+    * @param key   Cache Entry Key.
+    * @return char[] file name.
+    */
     protected abstract char[] getCacheFileName(String key);
 
     /**
- * Builds a fully qualified file name that specifies a cache group entry.
- *
- * @param group The name of the group
- * @return A File reference
- */
+    * Builds a fully qualified file name that specifies a cache group entry.
+    *
+    * @param group The name of the group
+    * @return A File reference
+    */
     private File getCacheGroupFile(String group) {
         int AVERAGE_PATH_LENGTH = 30;
 
@@ -406,12 +406,12 @@ public abstract class AbstractDiskPersistenceListener implements PersistenceList
     }
 
     /**
- * This allows to persist different scopes in different path in the case of
- * file caching.
- *
- * @param scope   Cache scope.
- * @return The scope subpath
- */
+    * This allows to persist different scopes in different path in the case of
+    * file caching.
+    *
+    * @param scope   Cache scope.
+    * @return The scope subpath
+    */
     private String getPathPart(int scope) {
         if (scope == PageContext.SESSION_SCOPE) {
             return SESSION_CACHE_SUBPATH;
@@ -421,12 +421,12 @@ public abstract class AbstractDiskPersistenceListener implements PersistenceList
     }
 
     /**
- * Clears a whole directory, starting from the specified
- * directory
- *
- * @param baseDirName The root directory to delete
- * @throws CachePersistenceException
- */
+    * Clears a whole directory, starting from the specified
+    * directory
+    *
+    * @param baseDirName The root directory to delete
+    * @throws CachePersistenceException
+    */
     private void clear(String baseDirName) throws CachePersistenceException {
         File baseDir = new File(baseDirName);
         File[] fileList = baseDir.listFiles();
@@ -453,13 +453,13 @@ public abstract class AbstractDiskPersistenceListener implements PersistenceList
     }
 
     /**
- * Retrives a serialized object from the supplied file, or returns
- * <code>null</code> if the file does not exist.
- *
- * @param file The file to deserialize
- * @return The deserialized object
- * @throws CachePersistenceException
- */
+    * Retrives a serialized object from the supplied file, or returns
+    * <code>null</code> if the file does not exist.
+    *
+    * @param file The file to deserialize
+    * @return The deserialized object
+    * @throws CachePersistenceException
+    */
     private Object retrieve(File file) throws CachePersistenceException {
         Object readContent = null;
         boolean fileExist;
