@@ -1,0 +1,351 @@
+OSCACHE 2.0
+-------------
+Bug fixes:
+- [CACHE-52] Fixed a problem that caused no output on Tomcat for small JSP files.
+- [CACHE-53] Updated documentation to explain that a PersistenceListener must
+  be specified to enable caching to disk.
+- [CACHE-55] JMS was throwing an exception on Weblogic.
+- Altering the cache capacity on the fly using the administrator classes wasn't
+  working correctly.
+
+Improvements:
+- Minor FastCronParser speedup.
+- Made ClusterNotification constants public.
+- Dropped some of the logging levels from INFO down to DEBUG.
+- Release has been split into two - a binary release and a full release (includes source).
+
+
+OSCACHE 2.0 (beta 2)
+-------------
+New features:
+- Now supports JavaGroups version 2.1.
+- JMS Clustering support has been added [Romulus Pasca].
+- Clustering code has been refactored. As a result of this, some of the
+  clustering configuration has changed since beta 1 - please see the updated
+  clustering documentation for details.
+- Performance enhancement: When running under JRE 1.3.x, the LRUCache will
+  now attempt to use the Jakarta commons collections SequencedHashMap. If the
+  commons-collections.jar is not present then the code resorts to using a
+  LinkedList and a warning is logged. Note that under JRE 1.4.x and higher the
+  commons-collections.jar is not required.
+- Config.getProperties() method added.
+
+Bug fixes:
+- [CACHE-45] Fixed a serialization bug.
+- [CACHE-48] FastCronParser no longer requires JDK 1.4.x.
+- The CachewideEvent was not holding the event date.
+- Prevented an error from being logged in the CachewideEvent handling (even
+  though no problem had occurred).
+- Fixed a subtle bug in the concurrent unit test.
+- The ServletCacheAdministrator's app scope cache is created on startup (via
+  the CacheContextListener).
+
+
+OSCACHE 2.0 (beta 1)
+-------------
+New features:
+- [CACHE-11] Cache grouping support. This allows cache entries to be placed
+  into an arbitrary group or groups and flushed with a single flushGroup()
+  call.
+- [CACHE-14, Matthias Nott] Now allows for content to be cached indefinitely
+  without expiration.
+- [CACHE-30] Added support for expiring cache entries based on a cron expression.
+  Entries that are older than the date/time that most recently matches the cron
+  expression will be considered stale. This is exposed to the cache tag via
+  the 'cron' attribute. See cronTest.jsp for  examples.
+- Event listener support has been refactored and improved. It is now possible
+  to specify a comma-delimited list of event listeners using this property.
+  Previously only one class could be specified. Events listed here should
+  implement the CacheEntryEventListener and/or the ScopeEventListener interfaces.
+- New event CacheMapAccessEvent.STALE_HIT. This event is fired when an attempt
+  is made to retrieve and entry from the cache, and the entry is found but is
+  stale.
+- Clustering support has been added as an event listener. Currently there are two
+  implementations available, one using JMS as the underlying transport, and one
+  using JavaGroups (www.javagroups.com).
+- Now uses Jakarta Commons Logging for all log messages. This means that the
+  cache.debug configuration property is now ignored - use whatever logging
+  configuration is appropriate for your logging setup instead. [Fabian Crabus]
+- The build.xml <javac ...> directives now specify debug="true".
+- Performance boost: When OSCache is running on JRE 1.4 or higher, LRUCache
+  and FIFOCache use a LinkedHashSet instead of a LinkedList.
+- Japloy is now used to ensure source is consistently formatted
+- Test cases now work on non-windows platforms. Also coverage reports added
+  courtesy of clover.
+
+Changes that may affect backwards compatibility:
+- The cache.entryevent.classes property in the configuration file has been
+  renamed to cache.event.listeners, since it accepts CacheEntryEventListener,
+  ScopeEventListener and CacheMapAccessEventListener types.
+- The cache.persistence.classes property has been renamed to
+  cache.persistence.class since it is only possible to specify one
+  PersistenceListener.
+- For consistency, cache.unlimited_disk is now cache.unlimited.disk and
+  cache.useHostDomainInKey is now cache.use.host.domain.in.key.
+- The oscache.tld file now uses a taglib 1.2 DTD.
+- To build OSCache, JDK 1.4.x or higher is required. There is however no
+  runtime dependency on JDK 1.4.x.
+- The Cache.flushPattern() method and <cache:flush pattern="..."/> are
+  deprecated. You are instead encouraged to group your cache entries when you
+  add them to the cache and then use the Cache.flushGroup() method or the
+  <cache:flush group="..."/> tag to flush an entire cache group.
+- Disk persistence now puts all files in the same directory. This has a number
+  of side effects. Keys >255 chars will cause problems. Also, similar keys
+  might get mapped to the same file. For example, it is very inadvisable to
+  have two keys with the names 'my_key' and 'my.key'.
+- GeneralCacheAdministrator is no longer static. Users that relied
+  on this behaviour can still hold onto a static reference to it with
+  minor code changes.
+- When a NeedsRefreshException is thrown, it is now vital that the cache
+  entry is either updated, or Cache.cancelUpdate(key) is called to release
+  the lock on this cache entry. This is a consequence of the fix for [CACHE-42].
+- CacheProperties class was removed. It didn't work on 1.7.5 anyway.
+  The same effect can be achieved by specifying a subclass of Properties.
+- Autogenerated cache keys now contain the request method (eg, HEAD, GET, etc)
+- OSCache has been repackaged from "com.opensymphony.module.oscache.*" to
+  "com.opensymphony.oscache.*". Any code or configuration files that refer to
+  "com.opensymphony.module.oscache" will need to be updated.
+
+Bug fixes:
+- [CACHE-4] WebSphere 3.5.x compatibility
+- [CACHE-5] Added a mode attribute to the cache tag to allow content to be
+  cached but not sent to the output stream. See oscacheTest.jsp for an example.
+- [CACHE-7] "cache" Tag has no "setEncoding" method.
+- [CACHE-9] It could be useful being able to specify directories relative
+  to the web application dir. for config file and cache dir. Use new
+  properties aware getInstance method.
+- [CACHE-10] Cannot write and use custom class implementing CacheProperties
+- [CACHE-13] AbstractConcurrentReadCache loops indefinitely when
+  persistRetrieve() returns null.
+- [CACHE-14] You can now specify an unlimited refresh time by supplying a
+  negative value for the duration.
+- [CACHE-17] An example war is now included - "ant example-war". Once deployed
+  this can be tested using "ant test-web".
+- [CACHE-26] Security hole whereby certain keys can overwrite any file.
+- [CACHE-28] URLs can now be used as keys with disk persistence.
+- [CACHE-31 and CACHE-33] The cache tag's refresh attribute will now be taken
+  into account even if a custom refresh policy has been specified.
+- [CACHE-34] Setting properties with AbstractCacheAdministrators.
+  New getInstance method added to ServletCacheAdministrator that takes
+  in properties.
+- [CACHE-35] CacheFilter needs to distinguish between HEAD and GET requests
+- [CACHE-39 and CACHE-44] Synchronization with LRUCache fixed.
+- [CACHE-42] Threads will no longer race to (re)build expired or new
+  cache entries. By default stale content will be served if available.
+  This behaviour can be changed by setting oscache.blocking=true, which will
+  instead cause threads to block until the new cache entry is available.
+- [CACHE-43] Taglibs have been made spec-compliant. They now follow the
+  guidelines at http://jakarta.apache.org/taglibs/guidelines.html.   
+- Some synchronization issues were fixed in LRUCache.getItem() and
+  AbstractConcurrentReadCache.setMaxEntries().
+- ScopeEventListener classes were previously not able to be specified in the
+  configuration even though the dispatching code was implemented.
+  ScopeEventListeners can now be specified using the cache.event.listeners
+  configuration property.
+- CacheMapAccessEvents now only fire when an attempt is made to retrieve the
+  actual cache content for external use. Previously these events were being
+  fired in circumstances that were not of statistical interest - for example
+  HIT and MISS events were being fired when updating or flushing entries from
+  the cache.
+- Minor bug in oscacheTestMultipleTagNoKey.jsp - some of the tag refresh times
+  weren't correctly specified.
+- cachetest.jsp - the 'refresh' functionality wasn't working because the
+  addition of the refresh parameter caused the cache key to be different.
+  The key is now specified explicitly.
+- EntryRefreshPolicy is now serializable so it can be persisted to the disk
+  cache.
+- ServletCacheAdministrator now sorts request parameters and filters out
+  jsessionid so they have no impact on the generated cache key.
+- CacheFilter only caches successful responses (status code == SC_OK).
+
+Known problems:
+- Session caches (created using the ServletCacheAdministrator) have some
+  known limitations:
+      * Due to a workaround in the code, it is possible for a system under
+        heavy load to get its persistent session caches confused across
+        sessions.
+      * Session caches will not currently work in a clustered environment.
+      * Session caches have the same settings global settings applied to them
+        as the application scope cache. This means that if you want eg a
+        persistent cache for the application scope cache, the session caches
+        will use it too.
+
+
+OSCACHE 1.7.6
+-------------
+- Added a new initParam to CacheFilter to define the scope. Default is still
+APPLICATION, so this change is backwards compatible.
+- Possibility to use the temporary directory of the servlet container for the
+disk cache this is done by setting the cache.path property to
+javax.servlet.context.tempdir (Solves CACHE-1 and CACHE-6). Has been tested on Tomcat 4.0
+3rd of October 2002 - by Francois Beauregard, fbeauregard@pyxis-tech.com,
+
+
+OSCACHE 1.7.5
+-------------
+(5th January - by Mike Cannon-Brookes)
+- Fixed up logging system slightly. All errors should now be logged with logError()
+and normal messages with log()
+- Fixed bug in build file which put oscache.properties inside the oscache.jar (resulting
+in it being loaded badly in some containers)
+- Changed cache.capacity in the default oscache.properties file to 1000. This means up to 1000
+items will be cached in the default setup, and LRUCache will be used (100 seemed too small).
+
+
+OSCACHE 1.7.4
+-------------
+(3rd December 2001 - by Francois Beauregard & Mike Cannon-Brookes)
+- Made all servlet cache components serializable (fixes bug reported on list
+  with JRun)
+
+OSCACHE 1.7.3
+-------------
+(11th November 2001 - by Francois Beauregard, fbeauregard@pyxis-tech.com)
+- TestCacheEntry had a test method with improper name (flush -> testFlush)
+- Pluggable entry refresh policy now available in the cache tag
+  refreshpolicyclass and refreshpolicyparam are new attributes of the cache tag.
+
+OSCACHE 1.7.2
+-------------
+(31st October 2001 - by Mike Cannon-Brookes, mike@atlassian.com)
+- Cleaned up _all_ JavaDoc messages to ensure consistency and readability (removed unnecessary CVS tags, added <code> and <pre> where needed, added @return and @param to all methods)
+- Renamed nbMaxEntries to cacheCapacity and cache.size property to cache.capacity (to fit better with Collections API where capacity is max size, size is current size)
+- Renamed algoClass to algorithmClass for clarity.
+- Fixed up build.xml so that test classes are compiled to a different location and not included in oscache.jar (to make it smaller footprint)
+
+OSCACHE 1.7.1
+-------------
+(30th October 2001 - by Francois Beauregard, fbeauregard@pyxis-tech.com, and
+Alain Bergevin, abergevin@pyxis-tech.com, of Pyxis Technologies Inc. - www.pyxis-tech.com)
+- Cache Events
+- Persistence mechanism refactored
+- Cache Algorithms FIFO + LRU (Limit the size of the cache)
+- AbstractConcurrentReadCache from Doug Lea's ConcurrentReaderHashMap.
+  Should give oscache performance improvement
+- Disk Persistence does not need any locking strategies. Everything is handled by AbstractConcurrentReadCache
+- Pluggable entry refresh policies
+- Unlimited cache size for disk
+- Specify Duration using Simple Date Format or ISO-8601 as suggested by Fredrik Lindgren)
+  The next one that would make sense I think is being able to specify a specific time of day.
+
+OSCACHE 1.7.0
+-------------
+(26th September 2001 - by Francois Beauregard, fbeauregard@pyxis-tech.com, and
+Alain Bergevin, abergevin@pyxis-tech.com, of Pyxis Technologies Inc. - www.pyxis-tech.com)
+
+This version include some refactoring, corrections and new features.
+Here are the highlights:
+- CacheAdministrator has been split in 3. We have now
+AbstractCacheAdministrator, and ServletCacheAdministrator and GeneralCacheAdministrator extends it
+- Packages have been adjusted. We now have oscache.base, oscache.general and oscache.Servlet.
+  Adjustement must be made to the oscache.tld
+- ServletCacheHashMap has been created in order to reflect specific needs for Servlets. It extends CacheHashMap
+- Support for multiple cache tag in a single page, without supplying a key. Nested cache tag are not yet supported (you
+need to manage keys in that case).
+- osCache can now cache any objects (not only JSP content) using GeneralCacheAdministrator
+- GenerateKey now support suffixes (used to deal with multiple cache tags)
+- A complete JUnit test suite has been created for osCache, including a JSP and a Servlet
+- Added the required libraries for the test unit. The JUnit JAR has been upgraded to version 3.7
+- Required libraries are now HHTPUnit, Tidy, JUnit 3.7 and JUnitPerf
+- The cBuffer variable used for keyGeneration has been moved locally to GenerateKey since it was a threading issue
+- The build file has been modified to include test running
+- The flushAll method is now abstract since CacheAbstractAdministrator can't know all valid scopes
+- Removed the retry logic for disk cache read and write (not used anymore)
+- Fixed an issue with the needsRefresh method which returned an invalid value when invoked first by returning true and then invoked having to return false. Both case returned true.
+- The doStartTag method in CacheTag has been modified to prevent returning null when cache content is missing (cache file deleted)
+- The doAfterBody method in CacheTag has been modified in order to prevent hitting the cache twice in some situation
+- The useBody method in CacheTag has been renamed to setUseBody in order to reflect its usage
+- LoadProperties interface added to CacheProperties
+- Added a NeedsRefreshException
+- Retrofited the changed made by Kesav Kumar in order to retrieve the sessionId correctly
+- Added code toughness to avoid working with invalid parameters in public methods
+- Magic numbers and strings are now declared as constants
+- Many methods are now declared as final or protected
+- Imports are now more accurate, no more *
+- Comments and some headers modified to reflect JavaDoc standard
+
+OSCache 1.6.1
+-------------
+(16th September, 2001 - by Todd Gochenour, tgochenour@peregrine.com)
+- Removed attribute "encoding" in all areas, since Object serialization stores strings in UTF-8 format, encoding is no longer necessary.
+- Added Synchronization to getCacheEntry() to insure multiple threads do not access HashMap and get erroneous results.
+- Implemented property cache.useHostDomainInKey (true/false) to prepend URL request server name to cache key when cache used by multiple servers.  The "cache.domainname" property found in oscache.properties (not used in code) was removed.
+- Corrected file caching logic so that multiple processes can share cache information (file locking).  Missing still is the ability to signal processes that a cache needs to be flushed when using Memory Caching along with File Caching.
+- Unit testing revealed some minor configuration bugs which were corrected.
+
+OSCache 1.6
+-----------
+(5th September, 2001 - by Mike Cannon-Brookes, mike@atlassian.com)
+- Changed the CacheEntry so that it caches Object rather than String (allowing image caching) (Serge Knystautas, sergek@lokitech.com)
+- Cached objects are now serialized to disk so cannot be read by humans anymore (this allows us to cache Object) (Serge Knystautas, sergek@lokitech.com)
+- Added a Servlet 2.3 CacheFilter (and associated response classes) that caches whole requests (Serge Knystautas, sergek@lokitech.com)
+- Minor changes to CacheAdministrator (the way Cache and CacheEntry's are retrieved) - merging Serge and Todd's changes
+
+OSCache 1.5
+-----------
+(6th August, 2001 - by Todd Gochenour, tgochenour@peregrine.com)
+- Added boolean "cache.memory" attribute to oscache.properties to eliminate memory consumption and rely strictly on disk storage.
+- Added three interfaces "CacheLog", "CacheProperties", and "CacheContents" to allow plugable implementations for these functions. The CacheContents interface allows the pages to be cached using a database.
+- Added "Language" attribute to CacheTag and FlushTag to distinguish a page that supports I18N generation. The ISO-639 language code is used when the scope of the page is "Application".  The code defines a subdirectory under the "application" directory of file caching.
+- Modified the CacheAdministrator.generateKey() function to append the request's QueryString to the URI when automatically generating keys.  The QueryString is encoded using the MD5 digest base64 algorithms.
+- Added attribute "encoding" to a CacheTag so that the file IO does proper conversion when reading and writing the cache files. (per suggestion of Pedro Gomez)
+- Added retries when SecurityException is thrown.  Java has no built in exclusive file locking implementations.  The file is written to a lock file and then renamed as an atomic operation so that multiple processes on the same box can reliable access cache data.
+- Added "pattern" attribute to FlushTag which invokes a CacheHashMap.flushPattern() function to scan for and flush all keys that contain the value of the pattern. (per suggestion of Todd Rudrick)
+- Added support for a CacheTag time value of zero which turns off caching for that tag. (per suggestion of Pedro Gomez)
+
+OSCache 1.3
+-----------
+(9th June, 2001 - by Mike Cannon-Brookes, mike@atlassian.com)
+- Fixed a single bug in the file caching - should now work
+- Added property to set the cache key (not sure if this is useful)
+- Cleaned up a lot of the code, refactored slightly so that the tags are more light weight and rely more on the Administrator and CacheHashMap for functionality.
+
+OSCache 1.2.5
+-------------
+(18th May, 2001 - by Mike Cannon-Brookes, mike@atlassian.com)
+- Added ability to turn off file caching (just remove or comment out cache.properties)
+- Removed a pesky (but ineffectual) bug where session caches being removed from disk were throwing NullPointerExceptions
+
+OSCache 1.2.1
+-------------
+(10th May, 2001 - by Mike Cannon-Brookes, mike@atlassian.com)
+- Speed improvements in CacheEntry and CacheAdministrator (by Kesav Kumar - kesavk@voquette.com)
+- Fixed DOCTYPE in taglib.tld (also Kesav!)
+- Removed backup / swap / temp files from zip (and changed build file)
+
+OSCache 1.2
+-----------
+(28th March, 2001 - by Mike Cannon-Brookes, mike@atlassian.com)
+- Fixed a large bug that resulted in CacheEntry's not refreshing. Large enough in a Caching library to demand a new point release ;)
+
+OSCache 1.1
+-----------
+(25th March, 2001 - by Mike Cannon-Brookes, mike@atlassian.com)
+- Moved up to 1.1 because a lot of documentation improving and some small bug fixing has been done
+- Javadocs should now be very readable for all classes and methods
+- Fixed a NullPointer that was being thrown in CacheEntry.needsRefresh()
+- Cleaned up the build file so it now produces releasable zip files easily
+- Added servlet.jar so that the compiling now works OOB (Out Of the Box)
+
+OSCache 1.0 (beta release 2)
+----------------------------
+(20th March, 2001 - by Mike Cannon-Brookes, mike@atlassian.com)
+- Fixed more bugs.
+- Moved things around so that the CacheAdministrator has more functionality and is now a Singleton (per web app context). This means no more depedency on ServletContextListener to start the CacheAdministrator.
+- Therefore we are now Servlet 2.2 / JSP 1.1 compliant! w00!
+
+OSCache 1.0 (beta release 1)
+----------------------------
+(20th February, 2001 - by Mike Cannon-Brookes, mike@atlassian.com)
+- Fixed a few bugs.
+- Greatest of which there is no longer a disk leakage from session caches on disk.
+- Also session caching bugs fixed, usecached bugs fixed - lots of work done here.
+- Implemented <flush scope="" key=""> to flush individual keys.
+
+OSCache 1.0 (beta release 0)
+----------------------------
+(26th November, 2000 - by Mike Cannon-Brookes, mike@atlassian.com)
+- Initial release of OSCache
+- conceptualised a few things I've been working on over the past month.
+- Added persistent on disk caching and error tolerance (through <usecached />
+  tag)

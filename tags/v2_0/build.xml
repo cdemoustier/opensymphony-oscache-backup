@@ -1,0 +1,320 @@
+<?xml version="1.0" ?>
+
+<!-- OSCache build file - http://www.opensymphony.com/oscache -->
+<project name="oscache" default="jar" basedir=".">
+
+  <property file="build.properties" />
+  <!-- Initialise all the variables as required -->
+  <target name="init">
+    <!-- Uncomment if you want to use Jikes -->
+    <!-- property name="build.compiler" value="jikes" / -->
+
+    <!-- project properties -->
+    <property name="name" value="oscache"/>
+    <property name="Name" value="OSCache"/>
+    <property name="version" value="2.0"/>
+    <property name="zip_version" value="2_0"/>
+
+    <!-- directory properties -->
+    <property name="build.dir" value="build"/>
+    <property name="build.test.dir" value="build.test"/>
+    <property name="dist.dir" value="dist"/>
+
+    <property name="src.dir" value="src"/>
+    <property name="src.core" value="${src.dir}/core"/>
+    <property name="src.plugins" value="${src.dir}/plugins"/>
+    <property name="src.webapp" value="${src.dir}/webapp"/>
+
+    <property name="doc.dir" value="doc"/>
+    <property name="lib.dir" value="lib"/>
+    <property name="tmp.dir" value="tmp"/>
+
+    <property name="debug" value="true"/>
+
+    <!-- document properties -->
+    <property name="packages" value="com.opensymphony.oscache.*"/>
+    <!-- test properties -->
+    <property name="test.web.baseURL" value="http://localhost:8080/oscache/"/>
+    <!-- This property must match with what is included in the oscache.properties files -->
+    <property name="test.cache.path" value="/tmp/cachetagscache"/>
+
+    <available property="junit.available" classname="junit.framework.TestCase"/>
+    <available property="clover.available" classname="org.apache.tools.ant.taskdefs.CloverCompilerAdapter"/>
+  </target>
+
+
+  <!-- Classpath -->
+  <path id="cp">
+    <fileset dir="lib">
+      <include name="build/*.jar"/>
+      <include name="core/*.jar"/>
+    </fileset>
+  </path>
+
+  <!-- Plugins Classpath -->
+  <path id="plugins.cp">
+    <path refid="cp"/>
+    <fileset dir="lib">
+      <include name="plugins/**/*.jar"/>
+    </fileset>
+  </path>
+
+  <path id="jalopy.classpath">
+    <fileset dir="lib/build/jalopy">
+      <include name="*.jar"/>
+    </fileset>
+  </path>
+
+  <taskdef name="jalopy" classname="de.hunsicker.jalopy.plugin.ant.AntPlugin">
+    <classpath refid="jalopy.classpath"/>
+  </taskdef>
+
+  <target name="junit-check" depends="init" unless="junit.available">
+    <fail message="Cannot run test cases. Please copy lib/build/junit-3.8.1.jar to ${ant.home}/lib"/>
+  </target>
+
+<target name="clover-check" depends="init" unless="clover.available">
+    <fail message="Cannot run coverage tests. Please copy lib/build/clover-1.2.jar to ${ant.home}/lib"/>
+  </target>
+
+  <target name="web-check" depends="init">
+    <tempfile property="temp.file" destdir="${build.dir}" prefix="warcheck"/>
+    <get src="${test.web.baseURL}/index.html" dest="${temp.file}" />
+  </target>
+
+  <!-- Prepares the build directory -->
+  <target name="prepare" depends="init">
+    <mkdir dir="${build.dir}/META-INF"/>
+    <copy file="${src.core}/etc/${name}.tld" tofile="${build.dir}/META-INF/taglib.tld"/>
+  </target>
+
+
+  <!-- Compiles the core source code -->
+  <target name="compile" depends="prepare">
+    <javac srcdir="${src.core}/java" destdir="${build.dir}" includes="com/opensymphony/oscache/**" debug="${debug}" classpathref="cp"/>
+  </target>
+
+  <target name="plugins-compile" depends="compile">
+    <javac srcdir="${src.plugins}/diskpersistence/java" destdir="${build.dir}" includes="com/opensymphony/oscache/**" debug="${debug}" classpathref="plugins.cp"/>
+
+    <javac srcdir="${src.plugins}/clustersupport/java" destdir="${build.dir}" includes="com/opensymphony/oscache/**" debug="${debug}" classpathref="plugins.cp"/>
+  </target>
+
+
+  <!-- Prepares and compiles the web application, which includes the web test suite -->
+  <target name="example-war" depends="jar">
+    <mkdir dir="${build.dir}/webapp"/>
+
+    <javac srcdir="${src.webapp}/WEB-INF/classes" destdir="${build.dir}/webapp" includes="com/opensymphony/oscache/**" debug="${debug}" classpath="${build.dir}" classpathref="cp"/>
+
+    <war destfile="${build.dir}/${name}-example.war" basedir="${src.webapp}" webxml="${src.webapp}/WEB-INF/web.xml" excludes="WEB-INF/web.xml">
+      <lib dir="${lib.dir}/core"/>
+      <lib dir="${lib.dir}/plugins/clustersupport"/>
+      <lib file="${dist.dir}/${name}.jar"/>
+      <classes dir="${build.dir}/webapp"/>
+    </war>
+  </target>
+
+
+  <!-- Build a usable jar file -->
+  <target name="jar" depends="format, compile, plugins-compile">
+    <mkdir dir="${dist.dir}"/>
+
+    <jar jarfile="${dist.dir}/${name}.jar" basedir="${build.dir}" includes="**" excludes="test/**, docs/**, *.war"/>
+  </target>
+
+
+  <!-- Cleans up generated stuff -->
+  <target name="clean" depends="init">
+    <delete dir="${build.dir}"/>
+    <delete dir="${build.test.dir}"/>
+    <delete dir="${dist.dir}"/>
+    <delete dir="${doc.dir}"/>
+  </target>
+
+  <target name="format" depends="init">
+    <jalopy fileformat="unix" convention="${src.dir}/core/etc/jalopy.xml" history="file" historymethod="adler32" loglevel="error" threads="2" classpathref="cp">
+      <fileset dir="${src.dir}">
+        <include name="**/*.java"/>
+      </fileset>
+    </jalopy>
+  </target>
+
+  <!-- Run the unit tests, used by test target,so do not call directly -->
+  <target name="run-tests">
+    <taskdef name="junit" classname="org.apache.tools.ant.taskdefs.optional.junit.JUnitTask"/>
+
+    <!-- Clear out any previous persistent cache directory -->
+    <delete dir="${test.cache.path}" failonerror="false"/>
+
+    <junit printsummary="yes" haltonfailure="yes" haltonerror="yes" fork="yes">
+      <classpath>
+        <pathelement location="${build.test.dir}"/>
+        <path refid="plugins.cp"/>
+      </classpath>
+
+      <formatter type="xml"/>
+
+      <batchtest todir="${build.dir}/docs/junit">
+        <fileset dir="${build.test.dir}">
+          <include name="**/TestComplete*.class"/>
+          <exclude name="**/web/*.*"/>
+        </fileset>
+      </batchtest>
+    </junit>
+  </target>
+
+  <target name="test-web" depends="junit-check,compile">
+    <mkdir dir="${build.dir}/docs/junit"/>
+    <mkdir dir="${build.test.dir}"/>
+
+    <!-- Clear out any previous persistent cache directory -->
+    <delete dir="${test.cache.path}"/>
+
+    <javac srcdir="${src.core}/test" destdir="${build.test.dir}" includes="com/opensymphony/oscache/web/**" debug="${debug}" classpath="${build.dir}" classpathref="cp"/>
+
+    <java classname="com.opensymphony.oscache.web.CheckDeployment" failonerror="true" classpath="${build.test.dir}" fork="yes">
+      <arg value="${test.web.baseURL}" />
+    </java>
+
+    <taskdef name="junit" classname="org.apache.tools.ant.taskdefs.optional.junit.JUnitTask"/>
+
+    <junit printsummary="yes" haltonfailure="yes" haltonerror="yes" fork="yes">
+      <sysproperty key="test.web.baseURL" value="${test.web.baseURL}"/>
+      <classpath>
+        <pathelement location="${build.test.dir}"/>
+        <pathelement location="${build.dir}"/>
+        <path refid="cp"/>
+      </classpath>
+
+      <formatter type="xml"/>
+      <formatter type="plain" useFile="false" />
+      <batchtest todir="${build.dir}/docs/junit">
+        <fileset dir="${build.test.dir}">
+          <include name="**/web/TestComplete*.class"/>
+          <include name="**/web/TestLoadComplete*.class"/>
+        </fileset>
+      </batchtest>
+    </junit>
+  </target>
+
+
+  <!-- Run JUnit tests using different combinations of disk and memory caching -->
+  <target name="test" depends="init, clover-check,junit-check">
+    <mkdir dir="${build.dir}/docs/junit"/>
+    <mkdir dir="${build.dir}/docs/clover"/>
+    <mkdir dir="${build.test.dir}"/>
+
+    <taskdef resource="clovertasks"/>
+    <clover-setup initString="${build.test.dir}/coverage.db"/>
+    <javac srcdir="${src.core}/java" destdir="${build.test.dir}"  debug="${debug}" classpathref="cp"/>
+    <javac srcdir="${src.core}/test" destdir="${build.test.dir}"  debug="${debug}" classpathref="cp"/>
+    <javac srcdir="${src.plugins}/clustersupport/java" destdir="${build.test.dir}"  debug="${debug}" classpathref="plugins.cp"/>
+    <javac srcdir="${src.plugins}/clustersupport/test" destdir="${build.test.dir}"  debug="${debug}" classpathref="plugins.cp"/>
+    <javac srcdir="${src.plugins}/diskpersistence/java" destdir="${build.test.dir}" debug="${debug}" classpathref="plugins.cp"/>
+    <javac srcdir="${src.plugins}/diskpersistence/test" destdir="${build.test.dir}" debug="${debug}" classpathref="plugins.cp"/>
+
+    <!-- Run all tests using Memory Cache Only -->
+    <copy file="${src.core}/test/oscacheMemoryOnly.properties" tofile="${build.test.dir}/oscache.properties" overwrite="yes"/>
+    <echo message="Running tests with memory cache only" level="info" />
+    <antcall target="run-tests"/>
+
+    <!-- Rerun all tests using Disk Cache Only -->
+    <copy file="${src.plugins}/diskpersistence/test/oscacheDiskOnly.properties" tofile="${build.test.dir}/oscache.properties" overwrite="yes"/>
+    <echo message="Running tests with disk cache only" level="info" />
+    <antcall target="run-tests"/>
+
+    <!-- ReRun all tests using Disk and Memory Cache -->
+    <copy file="${src.plugins}/diskpersistence/test/oscacheDiskAndMemory.properties" tofile="${build.test.dir}/oscache.properties" overwrite="yes"/>
+    <echo message="Running tests with disk and memory caches" level="info" />
+    <antcall target="run-tests"/>
+
+    <!-- ReRun all tests using Disk and Memory Cache + Clustering -->
+    <copy file="${src.plugins}/clustersupport/test/oscacheCluster.properties" tofile="${build.test.dir}/oscache.properties" overwrite="yes"/>
+    <echo message="Running tests with disk and memory caches with clustering" level="info" />
+    <antcall target="run-tests"/>
+
+    <delete dir="${test.cache.path}"/>
+  </target>
+
+
+  <!-- Generate JavaDoc -->
+  <target name="doc" depends="init">
+    <mkdir dir="${doc.dir}/api"/>
+    <javadoc sourcepath="${src.core}/java" destdir="${doc.dir}/api" packagenames="${packages}" classpathref="cp" author="true" version="true" windowTitle="${Name} ${version} API" doctitle="${Name}" footer="See &lt;a href=&quot;http://www.opensymphony.com/&quot;&gt;www.opensymphony.com&lt;/a&gt; for more information." use="true" verbose="false"/>
+  </target>
+
+
+  <!-- Create the distribution zip files -->
+  <target name="dist" depends="clean, jar, doc">
+    <mkdir dir="${tmp.dir}/doc"/>
+    <mkdir dir="${tmp.dir}/src"/>
+    <mkdir dir="${tmp.dir}/lib"/>
+    <mkdir dir="${tmp.dir}/web"/>
+
+    <copy todir="${tmp.dir}/doc">
+      <fileset dir="${doc.dir}" excludes="**/*~, **/*.swp"/>
+    </copy>
+    <copy todir="${tmp.dir}/src">
+      <fileset dir="${src.dir}" excludes="**/*~, **/*.swp"/>
+    </copy>
+    <copy todir="${tmp.dir}/lib">
+      <fileset dir="${lib.dir}" excludes="**/*~, **/*.swp"/>
+    </copy>
+    <copy todir="${tmp.dir}/web">
+      <fileset dir="${src.webapp}" excludes=",**/*.jar, **/*~, **/*.swp"/>
+    </copy>
+
+    <copy file="${dist.dir}/oscache.jar" tofile="${tmp.dir}/oscache.jar"/>
+    <copy file="${src.core}/etc/oscache.properties" tofile="${tmp.dir}/oscache.properties"/>
+    <copy file="${src.core}/etc/oscache.tld" tofile="${tmp.dir}/oscache.tld"/>
+    <copy file="build.xml" tofile="${tmp.dir}/build.xml"/>
+    <copy file="readme.txt" tofile="${tmp.dir}/readme.txt" failonerror="false"/>
+    <copy file="changes.txt" tofile="${tmp.dir}/changes.txt" failonerror="false"/>
+
+    <zip zipfile="${dist.dir}/${name}_${zip_version}_full.zip" basedir="${tmp.dir}" includes="**"/>
+
+    <delete dir="${tmp.dir}/src"/>
+    <delete dir="${tmp.dir}/lib/build"/>
+    <delete dir="${tmp.dir}/lib/plugins"/>
+    <zip zipfile="${dist.dir}/${name}_${zip_version}_binary.zip" basedir="${tmp.dir}" includes="**"/>
+
+    <delete dir="${tmp.dir}"/>
+  </target>
+
+  <target name="clover.report" depends="test">
+  <clover-report>
+      <current outfile="${build.dir}/docs/clover">
+         <fileset dir="${src.core}" excludes="**/Test*" />
+        <fileset dir="${src.plugins}" excludes="**/Test*" />
+        <format type="html"/>
+      </current>
+   </clover-report>
+  </target>
+
+  <target name="junit.report" depends="test">
+    <junitreport todir="${build.dir}/docs/junit">
+      <fileset dir="${build.dir}/docs/junit">
+        <include name="TEST-*.xml"/>
+      </fileset>
+      <report format="frames" todir="${build.dir}/docs/junit"/>
+    </junitreport>
+  </target>
+
+  <target name="reports" depends="junit.report,clover.report" />
+
+  <!-- Upload the distribution zip to SF -->
+  <target name="sfupload" depends="init">
+    <taskdef name="ftp" classname="org.apache.tools.ant.taskdefs.optional.net.FTP">
+      <classpath refid="cp"/>
+    </taskdef>
+
+    <ftp server="upload.sourceforge.net" action="send" userid="anonymous" password="me@mydomain.com" binary="yes" verbose="yes" remotedir="incoming">
+      <fileset dir="${dist.dir}">
+        <include name="**/*.zip"/>
+      </fileset>
+    </ftp>
+  </target>
+
+</project>
+
