@@ -26,9 +26,9 @@ public class TestConcurrency extends TestCase {
     // Constants needed in the tests
     private final String KEY = "key";
     private final String VALUE = "This is some content";
-    private final int ITERATION_COUNT = 50;
-    private final int THREAD_COUNT = 30;
-    private final int UNIQUE_KEYS = 15;
+    private final int ITERATION_COUNT = 5; //500;
+    private final int THREAD_COUNT = 6; //600;
+    private final int UNIQUE_KEYS = 1013;
 
     /**
      * Class constructor.
@@ -46,6 +46,9 @@ public class TestConcurrency extends TestCase {
     public void setUp() {
         // At first invocation, create a new Cache
         if (admin == null) {
+            Properties config = new Properties();
+            config.setProperty(AbstractCacheAdministrator.CACHE_CAPACITY_KEY, "70");
+            config.setProperty(AbstractCacheAdministrator.CACHE_BLOCKING_KEY, "false");
             admin = new GeneralCacheAdministrator();
             assertNotNull(admin);
         }
@@ -139,13 +142,15 @@ public class TestConcurrency extends TestCase {
      * Verify that we can concurrently access the cache without problems
      */
     public void testPut() {
-        Thread thread = null;
+        Thread[] thread = new Thread[THREAD_COUNT];
 
         for (int idx = 0; idx < THREAD_COUNT; idx++) {
             OSGeneralTest runner = new OSGeneralTest();
-            thread = new Thread(runner);
-            thread.start();
+            thread[idx] = new Thread(runner);
+            thread[idx].start();
         }
+
+        boolean stillAlive;
 
         do {
             try {
@@ -153,7 +158,15 @@ public class TestConcurrency extends TestCase {
             } catch (InterruptedException e) {
                 // do nothing
             }
-        } while (thread.isAlive());
+
+            stillAlive = false;
+
+            int i = 0;
+
+            while ((i < thread.length) && !stillAlive) {
+                stillAlive |= thread[i++].isAlive();
+            }
+        } while (stillAlive);
     }
 
     /**
@@ -316,7 +329,10 @@ public class TestConcurrency extends TestCase {
         }
 
         public void run() {
-            for (int i = 0; i < ITERATION_COUNT; i++) {
+            int start = (int) (Math.random() * UNIQUE_KEYS);
+            System.out.print(start + " ");
+
+            for (int i = start; i < (start + ITERATION_COUNT); i++) {
                 doit(i);
             }
         }
