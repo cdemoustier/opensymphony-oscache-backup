@@ -1,0 +1,339 @@
+<html>
+    <head>
+        <title>OSCache : Change Log</title>
+	    <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">	    
+    </head>
+
+    <body>
+	    <table class="pagecontent" border="0" cellpadding="0" cellspacing="0" width="100%" bgcolor="#ffffff">
+		    <tr>
+			    <td valign="top" class="pagebody">
+				    <div class="pageheader">
+					    <span class="pagetitle">
+                            OSCache : Change Log
+                                                    </span>
+				    </div>
+				    <div class="pagesubheading">
+					    This page last changed on Jan 18, 2005 by <font color="#0050B2">dres1011</font>.
+				    </div>
+
+				    <p class="paragraph"><h3 style="margin: 4px 0px 4px 0px;" class="heading3"><a name="ChangeLog-OSCache2.1"> OSCache 2.1</a></h3></p>(18th January 2004 - by Andres March)
+<h4 class="heading4"><a name="ChangeLog-BugFixes%3A"> Bug Fixes:</a></h4>
+
+<ul class="star">
+<li> <a href="http://jira.opensymphony.com/browse/CACHE-70" title="Visit page outside Confluence">CACHE-70 </a> - last modified problem</li>
+<li> <a href="http://jira.opensymphony.com/browse/CACHE-73" title="Visit page outside Confluence">CACHE-73 </a> - NullpointerException after deserialization of AbstractConcurrentReadCache</li>
+<li> <a href="http://jira.opensymphony.com/browse/CACHE-85" title="Visit page outside Confluence">CACHE-85 </a> - JavaGroups changed package name</li>
+<li> <a href="http://jira.opensymphony.com/browse/CACHE-98" title="Visit page outside Confluence">CACHE-98 </a> - Disk cache not getting served first time for long keys</li>
+<li> <a href="http://jira.opensymphony.com/browse/CACHE-107" title="Visit page outside Confluence">CACHE-107 </a> - flushEntry does not behave correctly in cluster</li>
+<li> <a href="http://jira.opensymphony.com/browse/CACHE-118" title="Visit page outside Confluence">CACHE-118</a> - Updating groups doesn&#039;t work</li>
+<li> <a href="http://jira.opensymphony.com/browse/CACHE-119" title="Visit page outside Confluence">CACHE-119</a> - flush does not work correctly in a clustered environment</li>
+<li> <a href="http://jira.opensymphony.com/browse/CACHE-126" title="Visit page outside Confluence">CACHE-126</a> - java.lang.NoClassDefFoundError: org/javagroups/blocks/NotificationBus$Consumer</li>
+</ul>
+<h4 class="heading4"><a name="ChangeLog-Improvements%3A"> Improvements:</a></h4>
+
+<ul class="star">
+<li> Moved all docs to <a href="http://wiki.opensymphony.com/display/CACHE/Home" title="Visit page outside Confluence">wiki</a></li>
+<li> Updated jgroups jar and configuration based upon recommendations from Bela Ban (javagroups maintainer).</li>
+<li> Website documentation updates.</li>
+<li> Added HashDiskPersistenceListner that hashes file names in order to eliminate nasty characters and overly long names</li>
+<li> Added property that allows cache entries to only be persisted when the memory capacity has been exceeded. The property is called: cache.persistence.overflow.only. It defaults to false for backwards compatibility meaning all cache entries are persisted when a listener has been registered.</li>
+<li> <a href="http://jira.opensymphony.com/browse/CACHE-58" title="Visit page outside Confluence">CACHE-58 </a> - If-Modified-Since ignored in cache filter</li>
+<li> <a href="http://jira.opensymphony.com/browse/CACHE-92" title="Visit page outside Confluence">CACHE-92 </a> - public access for configuration properties</li>
+<li> <a href="http://jira.opensymphony.com/browse/CACHE-94" title="Visit page outside Confluence">CACHE-94 </a> - More evenly distributed disk caching</li>
+<li> <a href="http://jira.opensymphony.com/browse/CACHE-95" title="Visit page outside Confluence">CACHE-95 </a> - Output the scope name&#039;s in toString()</li>
+<li> <a href="http://jira.opensymphony.com/browse/CACHE-102" title="Visit page outside Confluence">CACHE-102 </a> - upgrade to Commons Logging 1.0.4</li>
+<li> <a href="http://jira.opensymphony.com/browse/CACHE-103" title="Visit page outside Confluence">CACHE-103 </a> - upgrade to Commons Collections 3.1</li>
+<li> <a href="http://jira.opensymphony.com/browse/CACHE-104" title="Visit page outside Confluence">CACHE-104 </a> - Destroy cache</li>
+<li> <a href="http://jira.opensymphony.com/browse/CACHE-105" title="Visit page outside Confluence">CACHE-105 </a> - call get() method on put() method call</li>
+</ul>
+<h3 class="heading3"><a name="ChangeLog-OSCache2.0.2"> OSCache 2.0.2</a></h3><p class="paragraph">(22nd January 2004 - by Mathias Bogaert)
+<h4 class="heading4"><a name="ChangeLog-BugFixes%3A"> Bug Fixes:</a></h4></p><ul class="star">
+<li> <a href="http://jira.opensymphony.com/browse/CACHE-63" title="Visit page outside Confluence">CACHE-63 </a> NullPointerException in GeneralCacheAdministrator#destroy().</li>
+<li> <a href="http://jira.opensymphony.com/browse/CACHE-44" title="Visit page outside Confluence">CACHE-44 </a> Multi threading issues with LRU Cache.</li>
+<li> <a href="http://jira.opensymphony.com/browse/CACHE-66" title="Visit page outside Confluence">CACHE-66 </a> DiskPersistenceListener is not Serializable.</li>
+<li> GeneralCacheAdministrator now creates the cache from within the constructor. This prevents possible threading issues if the cache is not initialized during application startup.</li>
+</ul>
+<h4 class="heading4"><a name="ChangeLog-Improvements%3A"> Improvements:</a></h4>
+
+<ul class="star">
+<li> Website documentation updates.</li>
+<li> Added OSCache in the Wild.</li>
+</ul>
+<h3 class="heading3"><a name="ChangeLog-OSCache2.0.1"> OSCache 2.0.1</a></h3><p class="paragraph">(4th November 2003 - by Chris Miller)
+<h4 class="heading4"><a name="ChangeLog-BugFixes%3A"> Bug Fixes:</a></h4></p><ul class="star">
+<li> <a href="http://jira.opensymphony.com/browse/CACHE-59" title="Visit page outside Confluence">CACHE-59 </a> Silent mode could not be reset.</li>
+<li> <a href="http://jira.opensymphony.com/browse/CACHE-60" title="Visit page outside Confluence">CACHE-60 </a> Fixed deadlock problem when cancelUpdate() was called while under load.</li>
+</ul>
+<h4 class="heading4"><a name="ChangeLog-Improvements%3A"> Improvements:</a></h4>
+
+<ul class="star">
+<li> <a href="http://jira.opensymphony.com/browse/CACHE-56" title="Visit page outside Confluence">CACHE-56 </a> Refresh period is no longer mandatory.</li>
+<li> <a href="http://jira.opensymphony.com/browse/CACHE-51" title="Visit page outside Confluence">CACHE-51 </a> Added an &lt;cache:addgroup /&gt; tag. This allows cache groups to be dynamically added from within a &lt;cache:cache /&gt; tag.</li>
+<li> Website documentation is now bundled with the OSCache distribution.</li>
+</ul>
+<h4 class="heading4"><a name="ChangeLog-Changesthatmayaffectbackwardscompatibility%3A"> Changes that may affect backwards compatibility:</a></h4>
+
+<ul class="star">
+<li> StringUtil.split() now returns a List rather than a String[].</li>
+</ul>
+<h3 class="heading3"><a name="ChangeLog-OSCache2.0"> OSCache 2.0</a></h3><p class="paragraph">(22nd September 2003 - by Chris Miller)
+<h4 class="heading4"><a name="ChangeLog-BugFixes%3A"> Bug Fixes:</a></h4></p><ul class="star">
+<li> <a href="http://jira.opensymphony.com/browse/CACHE-52" title="Visit page outside Confluence">CACHE-52 </a> Fixed a problem that caused no output on Tomcat for small JSP files.</li>
+<li> <a href="http://jira.opensymphony.com/browse/CACHE-53" title="Visit page outside Confluence">CACHE-53 </a> Updated documentation to explain that a PersistenceListener must be specified to enable caching to disk.</li>
+<li> <a href="http://jira.opensymphony.com/browse/CACHE-55" title="Visit page outside Confluence">CACHE-55 </a> JMS was throwing an exception on Weblogic.</li>
+<li> Altering the cache capacity on the fly using the administrator classes wasn&#039;t working correctly.</li>
+</ul>
+<h4 class="heading4"><a name="ChangeLog-Improvements%3A"> Improvements:</a></h4>
+
+<ul class="star">
+<li> Minor FastCronParser speedup.</li>
+<li> Made ClusterNotification constants public.</li>
+<li> Dropped some of the logging levels from INFO down to DEBUG.</li>
+<li> Release has been split into two - a binary release and a full release (includes source).</li>
+</ul>
+<h3 class="heading3"><a name="ChangeLog-OSCache2.0%28beta2%29"> OSCache 2.0 (beta 2)</a></h3><p class="paragraph">(4th August 2003 - by Chris Miller)
+<h4 class="heading4"><a name="ChangeLog-NewFeatures%3A"> New Features:</a></h4></p><ul class="star">
+<li> Now supports JavaGroups version 2.1.</li>
+<li> JMS Clustering support has been added -Romulus Pasca.</li>
+<li> Clustering code has been refactored. As a result of this, some of the clustering configuration has changed since beta 1 - please see the updated clustering documentation for details.</li>
+<li> Performance enhancement: When running under JRE 1.3.x, the LRUCache will now attempt to use the Jakarta commons collections SequencedHashMap. If the commons-collections.jar is not present then the code resorts to using a LinkedList and a warning is logged. Note that under JRE 1.4.x and higher the commons-collections.jar is not required.</li>
+<li> Config.getProperties() method added.</li>
+</ul>
+<h4 class="heading4"><a name="ChangeLog-BugFixes%3A"> Bug Fixes:</a></h4>
+
+<ul class="star">
+<li> <a href="http://jira.opensymphony.com/browse/CACHE-48" title="Visit page outside Confluence">CACHE-48 </a> FastCronParser no longer requires JDK 1.4.x.</li>
+<li> <a href="http://jira.opensymphony.com/browse/CACHE-45" title="Visit page outside Confluence">CACHE-45 </a> Fixed a serialization bug.</li>
+<li> The CachewideEvent was not holding the event date.</li>
+<li> Prevented an error from being logged in the CachewideEvent handling (even though no problem had occurred).</li>
+<li> Fixed a subtle bug in the concurrent unit test.</li>
+<li> The ServletCacheAdministrator&#039;s app scope cache is created on startup (via the CacheContextListener).</li>
+</ul>
+<h3 class="heading3"><a name="ChangeLog-OSCache2.0%28beta1%29"> OSCache 2.0 (beta 1)</a></h3><p class="paragraph">(19th July 2003 - by Chris Miller)
+<h4 class="heading4"><a name="ChangeLog-NewFeatures%3A"> New Features:</a></h4></p><ul class="star">
+<li> <a href="http://jira.opensymphony.com/browse/CACHE-11" title="Visit page outside Confluence">CACHE-11 </a> Cache grouping support. This allows cache entries to be placed into an arbitrary group or groups and flushed with a single flushGroup() call.</li>
+<li> <a href="http://jira.opensymphony.com/browse/CACHE-30" title="Visit page outside Confluence">CACHE-30 </a> Added support for expiring cache entries based on a cron expression. Entries that are older than the date/time that most recently matches the cron expression will be considered stale. This is exposed to the cache tag via the &#039;cron&#039; attribute. See cronTest.jsp for examples.</li>
+<li> Event listener support has been refactored and improved. It is now possible to specify a comma-delimited list of event listeners using this property. Previously only one class could be specified. Events listed here should implement the CacheEntryEventListener and/or the ScopeEventListener interfaces.</li>
+<li> New event CacheMapAccessEvent.STALE_HIT. This event is fired when an attempt is made to retrieve and entry from the cache, and the entry is found but is stale.</li>
+<li> Clustering support has been added as an event listener. Currently it is implemented using <a href="http://www.javagroups.com" title="Visit page outside Confluence">JavaGroups </a>. To enable, just add the BroadcastingCacheEventListener class to the cache.event.listeners property.</li>
+<li> Now uses Jakarta Commons Logging for all log messages. This means that the cache.debug configuration property is now ignored - use whatever logging configuration is appropriate for your logging setup instead. -Fabian Crabus</li>
+<li> <a href="http://jira.opensymphony.com/browse/CACHE-14" title="Visit page outside Confluence">CACHE-14, Matthias Nott </a> Now allows for content to be cached indefinitely without expiration.</li>
+<li> The build.xml &lt;javac ...&gt; directives now specify debug=&quot;true&quot;.</li>
+<li> Performance boost: When OSCache is running on JRE 1.4 or higher, LRUCache and FIFOCache use a LinkedHashSet instead of a LinkedList.</li>
+<li> Japloy is now used to ensure source is consistently formatted.</li>
+<li> Test cases now work on non-windows platforms. Also coverage reports added courtesy of clover.</li>
+</ul>
+<h4 class="heading4"><a name="ChangeLog-Changesthatmayaffectbackwardscompatibility%3A"> Changes that may affect backwards compatibility:</a></h4>
+
+<ul class="star">
+<li> The cache.entryevent.classes property in the configuration file has been renamed to cache.event.listeners, since it accepts CacheEntryEventListener, ScopeEventListener and CacheMapAccessEventListener types.</li>
+<li> The cache.persistence.classes property has been renamed to cache.persistence.class since it is only possible to specify one PersistenceListener.</li>
+<li> For consistency, cache.unlimited_disk is now cache.unlimited.disk and cache.useHostDomainInKey is now cache.use.host.domain.in.key.</li>
+<li> The oscache.tld file now uses a taglib 1.2 DTD.</li>
+<li> To build OSCache, JDK 1.4.x or higher is required. There is however no runtime dependency on JDK 1.4.x.</li>
+<li> The Cache.flushPattern() method and &lt;cache:flush pattern=&quot;...&quot;/&gt; are deprecated. You are instead encouraged to group your cache entries when you add them to the cache and then use the Cache.flushGroup() method or the &lt;cache:flush group=&quot;...&quot;/&gt; tag to flush an entire cache group.</li>
+<li> Disk persistence now puts all files in the same directory. This has a number of side effects. Keys &gt;255 chars will cause problems. Also, similar keys might get mapped to the same file. For example, it is very inadvisable to have two keys with the names &#039;my_key&#039; and &#039;my.key&#039;.</li>
+<li> GeneralCacheAdministrator is no longer static. Users that relied on this behaviour can still hold onto a static reference to it with minor code changes.</li>
+<li> When a NeedsRefreshException is thrown, it is now vital that the cache entry is either updated, or Cache.cancelUpdate(key) is called to release the lock on this cache entry. This is a consequence of the fix for <a href="http://jira.opensymphony.com/browse/CACHE-42" title="Visit page outside Confluence">CACHE-42 </a>.</li>
+<li> CacheProperties class was removed. It didn&#039;t work on 1.7.5 anyway. The same effect can be achieved by specifying a subclass of Properties.</li>
+<li> Autogenerated cache keys now contain the request method (eg, HEAD, GET, etc).</li>
+<li> OSCache has been repackaged from &quot;com.opensymphony.module.oscache.&#42;&quot; to &quot;com.opensymphony.oscache.&#42;&quot;. Any code or configuration files that refer to &quot;com.opensymphony.module.oscache&quot; will need to be updated.</li>
+</ul>
+<h4 class="heading4"><a name="ChangeLog-BugFixes%3A"> Bug Fixes:</a></h4>
+
+<ul class="star">
+<li> <a href="http://jira.opensymphony.com/browse/CACHE-4" title="Visit page outside Confluence">CACHE-4 </a> WebSphere 3.5.x compatibility.</li>
+<li> <a href="http://jira.opensymphony.com/browse/CACHE-5" title="Visit page outside Confluence">CACHE-5 </a> Added a mode attribute to the cache tag to allow content to be cached but not sent to the output stream. See oscacheTest.jsp for an example.</li>
+<li> <a href="http://jira.opensymphony.com/browse/CACHE-7" title="Visit page outside Confluence">CACHE-7 </a> &quot;cache&quot; Tag has no &quot;setEncoding&quot; method.</li>
+<li> <a href="http://jira.opensymphony.com/browse/CACHE-9" title="Visit page outside Confluence">CACHE-9 </a> It could be useful being able to specify directories relative to the web application dir. for config file and cache dir. Use new properties aware getInstance method.</li>
+<li> <a href="http://jira.opensymphony.com/browse/CACHE-10" title="Visit page outside Confluence">CACHE-10 </a> Cannot write and use custom class implementing CacheProperties.</li>
+<li> <a href="http://jira.opensymphony.com/browse/CACHE-13" title="Visit page outside Confluence">CACHE-13 </a> AbstractConcurrentReadCache loops indefinitely when persistRetrieve() returns null.</li>
+<li> <a href="http://jira.opensymphony.com/browse/CACHE-14" title="Visit page outside Confluence">CACHE-14 </a> You can now specify an unlimited refresh time by supplying a negative value for the duration.</li>
+<li> <a href="http://jira.opensymphony.com/browse/CACHE-17" title="Visit page outside Confluence">CACHE-17 </a> An example war is now included - &quot;ant example-war&quot;. Once deployed this can be tested using &quot;ant test-web&quot;.</li>
+<li> <a href="http://jira.opensymphony.com/browse/CACHE-26" title="Visit page outside Confluence">CACHE-26 </a> Security hole whereby certain keys can overwrite any file.</li>
+<li> <a href="http://jira.opensymphony.com/browse/CACHE-28" title="Visit page outside Confluence">CACHE-28 </a> URLs can now be used as keys with disk persistence.</li>
+<li> <a href="http://jira.opensymphony.com/browse/CACHE-31" title="Visit page outside Confluence">CACHE-31 </a> and <a href="http://jira.opensymphony.com/browse/CACHE-33" title="Visit page outside Confluence">CACHE-33 </a> The cache tag&#039;s refresh attribute will now be taken into account even if a custom refresh policy has been specified.</li>
+<li> <a href="http://jira.opensymphony.com/browse/CACHE-34" title="Visit page outside Confluence">CACHE-34 </a> Setting properties with AbstractCacheAdministrators. New getInstance method added to ServletCacheAdministrator that takes in properties.</li>
+<li> <a href="http://jira.opensymphony.com/browse/CACHE-35" title="Visit page outside Confluence">CACHE-35 </a> CacheFilter needs to distinguish between HEAD and GET requests.</li>
+<li> <a href="http://jira.opensymphony.com/browse/CACHE-39" title="Visit page outside Confluence">CACHE-39 </a> and <a href="http://jira.opensymphony.com/browse/CACHE-44" title="Visit page outside Confluence">CACHE-44 </a> Synchronization with LRUCache fixed.</li>
+<li> <a href="http://jira.opensymphony.com/browse/CACHE-42" title="Visit page outside Confluence">CACHE-42 </a> Threads will no longer race to (re)build expired or new cache entries. By default stale content will be served if available. This behaviour can be changed by setting oscache.blocking=true, which will instead cause threads to block until the new cache entry is available.</li>
+<li> <a href="http://jira.opensymphony.com/browse/CACHE-43" title="Visit page outside Confluence">CACHE-43 </a> Taglibs have been made spec-compliant. They now follow the guidelines at <a href="http://jakarta.apache.org/taglibs/guidelines.html." title="Visit page outside Confluence">&#104;ttp://jakarta.apache.org/taglibs/guidelines.html.</a></li>
+<li> Some synchronization issues were fixed in LRUCache.getItem() and AbstractConcurrentReadCache.setMaxEntries().</li>
+<li> ScopeEventListener classes were previously not able to be specified in the configuration even though the dispatching code was implemented. ScopeEventListeners can now be specified using the cache.event.listeners configuration property.</li>
+<li> CacheMapAccessEvents now only fire when an attempt is made to retrieve the actual cache content for external use. Previously these events were being fired in circumstances that were not of statistical interest - for example HIT and MISS events were being fired when updating or flushing entries from the cache.</li>
+<li> Minor bug in oscacheTestMultipleTagNoKey.jsp - some of the tag refresh times weren&#039;t correctly specified.</li>
+<li> cachetest.jsp - the &#039;refresh&#039; functionality wasn&#039;t working because the addition of the refresh parameter caused the cache key to be different. The key is now specified explicitly.</li>
+<li> EntryRefreshPolicy is now serializable so it can be persisted to the disk cache.</li>
+<li> ServletCacheAdministrator now sorts request parameters and filters out jsessionid so they have no impact on the generated cache key.</li>
+<li> CacheFilter only caches successful responses (status code == SC_OK).</li>
+</ul>
+<h4 class="heading4"><a name="ChangeLog-KnownProblems%3A%28thesehaveexistedforsometimeinthe1.x.xversionsandwillbeaddressedinanupcoming2.x.xrelease%29"> Known Problems: (these have existed for some time in the 1.x.x versions and will be addressed in an upcoming 2.x.x release)</a></h4>
+
+<ul class="star">
+<li> Session caches (created using the ServletCacheAdministrator) have some known limitations:<br/>
+o Due to a workaround in the code, it is possible for a system under heavy load to get its persistent session caches confused across sessions.<br/>
+o Session caches will not work in a clustered environment.<br/>
+o Session caches have the same settings global settings applied to them as the application scope cache. This means that if you want a persistent cache for the application scope cache, the session caches will use it too.
+</li>
+</ul>
+<h3 class="heading3"><a name="ChangeLog-OSCache1.7.5"> OSCache 1.7.5</a></h3>
+(5th January 2002 - by Mike Cannon-Brookes, mike@atlassian.com)<br/>
+
+<ul class="star">
+<li> Fixed up logging system slightly. All errors should now be logged with logError() and normal messages with log()</li>
+<li> Fixed bug in build file which put oscache.properties inside the oscache.jar (resulting in it being loaded badly in some containers)</li>
+<li> Changed cache.capacity in the default oscache.properties file to 1000. This means up to 1000 items will be cached in the default setup, and LRUCache will be used (100 seemed too small)</li>
+</ul>
+<h3 class="heading3"><a name="ChangeLog-OSCache1.7.4"> OSCache 1.7.4</a></h3>
+(3rd December 2001 - by Francois Beauregard, fbeauregard@pyxis-tech.com, and<br/>
+Mike Cannon-Brookes, mike@atlassian.com)<br/>
+
+<ul class="star">
+<li> Made all servlet cache components serializable (fixes bug reported on list with JRun)</li>
+</ul>
+<h3 class="heading3"><a name="ChangeLog-OSCache1.7.3"> OSCache 1.7.3</a></h3>
+(11th November 2001 - by Francois Beauregard, fbeauregard@pyxis-tech.com)<br/>
+
+<ul class="star">
+<li> TestCacheEntry had a test method with improper name (flush -&gt; testFlush)</li>
+<li> Pluggable entry refresh policy now available in the cache tag</li>
+</ul>
+<h3 class="heading3"><a name="ChangeLog-OSCache1.7.2"> OSCache 1.7.2</a></h3>
+(31st October 2001 - by Mike Cannon-Brookes, mike@atlassian.com)<br/>
+
+<ul class="star">
+<li> Cleaned up <em class="emphasis">all</em> JavaDoc messages to ensure consistency and readability (removed unnecessary CVS tags, added &lt;code&gt; and &lt;pre&gt; where needed, added @return and @param to all methods)</li>
+<li> Renamed nbMaxEntries to cacheCapacity and cache.size property to cache.capacity (to fit better with Collections API where capacity is max size, size is current size)</li>
+<li> Renamed algoClass to algorithmClass for clarity.</li>
+<li> Fixed up build.xml so that test classes are compiled to a different location and not included in oscache.jar (to make it smaller footprint)</li>
+</ul>
+<h3 class="heading3"><a name="ChangeLog-OSCache1.7.1"> OSCache 1.7.1</a></h3>
+(26th September 2001 - by Francois Beauregard, fbeauregard@pyxis-tech.com, and<br/>
+Alain Bergevin, abergevin@pyxis-tech.com, of Pyxis Technologies Inc.)<br/>
+
+<ul class="star">
+<li> Cache Events</li>
+<li> Persistence mechanism refactored</li>
+<li> Cache Algorithms FIFO + LRU (Limit the size of the cache)</li>
+<li> AbstractConcurrentReadCache from Doug Lea&#039;s ConcurrentReaderHashMap.<br/>
+Should give oscache performance improvement
+</li>
+<li> Disk Persistence does not need any locking strategies. Everything is handled by AbstractConcurrentReadCache</li>
+<li> Pluggable entry refresh policies</li>
+<li> Unlimited cache size for disk</li>
+<li> Specify Duration using Simple Date Format or ISO-8601 as suggested by Fredrik Lindgren)<br/>
+The next one that would make sense I think is being able to specify a specific time of day.
+</li>
+</ul>
+<h3 class="heading3"><a name="ChangeLog-OSCache1.7.0"> OSCache 1.7.0</a></h3>
+(26th September 2001 - by Francois Beauregard, fbeauregard@pyxis-tech.com, and<br/>
+Alain Bergevin, abergevin@pyxis-tech.com, of Pyxis Technologies Inc.)<p class="paragraph">This version include some refactoring, corrections and new features.<br/>
+Here are the highlights:</p><ul class="star">
+<li> CacheAdministrator has been split in 3. We have now AbstractCacheAdministrator, and ServletCacheAdministrator and GeneralCacheAdministrator extends it</li>
+<li> Packages have been adjusted. We now have oscache.base, oscache.general and oscache.Servlet.<br/>
+Adjustement must be made to the oscache.tld
+</li>
+<li> ServletCacheHashMap has been created in order to reflect specific needs for Servlets. It extends CacheHashMap</li>
+<li> Support for multiple cache tag in a single page, without supplying a key. Nested cache tag are not yet supported (you need to manage keys in that case).</li>
+<li> OSCache can now cache any objects (not only JSP content) using GeneralCacheAdministrator</li>
+<li> GenerateKey now support suffixes (used to deal with multiple cache tags)</li>
+<li> A complete JUnit test suite has been created for osCache, including a JSP and a Servlet</li>
+<li> Added the required libraries for the test unit. The JUnit JAR has been upgraded to version 3.7</li>
+<li> Required libraries are now HHTPUnit, Tidy, JUnit 3.7 and JUnitPerf</li>
+<li> The cBuffer variable used for keyGeneration has been moved locally to GenerateKey since it was a threading issue</li>
+<li> The build file has been modified to include test running</li>
+<li> The flushAll method is now abstract since CacheAbstractAdministrator can&#039;t know all valid scopes</li>
+<li> Removed the retry logic for disk cache read and write (not used anymore)</li>
+<li> Fixed an issue with the needsRefresh method which returned an invalid value when invoked first by returning true and then invoked having to return false. Both case returned true.</li>
+<li> The doStartTag method in CacheTag has been modified to prevent returning null when cache content is missing (cache file deleted)</li>
+<li> The doAfterBody method in CacheTag has been modified in order to prevent hitting the cache twice in some situation</li>
+<li> The useBody method in CacheTag has been renamed to setUseBody in order to reflect its usage</li>
+<li> LoadProperties interface added to CacheProperties</li>
+<li> Added a NeedsRefreshException</li>
+<li> Retrofited the changed made by Kesav Kumar in order to retrieve the sessionId correctly</li>
+<li> Added code toughness to avoid working with invalid parameters in public methods</li>
+<li> Magic numbers and strings are now declared as constants</li>
+<li> Many methods are now declared as final or protected</li>
+<li> Imports are now more accurate, no more *</li>
+<li> Comments and some headers modified to reflect JavaDoc standard</li>
+</ul>
+<h3 class="heading3"><a name="ChangeLog-OSCache1.6.1"> OSCache 1.6.1</a></h3><p class="paragraph">(16th September, 2001 - by Todd Gochenour, tgochenour@peregrine.com)</p><ul class="star">
+<li> Removed attribute &quot;encoding&quot; in all areas, since Object serialization stores strings in UTF-8 format, encoding is no longer necessary.</li>
+<li> Added Synchronization to getCacheEntry() to insure multiple threads do not access HashMap and get erroneous results.</li>
+<li> Implemented property cache.useHostDomainInKey (true/false) to prepend URL request server name to cache key when cache used by multiple servers. The &quot;cache.domainname&quot; property found in oscache.properties (not used in code) was removed.</li>
+<li> Corrected file caching logic so that multiple processes can share cache information (file locking). Missing still is the ability to signal processes that a cache needs to be flushed when using Memory Caching along with File Caching.</li>
+<li> Unit testing revealed some minor configuration bugs which were corrected.</li>
+</ul>
+<h3 class="heading3"><a name="ChangeLog-OSCache1.6"> OSCache 1.6</a></h3><p class="paragraph">(5th September, 2001 - by Mike Cannon-Brookes, mike@atlassian.com)</p><ul class="star">
+<li> Changed the CacheEntry so that it caches Object rather than String (allowing image caching) (Serge Knystautas, sergek@lokitech.com)</li>
+<li> Cached objects are now serialized to disk so cannot be read by humans anymore (this allows us to cache Object) (Serge Knystautas, sergek@lokitech.com)</li>
+<li> Added a Servlet 2.3 CacheFilter (and associated response classes) that caches whole requests (Serge Knystautas, sergek@lokitech.com)</li>
+<li> Minor changes to CacheAdministrator (the way Cache and CacheEntry&#039;s are retrieved) - merging Serge and Todd&#039;s changes</li>
+</ul>
+<h3 class="heading3"><a name="ChangeLog-OSCache1.5"> OSCache 1.5</a></h3><p class="paragraph">(6th August, 2001 - by Todd Gochenour, tgochenour@peregrine.com)</p><ul class="star">
+<li> Added boolean &quot;cache.memory&quot; attribute to oscache.properties to eliminate memory consumption and rely strictly on disk storage.</li>
+<li> Added three interfaces &quot;CacheLog&quot;, &quot;CacheProperties&quot;, and &quot;CacheContents&quot; to allow plugable implementations for these functions. The CacheContents interface allows the pages to be cached using a database.</li>
+<li> Added &quot;Language&quot; attribute to CacheTag and FlushTag to distinguish a page that supports I18N generation. The ISO-639 language code is used when the scope of the page is &quot;Application&quot;. The code defines a subdirectory under the &quot;application&quot; directory of file caching.</li>
+<li> Modified the CacheAdministrator.generateKey() function to append the request&#039;s QueryString to the URI when automatically generating keys. The QueryString is encoded using the MD5 digest base64 algorithms.</li>
+<li> Added attribute &quot;encoding&quot; to a CacheTag so that the file IO does proper conversion when reading and writing the cache files. (per suggestion of Pedro Gomez)</li>
+<li> Added retries when SecurityException is thrown. Java has no built in exclusive file locking implementations. The file is written to a lock file and then renamed as an atomic operation so that multiple processes on the same box can reliable access cache data.</li>
+<li> Added &quot;pattern&quot; attribute to FlushTag which invokes a CacheHashMap.flushPattern() function to scan for and flush all keys that contain the value of the pattern. (per suggestion of Todd Rudrick)</li>
+<li> Added support for a CacheTag time value of zero which turns off caching for that tag. (per suggestion of Pedro Gomez)</li>
+</ul>
+<h3 class="heading3"><a name="ChangeLog-OSCache1.3"> OSCache 1.3</a></h3><p class="paragraph">(9th June, 2001 - by Mike Cannon-Brookes, mike@atlassian.com)</p><ul class="star">
+<li> Fixed a single bug in the file caching - should now work</li>
+<li> Added property to set the cache key (not sure if this is useful)</li>
+<li> Cleaned up a lot of the code, refactored slightly so that the tags are more light weight and rely more on the Administrator and CacheHashMap for functionality.</li>
+</ul>
+<h3 class="heading3"><a name="ChangeLog-OSCache1.2.5"> OSCache 1.2.5</a></h3><p class="paragraph">(18th May, 2001 - by Mike Cannon-Brookes, mike@atlassian.com)</p><ul class="star">
+<li> Added ability to turn off file caching (just remove or comment out cache.properties)</li>
+<li> Removed a pesky (but ineffectual) bug where session caches being removed from disk were throwing NullPointerExceptions</li>
+</ul>
+<h3 class="heading3"><a name="ChangeLog-OSCache1.2.1"> OSCache 1.2.1</a></h3><p class="paragraph">(10th May, 2001 - by Mike Cannon-Brookes, mike@atlassian.com)</p><ul class="star">
+<li> Speed improvements in CacheEntry and CacheAdministrator (by Kesav Kumar - kesavk@voquette.com)</li>
+<li> Fixed DOCTYPE in taglib.tld (also Kesav!)</li>
+<li> Removed backup / swap / temp files from zip (and changed build file)</li>
+</ul>
+<h3 class="heading3"><a name="ChangeLog-OSCache1.2"> OSCache 1.2</a></h3><p class="paragraph">(28th March, 2001 - by Mike Cannon-Brookes, mike@atlassian.com)</p><ul class="star">
+<li> Fixed a large bug that resulted in CacheEntry&#039;s not refreshing. Large enough in a Caching library to demand a new point release <img class="rendericon" src="./icons/emoticons/wink.gif" height="20" width="20" align="absmiddle" alt="" border="0"/></li>
+</ul>
+<h3 class="heading3"><a name="ChangeLog-OSCache1.1"> OSCache 1.1</a></h3><p class="paragraph">(25th March, 2001 - by Mike Cannon-Brookes, mike@atlassian.com)</p><ul class="star">
+<li> Moved up to 1.1 because a lot of documentation improving and some small bug fixing has been done</li>
+<li> Javadocs should now be very readable for all classes and methods</li>
+<li> Fixed a NullPointer that was being thrown in CacheEntry.needsRefresh()</li>
+<li> Cleaned up the build file so it now produces releasable zip files easily</li>
+<li> Added servlet.jar so that the compiling now works OOB (Out Of the Box)</li>
+</ul>
+<h3 class="heading3"><a name="ChangeLog-OSCache1.0%28betarelease2%29"> OSCache 1.0 (beta release 2)</a></h3><p class="paragraph">(20th March, 2001 - by Mike Cannon-Brookes, mike@atlassian.com)</p><ul class="star">
+<li> Fixed more bugs.</li>
+<li> Moved things around so that the CacheAdministrator has more functionality and is now a Singleton (per web app context). This means no more depedency on ServletContextListener to start the CacheAdministrator.</li>
+<li> Therefore we are now Servlet 2.2 / JSP 1.1 compliant! w00!</li>
+</ul>
+<h3 class="heading3"><a name="ChangeLog-OSCache1.0%28betarelease1%29"> OSCache 1.0 (beta release 1)</a></h3><p class="paragraph">(20th February, 2001 - by Mike Cannon-Brookes, mike@atlassian.com)</p><ul class="star">
+<li> Fixed a few bugs.</li>
+<li> Greatest of which there is no longer a disk leakage from session caches on disk.</li>
+<li> Also session caching bugs fixed, usecached bugs fixed - lots of work done here.</li>
+<li> Implemented to flush individual keys.</li>
+</ul>
+<h3 class="heading3"><a name="ChangeLog-OSCache1.0%28betarelease0%29"> OSCache 1.0 (beta release 0)</a></h3><p class="paragraph">(26th November, 2000 - by Mike Cannon-Brookes, mike@atlassian.com)</p><ul class="star">
+<li> Initial release of OSCache</li>
+<li> Conceptualised a few things I&#039;ve been working on over the past month.</li>
+<li> Added persistent on disk caching and error tolerance (through &lt;usecached /&gt; tag)</li>
+</ul>
+
+				    
+                    			    </td>
+		    </tr>
+	    </table>
+	    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+			<tr>
+				<td height="12" background="border/border_bottom.gif"><img src="border/spacer.gif" width="1" height="1" border="0"/></td>
+			</tr>
+		    <tr>
+			    <td align="center"><font color="grey">Document generated by Confluence on Jan 18, 2005 00:39</font></td>
+		    </tr>
+	    </table>
+    </body>
+</html>
