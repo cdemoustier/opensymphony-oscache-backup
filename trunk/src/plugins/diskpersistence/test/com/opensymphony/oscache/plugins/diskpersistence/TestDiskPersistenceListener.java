@@ -31,7 +31,7 @@ public final class TestDiskPersistenceListener extends TestCase {
     /**
      * Cache dir to persist to
      */
-    private static final String CACHEDIR = "build/test/diskcache";
+    public static final String CACHEDIR = "build.test/diskcache";
 
     /**
      * The persistance listener used for the tests

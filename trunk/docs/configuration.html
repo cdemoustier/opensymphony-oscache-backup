@@ -65,6 +65,12 @@ doesn't already exist, but remember that OSCache must have permission to write t
 <p><code>cache.path=/opt/myapp/cache</code></p>
 </blockquote>
 
+<h3>cache.persistence.overflow.only</h3>
+<p>Indicates whether the persistence should only happen once the memory cache capacity has been reached. 
+The default value is <code>false</code> for backwards compatibility but the recommended value is 
+<CODE>true</CODE> when the memory cache is enabled.  This drastically changes the behavior of the cache in that 
+the persisted cache will now be different then what is in memory.</p>
+
 <h3>cache.event.listeners</h3>
 <p>This takes a comma-delimited list of fully-qualified class names. Each class in the list <em>must</em>
 implement one (or more) of the following interfaces:

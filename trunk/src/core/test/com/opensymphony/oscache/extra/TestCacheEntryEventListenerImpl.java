@@ -53,7 +53,7 @@ public class TestCacheEntryEventListenerImpl extends TestCase {
         // Construct the objects required for the tests
         CacheEntry entry = new CacheEntry(KEY);
         GeneralCacheAdministrator admin = new GeneralCacheAdministrator();
-        Cache cache = new Cache(admin.isMemoryCaching(), admin.isUnlimitedDiskCache());
+        Cache cache = new Cache(admin.isMemoryCaching(), admin.isUnlimitedDiskCache(), admin.isOverflowPersistence());
         CacheEntryEvent event = new CacheEntryEvent(cache, entry, null);
         CacheEntryEventListenerImpl listener = new CacheEntryEventListenerImpl();
 

@@ -292,7 +292,7 @@ public class GeneralCacheAdministrator extends AbstractCacheAdministrator {
     private void createCache() {
         log.info("Creating new cache");
 
-        applicationCache = new Cache(isMemoryCaching(), isUnlimitedDiskCache(), isBlocking(), algorithmClass, cacheCapacity);
+        applicationCache = new Cache(isMemoryCaching(), isUnlimitedDiskCache(), isOverflowPersistence(), isBlocking(), algorithmClass, cacheCapacity);
 
         configureStandardListeners(applicationCache);
     }

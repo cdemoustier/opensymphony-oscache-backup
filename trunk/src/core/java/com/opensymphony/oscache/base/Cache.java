@@ -80,9 +80,10 @@ public class Cache implements Serializable {
      *
      * @param useMemoryCaching Specify if the memory caching is going to be used
      * @param unlimitedDiskCache Specify if the disk caching is unlimited
+     * @param overflowPersistence Specify if the persistent cache is used in overflow only mode
      */
-    public Cache(boolean useMemoryCaching, boolean unlimitedDiskCache) {
-        this(useMemoryCaching, unlimitedDiskCache, false, null, 0);
+    public Cache(boolean useMemoryCaching, boolean unlimitedDiskCache, boolean overflowPersistence) {
+        this(useMemoryCaching, unlimitedDiskCache, overflowPersistence, false, null, 0);
     }
 
     /**
@@ -96,6 +97,7 @@ public class Cache implements Serializable {
      * @see com.opensymphony.oscache.base.algorithm.UnlimitedCache
      * @param useMemoryCaching Specify if the memory caching is going to be used
      * @param unlimitedDiskCache Specify if the disk caching is unlimited
+     * @param overflowPersistence Specify if the persistent cache is used in overflow only mode
      * @param blocking This parameter takes effect when a cache entry has
      * just expired and several simultaneous requests try to retrieve it. While
      * one request is rebuilding the content, the other requests will either
@@ -107,7 +109,7 @@ public class Cache implements Serializable {
      * @param algorithmClass The class implementing the desired algorithm
      * @param capacity The capacity
      */
-    public Cache(boolean useMemoryCaching, boolean unlimitedDiskCache, boolean blocking, String algorithmClass, int capacity) {
+    public Cache(boolean useMemoryCaching, boolean unlimitedDiskCache, boolean overflowPersistence, boolean blocking, String algorithmClass, int capacity) {
         // Instantiate the algo class if valid
         if (((algorithmClass != null) && (algorithmClass.length() > 0)) && (capacity > 0)) {
             try {
@@ -128,6 +130,7 @@ public class Cache implements Serializable {
         }
 
         cacheMap.setUnlimitedDiskCache(unlimitedDiskCache);
+        cacheMap.setOverflowPersistence(overflowPersistence);
         cacheMap.setMemoryCaching(useMemoryCaching);
 
         this.blocking = blocking;

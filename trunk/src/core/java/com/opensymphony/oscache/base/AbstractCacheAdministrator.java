@@ -82,12 +82,17 @@ public abstract class AbstractCacheAdministrator implements java.io.Serializable
     public static final String PERSISTENCE_CLASS_KEY = "cache.persistence.class";
 
     /**
+     * A String cache configuration property that specifies if the cache persistence
+     * will only be used in overflow mode, that is, when the memory cache capacity has been reached.
+     */
+    private static final String CACHE_PERSISTENCE_OVERFLOW_KEY = "cache.persistence.overflow.only";
+
+    /**
      * A String cache configuration property that holds a comma-delimited list of
      * classnames. These classes specify the event handlers that are to be applied
      * to the cache.
      */
     public static final String CACHE_ENTRY_EVENT_LISTENERS_KEY = "cache.event.listeners";
-
     protected Config config = null;
 
     /**
@@ -120,6 +125,13 @@ public abstract class AbstractCacheAdministrator implements java.io.Serializable
      * {@link com.opensymphony.oscache.base.AbstractCacheAdministrator#CACHE_MEMORY_KEY} property.
      */
     private boolean memoryCaching = true;
+
+    /**
+     * Whether the persistent cache should be used immediately or only when the memory capacity
+         * has been reached, ie. overflow only.
+     * This can be set via the {@link #CACHE_PERSISTENCE_OVERFLOW_KEY} configuration property.
+     */
+    private boolean overflowPersistence;
 
     /**
      * Whether the disk cache should be unlimited in size, or matched 1-1 to the memory cache.
@@ -209,6 +221,24 @@ public abstract class AbstractCacheAdministrator implements java.io.Serializable
      */
     public boolean isUnlimitedDiskCache() {
         return unlimitedDiskCache;
+    }
+
+    /**
+     * Check if we use overflowPersistence
+     *
+     * @return Returns the overflowPersistence.
+     */
+    public boolean isOverflowPersistence() {
+        return this.overflowPersistence;
+    }
+
+    /**
+     * Sets the overflowPersistence flag
+     *
+     * @param overflowPersistence The overflowPersistence to set.
+     */
+    public void setOverflowPersistence(boolean overflowPersistence) {
+        this.overflowPersistence = overflowPersistence;
     }
 
     /**
@@ -365,6 +395,7 @@ public abstract class AbstractCacheAdministrator implements java.io.Serializable
         }
 
         unlimitedDiskCache = Boolean.valueOf(config.getProperty(CACHE_DISK_UNLIMITED_KEY)).booleanValue();
+        overflowPersistence = Boolean.valueOf(config.getProperty(CACHE_PERSISTENCE_OVERFLOW_KEY)).booleanValue();
 
         String cacheSize = getProperty(CACHE_CAPACITY_KEY);
 

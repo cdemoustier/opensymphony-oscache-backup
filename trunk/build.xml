@@ -249,7 +249,13 @@
         <echo message="Running tests with disk and memory caches" level="info"/>
         <antcall target="test-base"/>
         <antcall target="test-web"/>
-
+	
+       	<!-- ReRun tests using Memory and Disk Overflow Cache -->	
+		<copy file="${src.plugins}/diskpersistence/test/oscacheMemoryAndOverflowToDisk.properties" tofile="${build.test.dir}/oscache.properties" overwrite="yes"/>
+	    <echo message="Running tests with memory and disk overflow caches" level="info"/>
+	    <antcall target="test-base"/>
+	    <antcall target="test-web"/>
+        	
         <!-- Run clustering tests -->
         <echo message="Running tests with memory caches and clustering" level="info"/>
         <antcall target="test-cluster"/>
