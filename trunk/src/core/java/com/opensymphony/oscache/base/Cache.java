@@ -161,7 +161,9 @@ public class Cache implements Serializable {
      * Retrieve an object from the cache specifying its key.
      *
      * @param key             Key of the object in the cache.
-     * @param refreshPeriod   How long before the object needs refresh
+     * @param refreshPeriod   How long before the object needs refresh. To
+     * allow the object to stay in the cache indefinitely, supply a value
+     * of {@link CacheEntry#INDEFINITE_EXPIRY}.
      *
      * @return The object from cache
      *
@@ -181,7 +183,9 @@ public class Cache implements Serializable {
      * Retrieve an object from the cache specifying its key.
      *
      * @param key             Key of the object in the cache.
-     * @param refreshPeriod   How long before the object needs refresh
+     * @param refreshPeriod   How long before the object needs refresh. To
+     * allow the object to stay in the cache indefinitely, supply a value
+     * of {@link CacheEntry#INDEFINITE_EXPIRY}.
      * @param cronExpiry      A cron expression that specifies fixed date(s)
      *                        and/or time(s) that this cache entry should
      *                        expire on.
