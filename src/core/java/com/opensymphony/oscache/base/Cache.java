@@ -560,7 +560,7 @@ public class Cache implements Serializable {
         CacheEntry cacheEntry = this.getCacheEntry(key, policy, origin);
         boolean isNewEntry = cacheEntry.isNew();
 
-        // [CACHE-118] If we have a new entry, create a new CacheEntry so we can still access the old one later
+        // [CACHE-118] If we have an existing entry, create a new CacheEntry so we can still access the old one later
         if (!isNewEntry) {
             cacheEntry = new CacheEntry(key, policy);
         }

@@ -1604,6 +1604,11 @@ public abstract class AbstractConcurrentReadCache extends AbstractMap implements
 
                     Object oldValue = e.value;
 
+                    // [CACHE-118] - get the old cache entry even if there's no memory cache
+                    if (persist && (oldValue == NULL)) {
+                        oldValue = persistRetrieve(key);
+                    }
+
                     if ((first == tab[index]) && (oldValue != null)) {
                         /** OpenSymphony BEGIN */
 
