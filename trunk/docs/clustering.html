@@ -1,0 +1,85 @@
+<html>
+<head>
+<title>Clustering OSCache</title>
+</head>
+
+<body bgcolor="#FFFFFF">
+
+<p>New in OSCache 2.0 is support for clustering of caches. OSCache currently ships with
+implementations that allow you to use either <a href="http://www.javagroups.com">JavaGroups</a>
+or <a href="http://java.sun.com/products/jms">JMS</a> as the underlying broadcast protocol.
+</p>
+
+<p>Caches across a cluster only broadcast messages when flush events occur. This means that the
+content of the caches are built up independently on each server, but whenever content becomes
+stale on one server it is made stale on them all. This provides a very high performing solution
+since we never have to pass cached objects around the cluster. And since there is no central
+server that is in charge of the cluster, the clustering is very robust.</p>
+
+
+<p>Configuring OSCache to cluster is very simple. Follow either the JMS or the JavaGroups instructions
+below depending on which protocol you want to use.</p>
+
+
+<h3>JMS Configuration</h3>
+
+<p>Configure your JMS server. OSCache requires that a JMS <code>ConnectionFactory</code> and a <code>Topic</code>
+are available via JNDI. See your JMS server's documentation for details.</p>
+
+<p>Add the JMS broadcasting listener to your <code>oscache.properties</code> file like this:</p>
+
+<p><code>cache.event.listeners=com.opensymphony.oscache.plugins.clustersupport.JMSBroadcastingListener</code></p>
+
+<p>(Note that this listener requires JMS 1.1 or higher, however legacy support for 1.0.x is also provided.
+If your JMS server only supports JMS 1.0.x then use <code>JMS10BroadcastingListener</code> instead of
+<code>JMSBroadcastingListener</code>. The rest of this documentation applies equally to both the 1.1 and 1.0
+listeners.)</p>
+
+<p>The JMS listener supports the following configuration parameters:
+<ul>
+<li><b>cache.cluster.jms.topic.factory</b> - The JNDI name that binds the JMS topic connection factory. This
+should match the name that is specified in your JMS server's configuration. Typically it will be something like
+<code>"java:comp/env/jms/TopicConnectionFactory"</code></li>
+<li><b>cache.cluster.jms.topic.name</b> - The JNDI name of the topic that will be used for the OSCache
+sending the messages. This should match the name of a topic that is configured on your JMS server. Typically
+this value will be something like <code>"java:comp/env/jms/OSCacheTopic"</code>.</li>
+<li><b>cache.cluster.jms.node.name</b> - A name that uniquely identifies this node in the cluster. This is used
+to prevent nodes from processing their own broadcast messages. Each node in the cluster must have a different
+value, for example <code>"node1"</code>, <code>"node2"</code>, ... .</li>
+</ul></p>
+
+<p>If you are running OSCache from a standalone application or are not running in an environment where
+<code>new InitialContext()</code> will find your JNDI <code>InitialContextFactory</code> or provider URL,
+you will have to specify them either in a <code>jndi.properties</code> file or as system properties. See the
+<code><a href="http://java.sun.com/j2se/1.4.2/docs/api/javax/naming/InitialContext.html">InitalContext</a></code>
+documentation for details.</p>
+
+
+<h3>JavaGroups Configuration</h3>
+
+<p>Just make sure you have javagroups-all.jar file in your classpath (for a webapp put it in WEB-INF/lib),
+and add the JavaGrops broadcasting listener to your <code>oscache.properties</code> file like this:</p>
+
+<p><code>cache.event.listeners=com.opensymphony.oscache.plugins.clustersupport.JavaGroupsBroadcastingListener</code></p>
+
+<p>In most cases, that's it! OSCache will now broadcast any cache flush events across the LAN. The javagroups-all.jar
+library is not included with the binary distribution due to its size, however you can obtain it either by downloading
+the full oscache distribution, or by visiting the <a href="http://www.javagroups.com">JavaGroups</a> website.</p>
+
+<p>If you want to run more than one OSCache cluster on the same LAN, you will need to use different
+multicast IP addresses. This allows the caches to exist in separate multicast groups and therefore
+not interfere with each other. The IP to use can be specified in your <code>oscache.properties</code>
+file by the <code>cache.cluster.multicast.ip</code> property. The default value is <code>231.12.21.132</code>,
+however you can use any class D IP address. Class D address fall in the range <code>224.0.0.0</code>
+through <code>239.255.255.255</code>.</p>
+
+<p>If you need more control over the multicast configuration (eg setting network timeout or time-to-live
+values), you can use the <code>cache.cluster.properties</code> configuration property. Use this
+<em>instead of</em> the <code>cache.cluster.multicast.ip</code> property. The default value is:</p>
+
+<p><code>UDP(mcast_addr=231.12.21.132;mcast_port=45566;ip_ttl=32;mcast_send_buf_size=150000;mcast_recv_buf_size=80000):PING(timeout=2000;num_initial_members=3):MERGE2(min_interval=5000;max_interval=10000):FD_SOCK:VERIFY_SUSPECT(timeout=1500):pbcast.NAKACK(gc_lag=50;retransmit_timeout=300,600,1200,2400,4800):pbcast.STABLE(desired_avg_gossip=20000):UNICAST(timeout=5000):FRAG(frag_size=8096;down_thread=false;up_thread=false):pbcast.GMS(join_timeout=5000;join_retry_timeout=2000;shun=false;print_local_addr=true)</code></p>
+
+See the <a href="http://www.javagroups.com">JavaGroups</a> site for more information. In particular,
+look at the documentation of Channels in the <a href="http://www.javagroups.com/javagroupsnew/docs/newuser/index.html">User's Guide</a>.
+</body>
+</html>
