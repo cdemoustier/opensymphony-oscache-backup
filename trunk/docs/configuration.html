@@ -34,6 +34,11 @@ of the value of this property. If you specify a size but not an algorithm, the c
 </ul>
 </p>
 
+<h3>cache.blocking</h3>
+<p>Specifies whether we should block waiting for new content to be generated, or just serve the old content
+instead. The default behaviour is to serve the old content (<code>cache.blocking=false</code>) since that
+provides the best performance (at the cost of serving slightly stale data).</p>
+
 <h3>cache.unlimited.disk</h3>
 <p>Indicates whether the disk cache should be treated as unlimited or not. The default value is
 <code>false</code>.</p>
@@ -100,7 +105,15 @@ supports the following additional properties:</p>
 
 <p><b>cache.cluster.properties</b></p>
 <p>Specifies additional configuration options for the clustering. The default setting is</p>
-<p><code>UDP(mcast_addr=231.12.21.132;mcast_port=45566;ip_ttl=32;mcast_send_buf_size=150000;mcast_recv_buf_size=80000):PING(timeout=2000;num_initial_members=3):MERGE2(min_interval=5000;max_interval=10000):FD_SOCK:VERIFY_SUSPECT(timeout=1500):pbcast.NAKACK(gc_lag=50;retransmit_timeout=300,600,1200,2400,4800):pbcast.STABLE(desired_avg_gossip=20000):UNICAST(timeout=5000):FRAG(frag_size=8096;down_thread=false;up_thread=false):pbcast.GMS(join_timeout=5000;join_retry_timeout=2000;shun=false;print_local_addr=true)</code></p>
+<p><pre>UDP(mcast_addr=231.12.21.132;mcast_port=45566;ip_ttl=32;mcast_send_buf_size=150000;mcast_recv_buf_size=80000)
+:PING(timeout=2000;num_initial_members=3)
+:MERGE2(min_interval=5000;max_interval=10000)
+:FD_SOCK:VERIFY_SUSPECT(timeout=1500)
+:pbcast.NAKACK(gc_lag=50;retransmit_timeout=300,600,1200,2400,4800)
+:pbcast.STABLE(desired_avg_gossip=20000)
+:UNICAST(timeout=5000)
+:FRAG(frag_size=8096;down_thread=false;up_thread=false)
+:pbcast.GMS(join_timeout=5000;join_retry_timeout=2000;shun=false;print_local_addr=true)</pre></p>
 
 <p>See the <a href="clustering.html">Clustering OSCache</a> documentation for further details on the above
 two properties.</p>
