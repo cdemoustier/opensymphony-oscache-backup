@@ -323,6 +323,11 @@ public abstract class AbstractCacheAdministrator implements java.io.Serializable
      * be caught and logged.
      */
     protected void finalizeListeners(Cache cache) {
+        // It's possible for cache to be null if getCache() was never called (CACHE-63)
+        if (cache == null) {
+            return;
+        }
+
         Object[] listeners = cache.listenerList.getListenerList();
 
         for (int i = listeners.length - 2; i >= 0; i -= 2) {
