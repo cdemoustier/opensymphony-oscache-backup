@@ -181,7 +181,7 @@ public abstract class AbstractConcurrentReadCache extends AbstractMap implements
 
     //OpenSymphony BEGIN (pretty long!)
     protected static final String NULL = "_nul!~";
-    protected static transient Log log = LogFactory.getLog(AbstractConcurrentReadCache.class);
+    protected static Log log = LogFactory.getLog(AbstractConcurrentReadCache.class);
 
     /*
       The basic strategy is an optimistic-style scheme based on
@@ -1150,8 +1150,6 @@ public abstract class AbstractConcurrentReadCache extends AbstractMap implements
     private synchronized void readObject(java.io.ObjectInputStream s) throws IOException, ClassNotFoundException {
         // Read in the threshold, loadfactor, and any hidden stuff
         s.defaultReadObject();
-
-        log = LogFactory.getLog(AbstractConcurrentReadCache.class);
 
         // Read in number of buckets and allocate the bucket array;
         int numBuckets = s.readInt();
