@@ -57,12 +57,12 @@ documentation for details.</p>
 
 <h3>JavaGroups Configuration</h3>
 
-<p>Just make sure you have javagroups-all.jar file in your classpath (for a webapp put it in WEB-INF/lib),
+<p>Just make sure you have jgroups-all.jar file in your classpath (for a webapp put it in WEB-INF/lib),
 and add the JavaGrops broadcasting listener to your <code>oscache.properties</code> file like this:</p>
 
 <p><code>cache.event.listeners=com.opensymphony.oscache.plugins.clustersupport.JavaGroupsBroadcastingListener</code></p>
 
-<p>In most cases, that's it! OSCache will now broadcast any cache flush events across the LAN. The javagroups-all.jar
+<p>In most cases, that's it! OSCache will now broadcast any cache flush events across the LAN. The jgroups-all.jar
 library is not included with the binary distribution due to its size, however you can obtain it either by downloading
 the full oscache distribution, or by visiting the <a href="http://www.javagroups.com">JavaGroups</a> website.</p>
 
