@@ -51,7 +51,7 @@ public final class TestCacheEntryEvent extends TestCase {
     public void testCacheEntryEvent() {
         // Create all the required objects
         GeneralCacheAdministrator admin = new GeneralCacheAdministrator();
-        Cache map = new Cache(admin.isMemoryCaching(), admin.isUnlimitedDiskCache());
+        Cache map = new Cache(admin.isMemoryCaching(), admin.isUnlimitedDiskCache(), admin.isOverflowPersistence());
         CacheEntry entry = new CacheEntry(KEY);
         CacheEntryEvent event = new CacheEntryEvent(map, entry, null);
 

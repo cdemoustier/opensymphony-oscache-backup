@@ -18,11 +18,12 @@ import com.opensymphony.oscache.base.events.ScopeEventType;
  * @author <a href="mailto:abergevin@pyxis-tech.com">Alain Bergevin</a>
  */
 public class ScopeEventListenerImpl implements ScopeEventListener {
-
     /**
      * Scope names
      */
-    public static final String[] SCOPE_NAMES = {null, "page", "request", "session", "application"};
+    public static final String[] SCOPE_NAMES = {
+        null, "page", "request", "session", "application"
+    };
 
     /**
      * Number of known scopes

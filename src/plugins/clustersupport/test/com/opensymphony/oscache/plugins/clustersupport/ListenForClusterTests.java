@@ -45,7 +45,7 @@ public final class ListenForClusterTests {
     private void initListeners() {
         BaseTestBroadcastingListener testcase = null;
         AbstractBroadcastingListener listener;
-        Cache cache = new Cache(true, false);
+        Cache cache = new Cache(true, false, false);
 
         // Add the JavaGroups listener
         try {

@@ -36,6 +36,11 @@
     expired the cache file will be used. This also gives fault tolerance if the
     server crashes.<br>
   </li>
+  <li>Persistence can also be switched to overflow mode using the property 
+  oscache.persistence.overflow.only.  This changes the default behavior   
+  (of persisting every cache entry when there is a listener) to only persist when the 
+  memory cache capacity has been reached.<br>
+  </li>
 </ul>
 
 <p><b>Excellent Performance</b></p>

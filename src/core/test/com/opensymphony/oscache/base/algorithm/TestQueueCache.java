@@ -4,7 +4,13 @@
  */
 package com.opensymphony.oscache.base.algorithm;
 
+import com.opensymphony.oscache.base.Config;
+import com.opensymphony.oscache.base.persistence.PersistenceListener;
+import com.opensymphony.oscache.plugins.diskpersistence.DiskPersistenceListener;
+import com.opensymphony.oscache.plugins.diskpersistence.TestDiskPersistenceListener;
+
 import java.util.Iterator;
+import java.util.Properties;
 
 /**
  * Test class for the QueueCache class, which is the base class for FIFO
@@ -131,6 +137,56 @@ public abstract class TestQueueCache extends TestAbstractCache {
             getCache().put(null, null);
             fail("Put called with null parameters!");
         } catch (Exception e) { /* This is what we expect */
+        }
+
+        getCache().clear();
+    }
+
+    /**
+     * Test the put method with overflow parameter set
+     */
+    public void testPutOverflow() {
+        // Create a listener
+        PersistenceListener listener = new DiskPersistenceListener();
+
+        Properties p = new Properties();
+        p.setProperty("cache.path", TestDiskPersistenceListener.CACHEDIR);
+        p.setProperty("cache.memory", "true");
+        p.setProperty("cache.persistence.overflow.only", "true");
+        p.setProperty("cache.persistence.class", "com.opensymphony.oscache.plugins.diskpersistence.DiskPersistenceListener");
+        listener.configure(new Config(p));
+        getCache().setPersistenceListener(listener);
+        getCache().clear();
+        getCache().setMaxEntries(MAX_ENTRIES);
+        getCache().setOverflowPersistence(true);
+
+        if (getCache() instanceof UnlimitedCache) {
+            return; // nothing to test since memory will never overflow.
+        }
+
+        // Put elements in cache
+        for (int count = 0; count <= MAX_ENTRIES; count++) {
+            getCache().put(KEY + count, CONTENT + count);
+        }
+
+        try {
+            int numPersisted = 0;
+
+            // Check that number of elements persisted == 1 if it is an overflow cache or all
+            // if it is not overflow and writes every time.
+            for (int count = 0; count <= MAX_ENTRIES; count++) {
+                if (getCache().getPersistenceListener().isStored(KEY + count)) {
+                    numPersisted++;
+                }
+            }
+
+            if (getCache().isOverflowPersistence()) {
+                assertTrue("Only 1 element should have been persisted ", numPersisted == 1);
+            } else {
+                assertTrue("All elements should have been persisted ", numPersisted == (MAX_ENTRIES + 1));
+            }
+        } catch (Exception e) {
+            fail();
         }
 
         getCache().clear();

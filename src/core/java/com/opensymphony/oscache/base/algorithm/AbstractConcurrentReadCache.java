@@ -288,6 +288,11 @@ public abstract class AbstractConcurrentReadCache extends AbstractMap implements
     protected int threshold;
 
     /**
+     * Use overflow persistence caching.
+     */
+    private boolean overflowPersistence = false;
+
+    /**
      * Constructs a new, empty map with the specified initial capacity and the specified load factor.
      *
      * @param initialCapacity the initial capacity
@@ -444,6 +449,24 @@ public abstract class AbstractConcurrentReadCache extends AbstractMap implements
      */
     public boolean isUnlimitedDiskCache() {
         return unlimitedDiskCache;
+    }
+
+    /**
+     * Check if we use overflowPersistence
+     *
+     * @return Returns the overflowPersistence.
+     */
+    public boolean isOverflowPersistence() {
+        return this.overflowPersistence;
+    }
+
+    /**
+     * Sets the overflowPersistence flag
+     *
+     * @param overflowPersistence The overflowPersistence to set.
+     */
+    public void setOverflowPersistence(boolean overflowPersistence) {
+        this.overflowPersistence = overflowPersistence;
     }
 
     /**
@@ -1271,7 +1294,7 @@ public abstract class AbstractConcurrentReadCache extends AbstractMap implements
                 itemPut(key);
 
                 // Persist if required
-                if (persist) {
+                if (persist && !overflowPersistence) {
                     persistStore(key, value);
                 }
 
@@ -1301,7 +1324,10 @@ public abstract class AbstractConcurrentReadCache extends AbstractMap implements
                     e.value = value;
                 }
 
-                if (persist) {
+                // Persist if required
+                if (persist && overflowPersistence) {
+                    persistRemove(key);
+                } else if (persist) {
                     persistStore(key, value);
                 }
 
@@ -1341,8 +1367,12 @@ public abstract class AbstractConcurrentReadCache extends AbstractMap implements
                 count--;
 
                 /** OpenSymphony BEGIN */
-                if (!unlimitedDiskCache) {
+                if (!unlimitedDiskCache && !overflowPersistence) {
                     persistRemove(e.key);
+                }
+
+                if (overflowPersistence && ((size() + 1) >= maxEntries)) {
+                    persistStore(key, oldValue);
                 }
 
                 if (invokeAlgorithm) {
@@ -1536,7 +1566,7 @@ public abstract class AbstractConcurrentReadCache extends AbstractMap implements
                         itemPut(key);
 
                         // Persist if required
-                        if (persist) {
+                        if (persist && !overflowPersistence) {
                             persistStore(key, value);
                         }
 
@@ -1584,7 +1614,10 @@ public abstract class AbstractConcurrentReadCache extends AbstractMap implements
                             e.value = value;
                         }
 
-                        if (persist) {
+                        // Persist if required
+                        if (persist && overflowPersistence) {
+                            persistRemove(key);
+                        } else if (persist) {
                             persistStore(key, value);
                         }
 
@@ -1678,8 +1711,12 @@ public abstract class AbstractConcurrentReadCache extends AbstractMap implements
                     count--;
 
                     /** OpenSymphony BEGIN */
-                    if (!unlimitedDiskCache) {
+                    if (!unlimitedDiskCache && !overflowPersistence) {
                         persistRemove(e.key);
+                    }
+
+                    if (overflowPersistence && ((size() + 1) >= maxEntries)) {
+                        persistStore(key, oldValue);
                     }
 
                     if (invokeAlgorithm) {
