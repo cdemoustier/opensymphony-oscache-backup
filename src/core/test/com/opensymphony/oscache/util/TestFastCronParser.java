@@ -89,6 +89,8 @@ public class TestFastCronParser extends TestCase {
         cronCall("01/03/2003 12:00", "1 23 * * 0", "23/02/2003 23:01", false); // non-leap year
         cronCall("01/03/2004 12:00", "1 23 * * 0", "29/02/2004 23:01", false); // leap year
         cronCall("01/03/2003 12:00", "* * 29 2 *", "29/02/2000 23:59", false); // Find the previous leap-day
+        cronCall("01/02/2003 12:00", "* * 29 2 *", "29/02/2000 23:59", false); // Find the previous leap-day
+        cronCall("01/02/2004 12:00", "* * 29 2 *", "29/02/2000 23:59", false); // Find the previous leap-day
 
         // Interval and range tests
         cronCall("20/12/2003 10:00", "* */4 * * *", "20/12/2003 08:59", false);
@@ -167,7 +169,7 @@ public class TestFastCronParser extends TestCase {
     */
     public void testPerformance() {
         if (true) {
-            return; // Comment out this line to benchmark
+            //            return; // Comment out this line to benchmark
         }
 
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
