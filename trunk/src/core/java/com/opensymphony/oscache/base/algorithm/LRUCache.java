@@ -34,7 +34,7 @@ import java.util.*;
  * @author <a href="&#109;a&#105;&#108;&#116;&#111;:chris&#64;swebtec.&#99;&#111;&#109;">Chris Miller</a>
  */
 public class LRUCache extends AbstractConcurrentReadCache {
-    private static final transient Log log = LogFactory.getLog(LRUCache.class);
+    private static final Log log = LogFactory.getLog(LRUCache.class);
 
     /**
      * Cache queue containing all cache keys.
