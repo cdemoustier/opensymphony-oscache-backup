@@ -6,8 +6,8 @@ package com.opensymphony.oscache.base.algorithm;
 
 import com.opensymphony.oscache.base.Config;
 import com.opensymphony.oscache.base.persistence.PersistenceListener;
-import com.opensymphony.oscache.plugins.diskpersistence.DiskPersistenceListener;
-import com.opensymphony.oscache.plugins.diskpersistence.TestDiskPersistenceListener;
+import com.opensymphony.oscache.plugins.diskpersistence.BasicDiskPersistenceListener;
+import com.opensymphony.oscache.plugins.diskpersistence.TestBasicDiskPersistenceListener;
 
 import java.util.Iterator;
 import java.util.Properties;
@@ -147,13 +147,13 @@ public abstract class TestQueueCache extends TestAbstractCache {
      */
     public void testPutOverflow() {
         // Create a listener
-        PersistenceListener listener = new DiskPersistenceListener();
+        PersistenceListener listener = new BasicDiskPersistenceListener();
 
         Properties p = new Properties();
-        p.setProperty("cache.path", TestDiskPersistenceListener.CACHEDIR);
+        p.setProperty("cache.path", TestBasicDiskPersistenceListener.CACHEDIR);
         p.setProperty("cache.memory", "true");
         p.setProperty("cache.persistence.overflow.only", "true");
-        p.setProperty("cache.persistence.class", "com.opensymphony.oscache.plugins.diskpersistence.DiskPersistenceListener");
+        p.setProperty("cache.persistence.class", "com.opensymphony.oscache.plugins.diskpersistence.BasicDiskPersistenceListener");
         listener.configure(new Config(p));
         getCache().setPersistenceListener(listener);
         getCache().clear();

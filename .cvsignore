@@ -3,3 +3,5 @@ build.test
 build.properties
 dist
 *.i*
+.classpath
+.project
