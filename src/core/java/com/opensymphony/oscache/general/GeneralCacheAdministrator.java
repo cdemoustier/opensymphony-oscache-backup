@@ -170,12 +170,26 @@ public final class GeneralCacheAdministrator extends AbstractCacheAdministrator 
     // METHODS THAT DELEGATES TO THE CACHE ---------------------
 
     /**
-     *        Flush all the cache at a given date
+     * Flush the entire cache immediately.
+     */
+    public void flushAll() {
+        getCache().flushAll(new Date());
+    }
+
+    /**
+     * Flush the entire cache at the given date.
      *
-     *        @param date         The time to flush
+     * @param date The time to flush
      */
     public void flushAll(Date date) {
         getCache().flushAll(date);
+    }
+
+    /**
+     * Flushes a single cache entry.
+     */
+    public void flushEntry(String key) {
+        getCache().flushEntry(key);
     }
 
     /**
