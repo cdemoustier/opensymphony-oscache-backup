@@ -201,6 +201,7 @@ public class TestConcurrency extends TestCase {
                 admin.cancelUpdate(key);
                 fail("Should not have received a NeedsRefreshException");
             }
+
             // Give the GetEntry thread a chance to finish
             try {
                 Thread.sleep(200);
@@ -244,6 +245,7 @@ public class TestConcurrency extends TestCase {
                 Thread.sleep(200);
             } catch (InterruptedException ie) {
             }
+
             // Putting the entry in the cache should mean that threads now retrieve
             // the updated entry
             admin.putInCache(key, NEW_VALUE);
