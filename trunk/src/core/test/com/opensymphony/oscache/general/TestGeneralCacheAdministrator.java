@@ -39,7 +39,7 @@ public class TestGeneralCacheAdministrator extends TestAbstractCacheAdministrato
     private static final int NB_CACHE_MISSED = 1;
     private static final int NB_ADD = 7;
     private static final int NB_UPDATED = 2;
-    private static final int NB_FLUSH = 4;
+    private static final int NB_FLUSH = 3;
     private static final int NB_REMOVED = 0;
     private static final int NB_GROUP_FLUSH = 2;
     private static final int NB_PATTERN_FLUSH = 1;
@@ -170,6 +170,13 @@ public class TestGeneralCacheAdministrator extends TestAbstractCacheAdministrato
         admin.flushGroup(GROUP1); // Flushes item 2
         assertNotNull(checkObj("1", NO_REFRESH_NEEDED, false));
         assertNotNull(checkObj("2", NO_REFRESH_NEEDED, true));
+
+        // Test if regrouping a cache entry works
+        admin.putInCache("A", "ABC", new String[] {"A"});
+        admin.putInCache("A", "ABC", new String[] {"A", "B"});
+        admin.putInCache("B", "DEF", new String[] {"B"});
+        admin.flushGroup("B");
+        assertNotNull(checkObj("A", NO_REFRESH_NEEDED, true));
     }
 
     /**
