@@ -106,7 +106,8 @@
 
         <war destfile="${dist.dir}/${name}-example.war" basedir="${src.webapp}" webxml="${src.webapp}/WEB-INF/web.xml" excludes="WEB-INF/web.xml">
             <lib dir="${lib.dir}/core"/>
-            <lib file="${dist.dir}/${name}.jar"/>
+            <lib file="${dist.dir}/${name}_${version}${release}.jar"/>
+            <webinf file="${src.dir}/core/etc/oscache.tld"/> 
             <classes dir="${build.dir}/webapp"/>
         </war>
     </target>
