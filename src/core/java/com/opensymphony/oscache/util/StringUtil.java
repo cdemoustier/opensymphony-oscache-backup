@@ -5,6 +5,7 @@
 package com.opensymphony.oscache.util;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Provides common utility methods for handling strings.
@@ -21,10 +22,10 @@ public class StringUtil {
      * @param delimiter The character that delimits the string
      * @return A string array containing the resultant substrings
      */
-    public static String[] split(String str, char delimiter) {
+    public static List split(String str, char delimiter) {
         // return no groups if we have an empty string
         if ((str == null) || "".equals(str)) {
-            return new String[0];
+            return new ArrayList();
         }
 
         ArrayList parts = new ArrayList();
@@ -39,9 +40,6 @@ public class StringUtil {
 
         parts.add(str.substring(previousIndex, str.length()).trim());
 
-        String[] result = new String[parts.size()];
-        parts.toArray(result);
-
-        return result;
+        return parts;
     }
 }
