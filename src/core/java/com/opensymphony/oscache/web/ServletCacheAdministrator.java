@@ -134,10 +134,6 @@ public class ServletCacheAdministrator extends AbstractCacheAdministrator implem
         //this.context = context;
         flushTimes = new HashMap();
         initHostDomainInKey();
-
-        if (log.isInfoEnabled()) {
-            log.info("Constructed ServletCacheAdministrator()");
-        }
     }
 
     /**
@@ -161,7 +157,7 @@ public class ServletCacheAdministrator extends AbstractCacheAdministrator implem
     * @return Returns the CacheAdministrator instance for this context
     */
     public static ServletCacheAdministrator getInstance(ServletContext context, Properties p) {
-        ServletCacheAdministrator admin = null;
+        ServletCacheAdministrator admin;
         admin = (ServletCacheAdministrator) context.getAttribute(CACHE_ADMINISTRATOR_KEY);
 
         // First time we need to create the administrator and store it in the
@@ -185,7 +181,7 @@ public class ServletCacheAdministrator extends AbstractCacheAdministrator implem
     * when the controlling application shuts down.
     */
     public static void destroyInstance(ServletContext context) {
-        ServletCacheAdministrator admin = null;
+        ServletCacheAdministrator admin;
         admin = (ServletCacheAdministrator) context.getAttribute(CACHE_ADMINISTRATOR_KEY);
 
         if (admin != null) {
@@ -235,7 +231,7 @@ public class ServletCacheAdministrator extends AbstractCacheAdministrator implem
     * be created.
     */
     public Cache getAppScopeCache(ServletContext context) {
-        Cache cache = null;
+        Cache cache;
         Object obj = context.getAttribute(getCacheKey());
 
         if ((obj == null) || !(obj instanceof Cache)) {
@@ -260,7 +256,7 @@ public class ServletCacheAdministrator extends AbstractCacheAdministrator implem
     * one will be created.
     */
     public Cache getSessionScopeCache(HttpSession session) {
-        Cache cache = null;
+        Cache cache;
         Object obj = session.getAttribute(getCacheKey());
 
         if ((obj == null) || !(obj instanceof Cache)) {
@@ -686,10 +682,6 @@ public class ServletCacheAdministrator extends AbstractCacheAdministrator implem
     * @return A new cache
     */
     private ServletCache createCache(int scope, String sessionId) {
-        if (log.isInfoEnabled()) {
-            log.info("Created new cache in scope " + scope);
-        }
-
         ServletCache newCache = new ServletCache(this, algorithmClass, cacheCapacity, scope);
 
         // TODO - Fix me please!
