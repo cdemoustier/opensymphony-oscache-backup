@@ -9,6 +9,7 @@ import java.io.*;
 import java.util.Locale;
 
 import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * Holds the servlet response in a byte array so that it can be held
@@ -23,6 +24,7 @@ public class ResponseContent implements Serializable {
     private Locale locale = null;
     private String contentType = null;
     private byte[] content = null;
+    private long lastModified = -1;
 
     /**
      * Set the content type. We capture this so that when we serve this
@@ -30,6 +32,14 @@ public class ResponseContent implements Serializable {
      */
     public void setContentType(String value) {
         contentType = value;
+    }
+
+    public long getLastModified() {
+        return lastModified;
+    }
+
+    public void setLastModified(long value) {
+        lastModified = value;
     }
 
     /**
@@ -77,6 +87,10 @@ public class ResponseContent implements Serializable {
         //Send the content type and data to this response
         if (contentType != null) {
             response.setContentType(contentType);
+        }
+
+        if (response instanceof HttpServletResponse) {
+            ((HttpServletResponse) response).setDateHeader("Last-Modified", lastModified);
         }
 
         response.setContentLength(content.length);
