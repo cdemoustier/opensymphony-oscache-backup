@@ -25,5 +25,12 @@ body {font-family: Arial, Verdana, Geneva, Helvetica, sans-serif}
     This is some cache content that is in 'group1' (refreshes if more than 5 seconds old)<br>
 </cache:cache>
 <hr>
+<cache:cache key='test3' duration='20s'>
+    <b>Cache Time</b>: <%= (new Date()).getTime() %><br>
+    This is some cache content that is in 'group1' and 'group2'. The groups are added using the &lt;cache:addgroup /&gt; tag.<br>
+    <cache:addgroup group='group1'/>
+    <cache:addgroup group='group2'/>
+</cache:cache>
+<hr>
 </body>
 </html>
