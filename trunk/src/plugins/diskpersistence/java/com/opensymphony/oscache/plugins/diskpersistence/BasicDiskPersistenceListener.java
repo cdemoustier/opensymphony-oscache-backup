@@ -31,11 +31,11 @@ import javax.servlet.jsp.PageContext;
  */
 public class BasicDiskPersistenceListener extends AbstractDiskPersistenceListener {
     /**
- * Build cache file name for the specified cache entry key.
- *
- * @param key   Cache Entry Key.
- * @return char[] file name.
- */
+    * Build cache file name for the specified cache entry key.
+    *
+    * @param key   Cache Entry Key.
+    * @return char[] file name.
+    */
     protected char[] getCacheFileName(String key) {
         if ((key == null) || (key.length() == 0)) {
             throw new IllegalArgumentException("Invalid key '" + key + "' specified to getCacheFile.");
