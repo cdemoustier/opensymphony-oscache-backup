@@ -27,8 +27,20 @@ public class FastCronParser {
 
     // Lookup tables that hold the min/max/size of each of the above field types.
     // These tables are precalculated for performance.
-    private static final int[] minValue = {0, 0, 1, 1, 0};
-    private static final int[] maxValue = {59, 23, 31, 12, 6};
+    private static final int[] MIN_VALUE = {0, 0, 1, 1, 0};
+    private static final int[] MAX_VALUE = {59, 23, 31, 12, 6};
+
+    /**
+     * A lookup table holding the number of days in each month (with the obvious exception
+     * that February requires special handling).
+     */
+    private static final int[] DAYS_IN_MONTH = {
+        31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31
+    };
+
+    /**
+     * Holds the raw cron expression that this parser is handling.
+     */
     private String cronExpression = null;
 
     /**
@@ -519,7 +531,7 @@ public class FastCronParser {
                         end = vs.value;
                     } else {
                         if (end == -99) {
-                            end = maxValue[field];
+                            end = MAX_VALUE[field];
                         }
 
                         interval = vs.value;
@@ -660,8 +672,8 @@ public class FastCronParser {
         if (start == end) {
             if (start < 0) {
                 // We're setting the entire range of values
-                start = lookupMin[field] = minValue[field];
-                end = lookupMax[field] = maxValue[field];
+                start = lookupMin[field] = MIN_VALUE[field];
+                end = lookupMax[field] = MAX_VALUE[field];
 
                 if (interval <= 1) {
                     lookup[field] = Long.MAX_VALUE;
@@ -669,10 +681,10 @@ public class FastCronParser {
                 }
             } else {
                 // We're only setting a single value - check that it is in range
-                if (start < minValue[field]) {
-                    throw new ParseException("Value " + start + " in field " + field + " is lower than the minimum allowable value for this field (min=" + minValue[field] + ")", 0);
-                } else if (start > maxValue[field]) {
-                    throw new ParseException("Value " + start + " in field " + field + " is higher than the maximum allowable value for this field (max=" + maxValue[field] + ")", 0);
+                if (start < MIN_VALUE[field]) {
+                    throw new ParseException("Value " + start + " in field " + field + " is lower than the minimum allowable value for this field (min=" + MIN_VALUE[field] + ")", 0);
+                } else if (start > MAX_VALUE[field]) {
+                    throw new ParseException("Value " + start + " in field " + field + " is higher than the maximum allowable value for this field (max=" + MAX_VALUE[field] + ")", 0);
                 }
             }
         } else {
@@ -684,15 +696,15 @@ public class FastCronParser {
             }
 
             if (start < 0) {
-                start = minValue[field];
-            } else if (start < minValue[field]) {
-                throw new ParseException("Value " + start + " in field " + field + " is lower than the minimum allowable value for this field (min=" + minValue[field] + ")", 0);
+                start = MIN_VALUE[field];
+            } else if (start < MIN_VALUE[field]) {
+                throw new ParseException("Value " + start + " in field " + field + " is lower than the minimum allowable value for this field (min=" + MIN_VALUE[field] + ")", 0);
             }
 
             if (end < 0) {
-                end = maxValue[field];
-            } else if (end > maxValue[field]) {
-                throw new ParseException("Value " + end + " in field " + field + " is higher than the maximum allowable value for this field (max=" + maxValue[field] + ")", 0);
+                end = MAX_VALUE[field];
+            } else if (end > MAX_VALUE[field]) {
+                throw new ParseException("Value " + end + " in field " + field + " is higher than the maximum allowable value for this field (max=" + MAX_VALUE[field] + ")", 0);
             }
         }
 
@@ -700,10 +712,10 @@ public class FastCronParser {
             interval = 1;
         }
 
-        int i = start - minValue[field];
+        int i = start - MIN_VALUE[field];
 
         // Populate the lookup table by setting all the bits corresponding to the valid field values
-        for (i = start - minValue[field]; i <= (end - minValue[field]);
+        for (i = start - MIN_VALUE[field]; i <= (end - MIN_VALUE[field]);
                 i += interval) {
             lookup[field] |= (1L << i);
         }
@@ -714,7 +726,7 @@ public class FastCronParser {
             lookupMin[field] = start;
         }
 
-        i += (minValue[field] - interval);
+        i += (MIN_VALUE[field] - interval);
 
         if (lookupMax[field] < i) {
             lookupMax[field] = i;
@@ -748,7 +760,7 @@ public class FastCronParser {
 
     /**
     * Retrieves the number of days in the supplied month, taking into account leap years.
-    * If the month value is outside the range <code>minValue[MONTH] - maxValue[MONTH]</code>
+    * If the month value is outside the range <code>MIN_VALUE[MONTH] - MAX_VALUE[MONTH]</code>
     * then the year will be adjusted accordingly and the correct number of days will still
     * be returned.
     *
@@ -768,33 +780,10 @@ public class FastCronParser {
             year++;
         }
 
-        switch (month) {
-            case 1:
-                return 31;
-            case 2:
-                return isLeapYear(year) ? 29 : 28;
-            case 3:
-                return 31;
-            case 4:
-                return 30;
-            case 5:
-                return 31;
-            case 6:
-                return 30;
-            case 7:
-                return 31;
-            case 8:
-                return 31;
-            case 9:
-                return 30;
-            case 10:
-                return 31;
-            case 11:
-                return 30;
-            case 12:
-                return 31;
-            default:
-                throw new IllegalArgumentException("Illegal month number: " + month);
+        if (month == 2) {
+            return isLeapYear(year) ? 29 : 28;
+        } else {
+            return DAYS_IN_MONTH[month - 1];
         }
     }
 
@@ -1003,8 +992,8 @@ public class FastCronParser {
 
         boolean first = true;
 
-        for (int i = minValue[field]; i <= maxValue[field]; i++) {
-            if ((lookup[field] & (1L << (i - minValue[field]))) != 0) {
+        for (int i = MIN_VALUE[field]; i <= MAX_VALUE[field]; i++) {
+            if ((lookup[field] & (1L << (i - MIN_VALUE[field]))) != 0) {
                 if (!first) {
                     buf.append(",");
                 } else {
