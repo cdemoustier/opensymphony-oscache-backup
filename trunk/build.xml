@@ -12,8 +12,8 @@
     <!-- project properties -->
     <property name="name" value="oscache"/>
     <property name="Name" value="OSCache"/>
-    <property name="version" value="2.0.0b2"/>
-    <property name="zip_version" value="2_0_0b2"/>
+    <property name="version" value="2.0"/>
+    <property name="zip_version" value="2_0"/>
 
     <!-- directory properties -->
     <property name="build.dir" value="build"/>
@@ -245,7 +245,7 @@
   </target>
 
 
-  <!-- Create the distribution zip -->
+  <!-- Create the distribution zip files -->
   <target name="dist" depends="clean, jar, doc">
     <mkdir dir="${tmp.dir}/doc"/>
     <mkdir dir="${tmp.dir}/src"/>
@@ -272,7 +272,12 @@
     <copy file="readme.txt" tofile="${tmp.dir}/readme.txt" failonerror="false"/>
     <copy file="changes.txt" tofile="${tmp.dir}/changes.txt" failonerror="false"/>
 
-    <zip zipfile="${dist.dir}/${name}_${zip_version}.zip" basedir="${tmp.dir}" includes="**"/>
+    <zip zipfile="${dist.dir}/${name}_${zip_version}_full.zip" basedir="${tmp.dir}" includes="**"/>
+
+    <delete dir="${tmp.dir}/src"/>
+    <delete dir="${tmp.dir}/lib/build"/>
+    <delete dir="${tmp.dir}/lib/plugins"/>
+    <zip zipfile="${dist.dir}/${name}_${zip_version}_binary.zip" basedir="${tmp.dir}" includes="**"/>
 
     <delete dir="${tmp.dir}"/>
   </target>
