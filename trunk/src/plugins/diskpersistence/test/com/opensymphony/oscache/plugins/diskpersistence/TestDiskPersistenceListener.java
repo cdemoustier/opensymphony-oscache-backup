@@ -27,7 +27,7 @@ import java.util.Set;
  * @version        $Revision$
  * @author <a href="mailto:abergevin@pyxis-tech.com">Alain Bergevin</a>
  */
-public final class TestBasicDiskPersistenceListener extends TestCase {
+public final class TestDiskPersistenceListener extends TestCase {
     /**
      * Cache dir to persist to
      */
@@ -36,7 +36,7 @@ public final class TestBasicDiskPersistenceListener extends TestCase {
     /**
      * The persistance listener used for the tests
      */
-    private BasicDiskPersistenceListener listener = null;
+    private DiskPersistenceListener listener = null;
 
     /**
      * Object content
@@ -54,7 +54,7 @@ public final class TestBasicDiskPersistenceListener extends TestCase {
     private final String KEY = "Test disk persistance listener key";
     private CacheFileFilter cacheFileFilter = new CacheFileFilter();
 
-    public TestBasicDiskPersistenceListener(String str) {
+    public TestDiskPersistenceListener(String str) {
         super(str);
     }
 
@@ -64,7 +64,7 @@ public final class TestBasicDiskPersistenceListener extends TestCase {
      * @return The test for this class
      */
     public static Test suite() {
-        return new TestSuite(TestBasicDiskPersistenceListener.class);
+        return new TestSuite(TestDiskPersistenceListener.class);
     }
 
     /**
@@ -73,12 +73,12 @@ public final class TestBasicDiskPersistenceListener extends TestCase {
      */
     public void setUp() {
         // At first invocation, create a listener
-        listener = new BasicDiskPersistenceListener();
+        listener = new DiskPersistenceListener();
 
         Properties p = new Properties();
         p.setProperty("cache.path", CACHEDIR);
         p.setProperty("cache.memory", "false");
-        p.setProperty("cache.persistence.class", "com.opensymphony.oscache.plugins.diskpersistence.BasicDiskPersistenceListener");
+        p.setProperty("cache.persistence.class", "com.opensymphony.oscache.plugins.diskpersistence.DiskPersistenceListener");
         listener.configure(new Config(p));
     }
 

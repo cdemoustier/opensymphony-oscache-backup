@@ -65,14 +65,14 @@ public class ServletCacheAdministrator extends AbstractCacheAdministrator implem
 
     /**
     * Key used to store the current scope in the configuration. This is a hack
-    * to let the scope information get passed through to the BasicDiskPersistenceListener,
+    * to let the scope information get passed through to the DiskPersistenceListener,
     * and will be removed in a future release.
     */
     public final static String HASH_KEY_SCOPE = "scope";
 
     /**
     * Key used to store the current session ID in the configuration. This is a hack
-    * to let the scope information get passed through to the BasicDiskPersistenceListener,
+    * to let the scope information get passed through to the DiskPersistenceListener,
     * and will be removed in a future release.
     */
     public final static String HASH_KEY_SESSION_ID = "sessionId";
@@ -80,7 +80,7 @@ public class ServletCacheAdministrator extends AbstractCacheAdministrator implem
     /**
     * Key used to store the servlet container temporary directory in the configuration.
     * This is a hack to let the scope information get passed through to the
-    * BasicDiskPersistenceListener, and will be removed in a future release.
+    * DiskPersistenceListener, and will be removed in a future release.
     */
     public final static String HASH_KEY_CONTEXT_TMPDIR = "context.tempdir";
 
@@ -695,7 +695,7 @@ public class ServletCacheAdministrator extends AbstractCacheAdministrator implem
         // TODO - Fix me please!
         // Hack! This is nasty - if two sessions are created within a short
         // space of time it is possible they will end up with duplicate
-        // session IDs being passed to the BasicDiskPersistenceListener!...
+        // session IDs being passed to the DiskPersistenceListener!...
         config.set(HASH_KEY_SCOPE, "" + scope);
         config.set(HASH_KEY_SESSION_ID, sessionId);
 

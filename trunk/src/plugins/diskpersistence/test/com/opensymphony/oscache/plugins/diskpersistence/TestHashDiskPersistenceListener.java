@@ -82,7 +82,7 @@ public final class TestHashDiskPersistenceListener extends TestCase {
         listener = new HashDiskPersistenceListener();
 
         Properties p = new Properties();
-        p.setProperty("cache.path", TestBasicDiskPersistenceListener.CACHEDIR);
+        p.setProperty("cache.path", TestDiskPersistenceListener.CACHEDIR);
         p.setProperty("cache.memory", "false");
         p.setProperty("cache.persistence.class", "com.opensymphony.oscache.plugins.diskpersistence.HashDiskPersistenceListener");
         p.setProperty("cache.persistence.disk.hash.algorithm", "MD5");
@@ -197,7 +197,7 @@ public final class TestHashDiskPersistenceListener extends TestCase {
 
     protected void tearDown() throws Exception {
         listener.clear();
-        assertTrue("Cache not cleared", new File(TestBasicDiskPersistenceListener.CACHEDIR).list(cacheFileFilter).length == 0);
+        assertTrue("Cache not cleared", new File(TestDiskPersistenceListener.CACHEDIR).list(cacheFileFilter).length == 0);
     }
 
     private static class CacheFileFilter implements FilenameFilter {

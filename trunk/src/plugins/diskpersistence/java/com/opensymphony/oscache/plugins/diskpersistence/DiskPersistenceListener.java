@@ -29,7 +29,7 @@ import javax.servlet.jsp.PageContext;
  * @author <a href="mailto:abergevin@pyxis-tech.com">Alain Bergevin</a>
  * @author <a href="&#109;a&#105;&#108;&#116;&#111;:chris&#64;swebtec.&#99;&#111;&#109;">Chris Miller</a>
  */
-public class BasicDiskPersistenceListener extends AbstractDiskPersistenceListener {
+public class DiskPersistenceListener extends AbstractDiskPersistenceListener {
     /**
     * Build cache file name for the specified cache entry key.
     *
