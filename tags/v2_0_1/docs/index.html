@@ -1,0 +1,70 @@
+<html>
+<head>
+<title>OSCache 2.0 Overview</title>
+</head>
+<body bgcolor="#FFFFFF">
+
+<p><b>OSCache</b> is a widely used, high performance J2EE caching solution.</p>
+<h3>The Problems Solved</h3>
+<p><b>OSCache</b> solves fundamental problems for dynamic websites:</p>
+<ul>
+  <li><b>Caching Dynamic Content</b> - Dynamic content must often be executed in some form each
+  	request, but sometimes that content doesn't change every request. Caching the whole page does
+  	not help because <i>sections</i> of the page change every request.
+    <ul>
+      <li><b>OSCache</b> solves this problem by providing a means to cache sections of JSP pages.</li>
+    </ul>
+  </li>
+  <li><b>Caching Binary Content</b> - Generated images and PDFs can be very costly in terms
+  	of server load.
+    <ul>
+      <li><b>OSCache</b> solves this problem through a Servlet 2.3 CachingFilter which can cache any
+      	URI (such as an entire page or a generated image/PDF)</li>
+    </ul>
+  </li>
+  <li><b>Error Tolerance</b> - If one error occurs somewhere on your dynamic page, chances are the
+  	whole page will be returned as an error, even if 95% of the page executed correctly.
+    <ul>
+      <li><b>OSCache</b> solves this problem by allowing you to serve the cached content in the event
+      	of an error, and then reporting the error appropriately.</li>
+    </ul>
+  </li>
+</ul>
+
+<h3>Brief Feature List</h3>
+<p>In addition to it's servlet-specific features, <b>OSCache</b> can be used as a generic caching
+  solution for <i>any</i> Java application. A few of its generic features include:</p>
+<ul>
+  <li><b>Caching of Arbitrary Objects</b> - You are not restricted to caching portions of JSP pages
+    or HTTP requests. Any Java object can be cached.</li>
+  <li><b>Comprehensive API</b> - The <b>OSCache</b> API gives you full programmatic control over all of
+    <b>OSCache's</b> features.</li>
+  <li><b>Persistent Caching</b> - The cache can optionally be disk-based, thereby allowing expensive-to-create
+    data to remain cached even across application restarts.</li>
+  <li><b>Clustering</b> - Support for clustering of cached data can be enabled with a single configuration
+    parameter. No code changes required.</li>
+  <li><b>Expiry of Cache Entries</b> - You have a huge amount of control over how cached objects expire,
+    including pluggable RefreshPolicies if the default functionality does not meet your requirements.</li>
+</ul>
+
+<p>We encourage you to take a look at the full <a href="features.html">feature list</a> to see what else
+   <b>OSCache</b> has to offer.</p>
+
+<p>Other documentation:</p>
+<ul>
+  <li><b><a href="features.html">Feature List</a></b> - Details on <b>OSCache</b>'s features and how they are best used</li>
+  <li><b><a href="requirements.html">Requirements</a></b> - What is required to run <b>OSCache</b></li>
+  <li><b><a href="changelog.html">Change Log</a></b> - See what's new in the latest version of <b>OSCache</b></li>
+  <li><b><a href="faq.html">FAQ</a></b> - Frequently Asked Questions about <b>OSCache</b></li>
+  <li><b><a href="install.html">Installation Guide</a></b> - How to install <b>OSCache</b> and where to get it.</li>
+  <li><b><a href="configuration.html">Configuration</a></b> - Configuration options for <b>OSCache</b>.</li>
+  <li><b><a href="filter.html">Caching Content with the CacheFilter</a></b> - How to configure OSCache to cache entire servlet responses.</li>
+  <li><b><a href="tags.html">JSP Tags</a></b> - Detailed documentation on <b>OSCache</b>'s tags and how to use them.</li>
+  <li><b><a href="clustering.html">Clustering OSCache</a></b> - How to use <code>OSCache</code> in a cluster.</li>
+  <li><b><a href="cron.html">Cron Expressions</a></b> - How to use the cron expression syntax to expire content.</li>
+  <li><b><a href="api">JavaDoc API</a></b> - The <b>OSCache</b> API documentation in JavaDoc format.</li>
+</ul>
+
+</body>
+
+</html>
