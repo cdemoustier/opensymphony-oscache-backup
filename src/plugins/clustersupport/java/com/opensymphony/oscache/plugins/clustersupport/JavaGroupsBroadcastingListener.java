@@ -12,10 +12,10 @@ import com.opensymphony.oscache.base.InitializationException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import org.javagroups.Address;
-import org.javagroups.Channel;
+import org.jgroups.Address;
+import org.jgroups.Channel;
 
-import org.javagroups.blocks.NotificationBus;
+import org.jgroups.blocks.NotificationBus;
 
 import java.io.Serializable;
 
