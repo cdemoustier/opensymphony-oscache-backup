@@ -50,9 +50,9 @@ public class JMS10BroadcastingListener extends AbstractBroadcastingListener {
      * <p>The JMS broadcasting implementation requires the following configuration
      * properties to be specified in <code>oscache.properties</code>:
      * <ul>
-     * <li><b>cache.cluster.topic.factory</b> - The JMS connection factory to use</li>
-     * <li><b>cache.cluster.topic.name</b> - The JMS topic name</li>
-     * <li><b>cache.cluster.name</b> - The name of this node in the cluster. This should
+     * <li><b>cache.cluster.jms.topic.factory</b> - The JMS connection factory to use</li>
+     * <li><b>cache.cluster.jms.topic.name</b> - The JMS topic name</li>
+     * <li><b>cache.cluster.jms.node.name</b> - The name of this node in the cluster. This should
      * be unique for each node.</li>
      * Please refer to the clustering documentation for further details on configuring
      * the JMS clustered caching.</p>
