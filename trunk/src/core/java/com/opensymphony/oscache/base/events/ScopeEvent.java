@@ -7,9 +7,8 @@ package com.opensymphony.oscache.base.events;
 import java.util.Date;
 
 /**
- * A <code>ScopeEvent</code> is created when an event occurs across one
- * or all scopes. This type of event is only applicable to the
- * <code>ServletCacheAdministrator</code>.
+ * A <code>ScopeEvent</code> is created when an event occurs across one or all scopes.
+ * This type of event is only applicable to the <code>ServletCacheAdministrator</code>.
  *
  * @version        $Revision$
  * @author <a href="mailto:fbeauregard@pyxis-tech.com">Francois Beauregard</a>
@@ -31,7 +30,7 @@ public final class ScopeEvent extends CacheEvent {
     private int scope = 0;
 
     /**
-     * Constructs a scope event object with no specified origin
+     * Constructs a scope event object with no specified origin.
      *
      * @param eventType   Type of the event.
      * @param scope       Scope that applies to the event.
@@ -42,7 +41,7 @@ public final class ScopeEvent extends CacheEvent {
     }
 
     /**
-     * Constructs a scope event object
+     * Constructs a scope event object.
      *
      * @param eventType   Type of the event.
      * @param scope       Scope that applies to the event.

@@ -13,9 +13,10 @@ import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.TagSupport;
 
 /**
- * FlushTag flushes caches created with &lt;cache&gt;<p>
+ * FlushTag flushes caches created with &lt;cache&gt;.
  *
- * It gives programmatic control over when caches are flushed, and can flush all caches at once.<p>
+ * This tag provides programmatic control over when caches are flushed,
+ * and can flush all caches at once.<p>
  *
  * Usage Examples:
  * <pre><code>
@@ -44,30 +45,31 @@ public class FlushTag extends TagSupport {
     ServletCacheAdministrator admin = null;
 
     /**
-     * A cache group. If this is supplied, all content in that group will be flushed
+     * A cache group.
+     * If specified, all content in that group will be flushed
      */
     String group = null;
 
     /**
-     * Tag key
+     * Tag key.
      */
     String key = null;
 
     /**
-     * if pattern value is specified, all keys that contain the pattern are flushed
+     * if pattern value is specified, all keys that contain the pattern are flushed.
      */
     String pattern = null;
     String scope = null;
     int cacheScope = -1;
 
     /**
-     *  The ISO-639 language code to distinguish different pages in application scope
+     *  The ISO-639 language code to distinguish different pages in application scope.
      */
     private String language = null;
 
     /**
-     * The group to be flushed. If specified, all cached content in the group
-     * will be flushed.
+     * The group to be flushed.
+     * If specified, all cached content in the group will be flushed.
      *
      * @param group The name of the group to flush.
      */
@@ -76,7 +78,8 @@ public class FlushTag extends TagSupport {
     }
 
     /**
-     * The key to be flushed. If specified, only one cache entry will be flushed.
+     * The key to be flushed.
+     * If specified, only one cache entry will be flushed.
      *
      * @param value The key of the specific entry to flush.
      */
@@ -85,7 +88,7 @@ public class FlushTag extends TagSupport {
     }
 
     /**
-     * Set the ISO-639 language code to distinguish different pages in application scope
+     * Set the ISO-639 language code to distinguish different pages in application scope.
      *
      * @param value The language code for this cache entry.
      */
@@ -94,10 +97,9 @@ public class FlushTag extends TagSupport {
     }
 
     /**
-     *  The key pattern to be flushed. If specified, all entries that contain
-     *  the pattern will be flushed.
-     *
-     *        @param value The key of the specific entry to flush.
+     *  The key pattern to be flushed.
+     * If specified, all entries that contain the pattern will be flushed.
+     *  @param value The key of the specific entry to flush.
      */
     public void setPattern(String value) {
         this.pattern = value;
@@ -119,7 +121,7 @@ public class FlushTag extends TagSupport {
     }
 
     /**
-     * Process the start of the tag
+     * Process the start of the tag.
      *
      * @throws JspTagException The standard tag exception thrown.
      * @return The standard Tag return.
