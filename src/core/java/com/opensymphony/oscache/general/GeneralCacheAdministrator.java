@@ -96,6 +96,7 @@ public class GeneralCacheAdministrator extends AbstractCacheAdministrator {
     public GeneralCacheAdministrator(Properties p) {
         super(p);
         log.info("Constructed GeneralCacheAdministrator()");
+        createCache();
     }
 
     /**
@@ -104,11 +105,6 @@ public class GeneralCacheAdministrator extends AbstractCacheAdministrator {
      * @return The cache
      */
     public Cache getCache() {
-        // Create the cache if it doesn't already exist
-        if (applicationCache == null) {
-            applicationCache = createCache();
-        }
-
         return applicationCache;
     }
 
@@ -292,16 +288,12 @@ public class GeneralCacheAdministrator extends AbstractCacheAdministrator {
 
     /**
      * Creates a cache in this admin
-     *
-     * @return The new cache
      */
-    private Cache createCache() {
+    private void createCache() {
         log.info("Creating new cache");
 
-        Cache newCache = new Cache(isMemoryCaching(), isUnlimitedDiskCache(), isBlocking(), algorithmClass, cacheCapacity);
+        applicationCache = new Cache(isMemoryCaching(), isUnlimitedDiskCache(), isBlocking(), algorithmClass, cacheCapacity);
 
-        configureStandardListeners(newCache);
-
-        return newCache;
+        configureStandardListeners(applicationCache);
     }
 }
