@@ -852,6 +852,7 @@ public class Cache implements Serializable {
             // Update the entry's state in the map
             cacheMap.put(key, entry);
         }
+
         // Trigger an ENTRY_FLUSHED event. [CACHE-107] Do this for all flushes.
         CacheEntryEvent event = new CacheEntryEvent(this, entry, origin);
         dispatchCacheEntryEvent(CacheEntryEventType.ENTRY_FLUSHED, event);

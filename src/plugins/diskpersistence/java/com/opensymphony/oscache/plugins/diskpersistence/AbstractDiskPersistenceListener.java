@@ -141,7 +141,7 @@ public abstract class AbstractDiskPersistenceListener implements PersistenceList
     }
 
     /**
-    * Initialises this <tt>BasicDiskPersistenceListener</tt> using the supplied
+    * Initialises this <tt>DiskPersistenceListener</tt> using the supplied
     * configuration.
     *
     * @param config The OSCache configuration
