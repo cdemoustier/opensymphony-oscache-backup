@@ -263,7 +263,7 @@
         <mkdir dir="${dist.dir}/docs/api"/>
         <javadoc sourcepath="${src.core}/java" destdir="${dist.dir}/docs/api"
           packagenames="${packages}" classpathref="cp" author="true" version="true"
-          windowTitle="${Name} ${version} API" doctitle="${Name}"
+          windowTitle="${Name} ${version}${release} API" doctitle="${Name}"
           footer="See &lt;a href=&quot;http://www.opensymphony.com/&quot;&gt;www.opensymphony.com&lt;/a&gt; for more information."
           use="true" verbose="false" stylesheetfile="${doc.dir}/api.css" />
     </target>
