@@ -18,10 +18,16 @@ import com.opensymphony.oscache.base.events.ScopeEventType;
  * @author <a href="mailto:abergevin@pyxis-tech.com">Alain Bergevin</a>
  */
 public class ScopeEventListenerImpl implements ScopeEventListener {
+
+    /**
+     * Scope names
+     */
+    public static final String[] SCOPE_NAMES = {null, "page", "request", "session", "application"};
+
     /**
      * Number of known scopes
      */
-    public static final int NB_SCOPES = 4;
+    public static final int NB_SCOPES = SCOPE_NAMES.length - 1;
 
     /**
      * Page scope number
@@ -129,7 +135,7 @@ public class ScopeEventListenerImpl implements ScopeEventListener {
         StringBuffer returnString = new StringBuffer("Flush count for ");
 
         for (int count = 1; count <= NB_SCOPES; count++) {
-            returnString.append("scope " + count + " = " + scopeFlushCount[count] + ", ");
+            returnString.append("scope " + SCOPE_NAMES[count] + " = " + scopeFlushCount[count] + ", ");
         }
 
         // Remove the last 2 chars, which are ", "
