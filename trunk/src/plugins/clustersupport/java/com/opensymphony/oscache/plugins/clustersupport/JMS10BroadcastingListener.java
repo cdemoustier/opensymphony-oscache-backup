@@ -125,7 +125,7 @@ public class JMS10BroadcastingListener extends AbstractBroadcastingListener {
                             }
 
                             // This prevents the notification sent by this node from being handled by itself
-                            if (!objectMessage.getStringProperty("node.name").equals(clusterNode)) {
+                            if (!objectMessage.getStringProperty("nodeName").equals(clusterNode)) {
                                 //now handle the message
                                 ClusterNotification notification = (ClusterNotification) objectMessage.getObject();
                                 handleClusterNotification(notification);
@@ -171,7 +171,7 @@ public class JMS10BroadcastingListener extends AbstractBroadcastingListener {
             objectMessage.setObject(message);
 
             //sign the message, with the name of this node
-            objectMessage.setStringProperty("node.name", clusterNode);
+            objectMessage.setStringProperty("nodeName", clusterNode);
             publisher.publish(objectMessage);
         } catch (JMSException e) {
             log.error("Cannot send notification " + message, e);
