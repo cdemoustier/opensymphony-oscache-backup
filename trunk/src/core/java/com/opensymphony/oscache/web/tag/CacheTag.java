@@ -441,7 +441,11 @@ public class CacheTag extends BodyTagSupport implements TryCatchFinally {
         }
 
         // Retrieve the cache
-        cache = admin.getCache((HttpServletRequest) pageContext.getRequest(), scope);
+        if (scope == PageContext.SESSION_SCOPE) {
+            cache = admin.getSessionScopeCache(((HttpServletRequest) pageContext.getRequest()).getSession(true));
+        } else {
+            cache = admin.getAppScopeCache(pageContext.getServletContext());
+        }
 
         // This allows to have multiple cache tags on a single page without
         // having to specify keys. However, nested cache tags are not supported.
