@@ -6,14 +6,10 @@ package com.opensymphony.oscache.web.filter;
 
 import java.io.*;
 
-import java.util.Enumeration;
 import java.util.Locale;
 import java.util.zip.GZIPInputStream;
-import java.util.zip.ZipException;
 
-import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
@@ -33,6 +29,10 @@ public class ResponseContent implements Serializable {
     private long expires = Long.MAX_VALUE;
     private long lastModified = -1;
 
+    public String getContentType() {
+        return contentType;
+    }
+    
     /**
      * Set the content type. We capture this so that when we serve this
      * data from cache, we can set the correct content type on the response.
@@ -47,6 +47,10 @@ public class ResponseContent implements Serializable {
 
     public void setLastModified(long value) {
         lastModified = value;
+    }
+
+    public String getContentEncoding() {
+        return contentEncoding;
     }
 
     public void setContentEncoding(String contentEncoding) {
