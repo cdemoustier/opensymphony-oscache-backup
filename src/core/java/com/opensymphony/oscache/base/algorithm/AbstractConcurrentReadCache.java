@@ -210,7 +210,7 @@ public abstract class AbstractConcurrentReadCache extends AbstractMap implements
     /**
      * Lock used only for its memory effects.
      **/
-    protected final transient Object barrierLock = new Object();
+    protected transient Object barrierLock = new Object();
 
     /**
      * field written to only to guarantee lock ordering.
@@ -1145,9 +1145,11 @@ public abstract class AbstractConcurrentReadCache extends AbstractMap implements
      * instance from a stream (i.e.,
      * deserialize it).
      */
-    protected synchronized void readObject(java.io.ObjectInputStream s) throws IOException, ClassNotFoundException {
+    private synchronized void readObject(java.io.ObjectInputStream s) throws IOException, ClassNotFoundException {
         // Read in the threshold, loadfactor, and any hidden stuff
         s.defaultReadObject();
+
+        barrierLock = new Object();
 
         // Read in number of buckets and allocate the bucket array;
         int numBuckets = s.readInt();
@@ -1376,7 +1378,7 @@ public abstract class AbstractConcurrentReadCache extends AbstractMap implements
      * for each key-value mapping represented by the AbstractConcurrentReadCache
      * The key-value mappings are emitted in no particular order.
      */
-    protected synchronized void writeObject(java.io.ObjectOutputStream s) throws IOException {
+    private synchronized void writeObject(java.io.ObjectOutputStream s) throws IOException {
         // Write out the threshold, loadfactor, and any hidden stuff
         s.defaultWriteObject();
 
