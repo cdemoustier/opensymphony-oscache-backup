@@ -33,6 +33,7 @@ public class CacheHttpServletResponseWrapper extends HttpServletResponseWrapper 
     private ResponseContent result = null;
     private SplitServletOutputStream cacheOut = null;
     private int status = SC_OK;
+    private boolean fragment = false;
 
     /**
      * Constructor
@@ -40,8 +41,18 @@ public class CacheHttpServletResponseWrapper extends HttpServletResponseWrapper 
      * @param response The servlet response
      */
     public CacheHttpServletResponseWrapper(HttpServletResponse response) {
+        this(response, false);
+    }
+
+    /**
+     * Constructor
+     *
+     * @param response The servlet response
+     */
+    public CacheHttpServletResponseWrapper(HttpServletResponse response, boolean fragment) {
         super(response);
         result = new ResponseContent();
+        this.fragment = fragment;
     }
 
     /**
@@ -63,6 +74,9 @@ public class CacheHttpServletResponseWrapper extends HttpServletResponseWrapper 
      * @param value The content type
      */
     public void setContentType(String value) {
+        if (log.isDebugEnabled()) {
+            log.debug("ContentType: " + value);
+        }
         super.setContentType(value);
         result.setContentType(value);
     }
@@ -78,11 +92,41 @@ public class CacheHttpServletResponseWrapper extends HttpServletResponseWrapper 
             log.debug("dateheader: " + name + ": " + value);
         }
 
-        if ("last-modified".equalsIgnoreCase(name)) {
+        // only set the last modified value, if a complete page is cached
+        if ((!fragment) && (CacheFilter.HEADER_IF_MODIFIED_SINCE.equalsIgnoreCase(name))) {
             result.setLastModified(value);
+        }
+        
+        // implement RFC 2616 14.21 Expires (without max-age)
+        if (CacheFilter.HEADER_EXPIRES.equalsIgnoreCase(name)) {
+            result.setExpires(value);
         }
 
         super.setDateHeader(name, value);
+    }
+
+    /**
+     * Add the date of a header
+     *
+     * @param name The header name
+     * @param value The date
+     */
+    public void addDateHeader(String name, long value) {
+        if (log.isDebugEnabled()) {
+            log.debug("dateheader: " + name + ": " + value);
+        }
+
+        // only set the last modified value, if a complete page is cached
+        if ((!fragment) && (CacheFilter.HEADER_IF_MODIFIED_SINCE.equalsIgnoreCase(name))) {
+            result.setLastModified(value);
+        }
+        
+        // implement RFC 2616 14.21 Expires (without max-age)
+        if (CacheFilter.HEADER_EXPIRES.equalsIgnoreCase(name)) {
+            result.setExpires(value);
+        }
+
+        super.addDateHeader(name, value);
     }
 
     /**
@@ -96,7 +140,29 @@ public class CacheHttpServletResponseWrapper extends HttpServletResponseWrapper 
             log.debug("header: " + name + ": " + value);
         }
 
+        if (CacheFilter.HEADER_CONTENT_TYPE.equalsIgnoreCase(name)) {
+            result.setContentType(value);
+        }        
+        
         super.setHeader(name, value);
+    }
+
+    /**
+     * Add a header field
+     *
+     * @param name The header name
+     * @param value The header value
+     */
+    public void addHeader(String name, String value) {
+        if (log.isDebugEnabled()) {
+            log.debug("header: " + name + ": " + value);
+        }
+
+        if (CacheFilter.HEADER_CONTENT_TYPE.equalsIgnoreCase(name)) {
+            result.setContentType(value);
+        }        
+        
+        super.addHeader(name, value);
     }
 
     /**
@@ -153,6 +219,11 @@ public class CacheHttpServletResponseWrapper extends HttpServletResponseWrapper 
         this.status = status;
     }
 
+    /**
+     * We override this so we can catch the response status. Only
+     * responses with a status of 200 (<code>SC_OK</code>) will
+     * be cached.
+     */
     public void sendRedirect(String location) throws IOException {
         this.status = SC_MOVED_TEMPORARILY;
         super.sendRedirect(location);
@@ -174,7 +245,7 @@ public class CacheHttpServletResponseWrapper extends HttpServletResponseWrapper 
         super.setLocale(value);
         result.setLocale(value);
     }
-
+    
     /**
      * Get an output stream
      *

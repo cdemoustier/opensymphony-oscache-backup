@@ -25,16 +25,35 @@ import javax.servlet.jsp.PageContext;
  *
  * @author <a href="mailto:sergek@lokitech.com">Serge Knystautas</a>
  * @author <a href="mailto:mike@atlassian.com">Mike Cannon-Brookes</a>
+ * @author <a href="mailto:ltorunski@t-online.de">Lars Torunski</a>
  * @version $Revision$
  */
 public class CacheFilter implements Filter {
+
     private final Log log = LogFactory.getLog(this.getClass());
+
+    // Header
+    public static final String HEADER_LAST_MODIFIED = "Last-Modified";
+    public static final String HEADER_CONTENT_TYPE = "Content-Type";
+    public static final String HEADER_EXPIRES = "Expires";
+    public static final String HEADER_IF_MODIFIED_SINCE = "If-Modified-Since";
+    
+    // Fragment parameter
+    public static final int FRAGMENT_AUTODETECT = -1;
+    public static final int FRAGMENT_NO = 0;
+    public static final int FRAGMENT_YES = 1;
 
     // filter variables
     private FilterConfig config;
     private ServletCacheAdministrator admin = null;
     private int cacheScope = PageContext.APPLICATION_SCOPE; // filter scope - default is APPLICATION
     private int time = 60 * 60; // time before cache should be refreshed - default one hour (in seconds)
+    private int fragment = FRAGMENT_AUTODETECT; // defines if this filter handles fragments of a page - default is auto detect
+
+    // request attribute to avoid reentrance
+    private final static String REQUEST_FILTERED = "__oscache_filtered";
+    // the policy for the expires header
+    private static final ExpiresRefreshPolicy EXPIRES_REFRESH_POLICY = new ExpiresRefreshPolicy();
 
     /**
      * Filter clean-up
@@ -60,9 +79,28 @@ public class CacheFilter implements Filter {
             log.info("<cache>: filter in scope " + cacheScope);
         }
 
+        // avoid reentrance (CACHE-128)
+        if (isFilteredBefore(request)) {
+            chain.doFilter(request, response);
+            return;
+        }
+        request.setAttribute(REQUEST_FILTERED, Boolean.TRUE);
+        
         HttpServletRequest httpRequest = (HttpServletRequest) request;
-        String key = admin.generateEntryKey(null, httpRequest, cacheScope);
-        Cache cache = admin.getCache(httpRequest, cacheScope);
+
+        // checks if the response is a fragment of a apge
+        boolean fragmentRequest = isFragment(httpRequest);
+        
+        // generate the cache entry key
+        String key = generateEntryKey(httpRequest);
+        
+        // avoid useless session creation for application scope pages (CACHE-129)
+        Cache cache;
+        if (cacheScope == PageContext.SESSION_SCOPE) {
+            cache = admin.getSessionScopeCache(httpRequest.getSession(true));
+        } else {
+            cache = admin.getAppScopeCache(config.getServletContext());
+        }
 
         try {
             ResponseContent respContent = (ResponseContent) cache.getFromCache(key, time);
@@ -70,15 +108,20 @@ public class CacheFilter implements Filter {
             if (log.isInfoEnabled()) {
                 log.info("<cache>: Using cached entry for " + key);
             }
+            
+            // only reply with SC_NOT_MODIFIED
+            // if the client has already the newest page and the reponse isn't a fragment in a page 
+            if (!fragmentRequest) {
+                long clientLastModified = httpRequest.getDateHeader(HEADER_IF_MODIFIED_SINCE); // will return -1 if no header...
 
-            long clientLastModified = httpRequest.getDateHeader("If-Modified-Since"); // will return -1 if no header...
-
-            if (( clientLastModified != -1 ) && ( clientLastModified >= respContent.getLastModified())) { 
-                ((HttpServletResponse) response).setStatus(HttpServletResponse.SC_NOT_MODIFIED);
-                return;
+                if ((clientLastModified != -1) && (clientLastModified >= respContent.getLastModified())) {
+                    ((HttpServletResponse) response).setStatus(HttpServletResponse.SC_NOT_MODIFIED);
+                    return;
+                }
             }
 
-            respContent.writeTo(response);
+            respContent.writeTo(response, fragmentRequest);
+            
         } catch (NeedsRefreshException nre) {
             boolean updateSucceeded = false;
 
@@ -87,14 +130,14 @@ public class CacheFilter implements Filter {
                     log.info("<cache>: New cache entry, cache stale or cache scope flushed for " + key);
                 }
 
-                CacheHttpServletResponseWrapper cacheResponse = new CacheHttpServletResponseWrapper((HttpServletResponse) response);
+                CacheHttpServletResponseWrapper cacheResponse = new CacheHttpServletResponseWrapper((HttpServletResponse) response, fragmentRequest);
                 chain.doFilter(request, cacheResponse);
                 cacheResponse.flushBuffer();
 
                 // Only cache if the response was 200
                 if (cacheResponse.getStatus() == HttpServletResponse.SC_OK) {
                     //Store as the cache content the result of the response
-                    cache.putInCache(key, cacheResponse.getContent());
+                    cache.putInCache(key, cacheResponse.getContent(), EXPIRES_REFRESH_POLICY);
                     updateSucceeded = true;
                 }
             } finally {
@@ -104,7 +147,7 @@ public class CacheFilter implements Filter {
             }
         }
     }
-
+    
     /**
      * Initialize the filter. This retrieves a {@link ServletCacheAdministrator}
      * instance and configures the filter based on any initialization parameters.<p>
@@ -115,19 +158,22 @@ public class CacheFilter implements Filter {
      * <li><b>scope</b> - the default scope to cache content in. Acceptable values
      * are <code>application</code> (default), <code>session</code>, <code>request</code> and
      * <code>page</code>.
-     *
+     * <li><b>fragment</b> - defines if this filter handles fragments of a page. Acceptable values
+     * are <code>-1</code> (auto detect), <code>0</code> (false) and <code>1</code> (true). 
+     * The default value is auto detect.</li>     
+     * 
      * @param filterConfig The filter configuration
      */
     public void init(FilterConfig filterConfig) {
         //Get whatever settings we want...
         config = filterConfig;
         admin = ServletCacheAdministrator.getInstance(config.getServletContext());
-
+        
         //Will work this out later
         try {
             time = Integer.parseInt(config.getInitParameter("time"));
         } catch (Exception e) {
-            log.info("Could not get init paramter 'time', defaulting to one hour.");
+            log.info("Could not get init parameter 'time', defaulting to one hour.");
         }
 
         try {
@@ -143,7 +189,62 @@ public class CacheFilter implements Filter {
                 cacheScope = PageContext.PAGE_SCOPE;
             }
         } catch (Exception e) {
-            log.info("Could not get init paramter 'scope', defaulting to 'application'");
+            log.info("Could not get init parameter 'scope', defaulting to 'application'.");
+        }
+
+        try {
+            fragment = Integer.parseInt(config.getInitParameter("fragment"));
+            if ((fragment < FRAGMENT_AUTODETECT) || (fragment > FRAGMENT_YES)) {
+                log.info("Wrong init parameter 'fragment', setting to 'auto detect':" + fragment);
+                fragment = FRAGMENT_AUTODETECT;
+            }
+        } catch (Exception e) {
+            log.info("Could not get init parameter 'fragment', defaulting to 'auto detect'.");
+        }
+        
+    }
+    
+    /**
+     * Creates the cache key for the CacheFilter.
+     *
+     * @param httpRequest
+     * @return the cache key
+     */
+    public String generateEntryKey(HttpServletRequest httpRequest) {
+        return admin.generateEntryKey(null, httpRequest, cacheScope);
+    }
+
+    /**
+     * Checks if the request is a fragment in a page.
+     * 
+     * According to Java Servlet API 2.2 (8.2.1 Dispatching Requests, Included
+     * Request Parameters), when a servlet is being used from within an include,
+     * the attribute <code>javax.servlet.include.request_uri</code> is set.
+     * According to Java Servlet API 2.3 this is excepted for servlets obtained 
+     * by using the getNamedDispatcher method.
+     * 
+     * @param request the to be handled request
+     * @return true if the request is a fragment in a page
+     */
+    public boolean isFragment(HttpServletRequest request) {
+        if (fragment == FRAGMENT_AUTODETECT) {
+            return request.getAttribute("javax.servlet.include.request_uri") != null;
+        } else {
+            return (fragment == FRAGMENT_NO) ? false : true; 
         }
     }
+    
+    /**
+     * Checks if the request was filtered before, so 
+     * guarantees to be executed once per request. You
+     * can override this methods to define a more specific
+     * behaviour.
+     * 
+     * @param request checks if the request was filtered before.
+     * @return true if it is the first execution
+     */
+    public boolean isFilteredBefore(ServletRequest request) {
+        return request.getAttribute(REQUEST_FILTERED) != null;
+    }
+    
 }
