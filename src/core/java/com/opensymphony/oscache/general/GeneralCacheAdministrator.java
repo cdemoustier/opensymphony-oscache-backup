@@ -75,7 +75,7 @@ import java.util.Properties;
  * @author <a href="mailto:fbeauregard@pyxis-tech.com">Francois Beauregard</a>
  * @author <a href="mailto:abergevin@pyxis-tech.com">Alain Bergevin</a>
  */
-public final class GeneralCacheAdministrator extends AbstractCacheAdministrator {
+public class GeneralCacheAdministrator extends AbstractCacheAdministrator {
     private static transient final Log log = LogFactory.getLog(GeneralCacheAdministrator.class);
 
     /**

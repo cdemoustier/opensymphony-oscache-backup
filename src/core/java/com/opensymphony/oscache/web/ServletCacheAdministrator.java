@@ -37,7 +37,7 @@ import javax.servlet.jsp.PageContext;
  * @author <a href="&#109;a&#105;&#108;&#116;&#111;:chris&#64;swebtec.&#99;&#111;&#109;">Chris Miller</a>
  * @version        $Revision$
  */
-public final class ServletCacheAdministrator extends AbstractCacheAdministrator implements Serializable {
+public class ServletCacheAdministrator extends AbstractCacheAdministrator implements Serializable {
     private static final transient Log log = LogFactory.getLog(ServletCacheAdministrator.class);
 
     /**
@@ -362,9 +362,9 @@ public final class ServletCacheAdministrator extends AbstractCacheAdministrator 
     }
 
     /**
-     *        Flush all scopes at a particular time
+     * Flush all scopes at a particular time
      *
-     *        @param date         The time to flush the scope
+     * @param date The time to flush the scope
      */
     public void flushAll(Date date) {
         synchronized (flushTimes) {
@@ -379,7 +379,7 @@ public final class ServletCacheAdministrator extends AbstractCacheAdministrator 
     }
 
     /**
-     *        Flush all scopes instantly.
+     * Flush all scopes instantly.
      */
     public void flushAll() {
         flushAll(new Date());
