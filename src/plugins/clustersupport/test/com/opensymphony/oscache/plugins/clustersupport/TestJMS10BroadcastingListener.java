@@ -17,8 +17,8 @@ import javax.naming.Context;
  *
  * @author <a href="&#109;a&#105;&#108;&#116;&#111;:chris&#64;swebtec.&#99;&#111;&#109;">Chris Miller</a>
  */
-public final class TestJMSBroadcastingListener extends BaseTestBroadcastingListener {
-    public TestJMSBroadcastingListener(String str) {
+public final class TestJMS10BroadcastingListener extends BaseTestBroadcastingListener {
+    public TestJMS10BroadcastingListener(String str) {
         super(str);
     }
 
@@ -28,7 +28,7 @@ public final class TestJMSBroadcastingListener extends BaseTestBroadcastingListe
      * @return The test for this class
      */
     public static Test suite() {
-        return new TestSuite(TestJMSBroadcastingListener.class);
+        return new TestSuite(TestJMS10BroadcastingListener.class);
     }
 
     /**
@@ -36,7 +36,7 @@ public final class TestJMSBroadcastingListener extends BaseTestBroadcastingListe
      * for testing.
      */
     public AbstractBroadcastingListener getListener() {
-        return new JMSBroadcastingListener();
+        return new JMS10BroadcastingListener();
     }
 
     /**

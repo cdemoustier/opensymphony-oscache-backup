@@ -51,6 +51,7 @@ public final class TestCompleteClustering extends TestCase {
         TestSuite suite = new TestSuite("Test all OSCache clustering");
         suite.addTest(TestJavaGroupsBroadcastingListener.suite());
         suite.addTest(TestJMSBroadcastingListener.suite());
+        suite.addTest(TestJMS10BroadcastingListener.suite());
 
         return suite;
     }
