@@ -45,8 +45,8 @@ import javax.servlet.jsp.tagext.TryCatchFinally;
  */
 public class CacheTag extends BodyTagSupport implements TryCatchFinally {
     /**
-    * Constants for time computation
-    */
+* Constants for time computation
+*/
     private final static int SECOND = 1;
     private final static int MINUTE = 60 * SECOND;
     private final static int HOUR = 60 * MINUTE;
@@ -56,117 +56,117 @@ public class CacheTag extends BodyTagSupport implements TryCatchFinally {
     private final static int YEAR = 365 * DAY;
 
     /**
-    * The key under which the tag counter will be stored in the request
-    */
+* The key under which the tag counter will be stored in the request
+*/
     private final static String CACHE_TAG_COUNTER_KEY = "__oscache_tag_counter";
 
     /**
-    * Constants for refresh time
-    */
+* Constants for refresh time
+*/
     final static private int ONE_MINUTE = 60;
     final static private int ONE_HOUR = 60 * ONE_MINUTE;
     final static private int DEFAULT_TIMEOUT = ONE_HOUR;
     private static transient Log log = LogFactory.getLog(CacheTag.class);
 
     /**
-     * Cache modes
-     */
+ * Cache modes
+ */
     final static private int SILENT_MODE = 1;
 
     /**
-    * A flag to indicate whether a NeedsRefreshException was thrown and
-    * the update needs to be cancelled
-    */
+* A flag to indicate whether a NeedsRefreshException was thrown and
+* the update needs to be cancelled
+*/
     boolean cancelUpdateRequired = false;
     private Cache cache = null;
     private ServletCacheAdministrator admin = null;
 
     /**
-    * The actual key to use. This is generated based on the supplied key, scope etc.
-    */
+* The actual key to use. This is generated based on the supplied key, scope etc.
+*/
     private String actualKey = null;
 
     /**
-    * The content that was retrieved from cache
-    */
+* The content that was retrieved from cache
+*/
     private String content = null;
 
     /**
-    * The cron expression that is used to expire cache entries at specific dates and/or times.
-    */
+* The cron expression that is used to expire cache entries at specific dates and/or times.
+*/
     private String cron = null;
 
     /**
-    * if cache key is null, the request URI is used
-    */
+* if cache key is null, the request URI is used
+*/
     private String key = null;
 
     /**
-    *  The ISO-639 language code to distinguish different pages in application scope
-    */
+*  The ISO-639 language code to distinguish different pages in application scope
+*/
     private String language = null;
 
     /**
-    * Class used to handle the refresh policy logic
-    */
+* Class used to handle the refresh policy logic
+*/
     private String refreshPolicyClass = null;
 
     /**
-    * Parameters that will be passed to the init method of the
-    * refresh policy instance.
-    */
+* Parameters that will be passed to the init method of the
+* refresh policy instance.
+*/
     private String refreshPolicyParam = null;
 
     /**
-    * If no groups are specified, the cached content does not get put into any groups
-    */
+* If no groups are specified, the cached content does not get put into any groups
+*/
     private String[] groups = null;
 
     /**
-    * Whether the cache should be refreshed instantly
-    */
+* Whether the cache should be refreshed instantly
+*/
     private boolean refresh = false;
 
     /**
-    * used for subtags to tell this tag that we should use the cached version
-    */
+* used for subtags to tell this tag that we should use the cached version
+*/
     private boolean useBody = true;
 
     /**
-     * The cache mode. Valid values are SILENT_MODE
-     */
+ * The cache mode. Valid values are SILENT_MODE
+ */
     private int mode = 0;
 
     /**
-    * The cache scope to use
-    */
+* The cache scope to use
+*/
     private int scope = PageContext.APPLICATION_SCOPE;
 
     /**
-    * time (in seconds) before cache should be refreshed
-    */
+* time (in seconds) before cache should be refreshed
+*/
     private int time = DEFAULT_TIMEOUT;
 
     /**
-    * Set the time this cache entry will be cached for. A date and/or time in
-    * either ISO-8601 format or a simple format can be specified. The acceptable
-    * syntax for the simple format can be any one of the following:
-    *
-    * <ul>
-    * <li>0 (seconds)
-    * <li>0s (seconds)
-    * <li>0m (minutes)
-    * <li>0h (hours)
-    * <li>0d (days)
-    * <li>0w (weeks)
-    * </ul>
-    *
-    * @param duration The duration to cache this content (using either the simple
-    * or the ISO-8601 format). Passing in a duration of zero will turn off the
-    * caching, while a negative value will result in the cached content never
-    * expiring (ie, the cached content will always be served as long as it is
-    * present).
-    */
+* Set the time this cache entry will be cached for. A date and/or time in
+* either ISO-8601 format or a simple format can be specified. The acceptable
+* syntax for the simple format can be any one of the following:
+*
+* <ul>
+* <li>0 (seconds)
+* <li>0s (seconds)
+* <li>0m (minutes)
+* <li>0h (hours)
+* <li>0d (days)
+* <li>0w (weeks)
+* </ul>
+*
+* @param duration The duration to cache this content (using either the simple
+* or the ISO-8601 format). Passing in a duration of zero will turn off the
+* caching, while a negative value will result in the cached content never
+* expiring (ie, the cached content will always be served as long as it is
+* present).
+*/
     public void setDuration(String duration) {
         try {
             // Try Simple Date Format Duration first because it's faster
@@ -189,72 +189,74 @@ public class CacheTag extends BodyTagSupport implements TryCatchFinally {
     }
 
     /**
-    * Sets the cron expression that should be used to expire content at specific
-    * dates and/or times.
-    */
+* Sets the cron expression that should be used to expire content at specific
+* dates and/or times.
+*/
     public void setCron(String cron) {
         this.cron = cron;
     }
 
     /**
-    * Sets the groups for this cache entry.
-    *
-    * @param groups A comma-delimited list of groups that the cache entry belongs to.
-    */
+* Sets the groups for this cache entry.
+*
+* @param groups A comma-delimited list of groups that the cache entry belongs to.
+*/
     public void setGroups(String groups) {
         this.groups = StringUtil.split(groups, ',');
     }
 
     /**
-    * Set the key for this cache entry.
-    *
-    * @param key The key for this cache entry.
-    */
+* Set the key for this cache entry.
+*
+* @param key The key for this cache entry.
+*/
     public void setKey(String key) {
         this.key = key;
     }
 
     /**
-    * Set the ISO-639 language code to distinguish different pages in application scope
-    *
-    * @param language The language code for this cache entry.
-    */
+* Set the ISO-639 language code to distinguish different pages in application scope
+*
+* @param language The language code for this cache entry.
+*/
     public void setLanguage(String language) {
         this.language = language;
     }
 
     /**
-    * This method allows the user to programatically decide whether the cached
-    * content should be refreshed immediately.
-    *
-    * @param refresh Whether or not to refresh this cache entry immediately.
-    */
+* This method allows the user to programatically decide whether the cached
+* content should be refreshed immediately.
+*
+* @param refresh Whether or not to refresh this cache entry immediately.
+*/
     public void setRefresh(boolean refresh) {
         this.refresh = refresh;
     }
 
     /**
-     * Setting this to <code>true</code> prevents the cache from writing any output
-     * to the response, however the JSP content is still cached as normal.
-     * @param mode The cache mode to use.
-     */
+ * Setting this to <code>true</code> prevents the cache from writing any output
+ * to the response, however the JSP content is still cached as normal.
+ * @param mode The cache mode to use.
+ */
     public void setMode(String mode) {
         if ("silent".equalsIgnoreCase(mode)) {
             this.mode = SILENT_MODE;
+        } else {
+            this.mode = 0;
         }
     }
 
     /**
-    * Class used to handle the refresh policy logic
-    */
+* Class used to handle the refresh policy logic
+*/
     public void setRefreshpolicyclass(String refreshPolicyClass) {
         this.refreshPolicyClass = refreshPolicyClass;
     }
 
     /**
-    * Parameters that will be passed to the init method of the
-    * refresh policy instance.
-    */
+* Parameters that will be passed to the init method of the
+* refresh policy instance.
+*/
     public void setRefreshpolicyparam(String refreshPolicyParam) {
         this.refreshPolicyParam = refreshPolicyParam;
     }
@@ -262,10 +264,10 @@ public class CacheTag extends BodyTagSupport implements TryCatchFinally {
     // ----------- setMethods ------------------------------------------------------
 
     /**
-    * Set the scope of this cache.
-    * <p>
-    * @param scope The scope of this cache. Either "application" (default) or "session".
-    */
+* Set the scope of this cache.
+* <p>
+* @param scope The scope of this cache. Either "application" (default) or "session".
+*/
     public void setScope(String scope) {
         if (scope.equalsIgnoreCase(ServletCacheAdministrator.SESSION_SCOPE_NAME)) {
             this.scope = PageContext.SESSION_SCOPE;
@@ -275,26 +277,26 @@ public class CacheTag extends BodyTagSupport implements TryCatchFinally {
     }
 
     /**
-    * Set the time this cache entry will be cached for (in seconds)
-    *
-    * @param time The time to cache this content (in seconds). Passing in
-    * a time of zero will turn off the caching. A negative value for the
-    * time will result in the cached content never expiring (ie, the cached
-    * content will always be served if it is present)
-    */
+* Set the time this cache entry will be cached for (in seconds)
+*
+* @param time The time to cache this content (in seconds). Passing in
+* a time of zero will turn off the caching. A negative value for the
+* time will result in the cached content never expiring (ie, the cached
+* content will always be served if it is present)
+*/
     public void setTime(int time) {
         this.time = time;
     }
 
     /**
-    * This controls whether or not the body of the tag is evaluated or used.<p>
-    *
-    * It is most often called by the &lt;UseCached /&gt; tag to tell this tag to
-    * use the cached content.
-    *
-    * @see UseCachedTag
-    * @param useBody Whether or not to use the cached content.
-    */
+* This controls whether or not the body of the tag is evaluated or used.<p>
+*
+* It is most often called by the &lt;UseCached /&gt; tag to tell this tag to
+* use the cached content.
+*
+* @see UseCachedTag
+* @param useBody Whether or not to use the cached content.
+*/
     public void setUseBody(boolean useBody) {
         if (log.isInfoEnabled()) {
             log.info("<cache>: Set useBody to " + useBody);
@@ -304,12 +306,12 @@ public class CacheTag extends BodyTagSupport implements TryCatchFinally {
     }
 
     /**
-    * After the cache body, either update the cache, serve new cached content or
-    *  indicate an error.
-    *
-    * @throws JspTagException The standard exception thrown.
-    * @return The standard BodyTag return.
-    */
+* After the cache body, either update the cache, serve new cached content or
+*  indicate an error.
+*
+* @throws JspTagException The standard exception thrown.
+* @return The standard BodyTag return.
+*/
     public int doAfterBody() throws JspTagException {
         String body = null;
 
@@ -381,11 +383,11 @@ public class CacheTag extends BodyTagSupport implements TryCatchFinally {
     }
 
     /**
-    * The end tag - clean up variables used.
-    *
-    * @throws JspTagException The standard exception thrown.
-    * @return The standard BodyTag return.
-    */
+* The end tag - clean up variables used.
+*
+* @throws JspTagException The standard exception thrown.
+* @return The standard BodyTag return.
+*/
     public int doEndTag() throws JspTagException {
         return EVAL_PAGE;
     }
@@ -397,16 +399,16 @@ public class CacheTag extends BodyTagSupport implements TryCatchFinally {
     }
 
     /**
-    * The start of the tag.
-    * <p>
-    * Grabs the administrator, the cache, the specific cache entry, then decides
-    * whether to refresh.
-    * <p>
-    * If no refresh is needed, this serves the cached content directly.
-    *
-    * @throws JspTagException The standard exception thrown.
-    * @return The standard doStartTag() return.
-    */
+* The start of the tag.
+* <p>
+* Grabs the administrator, the cache, the specific cache entry, then decides
+* whether to refresh.
+* <p>
+* If no refresh is needed, this serves the cached content directly.
+*
+* @throws JspTagException The standard exception thrown.
+* @return The standard doStartTag() return.
+*/
     public int doStartTag() throws JspTagException {
         cancelUpdateRequired = false;
         useBody = true;
@@ -445,13 +447,13 @@ public class CacheTag extends BodyTagSupport implements TryCatchFinally {
         actualKey = admin.generateEntryKey(key, (HttpServletRequest) pageContext.getRequest(), scope, language, suffix);
 
         /*
-        if
-        - refresh is not set,
-        - the cacheEntry itself does not need to be refreshed before 'time' and
-        - the administrator has not had the cache entry's scope flushed
+if
+- refresh is not set,
+- the cacheEntry itself does not need to be refreshed before 'time' and
+- the administrator has not had the cache entry's scope flushed
 
-        send out the cached version!
-        */
+send out the cached version!
+*/
         try {
             if (refresh) {
                 // Force a refresh
@@ -492,18 +494,18 @@ public class CacheTag extends BodyTagSupport implements TryCatchFinally {
     }
 
     /**
-    * Convert a SimpleDateFormat string to seconds
-    * Acceptable format are :
-    * <ul>
-    * <li>0s (seconds)
-    * <li>0m (minute)
-    * <li>0h (hour)
-    * <li>0d (day)
-    * <li>0w (week)
-    * </ul>
-    * @param   duration The simple date time to parse
-    * @return  The value in seconds
-    */
+* Convert a SimpleDateFormat string to seconds
+* Acceptable format are :
+* <ul>
+* <li>0s (seconds)
+* <li>0m (minute)
+* <li>0h (hour)
+* <li>0d (day)
+* <li>0w (week)
+* </ul>
+* @param   duration The simple date time to parse
+* @return  The value in seconds
+*/
     private int parseDuration(String duration) {
         int time = 0;
 
@@ -550,12 +552,12 @@ public class CacheTag extends BodyTagSupport implements TryCatchFinally {
     }
 
     /**
-    * Parse an ISO-8601 format date and return it's value in seconds
-    *
-    * @param duration The ISO-8601 date
-    * @return The equivalent number of seconds
-    * @throws Exception
-    */
+* Parse an ISO-8601 format date and return it's value in seconds
+*
+* @param duration The ISO-8601 date
+* @return The equivalent number of seconds
+* @throws Exception
+*/
     private int parseISO_8601_Duration(String duration) throws Exception {
         int years = 0;
         int months = 0;
@@ -700,11 +702,11 @@ public class CacheTag extends BodyTagSupport implements TryCatchFinally {
     }
 
     /**
-    * Validate the basic date format
-    *
-    * @param basicDate The string to validate
-    * @throws Exception
-    */
+* Validate the basic date format
+*
+* @param basicDate The string to validate
+* @throws Exception
+*/
     private void validateDateFormat(String basicDate) throws Exception {
         int yearCounter = 0;
         int monthCounter = 0;
@@ -736,11 +738,11 @@ public class CacheTag extends BodyTagSupport implements TryCatchFinally {
     }
 
     /**
-    * Validate the basic hour format
-    *
-    * @param basicHour The string to validate
-    * @throws Exception
-    */
+* Validate the basic hour format
+*
+* @param basicHour The string to validate
+* @throws Exception
+*/
     private void validateHourFormat(String basicHour) throws Exception {
         int minuteCounter = 0;
         int secondCounter = 0;
