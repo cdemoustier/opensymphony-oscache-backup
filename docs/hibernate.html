@@ -39,22 +39,24 @@
         
         <p>NOTE: object identifiers must have well-behaved <tt>toString()</tt> methods.</p>
 
-        <h3>Configuration</h3>
+        <h3>Cache Region Configuration</h3>
 
         <p>To modify the refresh period, CRON expression or maximum cache 
-        capacity, add the region configuration to your oscache.properties file, 
-        as demonstrated below:</p>
+        capacity, add the region configuration to your <a 
+        href="configuration.html">oscache.properties</a> file, as demonstrated 
+        below:</p>
         
 <pre>
-com.mypackage.model.Customer.refresh.period = 4000
-com.mypackage.model.Customer.cron = * * 31 Feb *
-com.mypackage.model.Customer.capacity = 500
+com.mypackage.domain.Customer.refresh.period = 4000
+com.mypackage.domain.Customer.cron = * * 31 Feb *
+com.mypackage.domain.Customer.capacity = 5000
 </pre>
 
-        <p>The <code>com.mypackage.model.Customer</code> is Hibernate's internal 
-        <b>cache region</b>, which defaults to the classname, but which can be 
-        specified in the Hibernate mapping files (region attribute of class-
-        cache element or collection-cache element).</p>
+        <p>The <code>com.mypackage.domain.Customer</code> is Hibernate's 
+        internal <b>cache region</b>, which defaults to the classname, and which 
+        can be altered by setting Hibernate's configuration property <a 
+        href="http://www.hibernate.org/hib_docs/reference/html_single/#session-configuration-s5">
+        <code>hibernate.cache.region_prefix</code></a> .</p>
 
     </body>
 </html>
