@@ -13,6 +13,8 @@
   <li><a href="#cache">cache</a> - The main caching tag</li>
   <li><a href="#usecached">usecached</a> - A nested tag to force using a cached version.</li>
   <li><a href="#flush">flush</a> - To flush caches programmatically.</li>
+  <li><a href="#addgroup">addgroup</a> - This tag must be nested inside &lt;cache:cache/&gt;.
+  It allows groups to be dynamically added to a cached block.</li>
 </ul>
 <p>For all listed attributes, <font color="#CC0000">req</font> means it that attribute
   is required and any value in [] is a default value. All attributes can accept runtime
@@ -189,5 +191,39 @@
     application scope.</p>
   <p><code>&lt;cache:flush scope=&quot;application&quot; group=&quot;currencyData&quot; /&gt;</code></p>
 </blockquote>
+
+
+
+
+<h3><br>
+  <a name="addgroup"></a>&lt;addgroup /&gt;</h3>
+<p><b>Description:</b></p>
+<blockquote>
+  <p>This tag must be nested inside a &lt;cache:cache/&gt; tag. It allows groups to be dynamically
+  added to a cached block. It is useful when the group(s) a cached block should belong to are unknown
+  until the block is actually rendered. As each group is 'discovered', this tag can
+  be used to add the group to the block's group list.</p>
+</blockquote>
+<p><b>Attributes:</b></p>
+<ul>
+  <li><b>group</b> - <font color="#CC0000">req</font> - The name of the group to add the enclosing
+  cache block to.
+  </li>
+</ul>
+<p><b>Example:</b></p>
+
+<blockquote>
+  <p>This will add the cache block with the key 'test1' to groups 'group1' and 'group2'.</p>
+  <p><code>&lt;cache:cache key=&quot;test1&quot;&gt;<br>
+    &nbsp; &nbsp; &nbsp;&lt;cache:addgroup group=&quot;group1&quot; /&gt;<br>
+    &nbsp; &nbsp; &nbsp;... some jsp content ...<br>
+    &nbsp; &nbsp; &nbsp;&lt;cache:addgroup group=&quot;group2&quot; /&gt;<br>
+    &nbsp; &nbsp; &nbsp;... some more jsp content ...<br>
+    &lt;/cache:cache&gt; </code></p>
+</blockquote>
+
+
+
+
 </body>
 </html>
