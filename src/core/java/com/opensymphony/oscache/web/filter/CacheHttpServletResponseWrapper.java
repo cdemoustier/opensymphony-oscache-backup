@@ -32,8 +32,8 @@ public class CacheHttpServletResponseWrapper extends HttpServletResponseWrapper 
     private PrintWriter cachedWriter;
     private ResponseContent result = null;
     private SplitServletOutputStream cacheOut = null;
-    private int status = SC_OK;
     private boolean fragment = false;
+    private int status = SC_OK;
 
     /**
      * Constructor
@@ -77,6 +77,7 @@ public class CacheHttpServletResponseWrapper extends HttpServletResponseWrapper 
         if (log.isDebugEnabled()) {
             log.debug("ContentType: " + value);
         }
+
         super.setContentType(value);
         result.setContentType(value);
     }
@@ -96,7 +97,7 @@ public class CacheHttpServletResponseWrapper extends HttpServletResponseWrapper 
         if ((!fragment) && (CacheFilter.HEADER_LAST_MODIFIED.equalsIgnoreCase(name))) {
             result.setLastModified(value);
         }
-        
+
         // implement RFC 2616 14.21 Expires (without max-age)
         if (CacheFilter.HEADER_EXPIRES.equalsIgnoreCase(name)) {
             result.setExpires(value);
@@ -120,7 +121,7 @@ public class CacheHttpServletResponseWrapper extends HttpServletResponseWrapper 
         if ((!fragment) && (CacheFilter.HEADER_LAST_MODIFIED.equalsIgnoreCase(name))) {
             result.setLastModified(value);
         }
-        
+
         // implement RFC 2616 14.21 Expires (without max-age)
         if (CacheFilter.HEADER_EXPIRES.equalsIgnoreCase(name)) {
             result.setExpires(value);
@@ -142,8 +143,12 @@ public class CacheHttpServletResponseWrapper extends HttpServletResponseWrapper 
 
         if (CacheFilter.HEADER_CONTENT_TYPE.equalsIgnoreCase(name)) {
             result.setContentType(value);
-        }        
-        
+        }
+
+        if (CacheFilter.HEADER_CONTENT_ENCODING.equalsIgnoreCase(name)) {
+            result.setContentEncoding(value);
+        }
+
         super.setHeader(name, value);
     }
 
@@ -160,8 +165,12 @@ public class CacheHttpServletResponseWrapper extends HttpServletResponseWrapper 
 
         if (CacheFilter.HEADER_CONTENT_TYPE.equalsIgnoreCase(name)) {
             result.setContentType(value);
-        }        
-        
+        }
+
+        if (CacheFilter.HEADER_CONTENT_ENCODING.equalsIgnoreCase(name)) {
+            result.setContentEncoding(value);
+        }
+
         super.addHeader(name, value);
     }
 
@@ -245,7 +254,7 @@ public class CacheHttpServletResponseWrapper extends HttpServletResponseWrapper 
         super.setLocale(value);
         result.setLocale(value);
     }
-    
+
     /**
      * Get an output stream
      *

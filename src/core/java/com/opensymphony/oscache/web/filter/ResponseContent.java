@@ -6,9 +6,14 @@ package com.opensymphony.oscache.web.filter;
 
 import java.io.*;
 
+import java.util.Enumeration;
 import java.util.Locale;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.ZipException;
 
+import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
@@ -22,10 +27,11 @@ import javax.servlet.http.HttpServletResponse;
 public class ResponseContent implements Serializable {
     private transient ByteArrayOutputStream bout = new ByteArrayOutputStream(1000);
     private Locale locale = null;
+    private String contentEncoding = null;
     private String contentType = null;
     private byte[] content = null;
-    private long lastModified = -1;
     private long expires = Long.MAX_VALUE;
+    private long lastModified = -1;
 
     /**
      * Set the content type. We capture this so that when we serve this
@@ -41,6 +47,10 @@ public class ResponseContent implements Serializable {
 
     public void setLastModified(long value) {
         lastModified = value;
+    }
+
+    public void setContentEncoding(String contentEncoding) {
+        this.contentEncoding = contentEncoding;
     }
 
     /**
@@ -100,20 +110,26 @@ public class ResponseContent implements Serializable {
      * @throws IOException
      */
     public void writeTo(ServletResponse response) throws IOException {
-        writeTo(response, false);
+        writeTo(response, false, false);
     }
-    
+
     /**
      * Writes this cached data out to the supplied <code>ServletResponse</code>.
      *
      * @param response The servlet response to output the cached content to.
      * @param fragment is true if this content a fragment or part of a page
+     * @param acceptsGZip is true if client browser supports gzip compression
      * @throws IOException
      */
-    public void writeTo(ServletResponse response, boolean fragment) throws IOException {
+    public void writeTo(ServletResponse response, boolean fragment, boolean acceptsGZip) throws IOException {
         //Send the content type and data to this response
         if (contentType != null) {
             response.setContentType(contentType);
+        }
+        
+        // Don't support gzip compression if the content is a fragment of a page
+        if (fragment) {
+            acceptsGZip = false;
         }
 
         // Don't add in the Last-Modified header in a fragment of a page
@@ -121,14 +137,49 @@ public class ResponseContent implements Serializable {
             ((HttpServletResponse) response).setDateHeader(CacheFilter.HEADER_LAST_MODIFIED, lastModified);
         }
 
-        response.setContentLength(content.length);
-
         if (locale != null) {
             response.setLocale(locale);
         }
 
         OutputStream out = new BufferedOutputStream(response.getOutputStream());
-        out.write(content);
+
+        if (isContentGZiped()) {
+            if (acceptsGZip) {
+                ((HttpServletResponse) response).addHeader("Content-Encoding", "gzip");
+                response.setContentLength(content.length);
+                out.write(content);
+            } else {
+                // client doesn't support, so we have to uncompress it
+                ByteArrayInputStream bais = new ByteArrayInputStream(content);
+                GZIPInputStream zis = new GZIPInputStream(bais);
+
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                int numBytesRead = 0;
+                byte[] tempBytes = new byte[4196];
+
+                while ((numBytesRead = zis.read(tempBytes, 0, tempBytes.length)) != -1) {
+                    baos.write(tempBytes, 0, numBytesRead);
+                }
+
+                byte[] result = baos.toByteArray();
+
+                response.setContentLength(result.length);
+                out.write(result);
+            }
+        } else {
+            // the content isn't compressed
+            // regardless if the client browser supports gzip we will just return the content
+            response.setContentLength(content.length);
+            out.write(content);
+        }
         out.flush();
+    }
+    
+    
+    /**
+     * @return true if the content is GZIP compressed
+     */
+    public boolean isContentGZiped() {
+        return "gzip".equals(contentEncoding);
     }
 }
