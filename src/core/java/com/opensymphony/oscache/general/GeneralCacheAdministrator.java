@@ -4,10 +4,7 @@
  */
 package com.opensymphony.oscache.general;
 
-import com.opensymphony.oscache.base.AbstractCacheAdministrator;
-import com.opensymphony.oscache.base.Cache;
-import com.opensymphony.oscache.base.EntryRefreshPolicy;
-import com.opensymphony.oscache.base.NeedsRefreshException;
+import com.opensymphony.oscache.base.*;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -116,7 +113,9 @@ public class GeneralCacheAdministrator extends AbstractCacheAdministrator {
      * Get an object from the cache
      *
      * @param key             The key entered by the user.
-     * @param refreshPeriod   How long the object can stay in cache in seconds.
+     * @param refreshPeriod   How long the object can stay in cache in seconds. To
+     * allow the entry to stay in the cache indefinitely, supply a value of
+     * {@link CacheEntry#INDEFINITE_EXPIRY}
      * @return   The object from cache
      * @throws NeedsRefreshException when no cache entry could be found with the
      * supplied key, or when an entry was found but is considered out of date. If
@@ -133,7 +132,9 @@ public class GeneralCacheAdministrator extends AbstractCacheAdministrator {
      * Get an object from the cache
      *
      * @param key             The key entered by the user.
-     * @param refreshPeriod   How long the object can stay in cache in seconds.
+     * @param refreshPeriod   How long the object can stay in cache in seconds. To
+     * allow the entry to stay in the cache indefinitely, supply a value of
+     * {@link CacheEntry#INDEFINITE_EXPIRY}
      * @param cronExpression  A cron expression that the age of the cache entry
      * will be compared to. If the entry is older than the most recent match for the
      * cron expression, the entry will be considered stale.
