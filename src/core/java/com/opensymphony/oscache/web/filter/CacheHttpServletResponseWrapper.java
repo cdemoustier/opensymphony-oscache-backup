@@ -24,6 +24,12 @@ import javax.servlet.http.HttpServletResponseWrapper;
  */
 public class CacheHttpServletResponseWrapper extends HttpServletResponseWrapper {
     private final Log log = LogFactory.getLog(this.getClass());
+
+    /**
+     * We cache the printWriter so we can maintain a single instance
+     * of it no matter how many times it is requested.
+     */
+    private PrintWriter cachedWriter;
     private ResponseContent result = null;
     private SplitServletOutputStream cacheOut = null;
     private int status = SC_OK;
@@ -171,7 +177,7 @@ public class CacheHttpServletResponseWrapper extends HttpServletResponseWrapper 
      * @throws IOException
      */
     public ServletOutputStream getOutputStream() throws IOException {
-        //Pass this faked servlet output stream that captures what is sent
+        // Pass this faked servlet output stream that captures what is sent
         if (cacheOut == null) {
             cacheOut = new SplitServletOutputStream(result.getOutputStream(), super.getOutputStream());
         }
@@ -185,6 +191,22 @@ public class CacheHttpServletResponseWrapper extends HttpServletResponseWrapper 
      * @throws IOException
      */
     public PrintWriter getWriter() throws IOException {
-        return new PrintWriter(getOutputStream());
+        if (cachedWriter == null) {
+            cachedWriter = new PrintWriter(getOutputStream());
+        }
+
+        return cachedWriter;
+    }
+
+    public void flushBuffer() throws IOException {
+        super.flushBuffer();
+
+        if (cacheOut != null) {
+            cacheOut.flush();
+        }
+
+        if (cachedWriter != null) {
+            cachedWriter.flush();
+        }
     }
 }
