@@ -109,6 +109,11 @@ public class ServletCacheAdministrator extends AbstractCacheAdministrator implem
     */
     private Map flushTimes;
 
+    /**
+     * Required so we can look up the app scope cache without forcing a session creation.
+     */
+    private transient ServletContext context;
+
     //private transient ServletContext context;
 
     /**
@@ -134,6 +139,7 @@ public class ServletCacheAdministrator extends AbstractCacheAdministrator implem
         //this.context = context;
         flushTimes = new HashMap();
         initHostDomainInKey();
+        this.context = context;
     }
 
     /**
@@ -171,6 +177,10 @@ public class ServletCacheAdministrator extends AbstractCacheAdministrator implem
             }
 
             admin.getAppScopeCache(context);
+        }
+
+        if (admin.context == null) {
+            admin.context = context;
         }
 
         return admin;
@@ -213,7 +223,7 @@ public class ServletCacheAdministrator extends AbstractCacheAdministrator implem
     */
     public Cache getCache(HttpServletRequest request, int scope) {
         if (scope == PageContext.APPLICATION_SCOPE) {
-            return getAppScopeCache(request.getSession(true).getServletContext());
+            return getAppScopeCache(context);
         }
 
         if (scope == PageContext.SESSION_SCOPE) {
