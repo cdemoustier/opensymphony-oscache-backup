@@ -157,6 +157,8 @@ public class FastCronParser {
         boolean haveDOM = validDaysOfMonth != Long.MAX_VALUE;
         boolean haveDOW = validDaysOfWeek != Long.MAX_VALUE;
 
+        boolean skippedNonLeapYear = false;
+
         while (true) {
             boolean retry = false;
 
@@ -173,34 +175,35 @@ public class FastCronParser {
                 for (int i = month + 11; i > (month - 1); i--) {
                     int testMonth = (i % 12) + 1;
 
-                    int numDays = numberOfDaysInMonth(testMonth, year);
-
                     // Check if the month is valid
                     if (((1L << (testMonth - 1)) & validMonths) != 0) {
-                        if (testMonth > month) {
+                        if ((testMonth > month) || skippedNonLeapYear) {
                             year--;
                         }
 
                         // Check there are enough days in this month (catches non leap-years trying to match the 29th Feb)
+                        int numDays = numberOfDaysInMonth(testMonth, year);
+
                         if (!haveDOM || (numDays >= lookupMin[DAY_OF_MONTH])) {
-                            if (month != testMonth) {
+                            if ((month != testMonth) || skippedNonLeapYear) {
                                 // New DOM = min(maxDOM, prevDays);  ie, the highest valid value
                                 dayOfMonth = (numDays <= lookupMax[DAY_OF_MONTH]) ? numDays : lookupMax[DAY_OF_MONTH];
-
                                 hour = lookupMax[HOUR];
                                 minute = lookupMax[MINUTE];
+                                month = testMonth;
                             }
 
-                            month = testMonth;
                             found = true;
                             break;
                         }
                     }
                 }
 
+                skippedNonLeapYear = false;
+
                 if (!found) {
                     // The only time we drop out here is when we're searching for the 29th of February and no other date!
-                    year--;
+                    skippedNonLeapYear = true;
                     continue;
                 }
             }
