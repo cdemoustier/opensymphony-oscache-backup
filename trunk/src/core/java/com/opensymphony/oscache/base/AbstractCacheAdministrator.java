@@ -38,7 +38,7 @@ public abstract class AbstractCacheAdministrator implements java.io.Serializable
      * should cache objects in memory. Set this property to <code>false</code>
      * to disable in-memory caching.
      */
-    protected final static String CACHE_MEMORY_KEY = "cache.memory";
+    public final static String CACHE_MEMORY_KEY = "cache.memory";
 
     /**
      * An integer cache configuration property that specifies the maximum number
@@ -46,7 +46,7 @@ public abstract class AbstractCacheAdministrator implements java.io.Serializable
      * disable the capacity functionality - there will be no limit to the number
      * of objects that are held in cache.
      */
-    protected final static String CACHE_CAPACITY_KEY = "cache.capacity";
+    public final static String CACHE_CAPACITY_KEY = "cache.capacity";
 
     /**
      * A String cache configuration property that specifies the classname of
@@ -57,7 +57,7 @@ public abstract class AbstractCacheAdministrator implements java.io.Serializable
      * {@link com.opensymphony.oscache.base.algorithm.UnlimitedCache} if the
      * capacity is negative (ie, disabled).
      */
-    protected final static String CACHE_ALGORITHM_KEY = "cache.algorithm";
+    public final static String CACHE_ALGORITHM_KEY = "cache.algorithm";
 
     /**
      * A boolean cache configuration property that indicates whether the persistent
@@ -65,7 +65,7 @@ public abstract class AbstractCacheAdministrator implements java.io.Serializable
      * as the in-memory cache. Set this property to <code>true</code> to allow the
      * persistent cache to grow without bound.
      */
-    protected final static String CACHE_DISK_UNLIMITED_KEY = "cache.unlimited.disk";
+    public final static String CACHE_DISK_UNLIMITED_KEY = "cache.unlimited.disk";
 
     /**
      * The configuration key that specifies whether we should block waiting for new
@@ -73,25 +73,26 @@ public abstract class AbstractCacheAdministrator implements java.io.Serializable
      * behaviour is to serve the old content since that provides the best performance
      * (at the cost of serving slightly stale data).
      */
-    protected final static String CACHE_BLOCKING_KEY = "cache.blocking";
+    public final static String CACHE_BLOCKING_KEY = "cache.blocking";
 
     /**
      * A String cache configuration property that specifies the classname that will
      * be used to provide cache persistence. This class must extend {@link PersistenceListener}.
      */
-    protected static final String PERSISTENCE_CLASS = "cache.persistence.class";
+    public static final String PERSISTENCE_CLASS_KEY = "cache.persistence.class";
 
     /**
      * A String cache configuration property that holds a comma-delimited list of
      * classnames. These classes specify the event handlers that are to be applied
      * to the cache.
      */
-    protected static final String CACHE_ENTRY_EVENT_LISTENERS = "cache.event.listeners";
+    public static final String CACHE_ENTRY_EVENT_LISTENERS_KEY = "cache.event.listeners";
+
     protected Config config = null;
 
     /**
      * Holds a list of all the registered event listeners. Event listeners are specified
-     * using the {@link #CACHE_ENTRY_EVENT_LISTENERS} configuration key.
+     * using the {@link #CACHE_ENTRY_EVENT_LISTENERS_KEY} configuration key.
      */
     protected EventListenerList listenerList = new EventListenerList();
 
@@ -217,7 +218,7 @@ public abstract class AbstractCacheAdministrator implements java.io.Serializable
     protected CacheEventListener[] getCacheEventListeners() {
         CacheEventListener[] listeners = null;
 
-        List classes = StringUtil.split(config.getProperty(CACHE_ENTRY_EVENT_LISTENERS), ',');
+        List classes = StringUtil.split(config.getProperty(CACHE_ENTRY_EVENT_LISTENERS_KEY), ',');
         listeners = new CacheEventListener[classes.size()];
 
         for (int i = 0; i < classes.size(); i++) {
@@ -257,7 +258,7 @@ public abstract class AbstractCacheAdministrator implements java.io.Serializable
      * @return the same cache object that was passed in.
      */
     protected Cache setPersistenceListener(Cache cache) {
-        String persistenceClassname = config.getProperty(PERSISTENCE_CLASS);
+        String persistenceClassname = config.getProperty(PERSISTENCE_CLASS_KEY);
 
         try {
             Class clazz = Class.forName(persistenceClassname);
@@ -282,11 +283,11 @@ public abstract class AbstractCacheAdministrator implements java.io.Serializable
      * @return cache The configured cache object.
      */
     protected Cache configureStandardListeners(Cache cache) {
-        if (config.getProperty(PERSISTENCE_CLASS) != null) {
+        if (config.getProperty(PERSISTENCE_CLASS_KEY) != null) {
             cache = setPersistenceListener(cache);
         }
 
-        if (config.getProperty(CACHE_ENTRY_EVENT_LISTENERS) != null) {
+        if (config.getProperty(CACHE_ENTRY_EVENT_LISTENERS_KEY) != null) {
             // Grab all the specified listeners and add them to the cache's
             // listener list. Note that listeners that implement more than
             // one of the event interfaces will be added multiple times.

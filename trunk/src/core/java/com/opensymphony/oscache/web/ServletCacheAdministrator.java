@@ -701,7 +701,7 @@ public class ServletCacheAdministrator extends AbstractCacheAdministrator implem
 
         newCache = (ServletCache) configureStandardListeners(newCache);
 
-        if (config.getProperty(CACHE_ENTRY_EVENT_LISTENERS) != null) {
+        if (config.getProperty(CACHE_ENTRY_EVENT_LISTENERS_KEY) != null) {
             // Add any event listeners that have been specified in the configuration
             CacheEventListener[] listeners = getCacheEventListeners();
 
