@@ -26,7 +26,6 @@ public class TestCache extends TestCase {
     private final String ENTRY_KEY = "Test cache key";
     private final int NO_REFRESH_NEEDED = CacheEntry.INDEFINITE_EXPIRY;
     private final int REFRESH_NEEDED = 0;
-    private final int SCOPE = 0;
 
     /**
      * Class constructor.
