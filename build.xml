@@ -106,7 +106,7 @@
 
         <war destfile="${dist.dir}/${name}-example.war" basedir="${src.webapp}" webxml="${src.webapp}/WEB-INF/web.xml" excludes="WEB-INF/web.xml">
             <lib dir="${lib.dir}/core"/>
-            <lib file="${dist.dir}/${name}_${version}${release}.jar"/>
+            <lib file="${dist.dir}/${name}-${version}${release}.jar"/>
             <webinf file="${src.dir}/core/etc/oscache.tld"/>
             <classes dir="${build.dir}/webapp"/>
         </war>
@@ -117,7 +117,7 @@
     <target name="jar" depends="format, compile, plugins-compile">
         <mkdir dir="${dist.dir}"/>
 
-        <jar jarfile="${dist.dir}/${name}_${version}${release}.jar" basedir="${build.dir}" includes="**" excludes="test/**, docs/**, *.war"/>
+        <jar jarfile="${dist.dir}/${name}-${version}${release}.jar" basedir="${build.dir}" includes="**" excludes="test/**, docs/**, *.war"/>
     </target>
 
 
@@ -291,12 +291,12 @@
             <fileset dir="${lib.dir}" excludes="build/**" />
         </copy>
 
-        <copy file="${dist.dir}/${name}_${version}${release}.jar" tofile="${tmp.dir}/${name}_${version}${release}.jar"/>
+        <copy file="${dist.dir}/${name}-${version}${release}.jar" tofile="${tmp.dir}/${name}-${version}${release}.jar"/>
         <copy file="${src.core}/etc/oscache.properties" tofile="${tmp.dir}/etc/oscache.properties"/>
         <copy file="${src.core}/etc/oscache.tld" tofile="${tmp.dir}/etc/oscache.tld"/>
         <copy file="readme.txt" tofile="${tmp.dir}/readme.txt" failonerror="false"/>
 
-        <zip zipfile="${dist.dir}/${name}_${version}${release}_full.zip" basedir="${tmp.dir}" includes="**"/>
+        <zip zipfile="${dist.dir}/${name}-${version}${release}-full.zip" basedir="${tmp.dir}" includes="**"/>
 
         <!-- Remove everything that's not in the binary release -->
         <delete dir="${tmp.dir}/src"/>
@@ -309,7 +309,7 @@
         <delete dir="${tmp.dir}/docs/junit"/>
         <delete dir="${tmp.dir}/docs/clover"/>
 
-        <zip zipfile="${dist.dir}/${name}_${version}${release}_binary.zip" basedir="${tmp.dir}" includes="**"/>
+        <zip zipfile="${dist.dir}/${name}-${version}${release}-binary.zip" basedir="${tmp.dir}" includes="**"/>
 
         <delete dir="${tmp.dir}"/>
     </target>
