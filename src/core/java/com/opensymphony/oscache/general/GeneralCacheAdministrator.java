@@ -17,55 +17,58 @@ import java.util.Properties;
  *
  * EXAMPLES :
  * <pre><code>
- *                // ---------------------------------------------------------------
- *                // Typical use with fail over
- *                // ---------------------------------------------------------------
- *    String myKey = "myKey";
- *    String myValue;
- *    int myRefreshPeriod = 1000;
- *                try
- *                {
- *                        // Get from the cache
- *                        myValue = (String) admin.getFromCache(myKey, myRefreshPeriod);
- *                }
- *                catch (NeedsRefreshException nre)
- *                {
- *                        try
- *                        {
- *                                // Get the value (probably by calling an EJB)
- *                                myValue = "This is the content retrieved.";
- *                                // Store in the cache
- *                                admin.putInCache(myKey,        myValue);
- *                        }
- *                        catch (Exception ex)
- *                        {
- *                                // We have the current content if we want fail-over.
- *                                myValue = (String) nre.getCacheContent();
- *                        }
- *                }
- *                // ---------------------------------------------------------------
- *                // ---------------------------------------------------------------
+ * // ---------------------------------------------------------------
+ * // Typical use with fail over
+ * // ---------------------------------------------------------------
+ * String myKey = "myKey";
+ * String myValue;
+ * int myRefreshPeriod = 1000;
+ * try {
+ *     // Get from the cache
+ *     myValue = (String) admin.getFromCache(myKey, myRefreshPeriod);
+ * } catch (NeedsRefreshException nre) {
+ *     try {
+ *         // Get the value (probably by calling an EJB)
+ *         myValue = "This is the content retrieved.";
+ *         // Store in the cache
+ *         admin.putInCache(myKey, myValue);
+ *     } catch (Exception ex) {
+ *         // We have the current content if we want fail-over.
+ *         myValue = (String) nre.getCacheContent();
+ *         // It is essential that cancelUpdate is called if the
+ *         // cached content is not rebuilt
+ *         admin.cancelUpdate(myKey);
+ *     }
+ * }
  *
- *                // ---------------------------------------------------------------
- *                // Typical use without fail over
- *                // ---------------------------------------------------------------
- *      String myKey = "myKey";
- *                String myValue;
- *      int myRefreshPeriod = 1000;
- *                try
- *                {
- *                        // Get from the cache
- *                        myValue = (String) admin.getFromCache(myKey, myRefreshPeriod);
- *                }
- *                catch (NeedsRefreshException nre)
- *                {
- *                        // Get the value (probably by calling an EJB)
- *                        myValue = "This is the content retrieved.";
- *                        // Store in the cache
- *                        admin.putInCache(myKey,        myValue);
- *                }
- *                // ---------------------------------------------------------------
- *                // ---------------------------------------------------------------
+ *
+ *
+ * // ---------------------------------------------------------------
+ * // Typical use without fail over
+ * // ---------------------------------------------------------------
+ * String myKey = "myKey";
+ * String myValue;
+ * int myRefreshPeriod = 1000;
+ * try {
+ *     // Get from the cache
+ *     myValue = (String) admin.getFromCache(myKey, myRefreshPeriod);
+ * } catch (NeedsRefreshException nre) {
+ *     try {
+ *         // Get the value (probably by calling an EJB)
+ *         myValue = "This is the content retrieved.";
+ *         // Store in the cache
+ *         admin.putInCache(myKey, myValue);
+ *         updated = true;
+ *     } finally {
+ *         if (!updated) {
+ *             // It is essential that cancelUpdate is called if the
+ *             // cached content could not be rebuilt
+ *             admin.cancelUpdate(myKey);
+ *         }
+ *     }
+ * }
+ * // ---------------------------------------------------------------
+ * // ---------------------------------------------------------------
  * </code></pre>
  *
  * @version        $Revision$
@@ -107,6 +110,22 @@ public class GeneralCacheAdministrator extends AbstractCacheAdministrator {
         }
 
         return applicationCache;
+    }
+
+    /**
+     * Get an object from the cache
+     *
+     * @param key             The key entered by the user.
+     * @return   The object from cache
+     * @throws NeedsRefreshException when no cache entry could be found with the
+     * supplied key, or when an entry was found but is considered out of date. If
+     * the cache entry is a new entry that is currently being constructed this method
+     * will block until the new entry becomes available. Similarly, it will block if
+     * a stale entry is currently being rebuilt by another thread and cache blocking is
+     * enabled (<code>cache.blocking=true</code>).
+     */
+    public Object getFromCache(String key) throws NeedsRefreshException {
+        return getCache().getFromCache(key);
     }
 
     /**
