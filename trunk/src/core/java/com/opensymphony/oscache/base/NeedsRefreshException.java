@@ -11,6 +11,11 @@ package com.opensymphony.oscache.base;
  * Note that for fault tolerance purposes, it is possible to retrieve the
  * current cached object from the exception.
  *
+ * <p>January, 2004 - The OSCache developers are aware of the fact that throwing
+ * an exception for a perfect valid situation (cache miss) is design smell. This will
+ * be removed in the near future, and other means of refreshing the cache will be 
+ * provided.</p>
+ *
  * @author        <a href="mailto:fbeauregard@pyxis-tech.com">Francois Beauregard</a>
  * @version        $Revision$
  */
