@@ -315,8 +315,8 @@ public class CacheTag extends BodyTagSupport implements TryCatchFinally {
     * @param useBody Whether or not to use the cached content.
     */
     public void setUseBody(boolean useBody) {
-        if (log.isInfoEnabled()) {
-            log.info("<cache>: Set useBody to " + useBody);
+        if (log.isDebugEnabled()) {
+            log.debug("<cache>: Set useBody to " + useBody);
         }
 
         this.useBody = useBody;
@@ -350,8 +350,8 @@ public class CacheTag extends BodyTagSupport implements TryCatchFinally {
                         }
                     }
 
-                    if (log.isInfoEnabled()) {
-                        log.info("<cache>: Updating cache entry with new content : " + actualKey);
+                    if (log.isDebugEnabled()) {
+                        log.debug("<cache>: Updating cache entry with new content : " + actualKey);
                     }
 
                     cancelUpdateRequired = false;
@@ -504,8 +504,8 @@ public class CacheTag extends BodyTagSupport implements TryCatchFinally {
         }
 
         if (returnCode == EVAL_BODY_BUFFERED) {
-            if (log.isInfoEnabled()) {
-                log.info("<cache>: Cached content not used: New cache entry, cache stale or scope flushed : " + actualKey);
+            if (log.isDebugEnabled()) {
+                log.debug("<cache>: Cached content not used: New cache entry, cache stale or scope flushed : " + actualKey);
             }
         }
 
