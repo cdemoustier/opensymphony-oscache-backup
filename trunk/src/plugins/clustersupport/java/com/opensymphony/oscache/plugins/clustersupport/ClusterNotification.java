@@ -20,35 +20,35 @@ public class ClusterNotification implements Serializable {
      * Specifies a notification message that indicates a particular cache key
      * should be flushed.
      */
-    static final int FLUSH_KEY = 1;
+    public static final int FLUSH_KEY = 1;
 
     /**
      * Specifies a notification message that indicates an entire cache group
      * should be flushed.
      */
-    static final int FLUSH_GROUP = 2;
+    public static final int FLUSH_GROUP = 2;
 
     /**
      * Specifies a notification message that indicates all entries in the cache
      * that match the specified pattern should be flushed.
      */
-    static final int FLUSH_PATTERN = 3;
+    public static final int FLUSH_PATTERN = 3;
 
     /**
      * Specifies a notification message indicating that an entire cache should
      * be flushed.
      */
-    static final int FLUSH_CACHE = 4;
+    public static final int FLUSH_CACHE = 4;
 
     /**
      * Any additional data that may be required
      */
-    private Serializable data;
+    protected Serializable data;
 
     /**
      * The type of notification message.
      */
-    private int type;
+    protected int type;
 
     /**
      * Creates a new notification message object to broadcast to other
