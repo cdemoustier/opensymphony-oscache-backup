@@ -165,6 +165,25 @@ public class Cache implements Serializable {
      * Retrieve an object from the cache specifying its key.
      *
      * @param key             Key of the object in the cache.
+     *
+     * @return The object from cache
+     *
+     * @throws NeedsRefreshException Thrown when the object either
+     * doesn't exist, or exists but is stale. When this exception occurs,
+     * the CacheEntry corresponding to the supplied key will be locked
+     * and other threads requesting this entry will potentially be blocked
+     * until the caller repopulates the cache. If the caller choses not
+     * to repopulate the cache, they <em>must</em> instead call
+     * {@link #cancelUpdate(String)}.
+     */
+    public Object getFromCache(String key) throws NeedsRefreshException {
+        return getFromCache(key, CacheEntry.INDEFINITE_EXPIRY, null);
+    }
+
+    /**
+     * Retrieve an object from the cache specifying its key.
+     *
+     * @param key             Key of the object in the cache.
      * @param refreshPeriod   How long before the object needs refresh. To
      * allow the object to stay in the cache indefinitely, supply a value
      * of {@link CacheEntry#INDEFINITE_EXPIRY}.
