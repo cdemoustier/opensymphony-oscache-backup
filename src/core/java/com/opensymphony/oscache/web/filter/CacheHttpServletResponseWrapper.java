@@ -93,7 +93,7 @@ public class CacheHttpServletResponseWrapper extends HttpServletResponseWrapper 
         }
 
         // only set the last modified value, if a complete page is cached
-        if ((!fragment) && (CacheFilter.HEADER_IF_MODIFIED_SINCE.equalsIgnoreCase(name))) {
+        if ((!fragment) && (CacheFilter.HEADER_LAST_MODIFIED.equalsIgnoreCase(name))) {
             result.setLastModified(value);
         }
         
@@ -117,7 +117,7 @@ public class CacheHttpServletResponseWrapper extends HttpServletResponseWrapper 
         }
 
         // only set the last modified value, if a complete page is cached
-        if ((!fragment) && (CacheFilter.HEADER_IF_MODIFIED_SINCE.equalsIgnoreCase(name))) {
+        if ((!fragment) && (CacheFilter.HEADER_LAST_MODIFIED.equalsIgnoreCase(name))) {
             result.setLastModified(value);
         }
         
