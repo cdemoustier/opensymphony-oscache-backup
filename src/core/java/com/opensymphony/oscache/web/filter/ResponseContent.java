@@ -25,7 +25,6 @@ public class ResponseContent implements Serializable {
     private String contentType = null;
     private byte[] content = null;
     private long lastModified = -1;
-    private long expires = Long.MAX_VALUE;
 
     /**
      * Set the content type. We capture this so that when we serve this
@@ -49,21 +48,6 @@ public class ResponseContent implements Serializable {
      */
     public void setLocale(Locale value) {
         locale = value;
-    }
-
-    /**
-     * @return the expires date and time in miliseconds when the content is stale
-     */
-    public long getExpires() {
-        return expires;
-    }
-
-    /**
-     * Sets the expires date and time in miliseconds.
-     * @param value time in miliseconds when the content will expire
-     */
-    public void setExpires(long value) {
-        expires = value;
     }
 
     /**
@@ -100,25 +84,13 @@ public class ResponseContent implements Serializable {
      * @throws IOException
      */
     public void writeTo(ServletResponse response) throws IOException {
-        writeTo(response, false);
-    }
-    
-    /**
-     * Writes this cached data out to the supplied <code>ServletResponse</code>.
-     *
-     * @param response The servlet response to output the cached content to.
-     * @param fragment is true if this content a fragment or part of a page
-     * @throws IOException
-     */
-    public void writeTo(ServletResponse response, boolean fragment) throws IOException {
         //Send the content type and data to this response
         if (contentType != null) {
             response.setContentType(contentType);
         }
 
-        // Don't add in the Last-Modified header in a fragment of a page
-        if ((!fragment) && (response instanceof HttpServletResponse)) {
-            ((HttpServletResponse) response).setDateHeader(CacheFilter.HEADER_LAST_MODIFIED, lastModified);
+        if (response instanceof HttpServletResponse) {
+            ((HttpServletResponse) response).setDateHeader("Last-Modified", lastModified);
         }
 
         response.setContentLength(content.length);

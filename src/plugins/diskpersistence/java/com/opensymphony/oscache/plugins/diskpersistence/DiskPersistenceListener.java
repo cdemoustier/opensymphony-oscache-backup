@@ -4,6 +4,20 @@
  */
 package com.opensymphony.oscache.plugins.diskpersistence;
 
+import com.opensymphony.oscache.base.Config;
+import com.opensymphony.oscache.base.persistence.CachePersistenceException;
+import com.opensymphony.oscache.base.persistence.PersistenceListener;
+import com.opensymphony.oscache.web.ServletCacheAdministrator;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+import java.io.*;
+
+import java.util.Set;
+
+import javax.servlet.jsp.PageContext;
+
 /**
  * Persist the cache data to disk.
  *
@@ -16,9 +30,6 @@ package com.opensymphony.oscache.plugins.diskpersistence;
  * @author <a href="&#109;a&#105;&#108;&#116;&#111;:chris&#64;swebtec.&#99;&#111;&#109;">Chris Miller</a>
  */
 public class DiskPersistenceListener extends AbstractDiskPersistenceListener {
-    
-    private static final String CHARS_TO_CONVERT = "./\\ :;\"\'_?";
-    
     /**
     * Build cache file name for the specified cache entry key.
     *
@@ -31,24 +42,27 @@ public class DiskPersistenceListener extends AbstractDiskPersistenceListener {
         }
 
         char[] chars = key.toCharArray();
-        
-        StringBuffer sb = new StringBuffer(chars.length + 8);
+        char[] fileChars = new char[chars.length];
 
         for (int i = 0; i < chars.length; i++) {
             char c = chars[i];
-            int pos = CHARS_TO_CONVERT.indexOf(c);
-    
-            if (i >= 0) {
-                sb.append('_');
-                sb.append(i);
-            } else {
-                sb.append(c);
-            }
 
+            switch (c) {
+                case '.':
+                case '/':
+                case '\\':
+                case ' ':
+                case ':':
+                case ';':
+                case '"':
+                case '\'':
+                    fileChars[i] = '_';
+                    break;
+                default:
+                    fileChars[i] = c;
+            }
         }
 
-        char[] fileChars = new char[sb.length()];
-        sb.getChars(0, fileChars.length, fileChars, 0);
         return fileChars;
     }
 }
