@@ -111,6 +111,7 @@ public class CacheFilter implements Filter {
                 log.info("<cache>: Using cached entry for " + key);
             }
 
+            boolean acceptsGZip = false;
             if (!fragmentRequest) {
                 long clientLastModified = httpRequest.getDateHeader(HEADER_IF_MODIFIED_SINCE); // will return -1 if no header...
 
@@ -120,9 +121,13 @@ public class CacheFilter implements Filter {
                     ((HttpServletResponse) response).setStatus(HttpServletResponse.SC_NOT_MODIFIED);
                     return;
                 }
+                
+                acceptsGZip = respContent.isContentGZiped() && acceptsGZipEncoding(httpRequest); 
             }
 
-            respContent.writeTo(response, fragmentRequest, acceptsGZipEncoding(httpRequest));
+            respContent.writeTo(response, fragmentRequest, acceptsGZip);
+            // acceptsGZip is used for performance reasons above; use the following line for CACHE-49
+            // respContent.writeTo(response, fragmentRequest, acceptsGZipEncoding(httpRequest));
         } catch (NeedsRefreshException nre) {
             boolean updateSucceeded = false;
 
