@@ -17,7 +17,7 @@
 <a href="<%= request.getContextPath() %>/oscache/cron.html">Cron Expressions</a><br>
 <a href="<%= request.getContextPath() %>/oscache/hibernate.html">OSCache and Hibernate</a><br>
 <a href="<%= request.getContextPath() %>/oscache/clustering.html">Clustering</a><br>
-<a href="<%= request.getContextPath() %>/oscache/api/">API Docs</a>
+<a href="<%= request.getContextPath() %>/oscache/api/">API Reference</a>
 </p>
 
 <p>
