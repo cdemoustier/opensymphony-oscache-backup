@@ -149,12 +149,12 @@ public class LRUCache extends AbstractConcurrentReadCache {
     protected void itemPut(Object key) {
         // Since this entry was just accessed, move it to the back of the list.
         if (isMap) {
-            synchronized (map) {             // A further fix for CACHE-44
+            synchronized (map) { // A further fix for CACHE-44
                 map.remove(key);
                 map.put(key, Boolean.TRUE);
             }
         } else {
-            synchronized (list) {            // A further fix for CACHE-44
+            synchronized (list) { // A further fix for CACHE-44
                 list.remove(key);
                 list.add(key);
             }
