@@ -29,7 +29,7 @@ import javax.servlet.jsp.PageContext;
  * @author <a href="mailto:abergevin@pyxis-tech.com">Alain Bergevin</a>
  * @author <a href="&#109;a&#105;&#108;&#116;&#111;:chris&#64;swebtec.&#99;&#111;&#109;">Chris Miller</a>
  */
-public final class DiskPersistenceListener implements PersistenceListener {
+public final class DiskPersistenceListener implements PersistenceListener, Serializable {
     protected final static String CACHE_PATH_KEY = "cache.path";
 
     /**
