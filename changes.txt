@@ -2,6 +2,8 @@ OSCACHE 2.0
 -------------
 Bug fixes:
 - [CACHE-52] Fixed a problem that caused no output on Tomcat for small JSP files.
+- [CACHE-53] Updated documentation to explain that a PersistenceListener must
+  be specified to enable caching to disk.
 - [CACHE-55] JMS was throwing an exception on Weblogic.
 - Altering the cache capacity on the fly using the administrator classes wasn't
   working correctly.
@@ -10,6 +12,7 @@ Improvements:
 - Minor FastCronParser speedup.
 - Made ClusterNotification constants public.
 - Dropped some of the logging levels from INFO down to DEBUG.
+- Release has been split into two - a binary release and a full release (includes source).
 
 
 OSCACHE 2.0 (beta 2)
