@@ -85,7 +85,7 @@ public abstract class AbstractCacheAdministrator implements java.io.Serializable
      * A String cache configuration property that specifies if the cache persistence
      * will only be used in overflow mode, that is, when the memory cache capacity has been reached.
      */
-    private static final String CACHE_PERSISTENCE_OVERFLOW_KEY = "cache.persistence.overflow.only";
+    public static final String CACHE_PERSISTENCE_OVERFLOW_KEY = "cache.persistence.overflow.only";
 
     /**
      * A String cache configuration property that holds a comma-delimited list of

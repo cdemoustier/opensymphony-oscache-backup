@@ -30,7 +30,7 @@ import javax.servlet.jsp.PageContext;
  * @author <a href="mailto:amarch@soe.sony.com">Andres March</a>
  */
 public abstract class AbstractDiskPersistenceListener implements PersistenceListener, Serializable {
-    protected final static String CACHE_PATH_KEY = "cache.path";
+    public final static String CACHE_PATH_KEY = "cache.path";
 
     /**
     * File extension for disk cache file

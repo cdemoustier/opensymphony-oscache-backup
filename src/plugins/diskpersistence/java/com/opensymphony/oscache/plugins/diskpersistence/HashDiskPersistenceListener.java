@@ -20,7 +20,7 @@ import java.security.NoSuchAlgorithmException;
  * @author <a href="mailto:jparrott@soe.sony.com">Jason Parrott</a>
  */
 public class HashDiskPersistenceListener extends AbstractDiskPersistenceListener {
-    protected final static String HASH_ALGORITHM_KEY = "cache.persistence.disk.hash.algorithm";
+    public final static String HASH_ALGORITHM_KEY = "cache.persistence.disk.hash.algorithm";
     public final static String DEFAULT_HASH_ALGORITHM = "MD5";
     protected MessageDigest md = null;
 
