@@ -173,6 +173,8 @@ public class ServletCacheAdministrator extends AbstractCacheAdministrator implem
             if (log.isInfoEnabled()) {
                 log.info("Created new instance of ServletCacheAdministrator");
             }
+
+            admin.getAppScopeCache(context);
         }
 
         return admin;
@@ -688,7 +690,7 @@ public class ServletCacheAdministrator extends AbstractCacheAdministrator implem
         newCache = (ServletCache) configureStandardListeners(newCache);
 
         if (config.getProperty(CACHE_ENTRY_EVENT_LISTENERS) != null) {
-            // Add any scope listeners that have been specified in the configuration
+            // Add any event listeners that have been specified in the configuration
             CacheEventListener[] listeners = getCacheEventListeners();
 
             for (int i = 0; i < listeners.length; i++) {
