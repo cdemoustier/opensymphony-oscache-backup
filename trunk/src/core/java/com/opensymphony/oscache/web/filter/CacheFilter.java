@@ -45,7 +45,9 @@ public class CacheFilter implements Filter {
     private final static String REQUEST_FILTERED = "__oscache_filtered";
 
     // the policy for the expires header
-    private static final ExpiresRefreshPolicy EXPIRES_REFRESH_POLICY = new ExpiresRefreshPolicy();
+    private ExpiresRefreshPolicy expiresRefreshPolicy;
+    
+    // the logger
     private final Log log = LogFactory.getLog(this.getClass());
 
     // filter variables
@@ -143,7 +145,7 @@ public class CacheFilter implements Filter {
                 // Only cache if the response was 200
                 if (cacheResponse.getStatus() == HttpServletResponse.SC_OK) {
                     //Store as the cache content the result of the response
-                    cache.putInCache(key, cacheResponse.getContent(), EXPIRES_REFRESH_POLICY);
+                    cache.putInCache(key, cacheResponse.getContent(), expiresRefreshPolicy);
                     updateSucceeded = true;
                 }
             } finally {
@@ -181,6 +183,9 @@ public class CacheFilter implements Filter {
         } catch (Exception e) {
             log.info("Could not get init parameter 'time', defaulting to one hour.");
         }
+        
+        // setting the refresh period for this cache filter
+        expiresRefreshPolicy = new ExpiresRefreshPolicy(time);
 
         try {
             String scopeString = config.getInitParameter("scope");

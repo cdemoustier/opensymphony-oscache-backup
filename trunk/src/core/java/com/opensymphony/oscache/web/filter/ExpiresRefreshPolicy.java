@@ -17,6 +17,18 @@ import com.opensymphony.oscache.base.NeedsRefreshException;
  */
 public class ExpiresRefreshPolicy implements EntryRefreshPolicy {
     
+    /** the refresh period (in milliseconds) of a certain cache filter*/
+    private long refreshPeriod;
+
+    /**
+     * Constructor ExpiresRefreshPolicy.
+     *
+     * @param refreshPeriod the refresh period in seconds
+     */
+    public ExpiresRefreshPolicy(int refreshPeriod) {
+        this.refreshPeriod = refreshPeriod * 1000L;
+    }
+    
     /**
      * Indicates whether the supplied <code>CacheEntry</code> needs to be refreshed.
      * This will be called when retrieving an entry from the cache - if this method
@@ -30,11 +42,18 @@ public class ExpiresRefreshPolicy implements EntryRefreshPolicy {
      * @see CacheEntry
      */
     public boolean needsRefresh(CacheEntry entry) {
-        if (entry.getContent() instanceof ResponseContent) {
+        
+        long currentTimeMillis = System.currentTimeMillis();
+        
+        if ((refreshPeriod >= 0) && (currentTimeMillis >= (entry.getLastUpdate() + refreshPeriod))) {
+            return true;
+        } else if (entry.getContent() instanceof ResponseContent) {
             ResponseContent responseContent = (ResponseContent) entry.getContent();
-            return System.currentTimeMillis() >= responseContent.getExpires();
+            return currentTimeMillis >= responseContent.getExpires();
         } else {
             return false;
         }
+        
     }
+    
 }
