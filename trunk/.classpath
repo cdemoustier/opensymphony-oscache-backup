@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src/core/java"/>
+	<classpathentry output="build.test" kind="src" path="src/core/test"/>
+	<classpathentry kind="src" path="src/plugins/clustersupport/java"/>
+	<classpathentry output="build.test" kind="src" path="src/plugins/clustersupport/test"/>
+	<classpathentry kind="src" path="src/plugins/diskpersistence/java"/>
+	<classpathentry output="build.test" kind="src" path="src/plugins/diskpersistence/test"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="lib/build/clover-1.2.3.jar"/>
+	<classpathentry kind="lib" path="lib/build/commons-net-1.0.0.jar"/>
+	<classpathentry kind="lib" path="lib/build/httpunit.jar"/>
+	<classpathentry kind="lib" path="lib/build/jms.jar"/>
+	<classpathentry kind="lib" path="lib/build/junit-3.8.1.jar"/>
+	<classpathentry kind="lib" path="lib/build/junitperf.jar"/>
+	<classpathentry kind="lib" path="lib/build/optional.jar"/>
+	<classpathentry kind="lib" path="lib/build/servlet.jar"/>
+	<classpathentry kind="lib" path="lib/core/commons-logging.jar"/>
+	<classpathentry kind="lib" path="C:/tools/apache-ant-1.6.1/lib/ant-junit.jar"/>
+	<classpathentry kind="lib" path="lib/plugins/clustersupport/jgroups-2.2.7.jar"/>
+	<classpathentry kind="lib" path="lib/core/commons-collections-3.1.jar"/>
+	<classpathentry kind="output" path="build"/>
+</classpath>
