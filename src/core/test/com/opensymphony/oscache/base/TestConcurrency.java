@@ -162,6 +162,8 @@ public class TestConcurrency extends TestCase {
      */
     public void testStaleEntry() {
         String key = "stale";
+        assertFalse("The cache should not be in blocking mode for this test.", admin.isBlocking());
+
         admin.putInCache(key, VALUE);
 
         try {
@@ -179,7 +181,7 @@ public class TestConcurrency extends TestCase {
 
             // Sleep for a bit to simulate the time taken to build the cache entry
             try {
-                Thread.sleep(1000);
+                Thread.sleep(200);
             } catch (InterruptedException ie) {
             }
 
@@ -199,6 +201,11 @@ public class TestConcurrency extends TestCase {
                 admin.cancelUpdate(key);
                 fail("Should not have received a NeedsRefreshException");
             }
+            // Give the GetEntry thread a chance to finish
+            try {
+                Thread.sleep(200);
+            } catch (InterruptedException ie) {
+            }
         }
     }
 
@@ -213,36 +220,30 @@ public class TestConcurrency extends TestCase {
         p.setProperty(AbstractCacheAdministrator.CACHE_BLOCKING_KEY, "true");
         admin = new GeneralCacheAdministrator(p);
 
+        assertTrue("The cache should be in blocking mode for this test.", admin.isBlocking());
+
         // Use a unique key in case these test entries are being persisted
         String key = "blocking";
-        String NEW_VALUE = VALUE + "abc";
+        String NEW_VALUE = VALUE + " abc";
         admin.putInCache(key, VALUE);
 
-        // Sleep for a couple of seconds
         try {
-            Thread.sleep(1100);
-        } catch (InterruptedException ie) {
-        }
-
-        try {
-            // This should throw a NeedsRefreshException since the entry is
-            // more than 1 second old
-            admin.getFromCache(key, 1);
+            // Force a NeedsRefreshException
+            admin.getFromCache(key, 0);
             fail("NeedsRefreshException should have been thrown");
         } catch (NeedsRefreshException nre) {
             // Fire off another thread to get the same cache entry.
             // Since blocking mode is enabled this thread should block
             // until the entry has been updated.
-            GetEntry getEntry = new GetEntry(key, NEW_VALUE, 1, false);
+            GetEntry getEntry = new GetEntry(key, NEW_VALUE, 0, false);
             Thread thread = new Thread(getEntry);
             thread.start();
 
             // Sleep for a bit to simulate the time taken to build the cache entry
             try {
-                Thread.sleep(500);
+                Thread.sleep(200);
             } catch (InterruptedException ie) {
             }
-
             // Putting the entry in the cache should mean that threads now retrieve
             // the updated entry
             admin.putInCache(key, NEW_VALUE);
