@@ -9,6 +9,7 @@ import org.apache.commons.logging.LogFactory;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.OutputStreamWriter;
 
 import java.util.Locale;
 
@@ -95,10 +96,33 @@ public class CacheHttpServletResponseWrapper extends HttpServletResponseWrapper 
         if (log.isDebugEnabled()) {
             log.debug("header: " + name + ": " + value);
         }
+        
+        if (CacheFilter.HEADER_CONTENT_ENCODING.equalsIgnoreCase(name)) {
+            result.setContentEncoding(value);
+        }
 
         super.setHeader(name, value);
     }
 
+    /**
+     * Add a header field
+     *
+     * @param name The header name
+     * @param value The header value
+     */
+    public void addHeader(String name, String value) {
+        if (log.isDebugEnabled()) {
+            log.debug("header: " + name + ": " + value);
+        }
+
+        if (CacheFilter.HEADER_CONTENT_ENCODING.equalsIgnoreCase(name)) {
+            result.setContentEncoding(value);
+        }
+
+        super.addHeader(name, value);
+    }
+
+    
     /**
      * Set the int value of the header
      *
@@ -196,7 +220,7 @@ public class CacheHttpServletResponseWrapper extends HttpServletResponseWrapper 
      */
     public PrintWriter getWriter() throws IOException {
         if (cachedWriter == null) {
-            cachedWriter = new PrintWriter(getOutputStream());
+            cachedWriter = new PrintWriter(new OutputStreamWriter(getOutputStream(), result.getContentEncoding()));
         }
 
         return cachedWriter;
