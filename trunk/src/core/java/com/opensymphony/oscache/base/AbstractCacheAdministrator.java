@@ -216,24 +216,26 @@ public abstract class AbstractCacheAdministrator implements java.io.Serializable
     protected CacheEventListener[] getCacheEventListeners() {
         CacheEventListener[] listeners = null;
 
-        String[] classes = StringUtil.split(config.getProperty(CACHE_ENTRY_EVENT_LISTENERS), ',');
-        listeners = new CacheEventListener[classes.length];
+        List classes = StringUtil.split(config.getProperty(CACHE_ENTRY_EVENT_LISTENERS), ',');
+        listeners = new CacheEventListener[classes.size()];
 
-        for (int i = 0; i < classes.length; i++) {
+        for (int i = 0; i < classes.size(); i++) {
+            String className = (String) classes.get(i);
+
             try {
-                Class clazz = Class.forName(classes[i]);
+                Class clazz = Class.forName(className);
 
                 if (!CacheEventListener.class.isAssignableFrom(clazz)) {
-                    log.error("Specified listener class '" + classes[i] + "' does not implement CacheEventListener. Ignoring this listener.");
+                    log.error("Specified listener class '" + className + "' does not implement CacheEventListener. Ignoring this listener.");
                 } else {
                     listeners[i] = (CacheEventListener) clazz.newInstance();
                 }
             } catch (ClassNotFoundException e) {
-                log.error("CacheEventListener class '" + classes[i] + "' not found. Ignoring this listener.", e);
+                log.error("CacheEventListener class '" + className + "' not found. Ignoring this listener.", e);
             } catch (InstantiationException e) {
-                log.error("CacheEventListener class '" + classes[i] + "' could not be instantiated because it is not a concrete class. Ignoring this listener.", e);
+                log.error("CacheEventListener class '" + className + "' could not be instantiated because it is not a concrete class. Ignoring this listener.", e);
             } catch (IllegalAccessException e) {
-                log.error("CacheEventListener class '" + classes[i] + "' could not be instantiated because it is not public. Ignoring this listener.", e);
+                log.error("CacheEventListener class '" + className + "' could not be instantiated because it is not public. Ignoring this listener.", e);
             }
         }
 
