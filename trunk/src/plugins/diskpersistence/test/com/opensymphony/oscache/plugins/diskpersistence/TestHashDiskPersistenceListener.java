@@ -2,8 +2,19 @@
  * Copyright (c) 2002-2003 by OpenSymphony
  * All rights reserved.
  */
+/*
+ * Created on Aug 30, 2004
+ *
+ * TODO To change the template for this generated file go to
+ * Window - Preferences - Java - Code Style - Code Templates
+ */
 package com.opensymphony.oscache.plugins.diskpersistence;
 
+
+/*
+ * Copyright (c) 2002-2003 by OpenSymphony
+ * All rights reserved.
+ */
 import com.opensymphony.oscache.base.CacheEntry;
 import com.opensymphony.oscache.base.Config;
 import com.opensymphony.oscache.base.persistence.CachePersistenceException;
@@ -27,16 +38,11 @@ import java.util.Set;
  * @version        $Revision$
  * @author <a href="mailto:abergevin@pyxis-tech.com">Alain Bergevin</a>
  */
-public final class TestDiskPersistenceListener extends TestCase {
-    /**
-     * Cache dir to persist to
-     */
-    public static final String CACHEDIR = "build.test/diskcache";
-
+public final class TestHashDiskPersistenceListener extends TestCase {
     /**
      * The persistance listener used for the tests
      */
-    private DiskPersistenceListener listener = null;
+    private HashDiskPersistenceListener listener = null;
 
     /**
      * Object content
@@ -54,7 +60,7 @@ public final class TestDiskPersistenceListener extends TestCase {
     private final String KEY = "Test disk persistance listener key";
     private CacheFileFilter cacheFileFilter = new CacheFileFilter();
 
-    public TestDiskPersistenceListener(String str) {
+    public TestHashDiskPersistenceListener(String str) {
         super(str);
     }
 
@@ -64,7 +70,7 @@ public final class TestDiskPersistenceListener extends TestCase {
      * @return The test for this class
      */
     public static Test suite() {
-        return new TestSuite(TestDiskPersistenceListener.class);
+        return new TestSuite(TestHashDiskPersistenceListener.class);
     }
 
     /**
@@ -73,12 +79,13 @@ public final class TestDiskPersistenceListener extends TestCase {
      */
     public void setUp() {
         // At first invocation, create a listener
-        listener = new DiskPersistenceListener();
+        listener = new HashDiskPersistenceListener();
 
         Properties p = new Properties();
-        p.setProperty("cache.path", CACHEDIR);
+        p.setProperty("cache.path", TestBasicDiskPersistenceListener.CACHEDIR);
         p.setProperty("cache.memory", "false");
-        p.setProperty("cache.persistence.class", "com.opensymphony.oscache.plugins.diskpersistence.DiskPersistenceListener");
+        p.setProperty("cache.persistence.class", "com.opensymphony.oscache.plugins.diskpersistence.HashDiskPersistenceListener");
+        p.setProperty("cache.persistence.disk.hash.algorithm", "MD5");
         listener.configure(new Config(p));
     }
 
@@ -190,7 +197,7 @@ public final class TestDiskPersistenceListener extends TestCase {
 
     protected void tearDown() throws Exception {
         listener.clear();
-        assertTrue("Cache not cleared", new File(CACHEDIR).list(cacheFileFilter).length == 0);
+        assertTrue("Cache not cleared", new File(TestBasicDiskPersistenceListener.CACHEDIR).list(cacheFileFilter).length == 0);
     }
 
     private static class CacheFileFilter implements FilenameFilter {

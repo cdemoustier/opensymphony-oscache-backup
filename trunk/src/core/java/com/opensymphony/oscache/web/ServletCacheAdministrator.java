@@ -42,91 +42,91 @@ public class ServletCacheAdministrator extends AbstractCacheAdministrator implem
     private static final transient Log log = LogFactory.getLog(ServletCacheAdministrator.class);
 
     /**
-     * Constants for properties read/written from/to file
-     */
+ * Constants for properties read/written from/to file
+ */
     private final static String CACHE_USE_HOST_DOMAIN_KEY = "cache.use.host.domain.in.key";
     private final static String CACHE_KEY_KEY = "cache.key";
 
     /**
-     * The default cache key that is used to store the cache in context.
-     */
+ * The default cache key that is used to store the cache in context.
+ */
     private final static String DEFAULT_CACHE_KEY = "__oscache_cache";
 
     /**
-     * Constants for scope's name
-     */
+ * Constants for scope's name
+ */
     public final static String SESSION_SCOPE_NAME = "session";
     public final static String APPLICATION_SCOPE_NAME = "application";
 
     /**
-     * The key under which the CacheAdministrator will be stored in the ServletContext
-     */
+ * The key under which the CacheAdministrator will be stored in the ServletContext
+ */
     private final static String CACHE_ADMINISTRATOR_KEY = "__oscache_admin";
 
     /**
-     * Key used to store the current scope in the configuration. This is a hack
-     * to let the scope information get passed through to the DiskPersistenceListener,
-     * and will be removed in a future release.
-     */
+ * Key used to store the current scope in the configuration. This is a hack
+ * to let the scope information get passed through to the BasicDiskPersistenceListener,
+ * and will be removed in a future release.
+ */
     public final static String HASH_KEY_SCOPE = "scope";
 
     /**
-     * Key used to store the current session ID in the configuration. This is a hack
-     * to let the scope information get passed through to the DiskPersistenceListener,
-     * and will be removed in a future release.
-     */
+ * Key used to store the current session ID in the configuration. This is a hack
+ * to let the scope information get passed through to the BasicDiskPersistenceListener,
+ * and will be removed in a future release.
+ */
     public final static String HASH_KEY_SESSION_ID = "sessionId";
 
     /**
-     * Key used to store the servlet container temporary directory in the configuration.
-     * This is a hack to let the scope information get passed through to the
-     * DiskPersistenceListener, and will be removed in a future release.
-     */
+ * Key used to store the servlet container temporary directory in the configuration.
+ * This is a hack to let the scope information get passed through to the
+ * BasicDiskPersistenceListener, and will be removed in a future release.
+ */
     public final static String HASH_KEY_CONTEXT_TMPDIR = "context.tempdir";
 
     /**
-     * The string to use as a file separator.
-     */
+ * The string to use as a file separator.
+ */
     private final static String FILE_SEPARATOR = "/";
 
     /**
-     * The character to use as a file separator.
-     */
+ * The character to use as a file separator.
+ */
     private final static char FILE_SEPARATOR_CHAR = FILE_SEPARATOR.charAt(0);
 
     /**
-     * Constant for Key generation.
-     */
+ * Constant for Key generation.
+ */
     private final static short AVERAGE_KEY_LENGTH = 30;
 
     /**
-     * Usable caracters for key generation
-     */
+ * Usable caracters for key generation
+ */
     private static final String m_strBase64Chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 
     /**
-     * Map containing the flush times of different scopes
-     */
+ * Map containing the flush times of different scopes
+ */
     private Map flushTimes;
 
     //private transient ServletContext context;
 
     /**
-     * Key to use for storing and retrieving Object in contexts (Servlet, session).
-     */
+ * Key to use for storing and retrieving Object in contexts (Servlet, session).
+ */
     private String cacheKey;
 
     /**
-     *  Set property cache.use.host.domain.in.key=true to add domain information to key
-     *  generation for hosting multiple sites.
-     */
+ *  Set property cache.use.host.domain.in.key=true to add domain information to key
+ *  generation for hosting multiple sites.
+ */
     private boolean useHostDomainInKey = false;
 
     /**
-     *        Create the cache administrator.
-     *
-     *        This will reset all the flush times and load the properties file.
-     */
+ *        Create the cache administrator.
+ *
+ *        This will reset all the flush times and load the properties file.
+ */
     private ServletCacheAdministrator(ServletContext context, Properties p) {
         super(p);
         config.set(HASH_KEY_CONTEXT_TMPDIR, context.getAttribute("javax.servlet.context.tempdir"));
@@ -141,25 +141,25 @@ public class ServletCacheAdministrator extends AbstractCacheAdministrator implem
     }
 
     /**
-     * Obtain an instance of the CacheAdministrator
-     *
-     * @param context The ServletContext that this CacheAdministrator is a Singleton under
-     * @return Returns the CacheAdministrator instance for this context
-     */
+ * Obtain an instance of the CacheAdministrator
+ *
+ * @param context The ServletContext that this CacheAdministrator is a Singleton under
+ * @return Returns the CacheAdministrator instance for this context
+ */
     public static ServletCacheAdministrator getInstance(ServletContext context) {
         return getInstance(context, null);
     }
 
     /**
-     * Obtain an instance of the CacheAdministrator
-     *
-     * @param context The ServletContext that this CacheAdministrator is a Singleton under
-     * @param p the properties to use for the cache if the cache administrator has not been
-     * created yet. Once the administrator has been created, the properties parameter is
-     * ignored for all future invocations. If a null value is passed in, then the properties
-     * are loaded from the oscache.properties file in the classpath.
-     * @return Returns the CacheAdministrator instance for this context
-     */
+ * Obtain an instance of the CacheAdministrator
+ *
+ * @param context The ServletContext that this CacheAdministrator is a Singleton under
+ * @param p the properties to use for the cache if the cache administrator has not been
+ * created yet. Once the administrator has been created, the properties parameter is
+ * ignored for all future invocations. If a null value is passed in, then the properties
+ * are loaded from the oscache.properties file in the classpath.
+ * @return Returns the CacheAdministrator instance for this context
+ */
     public static ServletCacheAdministrator getInstance(ServletContext context, Properties p) {
         ServletCacheAdministrator admin = null;
         admin = (ServletCacheAdministrator) context.getAttribute(CACHE_ADMINISTRATOR_KEY);
@@ -181,9 +181,9 @@ public class ServletCacheAdministrator extends AbstractCacheAdministrator implem
     }
 
     /**
-     * Shuts down the cache administrator. This should usually only be called
-     * when the controlling application shuts down.
-     */
+ * Shuts down the cache administrator. This should usually only be called
+ * when the controlling application shuts down.
+ */
     public static void destroyInstance(ServletContext context) {
         ServletCacheAdministrator admin = null;
         admin = (ServletCacheAdministrator) context.getAttribute(CACHE_ADMINISTRATOR_KEY);
@@ -208,13 +208,13 @@ public class ServletCacheAdministrator extends AbstractCacheAdministrator implem
     }
 
     /**
-     * Grabs the cache for the specified scope
-     *
-     * @param request The current request
-     * @param scope The scope of this cache (<code>PageContext.APPLICATION_SCOPE</code>
-     * or <code>PageContext.SESSION_SCOPE</code>)
-     * @return The cache
-     */
+ * Grabs the cache for the specified scope
+ *
+ * @param request The current request
+ * @param scope The scope of this cache (<code>PageContext.APPLICATION_SCOPE</code>
+ * or <code>PageContext.SESSION_SCOPE</code>)
+ * @return The cache
+ */
     public Cache getCache(HttpServletRequest request, int scope) {
         if (scope == PageContext.APPLICATION_SCOPE) {
             return getAppScopeCache(request.getSession(true).getServletContext());
@@ -228,12 +228,12 @@ public class ServletCacheAdministrator extends AbstractCacheAdministrator implem
     }
 
     /**
-     * A convenience method to retrieve the application scope cache
+ * A convenience method to retrieve the application scope cache
 
-     * @param context the current <code>ServletContext</code>
-     * @return the application scope cache. If none is present, one will
-     * be created.
-     */
+ * @param context the current <code>ServletContext</code>
+ * @return the application scope cache. If none is present, one will
+ * be created.
+ */
     public Cache getAppScopeCache(ServletContext context) {
         Cache cache = null;
         Object obj = context.getAttribute(getCacheKey());
@@ -253,12 +253,12 @@ public class ServletCacheAdministrator extends AbstractCacheAdministrator implem
     }
 
     /**
-     * A convenience method to retrieve the session scope cache
-     *
-     * @param session the current <code>HttpSession</code>
-     * @return the session scope cache for this session. If none is present,
-     * one will be created.
-     */
+ * A convenience method to retrieve the session scope cache
+ *
+ * @param session the current <code>HttpSession</code>
+ * @return the session scope cache for this session. If none is present,
+ * one will be created.
+ */
     public Cache getSessionScopeCache(HttpSession session) {
         Cache cache = null;
         Object obj = session.getAttribute(getCacheKey());
@@ -278,11 +278,11 @@ public class ServletCacheAdministrator extends AbstractCacheAdministrator implem
     }
 
     /**
-     * Get the cache key from the properties. Set it to a default value if it
-     * is not present in the properties
-     *
-     * @return The cache.key property or the DEFAULT_CACHE_KEY
-     */
+ * Get the cache key from the properties. Set it to a default value if it
+ * is not present in the properties
+ *
+ * @return The cache.key property or the DEFAULT_CACHE_KEY
+ */
     public String getCacheKey() {
         if (cacheKey == null) {
             cacheKey = getProperty(CACHE_KEY_KEY);
@@ -296,11 +296,11 @@ public class ServletCacheAdministrator extends AbstractCacheAdministrator implem
     }
 
     /**
-     * Set the flush time for a specific scope to a specific time
-     *
-     * @param date  The time to flush the scope
-     * @param scope The scope to be flushed
-     */
+ * Set the flush time for a specific scope to a specific time
+ *
+ * @param date  The time to flush the scope
+ * @param scope The scope to be flushed
+ */
     public void setFlushTime(Date date, int scope) {
         if (log.isInfoEnabled()) {
             log.info("Flushing scope " + scope + " at " + date);
@@ -319,21 +319,21 @@ public class ServletCacheAdministrator extends AbstractCacheAdministrator implem
     }
 
     /**
-     * Set the flush time for a specific scope to the current time.
-     *
-     * @param scope The scope to be flushed
-     */
+ * Set the flush time for a specific scope to the current time.
+ *
+ * @param scope The scope to be flushed
+ */
     public void setFlushTime(int scope) {
         setFlushTime(new Date(), scope);
     }
 
     /**
-     *        Get the flush time for a particular scope.
-     *
-     *        @param        scope        The scope to get the flush time for.
-     *        @return A date representing the time this scope was last flushed.
-     *        Returns null if it has never been flushed.
-     */
+ *        Get the flush time for a particular scope.
+ *
+ *        @param        scope        The scope to get the flush time for.
+ *        @return A date representing the time this scope was last flushed.
+ *        Returns null if it has never been flushed.
+ */
     public Date getFlushTime(int scope) {
         synchronized (flushTimes) {
             return (Date) flushTimes.get(new Integer(scope));
@@ -341,15 +341,15 @@ public class ServletCacheAdministrator extends AbstractCacheAdministrator implem
     }
 
     /**
-     * Retrieve an item from the cache
-     *
-     * @param scope The cache scope
-     * @param request The servlet request
-     * @param key The key of the object to retrieve
-     * @param refreshPeriod The time interval specifying if an entry needs refresh
-     * @return The requested object
-     * @throws NeedsRefreshException
-     */
+ * Retrieve an item from the cache
+ *
+ * @param scope The cache scope
+ * @param request The servlet request
+ * @param key The key of the object to retrieve
+ * @param refreshPeriod The time interval specifying if an entry needs refresh
+ * @return The requested object
+ * @throws NeedsRefreshException
+ */
     public Object getFromCache(int scope, HttpServletRequest request, String key, int refreshPeriod) throws NeedsRefreshException {
         Cache cache = getCache(request, scope);
         key = this.generateEntryKey(key, request, scope);
@@ -357,14 +357,14 @@ public class ServletCacheAdministrator extends AbstractCacheAdministrator implem
     }
 
     /**
-     * Checks if the given scope was flushed more recently than the CacheEntry provided.
-     * Used to determine whether to refresh the particular CacheEntry.
-     *
-     * @param cacheEntry The cache entry which we're seeing whether to refresh
-     * @param scope The scope we're checking
-     *
-     * @return Whether or not the scope has been flushed more recently than this cache entry was updated.
-     */
+ * Checks if the given scope was flushed more recently than the CacheEntry provided.
+ * Used to determine whether to refresh the particular CacheEntry.
+ *
+ * @param cacheEntry The cache entry which we're seeing whether to refresh
+ * @param scope The scope we're checking
+ *
+ * @return Whether or not the scope has been flushed more recently than this cache entry was updated.
+ */
     public boolean isScopeFlushed(CacheEntry cacheEntry, int scope) {
         Date flushDateTime = getFlushTime(scope);
 
@@ -377,23 +377,23 @@ public class ServletCacheAdministrator extends AbstractCacheAdministrator implem
     }
 
     /**
-     * Register a listener for Cache Map events.
-     *
-     * @param listener  The object that listens to events.
-     */
+ * Register a listener for Cache Map events.
+ *
+ * @param listener  The object that listens to events.
+ */
     public void addScopeEventListener(ScopeEventListener listener) {
         listenerList.add(ScopeEventListener.class, listener);
     }
 
     /**
-     * Cancels a pending cache update. This should only be called by a thread
-     * that received a {@link NeedsRefreshException} and was unable to generate
-     * some new cache content.
-     *
-     * @param scope The cache scope
-     * @param request The servlet request
-     * @param key The cache entry key to cancel the update of.
-     */
+ * Cancels a pending cache update. This should only be called by a thread
+ * that received a {@link NeedsRefreshException} and was unable to generate
+ * some new cache content.
+ *
+ * @param scope The cache scope
+ * @param request The servlet request
+ * @param key The cache entry key to cancel the update of.
+ */
     public void cancelUpdate(int scope, HttpServletRequest request, String key) {
         Cache cache = getCache(request, scope);
         key = this.generateEntryKey(key, request, scope);
@@ -401,10 +401,10 @@ public class ServletCacheAdministrator extends AbstractCacheAdministrator implem
     }
 
     /**
-     * Flush all scopes at a particular time
-     *
-     * @param date The time to flush the scope
-     */
+ * Flush all scopes at a particular time
+ *
+ * @param date The time to flush the scope
+ */
     public void flushAll(Date date) {
         synchronized (flushTimes) {
             setFlushTime(date, PageContext.APPLICATION_SCOPE);
@@ -418,78 +418,78 @@ public class ServletCacheAdministrator extends AbstractCacheAdministrator implem
     }
 
     /**
-     * Flush all scopes instantly.
-     */
+ * Flush all scopes instantly.
+ */
     public void flushAll() {
         flushAll(new Date());
     }
 
     /**
-     * Generates a cache entry key.
-     *
-     * If the string key is not specified, the HTTP request URI and QueryString is used.
-     * Operating systems that have a filename limitation less than 255 or have
-     * filenames that are case insensitive may have issues with key generation where
-     * two distinct pages map to the same key.
-     * <p>
-     * POST Requests (which have no distinguishing
-     * query string) may also generate identical keys for what is actually different pages.
-     * In these cases, specify an explicit key attribute for the CacheTag.
-     *
-     * @param key The key entered by the user
-     * @param request The current request
-     * @param scope The scope this cache entry is under
-     * @return The generated cache key
-     */
+ * Generates a cache entry key.
+ *
+ * If the string key is not specified, the HTTP request URI and QueryString is used.
+ * Operating systems that have a filename limitation less than 255 or have
+ * filenames that are case insensitive may have issues with key generation where
+ * two distinct pages map to the same key.
+ * <p>
+ * POST Requests (which have no distinguishing
+ * query string) may also generate identical keys for what is actually different pages.
+ * In these cases, specify an explicit key attribute for the CacheTag.
+ *
+ * @param key The key entered by the user
+ * @param request The current request
+ * @param scope The scope this cache entry is under
+ * @return The generated cache key
+ */
     public String generateEntryKey(String key, HttpServletRequest request, int scope) {
         return generateEntryKey(key, request, scope, null, null);
     }
 
     /**
-     * Generates a cache entry key.
-     *
-     * If the string key is not specified, the HTTP request URI and QueryString is used.
-     * Operating systems that have a filename limitation less than 255 or have
-     * filenames that are case insensitive may have issues with key generation where
-     * two distinct pages map to the same key.
-     * <p>
-     * POST Requests (which have no distinguishing
-     * query string) may also generate identical keys for what is actually different pages.
-     * In these cases, specify an explicit key attribute for the CacheTag.
-     *
-     * @param key The key entered by the user
-     * @param request The current request
-     * @param scope The scope this cache entry is under
-     * @param language The ISO-639 language code to distinguish different pages in application scope
-     * @return The generated cache key
-     */
+ * Generates a cache entry key.
+ *
+ * If the string key is not specified, the HTTP request URI and QueryString is used.
+ * Operating systems that have a filename limitation less than 255 or have
+ * filenames that are case insensitive may have issues with key generation where
+ * two distinct pages map to the same key.
+ * <p>
+ * POST Requests (which have no distinguishing
+ * query string) may also generate identical keys for what is actually different pages.
+ * In these cases, specify an explicit key attribute for the CacheTag.
+ *
+ * @param key The key entered by the user
+ * @param request The current request
+ * @param scope The scope this cache entry is under
+ * @param language The ISO-639 language code to distinguish different pages in application scope
+ * @return The generated cache key
+ */
     public String generateEntryKey(String key, HttpServletRequest request, int scope, String language) {
         return generateEntryKey(key, request, scope, language, null);
     }
 
     /**
-     * Generates a cache entry key.
-     * <p>
-     * If the string key is not specified, the HTTP request URI and QueryString is used.
-     * Operating systems that have a filename limitation less than 255 or have
-     * filenames that are case insensitive may have issues with key generation where
-     * two distinct pages map to the same key.
-     * <p>
-     * POST Requests (which have no distinguishing
-     * query string) may also generate identical keys for what is actually different pages.
-     * In these cases, specify an explicit key attribute for the CacheTag.
-     *
-     * @param key The key entered by the user
-     * @param request The current request
-     * @param scope The scope this cache entry is under
-     * @param language The ISO-639 language code to distinguish different pages in application scope
-     * @param suffix The ability to put a suffix at the end of the key
-     * @return The generated cache key
-     */
+ * Generates a cache entry key.
+ * <p>
+ * If the string key is not specified, the HTTP request URI and QueryString is used.
+ * Operating systems that have a filename limitation less than 255 or have
+ * filenames that are case insensitive may have issues with key generation where
+ * two distinct pages map to the same key.
+ * <p>
+ * POST Requests (which have no distinguishing
+ * query string) may also generate identical keys for what is actually different pages.
+ * In these cases, specify an explicit key attribute for the CacheTag.
+ *
+ * @param key The key entered by the user
+ * @param request The current request
+ * @param scope The scope this cache entry is under
+ * @param language The ISO-639 language code to distinguish different pages in application scope
+ * @param suffix The ability to put a suffix at the end of the key
+ * @return The generated cache key
+ */
     public String generateEntryKey(String key, HttpServletRequest request, int scope, String language, String suffix) {
         /**
-         * Used for generating cache entry keys.
-         */
+ * Used for generating cache entry keys.
+ */
         StringBuffer cBuffer = new StringBuffer(AVERAGE_KEY_LENGTH);
 
         // Append the language if available
@@ -539,13 +539,13 @@ public class ServletCacheAdministrator extends AbstractCacheAdministrator implem
     }
 
     /**
-     * Creates a string that contains all of the request parameters and their
-     * values in a single string. This is very similar to
-     * <code>HttpServletRequest.getQueryString()</code> except the parameters are
-     * sorted by name, and if there is a <code>jsessionid</code> parameter it is
-     * filtered out.<p>
-     * If the request has no parameters, this method returns <code>null</code>.
-     */
+ * Creates a string that contains all of the request parameters and their
+ * values in a single string. This is very similar to
+ * <code>HttpServletRequest.getQueryString()</code> except the parameters are
+ * sorted by name, and if there is a <code>jsessionid</code> parameter it is
+ * filtered out.<p>
+ * If the request has no parameters, this method returns <code>null</code>.
+ */
     protected String getSortedQueryString(HttpServletRequest request) {
         Map paramMap = request.getParameterMap();
 
@@ -587,35 +587,35 @@ public class ServletCacheAdministrator extends AbstractCacheAdministrator implem
     }
 
     /**
-     * Log error messages to commons logging.
-     *
-     * @param message   Message to log.
-     */
+ * Log error messages to commons logging.
+ *
+ * @param message   Message to log.
+ */
     public void logError(String message) {
         log.error("[oscache]: " + message);
     }
 
     /**
-     * Put an object in the cache
-     *
-     * @param scope The cache scope
-     * @param request The servlet request
-     * @param key The object key
-     * @param content The object to add
-     */
+ * Put an object in the cache
+ *
+ * @param scope The cache scope
+ * @param request The servlet request
+ * @param key The object key
+ * @param content The object to add
+ */
     public void putInCache(int scope, HttpServletRequest request, String key, Object content) {
         putInCache(scope, request, key, content, null);
     }
 
     /**
-     * Put an object in the cache
-     *
-     * @param scope The cache scope
-     * @param request The servlet request
-     * @param key The object key
-     * @param content The object to add
-     * @param policy The refresh policy
-     */
+ * Put an object in the cache
+ *
+ * @param scope The cache scope
+ * @param request The servlet request
+ * @param key The object key
+ * @param content The object to add
+ * @param policy The refresh policy
+ */
     public void putInCache(int scope, HttpServletRequest request, String key, Object content, EntryRefreshPolicy policy) {
         Cache cache = getCache(request, scope);
         key = this.generateEntryKey(key, request, scope);
@@ -623,38 +623,38 @@ public class ServletCacheAdministrator extends AbstractCacheAdministrator implem
     }
 
     /**
-     * Sets the cache capacity (number of items). If the cache contains
-     * more than <code>capacity</code> items then items will be removed
-     * to bring the cache back down to the new size.
-     *
-     * @param scope The cache scope
-     * @param request The servlet request
-     * @param capacity The new capacity
-     */
+ * Sets the cache capacity (number of items). If the cache contains
+ * more than <code>capacity</code> items then items will be removed
+ * to bring the cache back down to the new size.
+ *
+ * @param scope The cache scope
+ * @param request The servlet request
+ * @param capacity The new capacity
+ */
     public void setCacheCapacity(int scope, HttpServletRequest request, int capacity) {
         setCacheCapacity(capacity);
         getCache(request, scope).setCapacity(capacity);
     }
 
     /**
-     * Unregister a listener for Cache Map events.
-     *
-     * @param listener  The object that currently listens to events.
-     */
+ * Unregister a listener for Cache Map events.
+ *
+ * @param listener  The object that currently listens to events.
+ */
     public void removeScopeEventListener(ScopeEventListener listener) {
         listenerList.remove(ScopeEventListener.class, listener);
     }
 
     /**
-     * Finalizes all the listeners that are associated with the given cache object
-     */
+ * Finalizes all the listeners that are associated with the given cache object
+ */
     protected void finalizeListeners(Cache cache) {
         super.finalizeListeners(cache);
     }
 
     /**
-     * Convert a byte array into a Base64 string (as used in mime formats)
-     */
+ * Convert a byte array into a Base64 string (as used in mime formats)
+ */
     private static String toBase64(byte[] aValue) {
         int byte1;
         int byte2;
@@ -679,12 +679,12 @@ public class ServletCacheAdministrator extends AbstractCacheAdministrator implem
     }
 
     /**
-     * Create a cache
-     *
-     * @param scope The cache scope
-     * @param sessionId The sessionId for with the cache will be created
-     * @return A new cache
-     */
+ * Create a cache
+ *
+ * @param scope The cache scope
+ * @param sessionId The sessionId for with the cache will be created
+ * @return A new cache
+ */
     private ServletCache createCache(int scope, String sessionId) {
         if (log.isInfoEnabled()) {
             log.info("Created new cache in scope " + scope);
@@ -695,7 +695,7 @@ public class ServletCacheAdministrator extends AbstractCacheAdministrator implem
         // TODO - Fix me please!
         // Hack! This is nasty - if two sessions are created within a short
         // space of time it is possible they will end up with duplicate
-        // session IDs being passed to the DiskPersistenceListener!...
+        // session IDs being passed to the BasicDiskPersistenceListener!...
         config.set(HASH_KEY_SCOPE, "" + scope);
         config.set(HASH_KEY_SESSION_ID, sessionId);
 
@@ -716,13 +716,13 @@ public class ServletCacheAdministrator extends AbstractCacheAdministrator implem
     }
 
     /**
-     * Dispatch a scope event to all registered listeners.
-     *
-     * @param eventType   The type of event
-     * @param scope       Scope that was flushed (Does not apply for FLUSH_ALL event)
-     * @param date        Date of flushing
-     * @param origin      The origin of the event
-     */
+ * Dispatch a scope event to all registered listeners.
+ *
+ * @param eventType   The type of event
+ * @param scope       Scope that was flushed (Does not apply for FLUSH_ALL event)
+ * @param date        Date of flushing
+ * @param origin      The origin of the event
+ */
     private void dispatchScopeEvent(ScopeEventType eventType, int scope, Date date, String origin) {
         // Create the event
         ScopeEvent event = new ScopeEvent(eventType, scope, date, origin);
@@ -740,9 +740,9 @@ public class ServletCacheAdministrator extends AbstractCacheAdministrator implem
     }
 
     /**
-     *        Set property cache.use.host.domain.in.key=true to add domain information to key
-     *  generation for hosting multiple sites
-     */
+ *        Set property cache.use.host.domain.in.key=true to add domain information to key
+ *  generation for hosting multiple sites
+ */
     private void initHostDomainInKey() {
         String propStr = getProperty(CACHE_USE_HOST_DOMAIN_KEY);
 
