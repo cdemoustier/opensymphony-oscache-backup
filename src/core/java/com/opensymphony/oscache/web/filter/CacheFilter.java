@@ -56,7 +56,9 @@ public class CacheFilter implements Filter {
      * @throws ServletException IOException
      */
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws ServletException, IOException {
-        log.info("<cache>: filter in scope " + cacheScope);
+        if (log.isInfoEnabled()) {
+            log.info("<cache>: filter in scope " + cacheScope);
+        }
 
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         String key = admin.generateEntryKey(null, httpRequest, cacheScope);
@@ -64,13 +66,26 @@ public class CacheFilter implements Filter {
 
         try {
             ResponseContent respContent = (ResponseContent) cache.getFromCache(key, time);
-            log.info("<cache>: Using cached entry for " + key);
+
+            if (log.isInfoEnabled()) {
+                log.info("<cache>: Using cached entry for " + key);
+            }
+
+            long clientLastModified = httpRequest.getDateHeader("If-Modified-Since"); // will return -1 if no header...
+
+            if (clientLastModified >= respContent.getLastModified()) {
+                ((HttpServletResponse) response).setStatus(HttpServletResponse.SC_NOT_MODIFIED);
+                return;
+            }
+
             respContent.writeTo(response);
         } catch (NeedsRefreshException nre) {
             boolean updateSucceeded = false;
 
             try {
-                log.info("<cache>: New cache entry, cache stale or cache scope flushed for " + key);
+                if (log.isInfoEnabled()) {
+                    log.info("<cache>: New cache entry, cache stale or cache scope flushed for " + key);
+                }
 
                 CacheHttpServletResponseWrapper cacheResponse = new CacheHttpServletResponseWrapper((HttpServletResponse) response);
                 chain.doFilter(request, cacheResponse);
