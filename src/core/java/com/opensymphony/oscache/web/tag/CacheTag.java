@@ -462,8 +462,8 @@ public class CacheTag extends BodyTagSupport implements TryCatchFinally {
             }
 
             try {
-                if (log.isInfoEnabled()) {
-                    log.info("<cache>: Using cached entry : " + actualKey);
+                if (log.isDebugEnabled()) {
+                    log.debug("<cache>: Using cached entry : " + actualKey);
                 }
 
                 // Ensure that the cache returns the data correctly. Else re-evaluate the body
