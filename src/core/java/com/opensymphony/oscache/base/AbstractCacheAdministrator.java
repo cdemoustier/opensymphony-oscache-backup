@@ -183,7 +183,8 @@ public abstract class AbstractCacheAdministrator implements java.io.Serializable
     }
 
     /**
-     * Are we caching entries in memory (true or false)?  Default is true.
+     * Whether entries are cached in memory or not.
+     * Default is true.
      * Set by the <code>cache.memory</code> property.
      *
      * @return Status whether or not memory caching is used.

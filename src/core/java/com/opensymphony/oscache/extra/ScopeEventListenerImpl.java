@@ -9,8 +9,7 @@ import com.opensymphony.oscache.base.events.ScopeEventListener;
 import com.opensymphony.oscache.base.events.ScopeEventType;
 
 /**
- * Implementation of a ScopeEventListener. It keeps track of the scope flush events
- *
+ * Implementation of a ScopeEventListener that keeps track of the scope flush events.
  * We are not using any synchronized so that this does not become a bottleneck.
  * The consequence is that on retrieving values, the operations that are
  * currently being done won't be counted.
@@ -22,42 +21,40 @@ public class ScopeEventListenerImpl implements ScopeEventListener {
     /**
      * Number of known scopes
      */
-    private static final int NB_SCOPES = 4;
+    public static final int NB_SCOPES = 4;
 
     /**
      * Page scope number
      */
-    private static final int PAGE_SCOPE = 1;
+    public static final int PAGE_SCOPE = 1;
 
     /**
      * Request scope number
      */
-    private static final int REQUEST_SCOPE = 2;
+    public static final int REQUEST_SCOPE = 2;
 
     /**
      * Session scope number
      */
-    private static final int SESSION_SCOPE = 3;
+    public static final int SESSION_SCOPE = 3;
 
     /**
      * Application scope number
      */
-    private static final int APPLICATION_SCOPE = 4;
+    public static final int APPLICATION_SCOPE = 4;
 
     /**
-     * Flush counter for all scopes. Add one to the number of scope because
-     * the array is being used from position 1 instead of 0 for convenience
+     * Flush counter for all scopes.
+     * Add one to the number of scope because the array is being used
+     * from position 1 instead of 0 for convenience
      */
     private int[] scopeFlushCount = new int[NB_SCOPES + 1];
 
-    /**
-     * Constructor, empty for us
-     */
     public ScopeEventListenerImpl() {
     }
 
     /**
-     * Gets the flush count for scope 4
+     * Gets the flush count for scope {@link ScopeEventListenerImpl#APPLICATION_SCOPE}.
      * <p>
      * @return The total number of application flush
      */
@@ -66,8 +63,7 @@ public class ScopeEventListenerImpl implements ScopeEventListener {
     }
 
     /**
-     * Gets the flush count for scope 1
-     * <p>
+     * Gets the flush count for scope {@link ScopeEventListenerImpl#PAGE_SCOPE}.
      * @return The total number of page flush
      */
     public int getPageScopeFlushCount() {
@@ -75,8 +71,7 @@ public class ScopeEventListenerImpl implements ScopeEventListener {
     }
 
     /**
-     * Gets the flush count for scope 2
-     * <p>
+     * Gets the flush count for scope {@link ScopeEventListenerImpl#REQUEST_SCOPE}.
      * @return The total number of request flush
      */
     public int getRequestScopeFlushCount() {
@@ -84,8 +79,7 @@ public class ScopeEventListenerImpl implements ScopeEventListener {
     }
 
     /**
-     * Gets the flush count for scope 3
-     * <p>
+     * Gets the flush count for scope {@link ScopeEventListenerImpl#SESSION_SCOPE}.
      * @return The total number of session flush
      */
     public int getSessionScopeFlushCount() {
@@ -93,8 +87,7 @@ public class ScopeEventListenerImpl implements ScopeEventListener {
     }
 
     /**
-     * Returns the total flush count
-     * <p>
+     * Returns the total flush count.
      * @return The total number of scope flush
      */
     public int getTotalScopeFlushCount() {
@@ -108,8 +101,7 @@ public class ScopeEventListenerImpl implements ScopeEventListener {
     }
 
     /**
-     * Handles all the scope flush events
-     * <p>
+     * Handles all the scope flush events.
      * @param event The scope event
      */
     public void scopeFlushed(ScopeEvent event) {
@@ -131,7 +123,7 @@ public class ScopeEventListenerImpl implements ScopeEventListener {
     }
 
     /**
-     * Returns all the flush counter in a string from
+     * Returns all the flush counter in a string form.
      */
     public String toString() {
         StringBuffer returnString = new StringBuffer("Flush count for ");

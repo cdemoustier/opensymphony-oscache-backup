@@ -49,8 +49,8 @@ import java.io.Serializable;
 import java.util.*;
 
 /**
- * A version of Hashtable that supports mostly-concurrent reading, but
- * exclusive writing.  Because reads are not limited to periods
+ * A version of Hashtable that supports mostly-concurrent reading, but exclusive writing.
+ * Because reads are not limited to periods
  * without writes, a concurrent reader policy is weaker than a classic
  * reader/writer policy, but is generally faster and allows more
  * concurrency. This class is a good choice especially for tables that
@@ -158,26 +158,28 @@ public abstract class AbstractConcurrentReadCache extends AbstractMap implements
     public static int DEFAULT_INITIAL_CAPACITY = 32;
 
     /**
-     * The minimum capacity, used if a lower value is implicitly specified
+     * The minimum capacity.
+     * Used if a lower value is implicitly specified
      * by either of the constructors with arguments.
      * MUST be a power of two.
      */
     private static final int MINIMUM_CAPACITY = 4;
 
     /**
-     * The maximum capacity, used if a higher value is implicitly specified
+     * The maximum capacity.
+     * Used if a higher value is implicitly specified
      * by either of the constructors with arguments.
      * MUST be a power of two <= 1<<30.
      */
     private static final int MAXIMUM_CAPACITY = 1 << 30;
 
     /**
-     * The default load factor for this table (1.0).
-     * Used when not otherwise specified in constructor.
+     * The default load factor for this table.
+     * Used when not otherwise specified in constructor, the default is 0.75f.
      **/
     public static final float DEFAULT_LOAD_FACTOR = 0.75f;
 
-    /** OpenSymphony BEGIN (pretty long!) */
+    //OpenSymphony BEGIN (pretty long!)
     protected static final String NULL = "_nul!~";
     protected static final transient Log log = LogFactory.getLog(AbstractConcurrentReadCache.class);
 
@@ -226,17 +228,17 @@ public abstract class AbstractConcurrentReadCache extends AbstractMap implements
     protected transient int count;
 
     /**
-     * Persistence listener
+     * Persistence listener.
      */
     protected PersistenceListener persistenceListener = null;
 
     /**
-     * Use memory cache or not
+     * Use memory cache or not.
      */
     protected boolean memoryCaching = true;
 
     /**
-     * Use unlimited disk caching
+     * Use unlimited disk caching.
      */
     protected boolean unlimitedDiskCache = false;
 
@@ -248,19 +250,20 @@ public abstract class AbstractConcurrentReadCache extends AbstractMap implements
     protected float loadFactor;
 
     /**
-     * Default cache capacity (number of entries)
+     * Default cache capacity (number of entries).
      */
     protected final int DEFAULT_MAX_ENTRIES = 100;
 
     /**
-     * Max number of element in cache when considered unlimited
+     * Max number of element in cache when considered unlimited.
      */
     protected final int UNLIMITED = 2147483646;
     protected transient Collection values = null;
 
     /**
-     * A HashMap containing the group information. Each entry uses the group
-     * name as the key, and holds a <code>Set</code> of containing keys of all
+     * A HashMap containing the group information.
+     * Each entry uses the group name as the key, and holds a
+     * <code>Set</code> of containing keys of all
      * the cache entries that belong to that particular group.
      */
     protected HashMap groups = null;
@@ -270,21 +273,20 @@ public abstract class AbstractConcurrentReadCache extends AbstractMap implements
     protected transient Set keySet = null;
 
     /**
-     * Cache capacity (number of entries)
+     * Cache capacity (number of entries).
      */
     protected int maxEntries = DEFAULT_MAX_ENTRIES;
 
     /**
-     * The table is rehashed when its size exceeds this threshold.  (The
-     * value of this field is always (int)(capacity * loadFactor).)
+     * The table is rehashed when its size exceeds this threshold.
+     * (The value of this field is always (int)(capacity * loadFactor).)
      *
      * @serial
      */
     protected int threshold;
 
     /**
-     * Constructs a new, empty map with the specified initial
-     * capacity and the specified load factor.
+     * Constructs a new, empty map with the specified initial capacity and the specified load factor.
      *
      * @param initialCapacity the initial capacity
      *  The actual initial capacity is rounded to the nearest power of two.
@@ -306,8 +308,7 @@ public abstract class AbstractConcurrentReadCache extends AbstractMap implements
     }
 
     /**
-     * Constructs a new, empty map with the specified initial
-     * capacity and default load factor.
+     * Constructs a new, empty map with the specified initial capacity and default load factor.
      *
      * @param   initialCapacity   the initial capacity of the
      *                            AbstractConcurrentReadCache.
@@ -320,16 +321,15 @@ public abstract class AbstractConcurrentReadCache extends AbstractMap implements
     }
 
     /**
-     * Constructs a new, empty map with a default initial capacity
-     * and load factor.
+     * Constructs a new, empty map with a default initial capacity and load factor.
      */
     public AbstractConcurrentReadCache() {
         this(DEFAULT_INITIAL_CAPACITY, DEFAULT_LOAD_FACTOR);
     }
 
     /**
-     * Constructs a new map with the same mappings as the given map.  The
-     * map is created with a capacity of twice the number of mappings in
+     * Constructs a new map with the same mappings as the given map.
+     * The map is created with a capacity of twice the number of mappings in
      * the given map or 11 (whichever is greater), and a default load factor.
      */
     public AbstractConcurrentReadCache(Map t) {
@@ -396,56 +396,56 @@ public abstract class AbstractConcurrentReadCache extends AbstractMap implements
     }
 
     /**
-     * Retrieve the cache capacity (number of entries)
+     * Retrieve the cache capacity (number of entries).
      */
     public int getMaxEntries() {
         return maxEntries;
     }
 
     /**
-     * Sets the memory caching flag
+     * Sets the memory caching flag.
      */
     public void setMemoryCaching(boolean memoryCaching) {
         this.memoryCaching = memoryCaching;
     }
 
     /**
-     * Check if memory caching is used
+     * Check if memory caching is used.
      */
     public boolean isMemoryCaching() {
         return memoryCaching;
     }
 
     /**
-     * Set the persistence listener to use
+     * Set the persistence listener to use.
      */
     public void setPersistenceListener(PersistenceListener listener) {
         this.persistenceListener = listener;
     }
 
     /**
-     * Get the persistence listener
+     * Get the persistence listener.
      */
     public PersistenceListener getPersistenceListener() {
         return persistenceListener;
     }
 
     /**
-     * Sets the unlimited disk caching flag
+     * Sets the unlimited disk caching flag.
      */
     public void setUnlimitedDiskCache(boolean unlimitedDiskCache) {
         this.unlimitedDiskCache = unlimitedDiskCache;
     }
 
     /**
-     * Check if we use unlimited disk cache
+     * Check if we use unlimited disk cache.
      */
     public boolean isUnlimitedDiskCache() {
         return unlimitedDiskCache;
     }
 
     /**
-     * Return the number of slots in this table
+     * Return the number of slots in this table.
      **/
     public synchronized int capacity() {
         return table.length;
@@ -479,7 +479,7 @@ public abstract class AbstractConcurrentReadCache extends AbstractMap implements
     }
 
     /**
-     * Returns a shallow copy of this
+     * Returns a shallow copy of this.
      * <tt>AbstractConcurrentReadCache</tt> instance: the keys and
      * values themselves are not cloned.
      *
@@ -602,8 +602,8 @@ public abstract class AbstractConcurrentReadCache extends AbstractMap implements
     }
 
     /**
-     * Returns a collection view of the mappings contained in this map.  Each
-     * element in the returned collection is a <tt>Map.Entry</tt>.  The
+     * Returns a collection view of the mappings contained in this map.
+     * Each element in the returned collection is a <tt>Map.Entry</tt>.  The
      * collection is backed by the map, so changes to the map are reflected in
      * the collection, and vice-versa.  The collection supports element
      * removal, which removes the corresponding mapping from the map, via the
@@ -758,8 +758,8 @@ public abstract class AbstractConcurrentReadCache extends AbstractMap implements
     }
 
     /**
-     * Returns a set view of the keys contained in this map.  The set is
-     * backed by the map, so changes to the map are reflected in the set, and
+     * Returns a set view of the keys contained in this map.
+     * The set is backed by the map, so changes to the map are reflected in the set, and
      * vice-versa.  The set supports element removal, which removes the
      * corresponding mapping from this map, via the <tt>Iterator.remove</tt>,
      * <tt>Set.remove</tt>, <tt>removeAll</tt>, <tt>retainAll</tt>, and
@@ -819,8 +819,8 @@ public abstract class AbstractConcurrentReadCache extends AbstractMap implements
     }
 
     /**
-     * Maps the specified <code>key</code> to the specified
-     * <code>value</code> in this table. Neither the key nor the
+     * Maps the specified <code>key</code> to the specified <code>value</code> in this table.
+     * Neither the key nor the
      * value can be <code>null</code>. <p>
      *
      * The value can be retrieved by calling the <code>get</code> method
@@ -859,8 +859,8 @@ public abstract class AbstractConcurrentReadCache extends AbstractMap implements
     }
 
     /**
-     * Removes the key (and its corresponding value) from this
-     * table. This method does nothing if the key is not in the table.
+     * Removes the key (and its corresponding value) from this table.
+     * This method does nothing if the key is not in the table.
      *
      * @param   key   the key that needs to be removed.
      * @return  the value to which the key had been mapped in this table,
@@ -883,8 +883,8 @@ public abstract class AbstractConcurrentReadCache extends AbstractMap implements
     }
 
     /**
-     * Returns a collection view of the values contained in this map.  The
-     * collection is backed by the map, so changes to the map are reflected in
+     * Returns a collection view of the values contained in this map.
+     * The collection is backed by the map, so changes to the map are reflected in
      * the collection, and vice-versa.  The collection supports element
      * removal, which removes the corresponding mapping from this map, via the
      * <tt>Iterator.remove</tt>, <tt>Collection.remove</tt>,
@@ -920,7 +920,8 @@ public abstract class AbstractConcurrentReadCache extends AbstractMap implements
     }
 
     /**
-     * Get ref to groups; the reference and the cells it
+     * Get ref to groups.
+     * The reference and the cells it
      * accesses will be at least as fresh as from last
      * use of barrierLock
      **/
@@ -953,7 +954,7 @@ public abstract class AbstractConcurrentReadCache extends AbstractMap implements
     }
 
     /**
-     * Helper method for entrySet.remove
+     * Helper method for entrySet remove.
      **/
     protected synchronized boolean findAndRemoveEntry(Map.Entry entry) {
         Object key = entry.getKey();
@@ -969,8 +970,7 @@ public abstract class AbstractConcurrentReadCache extends AbstractMap implements
     }
 
     /**
-     * Remove an object from the persistence
-     * <p>
+     * Remove an object from the persistence.
      * @param key The key of the object to remove
      */
     protected void persistRemove(Object key) {
@@ -988,8 +988,7 @@ public abstract class AbstractConcurrentReadCache extends AbstractMap implements
     }
 
     /**
-     * Removes a cache group using the persistence listener
-     * <p>
+     * Removes a cache group using the persistence listener.
      * @param groupName The name of the group to remove
      */
     protected void persistRemoveGroup(String groupName) {
@@ -1007,8 +1006,7 @@ public abstract class AbstractConcurrentReadCache extends AbstractMap implements
     }
 
     /**
-     * Retrieve an object from the persistence listener
-     * <p>
+     * Retrieve an object from the persistence listener.
      * @param key The key of the object to retrieve
      */
     protected Object persistRetrieve(Object key) {
@@ -1034,8 +1032,7 @@ public abstract class AbstractConcurrentReadCache extends AbstractMap implements
     }
 
     /**
-     * Retrieves a cache group using the persistence listener
-     * <p>
+     * Retrieves a cache group using the persistence listener.
      * @param groupName The name of the group to retrieve
      */
     protected Set persistRetrieveGroup(String groupName) {
@@ -1055,8 +1052,7 @@ public abstract class AbstractConcurrentReadCache extends AbstractMap implements
     }
 
     /**
-     * Store an object in the cache using the persistence listener
-     * <p>
+     * Store an object in the cache using the persistence listener.
      * @param key The object key
      * @param obj The object to store
      */
@@ -1075,8 +1071,7 @@ public abstract class AbstractConcurrentReadCache extends AbstractMap implements
     }
 
     /**
-     * Creates or Updates a cache group using the persistence listener
-     * <p>
+     * Creates or Updates a cache group using the persistence listener.
      * @param groupName The name of the group to update
      * @param group The entries for the group
      */
@@ -1124,8 +1119,7 @@ public abstract class AbstractConcurrentReadCache extends AbstractMap implements
     protected abstract void itemPut(Object key);
 
     /**
-     * Notify any underlying algorithm that an item has been retrieved
-     * from the cache.
+     * Notify any underlying algorithm that an item has been retrieved from the cache.
      *
      * @param key The cache key of the item that was retrieved.
      */
@@ -1139,7 +1133,7 @@ public abstract class AbstractConcurrentReadCache extends AbstractMap implements
     protected abstract void itemRemoved(Object key);
 
     /**
-     * The cache has reached its cacpacity and an item needs to be removed
+     * The cache has reached its cacpacity and an item needs to be removed.
      * (typically according to an algorithm such as LRU or FIFO).
      *
      * @return The key of whichever item was removed.
@@ -1147,7 +1141,7 @@ public abstract class AbstractConcurrentReadCache extends AbstractMap implements
     protected abstract Object removeItem();
 
     /**
-     * Reconstitute the <tt>AbstractConcurrentReadCache</tt>
+     * Reconstitute the <tt>AbstractConcurrentReadCache</tt>.
      * instance from a stream (i.e.,
      * deserialize it).
      */
@@ -1171,8 +1165,8 @@ public abstract class AbstractConcurrentReadCache extends AbstractMap implements
     }
 
     /**
-     * Rehashes the contents of this map into a new table
-     * with a larger capacity. This method is called automatically when the
+     * Rehashes the contents of this map into a new table with a larger capacity.
+     * This method is called automatically when the
      * number of keys in this map exceeds its capacity and load factor.
      */
     protected void rehash() {
@@ -1371,9 +1365,8 @@ public abstract class AbstractConcurrentReadCache extends AbstractMap implements
     }
 
     /**
-     * Save the state of the <tt>AbstractConcurrentReadCache</tt>
-     * instance to a stream (i.e.,
-     * serialize it).
+     * Save the state of the <tt>AbstractConcurrentReadCache</tt> instance to a stream.
+     * (i.e., serialize it).
      *
      * @serialData The <i>capacity</i> of the
      * AbstractConcurrentReadCache (the length of the
@@ -1406,7 +1399,8 @@ public abstract class AbstractConcurrentReadCache extends AbstractMap implements
     }
 
     /**
-     * Return hash code for Object x. Since we are using power-of-two
+     * Return hash code for Object x.
+     * Since we are using power-of-two
      * tables, it is worth the effort to improve hashcode via
      * the same multiplicative scheme as used in IdentityHashMap.
      */
@@ -1420,7 +1414,8 @@ public abstract class AbstractConcurrentReadCache extends AbstractMap implements
     }
 
     /**
-     * Add this cache key to the groups specified groups. We have to treat the
+     * Add this cache key to the groups specified groups.
+     * We have to treat the
      * memory and disk group mappings seperately so they remain valid for their
      * corresponding memory/disk caches. (eg if mem is limited to 100 entries
      * and disk is unlimited, the group mappings will be different).
@@ -1708,8 +1703,8 @@ public abstract class AbstractConcurrentReadCache extends AbstractMap implements
     }
 
     /**
-     * Remove this CacheEntry from the groups it no longer belongs to. We have
-     * to treat the memory and disk group mappings seperately so they remain
+     * Remove this CacheEntry from the groups it no longer belongs to.
+     *  We have to treat the memory and disk group mappings seperately so they remain
      * valid for their corresponding memory/disk caches. (eg if mem is limited
      * to 100 entries and disk is unlimited, the group mappings will be
      * different).
@@ -1778,8 +1773,8 @@ public abstract class AbstractConcurrentReadCache extends AbstractMap implements
     }
 
     /**
-     * Updates the groups to reflect the differences between the old and new
-     * cache entries. Either of the old or new values can be <code>null</code>
+     * Updates the groups to reflect the differences between the old and new cache entries.
+     * Either of the old or new values can be <code>null</code>
      * or contain a <code>null</code> group list, in which case the entry's
      * groups will all be added or removed respectively.
      *
@@ -1860,7 +1855,8 @@ public abstract class AbstractConcurrentReadCache extends AbstractMap implements
         }
 
         /**
-         * Set the value of this entry.  Note: In an entrySet or
+         * Set the value of this entry.
+         * Note: In an entrySet or
          * entrySet.iterator), unless the set or iterator is used under
          * synchronization of the table as a whole (or you can otherwise
          * guarantee lack of concurrent modification), <tt>setValue</tt>
@@ -1891,7 +1887,8 @@ public abstract class AbstractConcurrentReadCache extends AbstractMap implements
         }
 
         /**
-         * Get the value.  Note: In an entrySet or entrySet.iterator,
+         * Get the value.
+         * Note: In an entrySet or entrySet.iterator,
          * unless the set or iterator is used under synchronization of the
          * table as a whole (or you can otherwise guarantee lack of
          * concurrent modification), <tt>getValue</tt> <em>might</em>

@@ -18,27 +18,27 @@ public class EntryUpdateState {
     /**
      * The initial state when this object is first created
      */
-    private static final int NOT_YET_UPDATING = -1;
+    public static final int NOT_YET_UPDATING = -1;
 
     /**
      * Update in progress state
      */
-    private static final int UPDATE_IN_PROGRESS = 0;
+    public static final int UPDATE_IN_PROGRESS = 0;
 
     /**
      * Update complete state
      */
-    private static final int UPDATE_COMPLETE = 1;
+    public static final int UPDATE_COMPLETE = 1;
 
     /**
      * Update cancelled state
      */
-    private static final int UPDATE_CANCELLED = 2;
+    public static final int UPDATE_CANCELLED = 2;
 
     /**
      * Current update state
      */
-    private int state = NOT_YET_UPDATING;
+    int state = NOT_YET_UPDATING;
 
     /**
      * This is the initial state when an instance this object is first created.
