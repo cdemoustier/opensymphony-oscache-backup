@@ -164,28 +164,22 @@ public class TestConcurrency extends TestCase {
         String key = "stale";
         admin.putInCache(key, VALUE);
 
-        // Sleep for a couple of seconds
         try {
-            Thread.sleep(1100);
-        } catch (InterruptedException ie) {
-        }
-
-        try {
-            // This should throw a NeedsRefreshException since the entry is
-            // more than 1 second old
-            admin.getFromCache(key, 1);
+            // This should throw a NeedsRefreshException since the refresh
+            // period is 0
+            admin.getFromCache(key, 0);
             fail("NeedsRefreshException should have been thrown");
         } catch (NeedsRefreshException nre) {
             // Fire off another thread to get the same cache entry.
             // Since blocking mode is currently disabled we should
             // immediately get back the stale entry
-            GetEntry getEntry = new GetEntry(key, VALUE, 1, false);
+            GetEntry getEntry = new GetEntry(key, VALUE, 0, false);
             Thread thread = new Thread(getEntry);
             thread.start();
 
             // Sleep for a bit to simulate the time taken to build the cache entry
             try {
-                Thread.sleep(500);
+                Thread.sleep(1000);
             } catch (InterruptedException ie) {
             }
 

@@ -17,26 +17,26 @@ package com.opensymphony.oscache.base;
  */
 public interface LifecycleAware {
     /**
-     * Called by the cache administrator class when a cache is instantiated.
-     *
-     * @param admin The administrator of the cache that this listener is attached to.
-     * @param config The cache's configuration details. This allows the event handler
-     * to initialize itself based on the cache settings, and also to receive <em>additional</em>
-     * settings that were part of the cache configuration but that the cache
-     * itself does not care about. If you are using <code>cache.properties</code>
-     * for your configuration, simply add any additional properties that your event
-     * handler requires and they will be passed through in this parameter.
-     *
-     * @throws InitializationException thrown when there was a problem initializing the
-     * listener. The cache administrator will log this error and disable the listener.
-     */
-    public void initialize(AbstractCacheAdministrator admin, Config config) throws InitializationException;
+    * Called by the cache administrator class when a cache is instantiated.
+    *
+    * @param cache the cache instance that this listener is attached to.
+    * @param config The cache's configuration details. This allows the event handler
+    * to initialize itself based on the cache settings, and also to receive <em>additional</em>
+    * settings that were part of the cache configuration but that the cache
+    * itself does not care about. If you are using <code>cache.properties</code>
+    * for your configuration, simply add any additional properties that your event
+    * handler requires and they will be passed through in this parameter.
+    *
+    * @throws InitializationException thrown when there was a problem initializing the
+    * listener. The cache administrator will log this error and disable the listener.
+    */
+    public void initialize(Cache cache, Config config) throws InitializationException;
 
     /**
-     * Called by the cache administrator class when a cache is destroyed.
-     *
-     * @throws FinalizationException thrown when there was a problem finalizing the
-     * listener. The cache administrator will catch and log this error.
-     */
+    * Called by the cache administrator class when a cache is destroyed.
+    *
+    * @throws FinalizationException thrown when there was a problem finalizing the
+    * listener. The cache administrator will catch and log this error.
+    */
     public void finialize() throws FinalizationException;
 }

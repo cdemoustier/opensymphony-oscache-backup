@@ -16,6 +16,8 @@ import org.javagroups.blocks.NotificationBus;
 
 import java.io.Serializable;
 
+import java.util.Date;
+
 /**
  * Handles the sending of notification messages across the cluster. This
  * implementation is based on the JavaGroups library.
@@ -53,7 +55,7 @@ public final class ClusterManager implements NotificationBus.Consumer {
     private static final String DEFAULT_CHANNEL_PROPERTIES_POST = ";mcast_port=45566;ip_ttl=32;mcast_send_buf_size=150000;mcast_recv_buf_size=80000):PING(timeout=2000;num_initial_members=3):MERGE2(min_interval=5000;max_interval=10000):FD_SOCK:VERIFY_SUSPECT(timeout=1500):pbcast.STABLE(desired_avg_gossip=20000):pbcast.NAKACK(gc_lag=50;retransmit_timeout=300,600,1200,2400,4800):UNICAST(timeout=5000):FRAG(frag_size=8096;down_thread=false;up_thread=false):pbcast.GMS(join_timeout=5000;join_retry_timeout=2000;shun=false;print_local_addr=true)";
     private static final String DEFAULT_MULTICAST_IP = "231.12.21.132";
     private final Log log = LogFactory.getLog(ClusterManager.class);
-    private AbstractCacheAdministrator admin;
+    private Cache cache;
     private NotificationBus bus;
     private boolean shuttingDown = false;
 
@@ -113,14 +115,6 @@ public final class ClusterManager implements NotificationBus.Consumer {
 
         ClusterNotification msg = (ClusterNotification) serializable;
 
-        if (admin == null) {
-            log.warn("Since no cache administrator has been specified for this ClusterManager, the cache named '" + msg.getCacheName() + "' cannot be retrieved. Cluster notification ignored.");
-            return;
-        }
-
-        // Retrieve the named cache that this message applies to
-        Cache cache = admin.getNamedCache(msg.getCacheName());
-
         if (cache == null) {
             log.warn("A cluster notification (" + msg + ") was received, but no matching cache is registered on this machine. Notification ignored.");
 
@@ -133,14 +127,16 @@ public final class ClusterManager implements NotificationBus.Consumer {
 
         switch (msg.getType()) {
             case ClusterNotification.FLUSH_KEY:
-                cache.flushEntry(msg.getData(), CLUSTER_ORIGIN);
+                cache.flushEntry((String) msg.getData(), CLUSTER_ORIGIN);
                 break;
             case ClusterNotification.FLUSH_GROUP:
-                cache.flushGroup(msg.getData(), CLUSTER_ORIGIN);
+                cache.flushGroup((String) msg.getData(), CLUSTER_ORIGIN);
                 break;
             case ClusterNotification.FLUSH_PATTERN:
-                cache.flushPattern(msg.getData(), CLUSTER_ORIGIN);
+                cache.flushPattern((String) msg.getData(), CLUSTER_ORIGIN);
                 break;
+            case ClusterNotification.FLUSH_CACHE:
+                cache.flushAll((Date) msg.getData(), CLUSTER_ORIGIN);
             default:
                 log.error("The cluster notification (" + msg + ") is of an unknown type. Notification ignored.");
         }
@@ -188,15 +184,14 @@ public final class ClusterManager implements NotificationBus.Consumer {
      * place.
      *
      * @param key The object key to broadcast a flush notification message for
-     * @param cacheName The name of the cache to flush
      */
-    void signalEntryFlush(String key, String cacheName) {
+    void signalEntryFlush(String key) {
         if (log.isDebugEnabled()) {
-            log.debug("flushEntry called for cache '" + cacheName + "', key '" + key + "'");
+            log.debug("flushEntry called for cache key '" + key + "'");
         }
 
         if (!shuttingDown) {
-            bus.sendNotification(new ClusterNotification(ClusterNotification.FLUSH_KEY, cacheName, key));
+            bus.sendNotification(new ClusterNotification(ClusterNotification.FLUSH_KEY, key));
         }
     }
 
@@ -204,15 +199,14 @@ public final class ClusterManager implements NotificationBus.Consumer {
      * Broadcasts a flush message for the given cache group.
      *
      * @param group The group to broadcast a flush message for
-     * @param cacheName The name of the cache to flush
      */
-    void signalGroupFlush(String group, String cacheName) {
+    void signalGroupFlush(String group) {
         if (log.isDebugEnabled()) {
-            log.debug("flushGroup called for cache '" + cacheName + "', group '" + group + "'");
+            log.debug("flushGroup called for cache group '" + group + "'");
         }
 
         if (!shuttingDown) {
-            bus.sendNotification(new ClusterNotification(ClusterNotification.FLUSH_GROUP, cacheName, group));
+            bus.sendNotification(new ClusterNotification(ClusterNotification.FLUSH_GROUP, group));
         }
     }
 
@@ -220,38 +214,37 @@ public final class ClusterManager implements NotificationBus.Consumer {
      * Broadcasts a flush message for the given cache pattern.
      *
      * @param pattern The pattern to broadcast a flush message for
-     * @param cacheName The name of the cache to flush
      */
-    void signalPatternFlush(String pattern, String cacheName) {
+    void signalPatternFlush(String pattern) {
         if (log.isDebugEnabled()) {
-            log.debug("flushPattern called for cache '" + cacheName + "', pattern '" + pattern + "'");
+            log.debug("flushPattern called for cache pattern '" + pattern + "'");
         }
 
         if (!shuttingDown) {
-            bus.sendNotification(new ClusterNotification(ClusterNotification.FLUSH_PATTERN, cacheName, pattern));
+            bus.sendNotification(new ClusterNotification(ClusterNotification.FLUSH_PATTERN, pattern));
         }
     }
 
     /**
      * Broadcasts a flush message for an entire cache
      *
-     * @param cacheName The name of the cache to flush
+     * @param date the date and time the cache was flushed
      */
-    void signalCacheFlush(String cacheName) {
+    void signalCacheFlush(Date date) {
         if (log.isDebugEnabled()) {
-            log.debug("flushCache called for cache '" + cacheName + "'");
+            log.debug("flushCache called");
         }
 
         if (!shuttingDown) {
-            bus.sendNotification(new ClusterNotification(ClusterNotification.FLUSH_CACHE, cacheName, null));
+            bus.sendNotification(new ClusterNotification(ClusterNotification.FLUSH_CACHE, date));
         }
     }
 
     /**
-     * Sets the adminstrator for this cluster manager. We need this so we can
-     * look up named caches.
+     * Hold a copy of the cache so we can apply asynchronous messages to it
+     * as they arrive.
      */
-    public void setAdministrator(AbstractCacheAdministrator admin) {
-        this.admin = admin;
+    public void setCache(Cache cache) {
+        this.cache = cache;
     }
 }

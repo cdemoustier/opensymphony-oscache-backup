@@ -19,6 +19,7 @@ import java.util.*;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.PageContext;
 
 /**
@@ -27,7 +28,7 @@ import javax.servlet.jsp.PageContext;
  * This is a "servlet Singleton". This means it's not a Singleton in the traditional sense,
  * that is stored in a static instance. It's a Singleton _per web app context_.
  * <p>
- * Once created it manages the cache path on disk through the cachetags.properties
+ * Once created it manages the cache path on disk through the oscache.properties
  * file, and also keeps track of the flush times.
  *
  * @author <a href="mailto:mike@atlassian.com">Mike Cannon-Brookes</a>
@@ -198,51 +199,80 @@ public class ServletCacheAdministrator extends AbstractCacheAdministrator implem
     }
 
     /**
-     * Grabs a cache for the specified scope from the context
+     * Grabs the cache for the specified scope
      *
      * @param request The current request
-     * @param scope The scope of this cache
+     * @param scope The scope of this cache (<code>PageContext.APPLICATION_SCOPE</code>
+     * or <code>PageContext.SESSION_SCOPE</code>)
      * @return The cache
      */
     public Cache getCache(HttpServletRequest request, int scope) {
-        Cache thisCache = null;
-
-        Object o = null;
-
         if (scope == PageContext.APPLICATION_SCOPE) {
-            o = request.getSession(true).getServletContext().getAttribute(getCacheKey());
-        } else if (scope == PageContext.SESSION_SCOPE) {
-            o = request.getSession().getAttribute(getCacheKey());
-        } else {
-            throw new RuntimeException("Invalid scope");
+            return getAppScopeCache(request.getSession(true).getServletContext());
         }
 
-        // get or create the cache at cacheLocation in the appropriate scope
-        // if the cache does not exist, create it
-        if ((o == null) || !(o instanceof Cache)) {
-            if (log.isInfoEnabled()) {
-                log.info("Created new Cache at key: " + getCacheKey());
-            }
-
-            if (scope == PageContext.APPLICATION_SCOPE) {
-                thisCache = createCache(scope, null);
-                request.getSession(true).getServletContext().setAttribute(getCacheKey(), thisCache);
-            } else if (scope == PageContext.SESSION_SCOPE) {
-                thisCache = createCache(scope, request.getSession(false).getId());
-                request.getSession().setAttribute(getCacheKey(), thisCache);
-            }
-        } else {
-            thisCache = (Cache) o;
+        if (scope == PageContext.SESSION_SCOPE) {
+            return getSessionScopeCache(request.getSession(true));
         }
 
-        return thisCache;
+        throw new RuntimeException("The supplied scope value of " + scope + " is invalid. Acceptable values are PageContext.APPLICATION_SCOPE and PageContext.SESSION_SCOPE");
     }
 
     /**
-     *        Get the cache key from the properties. Set it to a default value if it
-     *  is not present in the properties
+     * A convenience method to retrieve the application scope cache
+
+     * @param context the current <code>ServletContext</code>
+     * @return the application scope cache. If none is present, one will
+     * be created.
+     */
+    public Cache getAppScopeCache(ServletContext context) {
+        Cache cache = null;
+        Object obj = context.getAttribute(getCacheKey());
+
+        if ((obj == null) || !(obj instanceof Cache)) {
+            if (log.isInfoEnabled()) {
+                log.info("Created new application-scoped cache at key: " + getCacheKey());
+            }
+
+            cache = createCache(PageContext.APPLICATION_SCOPE, null);
+            context.setAttribute(getCacheKey(), cache);
+        } else {
+            cache = (Cache) obj;
+        }
+
+        return cache;
+    }
+
+    /**
+     * A convenience method to retrieve the session scope cache
      *
-     *        @return The cache.key property or the DEFAULT_CACHE_KEY
+     * @param session the current <code>HttpSession</code>
+     * @return the session scope cache for this session. If none is present,
+     * one will be created.
+     */
+    public Cache getSessionScopeCache(HttpSession session) {
+        Cache cache = null;
+        Object obj = session.getAttribute(getCacheKey());
+
+        if ((obj == null) || !(obj instanceof Cache)) {
+            if (log.isInfoEnabled()) {
+                log.info("Created new session-scoped cache in session " + session.getId() + " at key: " + getCacheKey());
+            }
+
+            cache = createCache(PageContext.SESSION_SCOPE, session.getId());
+            session.setAttribute(getCacheKey(), cache);
+        } else {
+            cache = (Cache) obj;
+        }
+
+        return cache;
+    }
+
+    /**
+     * Get the cache key from the properties. Set it to a default value if it
+     * is not present in the properties
+     *
+     * @return The cache.key property or the DEFAULT_CACHE_KEY
      */
     public String getCacheKey() {
         if (cacheKey == null) {
@@ -257,10 +287,10 @@ public class ServletCacheAdministrator extends AbstractCacheAdministrator implem
     }
 
     /**
-     *        Set the flush time for a specific scope to a specific time
+     * Set the flush time for a specific scope to a specific time
      *
-     *        @param date         The time to flush the scope
-     *        @param scope        The scope to be flushed
+     * @param date  The time to flush the scope
+     * @param scope The scope to be flushed
      */
     public void setFlushTime(Date date, int scope) {
         if (log.isInfoEnabled()) {
@@ -659,14 +689,6 @@ public class ServletCacheAdministrator extends AbstractCacheAdministrator implem
                     newCache.addCacheEventListener(listeners[i], ScopeEventListener.class);
                 }
             }
-        }
-
-        // If the cache is in a long-lived scope, register it so it is able
-        // to receive broadcast events.
-        if (scope == PageContext.APPLICATION_SCOPE) {
-            nameCache("appCache", newCache);
-        } else if (scope == PageContext.SESSION_SCOPE) {
-            nameCache("sessionCache", newCache);
         }
 
         return newCache;

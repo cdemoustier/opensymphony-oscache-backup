@@ -33,7 +33,7 @@ public class CacheFilter implements Filter {
     // filter variables
     private FilterConfig config;
     private ServletCacheAdministrator admin = null;
-    private int cacheScope = PageContext.APPLICATION_SCOPE; // filter score - default is APPLICATION
+    private int cacheScope = PageContext.APPLICATION_SCOPE; // filter scope - default is APPLICATION
     private int time = 60 * 60; // time before cache should be refreshed - default one hour (in seconds)
 
     /**

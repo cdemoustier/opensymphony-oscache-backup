@@ -206,6 +206,9 @@ public class GeneralCacheAdministrator extends AbstractCacheAdministrator {
      * Allows to flush all items that have a specified pattern in the key.
      *
      * @param pattern     Pattern.
+     * @deprecated For performance and flexibility reasons it is preferable to
+     * store cache entries in groups and use the {@link #flushGroup(String)} method
+     * instead of relying on pattern flushing.
      */
     public void flushPattern(String pattern) {
         getCache().flushPattern(pattern);
@@ -265,9 +268,6 @@ public class GeneralCacheAdministrator extends AbstractCacheAdministrator {
         log.info("Creating new cache");
 
         Cache newCache = new Cache(isMemoryCaching(), isUnlimitedDiskCache(), isBlocking(), algorithmClass, cacheCapacity);
-
-        // Give the cache a name
-        nameCache("applicationCache", newCache);
 
         configureStandardListeners(newCache);
 
