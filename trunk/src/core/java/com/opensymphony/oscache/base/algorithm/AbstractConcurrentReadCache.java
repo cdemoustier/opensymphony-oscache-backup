@@ -181,7 +181,7 @@ public abstract class AbstractConcurrentReadCache extends AbstractMap implements
 
     //OpenSymphony BEGIN (pretty long!)
     protected static final String NULL = "_nul!~";
-    protected static final transient Log log = LogFactory.getLog(AbstractConcurrentReadCache.class);
+    protected static transient Log log = LogFactory.getLog(AbstractConcurrentReadCache.class);
 
     /*
       The basic strategy is an optimistic-style scheme based on
@@ -208,9 +208,11 @@ public abstract class AbstractConcurrentReadCache extends AbstractMap implements
     */
 
     /**
-     * Lock used only for its memory effects.
+     * Lock used only for its memory effects. We use a Boolean
+     * because it is serializable, and we create a new one because
+     * we need a unique object for each cache instance.
      **/
-    protected transient Object barrierLock = new Object();
+    protected final Boolean barrierLock = new Boolean(true);
 
     /**
      * field written to only to guarantee lock ordering.
@@ -1149,7 +1151,7 @@ public abstract class AbstractConcurrentReadCache extends AbstractMap implements
         // Read in the threshold, loadfactor, and any hidden stuff
         s.defaultReadObject();
 
-        barrierLock = new Object();
+        log = LogFactory.getLog(AbstractConcurrentReadCache.class);
 
         // Read in number of buckets and allocate the bucket array;
         int numBuckets = s.readInt();
