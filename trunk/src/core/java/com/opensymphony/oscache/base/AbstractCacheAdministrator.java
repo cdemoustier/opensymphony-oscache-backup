@@ -4,6 +4,7 @@
  */
 package com.opensymphony.oscache.base;
 
+import com.opensymphony.oscache.base.algorithm.AbstractConcurrentReadCache;
 import com.opensymphony.oscache.base.events.*;
 import com.opensymphony.oscache.base.persistence.PersistenceListener;
 import com.opensymphony.oscache.util.StringUtil;
@@ -171,11 +172,13 @@ public abstract class AbstractCacheAdministrator implements java.io.Serializable
     }
 
     /**
-     * Sets the cache capacity (number of items).
+     * Sets the cache capacity (number of items). Administrator implementations
+     * should override this method to ensure that their {@link Cache} objects
+     * are updated correctly (by calling {@link AbstractConcurrentReadCache#setMaxEntries(int)}}}.
      *
      * @param newCacheCapacity The new capacity
      */
-    public void setCacheCapacity(int newCacheCapacity) {
+    protected void setCacheCapacity(int newCacheCapacity) {
         cacheCapacity = newCacheCapacity;
     }
 

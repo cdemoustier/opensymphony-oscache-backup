@@ -134,6 +134,17 @@ public class Cache implements Serializable {
     }
 
     /**
+     * Allows the capacity of the cache to be altered dynamically. Note that
+     * some cache implementations may choose to ignore this setting (eg the
+     * {@link UnlimitedCache} ignores this call).
+     *
+     * @param capacity the maximum number of items to hold in the cache.
+     */
+    public void setCapacity(int capacity) {
+        cacheMap.setMaxEntries(capacity);
+    }
+
+    /**
      * Checks if the cache was flushed more recently than the CacheEntry provided.
      * Used to determine whether to refresh the particular CacheEntry.
      *

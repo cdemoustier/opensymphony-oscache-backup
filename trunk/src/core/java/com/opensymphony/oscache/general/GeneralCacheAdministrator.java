@@ -260,6 +260,18 @@ public class GeneralCacheAdministrator extends AbstractCacheAdministrator {
     }
 
     /**
+     * Sets the cache capacity (number of items). If the cache contains
+     * more than <code>capacity</code> items then items will be removed
+     * to bring the cache back down to the new size.
+     *
+     * @param capacity The new capacity of the cache
+     */
+    public void setCacheCapacity(int capacity) {
+        super.setCacheCapacity(capacity);
+        getCache().setCapacity(capacity);
+    }
+
+    /**
      * Creates a cache in this admin
      *
      * @return The new cache

@@ -527,8 +527,6 @@ public class ServletCacheAdministrator extends AbstractCacheAdministrator implem
                 } catch (Exception e) {
                     // Ignore query string
                 }
-
-                generatedKey = null;
             }
         }
 
@@ -622,6 +620,20 @@ public class ServletCacheAdministrator extends AbstractCacheAdministrator implem
         Cache cache = getCache(request, scope);
         key = this.generateEntryKey(key, request, scope);
         cache.putInCache(key, content, policy);
+    }
+
+    /**
+     * Sets the cache capacity (number of items). If the cache contains
+     * more than <code>capacity</code> items then items will be removed
+     * to bring the cache back down to the new size.
+     *
+     * @param scope The cache scope
+     * @param request The servlet request
+     * @param capacity The new capacity
+     */
+    public void setCacheCapacity(int scope, HttpServletRequest request, int capacity) {
+        setCacheCapacity(capacity);
+        getCache(request, scope).setCapacity(capacity);
     }
 
     /**
