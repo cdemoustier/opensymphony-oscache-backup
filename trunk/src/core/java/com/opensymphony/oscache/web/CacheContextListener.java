@@ -11,7 +11,6 @@ import javax.servlet.ServletContextListener;
 /**
  *
  * @author <a href="&#109;a&#105;&#108;&#116;&#111;:chris&#64;swebtec.&#99;&#111;&#109;">Chris Miller</a>
- * @version $Revision$
  */
 public class CacheContextListener implements ServletContextListener {
     /**
