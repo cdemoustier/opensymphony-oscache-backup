@@ -231,7 +231,7 @@ public class Cache implements Serializable {
                 } else if (updateState.isUpdating()) {
                     // Another thread is already updating the cache. We block if this
                     // is a new entry, or blocking mode is enabled. Either putInCache()
-                    // or cancelRefresh() can cause this thread to resume.
+                    // or cancelUpdate() can cause this thread to resume.
                     if (cacheEntry.isNew() || blocking) {
                         do {
                             try {
@@ -241,8 +241,16 @@ public class Cache implements Serializable {
                         } while (updateState.isUpdating());
 
                         if (updateState.isCancelled()) {
-                            // The updating thread cancelled the update, let this one have a go
+                            // The updating thread cancelled the update, let this one have a go.
                             updateState.startUpdate();
+
+                            // We put the updateState object back into the updateStates map so
+                            // any remaining threads waiting on this cache entry will be notified
+                            // once this thread has done its thing (either updated the cache or
+                            // cancelled the update). Without this code they'll get left hanging...
+                            synchronized (updateStates) {
+                                updateStates.put(key, updateState);
+                            }
 
                             if (cacheEntry.isNew()) {
                                 accessEventType = CacheMapAccessEventType.MISS;
@@ -339,7 +347,7 @@ public class Cache implements Serializable {
                 if (state != null) {
                     synchronized (state) {
                         state.cancelUpdate();
-                        state.notifyAll();
+                        state.notify();
                     }
                 }
             }
@@ -606,7 +614,8 @@ public class Cache implements Serializable {
 
     /**
      * Get the updating cache entry from the update map. If one is not found,
-     * create a new one and add it to the map.
+     * create a new one (with state {@link EntryUpdateState#NOT_YET_UPDATING})
+     * and add it to the map.
      *
      * @param key The cache key for this entry
      *
