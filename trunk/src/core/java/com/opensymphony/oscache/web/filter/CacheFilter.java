@@ -73,7 +73,7 @@ public class CacheFilter implements Filter {
 
             long clientLastModified = httpRequest.getDateHeader("If-Modified-Since"); // will return -1 if no header...
 
-            if (clientLastModified >= respContent.getLastModified()) {
+            if (( clientLastModified != -1 ) && ( clientLastModified >= respContent.getLastModified())) { 
                 ((HttpServletResponse) response).setStatus(HttpServletResponse.SC_NOT_MODIFIED);
                 return;
             }
