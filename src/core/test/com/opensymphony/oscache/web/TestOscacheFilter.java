@@ -93,6 +93,20 @@ public final class TestOscacheFilter extends TestCase {
     }
 
     /**
+     * Test the cache module using a filter and basic load
+     */
+    public void testOscacheFilterBasicForLoad() {
+        String baseUrl = constructURL(BASE_PAGE);
+
+        for (int i = 0; i < 5; i++) {
+            String stringResponse = invokeURL(baseUrl, 0);
+
+            // Check we received something slightly sane
+            assertTrue(stringResponse.indexOf("Current Time") > 0);
+        }
+    }
+
+    /**
      * Compile a JSP page by invoking it. We compile the page first to avoid
      * the compilation delay when testing since the time is a crucial factor
      *
