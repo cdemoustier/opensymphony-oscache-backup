@@ -143,6 +143,11 @@ public class CacheHttpServletResponseWrapper extends HttpServletResponseWrapper 
         this.status = status;
     }
 
+    public void sendRedirect(String location) throws IOException {
+        this.status = SC_MOVED_TEMPORARILY;
+        super.sendRedirect(location);
+    }
+
     /**
      * Retrieves the captured HttpResponse status.
      */
