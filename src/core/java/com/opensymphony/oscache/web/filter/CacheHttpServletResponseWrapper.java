@@ -8,6 +8,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 
 import java.util.Locale;
@@ -276,7 +277,7 @@ public class CacheHttpServletResponseWrapper extends HttpServletResponseWrapper 
      */
     public PrintWriter getWriter() throws IOException {
         if (cachedWriter == null) {
-            cachedWriter = new PrintWriter(getOutputStream());
+            cachedWriter = new PrintWriter(new OutputStreamWriter(getOutputStream(), result.getContentEncoding()));
         }
 
         return cachedWriter;
