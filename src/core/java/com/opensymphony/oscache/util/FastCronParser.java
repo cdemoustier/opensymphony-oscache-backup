@@ -343,7 +343,7 @@ public class FastCronParser {
         cal.set(Calendar.SECOND, 0);
         cal.set(Calendar.MILLISECOND, 0);
 
-        return cal.getTimeInMillis();
+        return cal.getTime().getTime();
     }
 
     /**
