@@ -92,7 +92,10 @@ public final class ServletCache extends Cache implements HttpSessionBindingListe
      * @param event The event that triggered this unbinding.
      */
     public void valueUnbound(HttpSessionBindingEvent event) {
-        log.info("[Cache] Unbound from session " + event.getSession().getId() + " using name " + event.getName());
+        if (log.isInfoEnabled()) {
+            log.info("[Cache] Unbound from session " + event.getSession().getId() + " using name " + event.getName());
+        }
+
         admin.finalizeListeners(this);
         clear();
     }
