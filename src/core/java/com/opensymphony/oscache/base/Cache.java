@@ -393,7 +393,10 @@ public class Cache implements Serializable {
      */
     public void flushAll(Date date, String origin) {
         flushDateTime = date;
-        dispatchCachewideEvent(CachewideEventType.CACHE_FLUSHED, date, origin);
+
+        if (listenerList.getListenerCount() > 0) {
+            dispatchCachewideEvent(CachewideEventType.CACHE_FLUSHED, date, origin);
+        }
     }
 
     /**
@@ -458,7 +461,9 @@ public class Cache implements Serializable {
             }
         }
 
-        dispatchCacheGroupEvent(CacheEntryEventType.GROUP_FLUSHED, group, origin);
+        if (listenerList.getListenerCount() > 0) {
+            dispatchCacheGroupEvent(CacheEntryEventType.GROUP_FLUSHED, group, origin);
+        }
     }
 
     /**
@@ -501,7 +506,9 @@ public class Cache implements Serializable {
                 }
             }
 
-            dispatchCachePatternEvent(CacheEntryEventType.PATTERN_FLUSHED, pattern, origin);
+            if (listenerList.getListenerCount() > 0) {
+                dispatchCachePatternEvent(CacheEntryEventType.PATTERN_FLUSHED, pattern, origin);
+            }
         } else {
             // Empty pattern, nothing to do
         }
@@ -560,12 +567,14 @@ public class Cache implements Serializable {
         // in the cache!
         completeUpdate(key);
 
-        CacheEntryEvent event = new CacheEntryEvent(this, cacheEntry, origin);
+        if (listenerList.getListenerCount() > 0) {
+            CacheEntryEvent event = new CacheEntryEvent(this, cacheEntry, origin);
 
-        if (isNewEntry) {
-            dispatchCacheEntryEvent(CacheEntryEventType.ENTRY_ADDED, event);
-        } else {
-            dispatchCacheEntryEvent(CacheEntryEventType.ENTRY_UPDATED, event);
+            if (isNewEntry) {
+                dispatchCacheEntryEvent(CacheEntryEventType.ENTRY_ADDED, event);
+            } else {
+                dispatchCacheEntryEvent(CacheEntryEventType.ENTRY_UPDATED, event);
+            }
         }
     }
 
@@ -711,8 +720,10 @@ public class Cache implements Serializable {
         CacheEntry cacheEntry = (CacheEntry) cacheMap.get(key);
         cacheMap.remove(key);
 
-        CacheEntryEvent event = new CacheEntryEvent(this, cacheEntry, origin);
-        dispatchCacheEntryEvent(CacheEntryEventType.ENTRY_REMOVED, event);
+        if (listenerList.getListenerCount() > 0) {
+            CacheEntryEvent event = new CacheEntryEvent(this, cacheEntry, origin);
+            dispatchCacheEntryEvent(CacheEntryEventType.ENTRY_REMOVED, event);
+        }
     }
 
     /**
@@ -854,7 +865,9 @@ public class Cache implements Serializable {
         }
 
         // Trigger an ENTRY_FLUSHED event. [CACHE-107] Do this for all flushes.
-        CacheEntryEvent event = new CacheEntryEvent(this, entry, origin);
-        dispatchCacheEntryEvent(CacheEntryEventType.ENTRY_FLUSHED, event);
+        if (listenerList.getListenerCount() > 0) {
+            CacheEntryEvent event = new CacheEntryEvent(this, entry, origin);
+            dispatchCacheEntryEvent(CacheEntryEventType.ENTRY_FLUSHED, event);
+        }
     }
 }
