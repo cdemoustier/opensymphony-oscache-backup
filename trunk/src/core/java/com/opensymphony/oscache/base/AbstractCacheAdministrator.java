@@ -107,18 +107,6 @@ public abstract class AbstractCacheAdministrator implements java.io.Serializable
     protected int cacheCapacity = -1;
 
     /**
-     * Holds named cache objects that are managed by this class. Caches that
-     * are held in this registry are available for lookup by external code.
-     * This is useful when caches running in different JVMs or even different
-     * machines need to be coordinated. An event handler can pass through the name
-     * of the cache to the remote JVM, which can then retrieve the corresponding
-     * local cache with the same name.<p>
-     * For example the <code>BroadcastingCacheEventListener</code> uses this to
-     * flush cache entries across a cluster.
-     */
-    private Map namedCaches = new WeakHashMap();
-
-    /**
      * Whether the cache blocks waiting for content to be build, or serves stale
      * content instead. This value can be specified using the {@link #CACHE_BLOCKING_KEY}
      * configuration property.
@@ -218,22 +206,6 @@ public abstract class AbstractCacheAdministrator implements java.io.Serializable
         return unlimitedDiskCache;
     }
 
-    public Cache getNamedCache(String name) {
-        return (Cache) namedCaches.get(name);
-    }
-
-    protected void nameCache(String name, Cache cache) {
-        if (cache.getName() != null) {
-            log.error("nameCache() can only be called once.");
-            throw new UnsupportedOperationException("Cannot call nameCache() multiple times with the same cache object.");
-        }
-
-        cache.setName(name);
-
-        // Take a copy of the string since we're storing it in a WeakHashMap
-        namedCaches.put(new String(name), cache);
-    }
-
     /**
      * Retrieves an array containing instances all of the {@link CacheEventListener}
      * classes that are specified in the OSCache configuration file.
@@ -318,7 +290,7 @@ public abstract class AbstractCacheAdministrator implements java.io.Serializable
                 // Pass through the configuration to those listeners that require it
                 if (listeners[i] instanceof LifecycleAware) {
                     try {
-                        ((LifecycleAware) listeners[i]).initialize(this, config);
+                        ((LifecycleAware) listeners[i]).initialize(cache, config);
                     } catch (InitializationException e) {
                         log.error("Could not initialize listener '" + listeners[i].getClass().getName() + "'. Listener ignored.", e);
 

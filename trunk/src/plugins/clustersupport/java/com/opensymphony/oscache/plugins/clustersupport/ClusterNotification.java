@@ -41,14 +41,9 @@ public class ClusterNotification implements Serializable {
     static final int FLUSH_CACHE = 4;
 
     /**
-     * The name of the cache that this notification applies to
-     */
-    private String cacheName;
-
-    /**
      * Any additional data that may be required
      */
-    private String data;
+    private Serializable data;
 
     /**
      * The type of notification message.
@@ -61,29 +56,17 @@ public class ClusterNotification implements Serializable {
      *
      * @param type       The type of notification message. Valid types are
      *                   {@link #FLUSH_KEY} and {@link #FLUSH_GROUP}.
-     * @param cacheName  The name of the cache that this message applies to.
-     *                   This is required so the remote listeners can locate
-     *                   the correct cache to flush.
      * @param data       Specifies the object key or group name to flush.
      */
-    public ClusterNotification(int type, String cacheName, String data) {
+    public ClusterNotification(int type, Serializable data) {
         this.type = type;
-        this.cacheName = cacheName;
         this.data = data;
     }
 
     /**
-     * The name of the cache that this message should be applied to. The cache
-     * will be looked up using the cache's administrator object.
+     * Holds any additional data that was required
      */
-    public String getCacheName() {
-        return cacheName;
-    }
-
-    /**
-     * Specifies the object key or group name to flush.
-     */
-    public String getData() {
+    public Serializable getData() {
         return data;
     }
 
@@ -96,8 +79,7 @@ public class ClusterNotification implements Serializable {
 
     public String toString() {
         StringBuffer buf = new StringBuffer();
-        buf.append("type=").append(type).append(", cacheName=");
-        buf.append(cacheName).append(", data=").append(data);
+        buf.append("type=").append(type).append(", data=").append(data);
 
         return buf.toString();
     }

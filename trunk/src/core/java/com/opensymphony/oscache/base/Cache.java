@@ -70,13 +70,6 @@ public class Cache implements Serializable {
     private Map updateStates = new HashMap();
 
     /**
-     * An optional name for the cache. When a cache is named it gets remembered
-     * by the <code>AbstractCacheAdministrator</code>. It can then be looked up
-     * by listeners or other code that need to get hold of the named cache instance.
-     */
-    private String name = null;
-
-    /**
      * Indicates whether the cache blocks requests until new content has
      * been generated or just serves stale content instead.
      */
@@ -279,24 +272,6 @@ public class Cache implements Serializable {
     }
 
     /**
-     * Sets the name of the cache. This is optional, however only named
-     * caches are able to receive asynchronous flush notifications.
-     *
-     * @param name The name of the cache
-     */
-    void setName(String name) {
-        this.name = name;
-    }
-
-    /**
-     * Retrieves the name of the cache. The name is optional, so this
-     * could return <code>null</code>.
-     */
-    public String getName() {
-        return name;
-    }
-
-    /**
      * Set the listener to use for data persistence. Only one
      * <code>PersistenceListener</code> can be configured per cache.
      *
@@ -377,7 +352,7 @@ public class Cache implements Serializable {
      */
     public void flushAll(Date date, String origin) {
         flushDateTime = date;
-        dispatchCachewideEvent(CachewideEventType.CACHE_FLUSHED, origin);
+        dispatchCachewideEvent(CachewideEventType.CACHE_FLUSHED, date, origin);
     }
 
     /**
@@ -796,13 +771,13 @@ public class Cache implements Serializable {
     }
 
     /**
-     * Dispatches a cache-wise event to all registered listeners.
+     * Dispatches a cache-wide event to all registered listeners.
      *
      * @param eventType The type of event (this is used to branch to the correct method handler)
-     * @param origin      The origin of this event (optional)
+     * @param origin The origin of this event (optional)
      */
-    private void dispatchCachewideEvent(CachewideEventType eventType, String origin) {
-        CachewideEvent event = new CachewideEvent(this, origin);
+    private void dispatchCachewideEvent(CachewideEventType eventType, Date date, String origin) {
+        CachewideEvent event = new CachewideEvent(this, date, origin);
 
         // Guaranteed to return a non-null array
         Object[] listeners = listenerList.getListenerList();

@@ -43,14 +43,12 @@ public class BroadcastingCacheEventListener implements CacheEntryEventListener, 
      * the flush message to any listening nodes on the network.
      */
     public void cacheEntryFlushed(CacheEntryEvent event) {
-        Cache cache = event.getMap();
-
-        if ((cache.getName() != null) && !Cache.NESTED_EVENT.equals(event.getOrigin()) && !ClusterManager.CLUSTER_ORIGIN.equals(event.getOrigin())) {
+        if (!Cache.NESTED_EVENT.equals(event.getOrigin()) && !ClusterManager.CLUSTER_ORIGIN.equals(event.getOrigin())) {
             if (log.isDebugEnabled()) {
                 log.debug("cacheEntryFlushed called (" + event + ")");
             }
 
-            cm.signalEntryFlush(event.getKey(), cache.getName());
+            cm.signalEntryFlush(event.getKey());
         }
     }
 
@@ -72,17 +70,15 @@ public class BroadcastingCacheEventListener implements CacheEntryEventListener, 
     /**
      * Event fired when an entry is removed from the cache. This broadcasts
      * the remove method to any listening nodes on the network, as long as
-     * this event wasn't from a broadcast in the first place. The
+     * this event wasn't from a broadcast in the first place.
      */
     public void cacheGroupFlushed(CacheGroupEvent event) {
-        Cache cache = event.getMap();
-
-        if ((cache.getName() != null) && !Cache.NESTED_EVENT.equals(event.getOrigin()) && !ClusterManager.CLUSTER_ORIGIN.equals(event.getOrigin())) {
+        if (!Cache.NESTED_EVENT.equals(event.getOrigin()) && !ClusterManager.CLUSTER_ORIGIN.equals(event.getOrigin())) {
             if (log.isDebugEnabled()) {
                 log.debug("cacheGroupFushed called (" + event + ")");
             }
 
-            cm.signalGroupFlush(event.getGroup(), cache.getName());
+            cm.signalGroupFlush(event.getGroup());
         }
     }
 
@@ -93,26 +89,22 @@ public class BroadcastingCacheEventListener implements CacheEntryEventListener, 
     }
 
     public void cachePatternFlushed(CachePatternEvent event) {
-        Cache cache = event.getMap();
-
-        if ((cache.getName() != null) && !Cache.NESTED_EVENT.equals(event.getOrigin()) && !ClusterManager.CLUSTER_ORIGIN.equals(event.getOrigin())) {
+        if (!Cache.NESTED_EVENT.equals(event.getOrigin()) && !ClusterManager.CLUSTER_ORIGIN.equals(event.getOrigin())) {
             if (log.isDebugEnabled()) {
                 log.debug("cachePatternFushed called (" + event + ")");
             }
 
-            cm.signalPatternFlush(event.getPattern(), cache.getName());
+            cm.signalPatternFlush(event.getPattern());
         }
     }
 
     public void cacheFlushed(CachewideEvent event) {
-        Cache cache = event.getMap();
-
-        if ((cache.getName() != null) && !Cache.NESTED_EVENT.equals(event.getOrigin()) && !ClusterManager.CLUSTER_ORIGIN.equals(event.getOrigin())) {
+        if (!Cache.NESTED_EVENT.equals(event.getOrigin()) && !ClusterManager.CLUSTER_ORIGIN.equals(event.getOrigin())) {
             if (log.isDebugEnabled()) {
                 log.debug("cacheFushed called (" + event + ")");
             }
 
-            cm.signalCacheFlush(cache.getName());
+            cm.signalCacheFlush(event.getDate());
         }
     }
 
@@ -139,10 +131,10 @@ public class BroadcastingCacheEventListener implements CacheEntryEventListener, 
      * @param config An OSCache configuration object.
      * @throws InitializationException If this listener has already been initialized.
      */
-    public synchronized void initialize(AbstractCacheAdministrator admin, Config config) throws InitializationException {
+    public synchronized void initialize(Cache cache, Config config) throws InitializationException {
         if (referenceCount == 0) {
             cm = new ClusterManager(config);
-            cm.setAdministrator(admin);
+            cm.setCache(cache);
         }
 
         referenceCount++;

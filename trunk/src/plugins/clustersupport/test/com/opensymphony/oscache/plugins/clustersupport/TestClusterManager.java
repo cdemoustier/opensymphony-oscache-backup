@@ -19,11 +19,6 @@ import junit.framework.TestSuite;
  */
 public final class TestClusterManager extends TestCase {
     /**
-     * Name of the cache to flush
-     */
-    private final String CACHE_NAME = "test";
-
-    /**
      * Cache group
      */
     private final String GROUP = "test group";
@@ -60,12 +55,12 @@ public final class TestClusterManager extends TestCase {
             ClusterManager cm = new ClusterManager(config);
 
             // Send some flush signals
-            cm.signalEntryFlush(KEY, CACHE_NAME);
-            cm.signalGroupFlush(GROUP, CACHE_NAME);
+            cm.signalEntryFlush(KEY);
+            cm.signalGroupFlush(GROUP);
 
             // Simulate receiving some signals
-            cm.handleNotification(new ClusterNotification(ClusterNotification.FLUSH_KEY, CACHE_NAME, GROUP));
-            cm.handleNotification(new ClusterNotification(ClusterNotification.FLUSH_GROUP, CACHE_NAME, GROUP));
+            cm.handleNotification(new ClusterNotification(ClusterNotification.FLUSH_KEY, GROUP));
+            cm.handleNotification(new ClusterNotification(ClusterNotification.FLUSH_GROUP, GROUP));
 
             // Shutdown the cache manager
             cm.shutdown();

@@ -6,7 +6,6 @@ package com.opensymphony.oscache.web;
 
 import com.opensymphony.oscache.base.Cache;
 import com.opensymphony.oscache.base.CacheEntry;
-import com.opensymphony.oscache.base.NeedsRefreshException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -15,6 +14,7 @@ import java.io.Serializable;
 
 import javax.servlet.http.HttpSessionBindingEvent;
 import javax.servlet.http.HttpSessionBindingListener;
+import javax.servlet.jsp.PageContext;
 
 /**
  * A simple extension of Cache that implements a session binding listener,
@@ -46,7 +46,7 @@ public final class ServletCache extends Cache implements HttpSessionBindingListe
      */
     public ServletCache(ServletCacheAdministrator admin, int scope) {
         super(admin.isMemoryCaching(), admin.isUnlimitedDiskCache());
-        this.scope = scope;
+        setScope(scope);
         this.admin = admin;
     }
 
@@ -60,8 +60,8 @@ public final class ServletCache extends Cache implements HttpSessionBindingListe
      */
     public ServletCache(ServletCacheAdministrator admin, String algorithmClass, int limit, int scope) {
         super(admin.isMemoryCaching(), admin.isUnlimitedDiskCache(), admin.isBlocking(), algorithmClass, limit);
+        setScope(scope);
         this.admin = admin;
-        this.scope = scope;
     }
 
     /**
@@ -71,6 +71,10 @@ public final class ServletCache extends Cache implements HttpSessionBindingListe
      */
     public int getScope() {
         return scope;
+    }
+
+    private void setScope(int scope) {
+        this.scope = scope;
     }
 
     /**
