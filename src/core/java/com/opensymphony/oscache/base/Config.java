@@ -141,7 +141,7 @@ public class Config implements java.io.Serializable {
         InputStream in = null;
 
         try {
-            in = getClass().getResourceAsStream(PROPERTIES_FILENAME);
+            in = Config.class.getResourceAsStream(PROPERTIES_FILENAME);
             properties.load(in);
             log.info("Properties " + properties);
         } catch (Exception e) {
