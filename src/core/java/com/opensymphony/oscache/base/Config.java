@@ -88,6 +88,16 @@ public class Config implements java.io.Serializable {
         return value;
     }
 
+    /**
+     * Retrieves all of the configuration properties. This property set
+     * should be treated as immutable.
+     *
+     * @return The configuration properties.
+     */
+    public Properties getProperties() {
+        return properties;
+    }
+
     public Object get(Object key) {
         return properties.get(key);
     }
