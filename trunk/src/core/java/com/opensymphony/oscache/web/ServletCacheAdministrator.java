@@ -171,7 +171,7 @@ public class ServletCacheAdministrator extends AbstractCacheAdministrator implem
             context.setAttribute(CACHE_ADMINISTRATOR_KEY, admin);
 
             if (log.isInfoEnabled()) {
-                log.info("getInstance(): Created new instance of ServletCacheAdministrator");
+                log.info("Created new instance of ServletCacheAdministrator");
             }
         }
 
@@ -192,6 +192,13 @@ public class ServletCacheAdministrator extends AbstractCacheAdministrator implem
 
             if (cache != null) {
                 admin.finalizeListeners(cache);
+                context.removeAttribute(admin.getCacheKey());
+                context.removeAttribute(CACHE_ADMINISTRATOR_KEY);
+                cache = null;
+
+                if (log.isInfoEnabled()) {
+                    log.info("Shut down the ServletCacheAdministrator");
+                }
             }
 
             admin = null;
