@@ -9,12 +9,24 @@ full list of features, see:
 REQUIREMENTS
 ------------
 OSCache can be used as a standalone caching solution for any Java application.
-OSCache's tag library requires a Servlet 2.2 / JSP 1.1 compliant container.
+OSCache's tag library requires a Servlet 2.2 / JSP 1.2 compliant container.
 The caching filter for dynamic binary content, like PDFs or images, requires a
 Servlet 2.3 compliant container.
 
 
-INFORMATION
+INSTALLATION AND DOCUMENTATION
+-----------
+For installation instructions, see docs/install.html. For futher
+documentation, see docs/index.html.
+
+
+WHAT'S NEW
+-----------
+For a complete list of changes for this and previous releases, see
+docs/changelog.html.
+
+
+FURTHER INFORMATION
 -----------
 For further instructions and documentation see the OSCache website at:
 
@@ -33,17 +45,10 @@ are available at
 
 	http://oscache.dev.java.net/servlets/ProjectMailingListList
 	
-Since OSCache was originally hosted at SourceForge, you may also want to search
-the old mailing list archives at:
+Since OSCache was originally hosted at SourceForge, you may also want to
+search the old mailing list archives at:
 
 	http://sourceforge.net/mailarchive/forum.php?forum_id=4754
-
-
-INSTALLING
-----------
-There is an installation guide available at:
-
-	http://www.opensymphony.com/oscache/install.html
 
 
 OPENSYMPHONY
