@@ -559,6 +559,12 @@ public class Cache implements Serializable {
     public void putInCache(String key, Object content, String[] groups, EntryRefreshPolicy policy, String origin) {
         CacheEntry cacheEntry = this.getCacheEntry(key, policy, origin);
         boolean isNewEntry = cacheEntry.isNew();
+
+        // [CACHE-118] If we have a new entry, create a new CacheEntry so we can still access the old one later
+        if (!isNewEntry) {
+            cacheEntry = new CacheEntry(key, policy);
+        }
+
         cacheEntry.setContent(content);
         cacheEntry.setGroups(groups);
         cacheMap.put(key, cacheEntry);
