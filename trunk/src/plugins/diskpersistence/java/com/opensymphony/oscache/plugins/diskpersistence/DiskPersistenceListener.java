@@ -29,33 +29,33 @@ import javax.servlet.jsp.PageContext;
  * @author <a href="mailto:abergevin@pyxis-tech.com">Alain Bergevin</a>
  * @author <a href="&#109;a&#105;&#108;&#116;&#111;:chris&#64;swebtec.&#99;&#111;&#109;">Chris Miller</a>
  */
-public final class DiskPersistenceListener implements PersistenceListener, Serializable {
+public class DiskPersistenceListener implements PersistenceListener, Serializable {
     protected final static String CACHE_PATH_KEY = "cache.path";
 
     /**
      * File extension for disk cache file
      */
-    private final static String CACHE_EXTENSION = "cache";
+    protected final static String CACHE_EXTENSION = "cache";
 
     /**
      * The directory that cache groups are stored under
      */
-    private final static String GROUP_DIRECTORY = "__groups__";
+    protected final static String GROUP_DIRECTORY = "__groups__";
 
     /**
      * Sub path name for application cache
      */
-    private final static String APPLICATION_CACHE_SUBPATH = "application";
+    protected final static String APPLICATION_CACHE_SUBPATH = "application";
 
     /**
      * Sub path name for session cache
      */
-    private final static String SESSION_CACHE_SUBPATH = "session";
+    protected final static String SESSION_CACHE_SUBPATH = "session";
 
     /**
      * Property to get the temporary working directory of the servlet container.
      */
-    private static final String CONTEXT_TMPDIR = "javax.servlet.context.tempdir";
+    protected static final String CONTEXT_TMPDIR = "javax.servlet.context.tempdir";
     private static transient final Log log = LogFactory.getLog(DiskPersistenceListener.class);
 
     /**
@@ -70,12 +70,31 @@ public final class DiskPersistenceListener implements PersistenceListener, Seria
     private String root = null;
 
     /**
-       *        Get the physical cache path on disk.
-       *
-       *        @return        A file representing the physical cache location.
-       */
+     *        Get the physical cache path on disk.
+     *
+     *        @return        A file representing the physical cache location.
+     */
     public File getCachePath() {
         return cachePath;
+    }
+
+    /**
+       *        Get the root directory for persisting the cache on disk.
+       *        This path includes scope and sessionId, if any.
+       *
+       *        @return        A String representing the root directory.
+       */
+    public String getRoot() {
+        return root;
+    }
+
+    /**
+     *        Get the servlet context tmp directory.
+     *
+     *        @return        A file representing the servlet context tmp directory.
+     */
+    public File getContextTmpDir() {
+        return contextTmpDir;
     }
 
     /**
@@ -343,12 +362,26 @@ public final class DiskPersistenceListener implements PersistenceListener, Seria
     }
 
     /**
-     * Build fully qualified cache file name specifying a cache entry key.
+     * Build fully qualified cache file for the specified cache entry key.
      *
      * @param key   Cache Entry Key.
      * @return File reference.
      */
-    private File getCacheFile(String key) {
+    protected File getCacheFile(String key) {
+        char[] fileChars = getCacheFileName(key);
+
+        File file = new File(root, new String(fileChars) + "." + CACHE_EXTENSION);
+
+        return file;
+    }
+
+    /**
+     * Build cache file name for the specified cache entry key.
+     *
+     * @param key   Cache Entry Key.
+     * @return char[] file name.
+     */
+    protected char[] getCacheFileName(String key) {
         if ((key == null) || (key.length() == 0)) {
             throw new IllegalArgumentException("Invalid key '" + key + "' specified to getCacheFile.");
         }
@@ -375,9 +408,7 @@ public final class DiskPersistenceListener implements PersistenceListener, Seria
             }
         }
 
-        File file = new File(root, new String(fileChars) + "." + CACHE_EXTENSION);
-
-        return file;
+        return fileChars;
     }
 
     /**
