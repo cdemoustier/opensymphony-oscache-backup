@@ -23,6 +23,7 @@ public class ResponseContent implements Serializable {
     private transient ByteArrayOutputStream bout = new ByteArrayOutputStream(1000);
     private Locale locale = null;
     private String contentType = null;
+    private String contentEncoding = null;
     private byte[] content = null;
     private long lastModified = -1;
 
@@ -34,6 +35,14 @@ public class ResponseContent implements Serializable {
         contentType = value;
     }
 
+    public String getContentEncoding() {
+        return contentEncoding;
+    }
+
+    public void setContentEncoding(String contentEncoding) {
+        this.contentEncoding = contentEncoding;
+    }
+    
     public long getLastModified() {
         return lastModified;
     }
@@ -103,4 +112,5 @@ public class ResponseContent implements Serializable {
         out.write(content);
         out.flush();
     }
+
 }

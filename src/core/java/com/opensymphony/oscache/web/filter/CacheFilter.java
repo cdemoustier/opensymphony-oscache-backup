@@ -30,6 +30,9 @@ import javax.servlet.jsp.PageContext;
 public class CacheFilter implements Filter {
     private final Log log = LogFactory.getLog(this.getClass());
 
+    // Header
+    public static final String HEADER_CONTENT_ENCODING = "Content-Encoding";
+    
     // filter variables
     private FilterConfig config;
     private ServletCacheAdministrator admin = null;
