@@ -35,6 +35,8 @@ public class CacheFilter implements Filter {
     public static final String HEADER_CONTENT_ENCODING = "Content-Encoding";
     public static final String HEADER_EXPIRES = "Expires";
     public static final String HEADER_IF_MODIFIED_SINCE = "If-Modified-Since";
+    public static final String HEADER_CACHE_CONTROL = "Cache-control";
+    public static final String HEADER_ACCEPT_ENCODING = "Accept-Encoding";
 
     // Fragment parameter
     public static final int FRAGMENT_AUTODETECT = -1;
@@ -81,17 +83,16 @@ public class CacheFilter implements Filter {
             log.info("<cache>: filter in scope " + cacheScope);
         }
 
-        // avoid reentrance (CACHE-128)
-        if (isFilteredBefore(request)) {
+        // avoid reentrance (CACHE-128) and check if request is cacheable
+        if (isFilteredBefore(request) || !isCacheable(request)) {
             chain.doFilter(request, response);
             return;
         }
-
         request.setAttribute(REQUEST_FILTERED, Boolean.TRUE);
 
         HttpServletRequest httpRequest = (HttpServletRequest) request;
 
-        // checks if the response is a fragment of a apge
+        // checks if the response well be a fragment of a page
         boolean fragmentRequest = isFragment(httpRequest);
 
         // generate the cache entry key
@@ -99,7 +100,6 @@ public class CacheFilter implements Filter {
 
         // avoid useless session creation for application scope pages (CACHE-129)
         Cache cache;
-
         if (cacheScope == PageContext.SESSION_SCOPE) {
             cache = admin.getSessionScopeCache(httpRequest.getSession(true));
         } else {
@@ -142,8 +142,8 @@ public class CacheFilter implements Filter {
                 chain.doFilter(request, cacheResponse);
                 cacheResponse.flushBuffer();
 
-                // Only cache if the response was 200
-                if (cacheResponse.getStatus() == HttpServletResponse.SC_OK) {
+                // Only cache if the response is cacheable
+                if (isCacheable(cacheResponse)) {
                     //Store as the cache content the result of the response
                     cache.putInCache(key, cacheResponse.getContent(), expiresRefreshPolicy);
                     updateSucceeded = true;
@@ -259,12 +259,50 @@ public class CacheFilter implements Filter {
     }
 
     /**
+     * isCacheable is a method allowing subclass to decide if a request is
+     * cachable or not.
+     * 
+     * @param request The servlet request
+     * @return Returns a boolean indicating if the request can be cached or not.
+     */
+    protected boolean isCacheable(ServletRequest request) {
+        // TODO implement CACHE-120, CACHE-137 and CACHE-141 here
+        boolean cachable = request instanceof HttpServletRequest;
+
+        if (log.isDebugEnabled()) {
+            log.debug("<cache>: the request " + ((cachable) ? "is" : "is not") + " cachable.");
+        }
+        
+        return cachable;
+    }
+    
+    /**
+     * isCacheable is a method allowing subclass to decide if a response is
+     * cachable or not.
+     * 
+     * @param cacheResponse The HTTP servlet response
+     * @return Returns a boolean indicating if the response can be cached or not.
+     */
+    protected boolean isCacheable(CacheHttpServletResponseWrapper cacheResponse) {
+        // TODO implement CACHE-137 and CACHE-141 here
+        // Only cache if the response was 200
+        boolean cachable = cacheResponse.getStatus() == HttpServletResponse.SC_OK;
+
+        if (log.isDebugEnabled()) {
+            log.debug("<cache>: the response " + ((cachable) ? "is" : "is not") + " cachable.");
+        }
+        
+        return cachable;
+    }
+
+    /**
      * Check if the client browser support gzip compression.
+     * 
      * @param request the http request
      * @return true if client browser supports GZIP
      */
     protected boolean acceptsGZipEncoding(HttpServletRequest request) {
-        String acceptEncoding = request.getHeader("Accept-Encoding");
+        String acceptEncoding = request.getHeader(HEADER_ACCEPT_ENCODING);
         return  (acceptEncoding != null) && (acceptEncoding.indexOf("gzip") != -1);
     }
 }
