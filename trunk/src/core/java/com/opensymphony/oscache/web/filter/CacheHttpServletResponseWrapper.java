@@ -277,7 +277,7 @@ public class CacheHttpServletResponseWrapper extends HttpServletResponseWrapper 
      */
     public PrintWriter getWriter() throws IOException {
         if (cachedWriter == null) {
-            String encoding = result.getContentEncoding();
+            String encoding = getCharacterEncoding();
             if (encoding != null) {
                 cachedWriter = new PrintWriter(new OutputStreamWriter(getOutputStream(), encoding));
             } else { // using the default character encoding
