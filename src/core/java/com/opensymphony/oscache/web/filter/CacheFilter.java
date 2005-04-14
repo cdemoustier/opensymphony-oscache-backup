@@ -28,10 +28,17 @@ import javax.servlet.jsp.PageContext;
  * @version $Revision$
  */
 public class CacheFilter implements Filter {
+
     private final Log log = LogFactory.getLog(this.getClass());
 
     // Header
+    public static final String HEADER_LAST_MODIFIED = "Last-Modified";
+    public static final String HEADER_CONTENT_TYPE = "Content-Type";
     public static final String HEADER_CONTENT_ENCODING = "Content-Encoding";
+    public static final String HEADER_EXPIRES = "Expires";
+    public static final String HEADER_IF_MODIFIED_SINCE = "If-Modified-Since";
+    public static final String HEADER_CACHE_CONTROL = "Cache-control";
+    public static final String HEADER_ACCEPT_ENCODING = "Accept-Encoding";
     
     // filter variables
     private FilterConfig config;

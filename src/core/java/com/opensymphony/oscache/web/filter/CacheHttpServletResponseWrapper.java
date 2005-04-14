@@ -96,7 +96,11 @@ public class CacheHttpServletResponseWrapper extends HttpServletResponseWrapper 
         if (log.isDebugEnabled()) {
             log.debug("header: " + name + ": " + value);
         }
-        
+
+        if (CacheFilter.HEADER_CONTENT_TYPE.equalsIgnoreCase(name)) {
+            result.setContentType(value);
+        }
+
         if (CacheFilter.HEADER_CONTENT_ENCODING.equalsIgnoreCase(name)) {
             result.setContentEncoding(value);
         }
@@ -115,6 +119,10 @@ public class CacheHttpServletResponseWrapper extends HttpServletResponseWrapper 
             log.debug("header: " + name + ": " + value);
         }
 
+        if (CacheFilter.HEADER_CONTENT_TYPE.equalsIgnoreCase(name)) {
+            result.setContentType(value);
+        }
+
         if (CacheFilter.HEADER_CONTENT_ENCODING.equalsIgnoreCase(name)) {
             result.setContentEncoding(value);
         }
@@ -122,7 +130,6 @@ public class CacheHttpServletResponseWrapper extends HttpServletResponseWrapper 
         super.addHeader(name, value);
     }
 
-    
     /**
      * Set the int value of the header
      *
@@ -220,7 +227,12 @@ public class CacheHttpServletResponseWrapper extends HttpServletResponseWrapper 
      */
     public PrintWriter getWriter() throws IOException {
         if (cachedWriter == null) {
-            cachedWriter = new PrintWriter(new OutputStreamWriter(getOutputStream(), result.getContentEncoding()));
+            String encoding = getCharacterEncoding();
+            if (encoding != null) {
+                cachedWriter = new PrintWriter(new OutputStreamWriter(getOutputStream(), encoding));
+            } else { // using the default character encoding
+                cachedWriter = new PrintWriter(new OutputStreamWriter(getOutputStream()));
+            }
         }
 
         return cachedWriter;
