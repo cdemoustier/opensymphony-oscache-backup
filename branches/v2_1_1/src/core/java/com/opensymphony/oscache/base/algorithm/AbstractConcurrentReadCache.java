@@ -1660,7 +1660,7 @@ public abstract class AbstractConcurrentReadCache extends AbstractMap implements
         }
     }
 
-    private Object remove(Object key, boolean invokeAlgorithm)
+    private synchronized Object remove(Object key, boolean invokeAlgorithm)
     /* Previous code
     public Object remove(Object key) */
 
