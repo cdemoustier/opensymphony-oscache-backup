@@ -74,7 +74,7 @@ public final class TestOscacheServlet extends TestCase {
         String previousReponse = invokeServlet(NO_REFRESH_WANTED);
 
         // Call again an verify that the content hasn't changed
-        assertTrue(previousReponse.equals(invokeServlet(NO_REFRESH_WANTED)));
+        assertTrue(previousReponse.equals(invokeServlet(NO_REFRESH_WANTED, "", 2000)));
 
         // Call again an verify that the content is updated
         String newResponse = invokeServlet(REFRESH_WANTED);
@@ -83,7 +83,7 @@ public final class TestOscacheServlet extends TestCase {
 
         // Call short delay so content should be refresh, but it will not since
         // we ask to use the item already in cache
-        assertTrue(previousReponse.equals(invokeServlet(REFRESH_WANTED, FORCE_CACHE_USE)));
+        assertTrue(previousReponse.equals(invokeServlet(REFRESH_WANTED, FORCE_CACHE_USE, 2000)));
 
         // Call with long delay so the item would not need refresh, but we'll ask
         // a refresh anyway
@@ -97,8 +97,8 @@ public final class TestOscacheServlet extends TestCase {
     }
 
     /**
-     * Test the cache module using a servlet and basic load
-     */
+    * Test the cache module using a servlet and basic load
+    */
     public void testOscacheServletBasicForLoad() {
         // Call Servlet
         String stringResponse = invokeServlet(NO_REFRESH_WANTED);
@@ -170,10 +170,23 @@ public final class TestOscacheServlet extends TestCase {
      * @return The HTML page returned by the servlet
      */
     private String invokeServlet(int refresh, String URL) {
+        //		 Invoke the servlet
+        return invokeServlet(refresh, URL, 0);
+    }
+
+    /**
+     * Utility method to invoke a servlet
+     * <p>
+     * @param refresh The time interval telling if the item needs refresh
+     * @param URL The URL of the servlet
+     * @param sleepTime - the time to wait before invoking the servlet
+     * @return The HTML page returned by the servlet
+     */
+    private String invokeServlet(int refresh, String URL, long sleepTime) {
         try {
             // Invoke the servlet
             WebResponse resp = wc.getResponse(constructURL(SERVLET_URL) + APPLICATION_SCOPE + KEY + REFRESH_PERIOD + refresh + "&" + URL);
-
+            Thread.sleep(sleepTime);
             return resp.getText();
         } catch (Exception ex) {
             ex.printStackTrace();
