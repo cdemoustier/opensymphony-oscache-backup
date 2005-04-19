@@ -42,6 +42,10 @@ public class CacheFilter implements Filter {
     public static final int FRAGMENT_AUTODETECT = -1;
     public static final int FRAGMENT_NO = 0;
     public static final int FRAGMENT_YES = 1;
+    
+    // No cache options
+    public static final int NOCACHE_OFF = 0;
+    public static final int NOCACHE_SESSION_ID_IN_URL = 1;
 
     // request attribute to avoid reentrance
     private final static String REQUEST_FILTERED = "__oscache_filtered";
@@ -58,6 +62,7 @@ public class CacheFilter implements Filter {
     private int cacheScope = PageContext.APPLICATION_SCOPE; // filter scope - default is APPLICATION
     private int fragment = FRAGMENT_AUTODETECT; // defines if this filter handles fragments of a page - default is auto detect
     private int time = 60 * 60; // time before cache should be refreshed - default one hour (in seconds)
+    private int nocache = NOCACHE_OFF; // defines special no cache option for the requests - default is off
 
     /**
      * Filter clean-up
@@ -169,6 +174,9 @@ public class CacheFilter implements Filter {
      * <li><b>fragment</b> - defines if this filter handles fragments of a page. Acceptable values
      * are <code>-1</code> (auto detect), <code>0</code> (false) and <code>1</code> (true).
      * The default value is auto detect.</li>
+     * <li><b>nocache</b> - defines which objects shouldn't be cached. Acceptable values
+     * are <code>off</code> (default) and <code>sessionIdInURL</code> if the session id is
+     * contained in the URL.
      *
      * @param filterConfig The filter configuration
      */
@@ -213,6 +221,19 @@ public class CacheFilter implements Filter {
         } catch (Exception e) {
             log.info("Could not get init parameter 'fragment', defaulting to 'auto detect'.");
         }
+        
+        try {
+            String nocacheString = config.getInitParameter("nocache");
+            
+            if (nocacheString.equals("off")) {
+                nocache = NOCACHE_OFF;
+            } else if (nocacheString.equalsIgnoreCase("sessionIdInURL")) {
+                nocache = NOCACHE_SESSION_ID_IN_URL;
+            } 
+        } catch (Exception e) {
+            log.info("Could not get init parameter 'nocache', defaulting to 'off'.");
+        }
+
     }
 
     /**
@@ -266,8 +287,15 @@ public class CacheFilter implements Filter {
      * @return Returns a boolean indicating if the request can be cached or not.
      */
     protected boolean isCacheable(ServletRequest request) {
-        // TODO implement CACHE-120, CACHE-137 and CACHE-141 here
+        // TODO implement CACHE-137 and CACHE-141 here
         boolean cachable = request instanceof HttpServletRequest;
+
+        if (cachable) {
+            HttpServletRequest requestHttp = (HttpServletRequest) request;
+            if (nocache == NOCACHE_SESSION_ID_IN_URL) { // don't cache requests if session id is in URL
+                cachable = !requestHttp.isRequestedSessionIdFromURL();
+            }
+        }
 
         if (log.isDebugEnabled()) {
             log.debug("<cache>: the request " + ((cachable) ? "is" : "is not") + " cachable.");
