@@ -79,7 +79,7 @@ public class CacheHttpServletResponseWrapper extends HttpServletResponseWrapper 
             log.debug("dateheader: " + name + ": " + value);
         }
 
-        if ("last-modified".equalsIgnoreCase(name)) {
+        if (CacheFilter.HEADER_LAST_MODIFIED.equalsIgnoreCase(name)) {
             result.setLastModified(value);
         }
 

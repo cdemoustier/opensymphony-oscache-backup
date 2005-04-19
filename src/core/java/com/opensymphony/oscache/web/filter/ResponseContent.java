@@ -25,7 +25,8 @@ public class ResponseContent implements Serializable {
     private String contentType = null;
     private String contentEncoding = null;
     private byte[] content = null;
-    private long lastModified = -1;
+    // setting a default last modified value based on object creation
+    private long lastModified = System.currentTimeMillis();
 
     /**
      * Set the content type. We capture this so that when we serve this
@@ -99,7 +100,7 @@ public class ResponseContent implements Serializable {
         }
 
         if (response instanceof HttpServletResponse) {
-            ((HttpServletResponse) response).setDateHeader("Last-Modified", lastModified);
+            ((HttpServletResponse) response).setDateHeader(CacheFilter.HEADER_LAST_MODIFIED, lastModified);
         }
 
         response.setContentLength(content.length);
