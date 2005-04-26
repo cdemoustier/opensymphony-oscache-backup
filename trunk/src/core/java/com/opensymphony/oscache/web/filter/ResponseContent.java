@@ -137,7 +137,7 @@ public class ResponseContent implements Serializable {
         }
 
         // Don't add in the Last-Modified header in a fragment of a page
-        if ((!fragment) && (response instanceof HttpServletResponse)) {
+        if ((!fragment) && (lastModified != -1) && (response instanceof HttpServletResponse)) {
             ((HttpServletResponse) response).setDateHeader(CacheFilter.HEADER_LAST_MODIFIED, lastModified);
         }
 
