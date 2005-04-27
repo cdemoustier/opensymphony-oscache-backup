@@ -54,6 +54,11 @@ public class CacheHttpServletResponseWrapper extends HttpServletResponseWrapper 
         super(response);
         result = new ResponseContent();
         this.fragment = fragment;
+        
+        // setting a default last modified value based on object creation and remove the millis
+        long current = System.currentTimeMillis() / 1000;
+        result.setLastModified(current * 1000);
+        super.setDateHeader(CacheFilter.HEADER_LAST_MODIFIED, result.getLastModified());
     }
 
     /**
