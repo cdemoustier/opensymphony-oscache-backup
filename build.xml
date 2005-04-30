@@ -143,7 +143,7 @@
         <!-- Clear out any previous persistent cache directory -->
         <delete dir="${test.cache.path}" failonerror="false"/>
 
-        <junit printsummary="yes" haltonfailure="yes" haltonerror="yes" fork="yes">
+        <junit printsummary="yes" haltonfailure="no" haltonerror="yes" fork="yes">
             <classpath>
                 <pathelement location="${build.test.dir}"/>
                 <path refid="plugins.cp"/>
@@ -167,7 +167,7 @@
         <!-- Clear out any previous persistent cache directory -->
         <delete dir="${test.cache.path}" failonerror="false"/>
 
-        <junit printsummary="yes" haltonfailure="yes" haltonerror="yes" fork="yes">
+        <junit printsummary="yes" haltonfailure="no" haltonerror="yes" fork="yes">
             <classpath>
                 <pathelement location="${build.test.dir}"/>
                 <path refid="plugins.cp"/>
@@ -198,7 +198,7 @@
 
         <taskdef name="junit" classname="org.apache.tools.ant.taskdefs.optional.junit.JUnitTask"/>
 
-        <junit printsummary="yes" haltonfailure="yes" haltonerror="yes" fork="yes">
+        <junit printsummary="yes" haltonfailure="no" haltonerror="yes" fork="yes">
             <sysproperty key="test.web.baseURL" value="${test.web.baseURL}"/>
             <classpath>
                 <pathelement location="${build.test.dir}"/>
