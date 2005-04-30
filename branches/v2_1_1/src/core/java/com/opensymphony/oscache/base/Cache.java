@@ -364,7 +364,7 @@ public class Cache implements Serializable {
 
         if (key != null) {
             synchronized (updateStates) {
-                state = (EntryUpdateState) updateStates.remove(key);
+                state = (EntryUpdateState) updateStates.get(key);
 
                 if (state != null) {
                     synchronized (state) {
@@ -698,6 +698,10 @@ public class Cache implements Serializable {
 
             if (state != null) {
                 synchronized (state) {
+                    if (!state.isUpdating()) {
+                        state.startUpdate();
+                    }
+
                     state.completeUpdate();
                     state.notifyAll();
                 }
