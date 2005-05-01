@@ -1,0 +1,877 @@
+<html>
+    <head>
+        <title>OSCache : Complete Change Log</title>
+	    <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">	    
+    </head>
+
+    <body>
+	    <table class="pagecontent" border="0" cellpadding="0" cellspacing="0" width="100%" bgcolor="#ffffff">
+		    <tr>
+			    <td valign="top" class="pagebody">
+				    <div class="pageheader">
+					    <span class="pagetitle">
+                            OSCache : Complete Change Log
+                                                    </span>
+				    </div>
+				    <div class="pagesubheading">
+					    This page last changed on Apr 19, 2005 by <font color="#0050B2">lars t</font>.
+				    </div>
+
+				    <p class="paragraph"><h2 style="margin: 4px 0px 4px 0px;" class="heading2"><a name="CompleteChangeLog-OSCache2.1.1"> OSCache 2.1.1</a></h2>
+<p class="paragraph"><h3 style="margin: 4px 0px 4px 0px;" class="heading3"><a name="CompleteChangeLog-ReleaseNotes"> Release Notes</a></h3></p>(1st May 2005 - by Andres March)<p class="paragraph"><h4 class="heading4"><a name="CompleteChangeLog-Improvements%3A"> Improvements:</a></h4></p><ul class="star">
+<li> The taglib URI was changed to <tt class="monospaced"><span class="nobr"><a href="http://www.opensymphony.com/oscache" title="Visit page outside Confluence">&#104;ttp://www.opensymphony.com/oscache<sup><img class="rendericon" src="/images/icons/linkext7.gif" height="7" width="7" align="absmiddle" alt="" border="0"/></sup></a></span></tt> in <span class="nobr"><a href="http://jira.opensymphony.com/browse/CACHE-61" title="Visit page outside Confluence">CACHE-61<sup><img class="rendericon" src="/images/icons/linkext7.gif" height="7" width="7" align="absmiddle" alt="" border="0"/></sup></a></span></li>
+<li> The DiskPersistenceListener escapes &#039;?&#039; now and guarantees that the filenames will be unique based on the cache key, see <span class="nobr"><a href="http://jira.opensymphony.com/browse/CACHE-110" title="Visit page outside Confluence">CACHE-110<sup><img class="rendericon" src="/images/icons/linkext7.gif" height="7" width="7" align="absmiddle" alt="" border="0"/></sup></a></span></li>
+<li> Session objects in cache tags are created only if necessary, see <span class="nobr"><a href="http://jira.opensymphony.com/browse/CACHE-88" title="Visit page outside Confluence">CACHE-88<sup><img class="rendericon" src="/images/icons/linkext7.gif" height="7" width="7" align="absmiddle" alt="" border="0"/></sup></a></span></li>
+<li> The disk persistence configuration key can be accessed now, see <span class="nobr"><a href="http://jira.opensymphony.com/browse/CACHE-111" title="Visit page outside Confluence">CACHE-111<sup><img class="rendericon" src="/images/icons/linkext7.gif" height="7" width="7" align="absmiddle" alt="" border="0"/></sup></a></span></li>
+</ul><p class="paragraph"><h4 class="heading4"><a name="CompleteChangeLog-BugFixes%3A"> Bug Fixes:</a></h4></p><ul class="star">
+<li> The CacheFilter doesn&#039;t send back a 304 (not modified) response when client cache is de-activated anymore, see <span class="nobr"><a href="http://jira.opensymphony.com/browse/CACHE-116" title="Visit page outside Confluence">CACHE-116<sup><img class="rendericon" src="/images/icons/linkext7.gif" height="7" width="7" align="absmiddle" alt="" border="0"/></sup></a></span></li>
+<li> CacheFilter doesn&#039;t support correctly i18N by setting encoding not properly, <span class="nobr"><a href="http://jira.opensymphony.com/browse/CACHE-38" title="Visit page outside Confluence">CACHE-38<sup><img class="rendericon" src="/images/icons/linkext7.gif" height="7" width="7" align="absmiddle" alt="" border="0"/></sup></a></span> and <span class="nobr"><a href="http://jira.opensymphony.com/browse/CACHE-159" title="Visit page outside Confluence">CACHE-159<sup><img class="rendericon" src="/images/icons/linkext7.gif" height="7" width="7" align="absmiddle" alt="" border="0"/></sup></a></span></li>
+<li> Cron expressions - leap days not always matched correctly, <span class="nobr"><a href="http://jira.opensymphony.com/browse/CACHE-157" title="Visit page outside Confluence">CACHE-157<sup><img class="rendericon" src="/images/icons/linkext7.gif" height="7" width="7" align="absmiddle" alt="" border="0"/></sup></a></span></li>
+<li> FindBugs doesn&#039;t report that the usage of GetResource may be unsafe if class Config is extended anymore, see <span class="nobr"><a href="http://jira.opensymphony.com/browse/CACHE-108" title="Visit page outside Confluence">CACHE-108<sup><img class="rendericon" src="/images/icons/linkext7.gif" height="7" width="7" align="absmiddle" alt="" border="0"/></sup></a></span></li>
+<li> ConcurrentModificationException on flushGroup, see <span class="nobr"><a href="http://jira.opensymphony.com/browse/CACHE-127" title="Visit page outside Confluence">CACHE-127<sup><img class="rendericon" src="/images/icons/linkext7.gif" height="7" width="7" align="absmiddle" alt="" border="0"/></sup></a></span></li>
+<li> Exception not thrown when not serializable object is persisted instead stack trace is persisted, see <span class="nobr"><a href="http://jira.opensymphony.com/browse/CACHE-112" title="Visit page outside Confluence">CACHE-112<sup><img class="rendericon" src="/images/icons/linkext7.gif" height="7" width="7" align="absmiddle" alt="" border="0"/></sup></a></span></li>
+<li> A few concurrency issues were fixed, see <span class="nobr"><a href="http://jira.opensymphony.com/browse/CACHE-170" title="Visit page outside Confluence">CACHE-170<sup><img class="rendericon" src="/images/icons/linkext7.gif" height="7" width="7" align="absmiddle" alt="" border="0"/></sup></a></span>, <span class="nobr"><a href="http://jira.opensymphony.com/browse/CACHE-167" title="Visit page outside Confluence">CACHE-167<sup><img class="rendericon" src="/images/icons/linkext7.gif" height="7" width="7" align="absmiddle" alt="" border="0"/></sup></a></span>, <span class="nobr"><a href="http://jira.opensymphony.com/browse/CACHE-127" title="Visit page outside Confluence">CACHE-127<sup><img class="rendericon" src="/images/icons/linkext7.gif" height="7" width="7" align="absmiddle" alt="" border="0"/></sup></a></span></li>
+</ul>
+<h4 class="heading4"><a name="CompleteChangeLog-Changesthatmayaffectbackwardscompatibility%3A"> Changes that may affect backwards compatibility:</a></h4>
+
+<ul class="star">
+<li> The improvement <span class="nobr"><a href="http://jira.opensymphony.com/browse/CACHE-88" title="Visit page outside Confluence">CACHE-88<sup><img class="rendericon" src="/images/icons/linkext7.gif" height="7" width="7" align="absmiddle" alt="" border="0"/></sup></a></span> may change the behaviour of the application, because a session object isn&#039;t created anymore even if it wasn&#039;t necessary. A web application may react different to a not existing session object.</li>
+<li> The URI change of <span class="nobr"><a href="http://jira.opensymphony.com/browse/CACHE-61" title="Visit page outside Confluence">CACHE-61<sup><img class="rendericon" src="/images/icons/linkext7.gif" height="7" width="7" align="absmiddle" alt="" border="0"/></sup></a></span> from <tt class="monospaced">/oscache</tt> to <tt class="monospaced"><span class="nobr"><a href="http://www.opensymphony.com/oscache" title="Visit page outside Confluence">&#104;ttp://www.opensymphony.com/oscache<sup><img class="rendericon" src="/images/icons/linkext7.gif" height="7" width="7" align="absmiddle" alt="" border="0"/></sup></a></span></tt> affects all JSP&#039;s which explicit use the old URI.</li>
+</ul>
+<h4 class="heading4"><a name="CompleteChangeLog-JIRAIssueList"> JIRA Issue List</a></h4><p class="paragraph"><p>
+    <table  width="100%" cellspacing="0" class="grid">
+        <tr>
+            <th colspan="4" style="text-align: left;">
+                <a href="http://jira.opensymphony.com/secure/IssueNavigator.jspa?&pid=10001&fixfor=21441&sorter/field=issuekey&sorter/order=DESC&tempMax=25&reset=true&">OpenSymphony JIRA</a>
+                <span class="smalltext">(15 issues)</span>
+            </th>
+        </tr>
+        <tr>
+                        <th style="text-align: left;">
+                T                                                                                                                                                                            </th>
+                        <th style="text-align: left;">
+                                Key                                                                                                                                                            </th>
+                        <th style="text-align: left;">
+                                                Summary                                                                                                                                            </th>
+                        <th style="text-align: left;">
+                                                                                                                Status                                                                            </th>
+                    </tr>
+                                            <tr class="rowNormal">
+                                                            <td nowrap="true">
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-170"><img src="http://jira.opensymphony.com/images/icons/bug.gif" alt="Bug" border="0" /></a>
+                                    </td>
+                                <td nowrap="true">
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-170">CACHE-170</a>
+                                    </td>
+                                <td >
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-170">Data race handling Cache.updateStates results in Thread hangs when the blocking mode is used in concurrence</a>
+                                    </td>
+                                <td nowrap="true">
+                                            <img src="http://jira.opensymphony.com/images/icons/status_closed.gif" alt="Closed" border="0" />Closed
+                                    </td>
+                            </tr>
+                                    <tr class="rowAlternate">
+                                                            <td nowrap="true">
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-167"><img src="http://jira.opensymphony.com/images/icons/bug.gif" alt="Bug" border="0" /></a>
+                                    </td>
+                                <td nowrap="true">
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-167">CACHE-167</a>
+                                    </td>
+                                <td >
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-167">removeEntry not synchronized</a>
+                                    </td>
+                                <td nowrap="true">
+                                            <img src="http://jira.opensymphony.com/images/icons/status_closed.gif" alt="Closed" border="0" />Closed
+                                    </td>
+                            </tr>
+                                    <tr class="rowNormal">
+                                                            <td nowrap="true">
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-159"><img src="http://jira.opensymphony.com/images/icons/bug.gif" alt="Bug" border="0" /></a>
+                                    </td>
+                                <td nowrap="true">
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-159">CACHE-159</a>
+                                    </td>
+                                <td >
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-159">CacheFilter does not set encoding properly</a>
+                                    </td>
+                                <td nowrap="true">
+                                            <img src="http://jira.opensymphony.com/images/icons/status_closed.gif" alt="Closed" border="0" />Closed
+                                    </td>
+                            </tr>
+                                    <tr class="rowAlternate">
+                                                            <td nowrap="true">
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-157"><img src="http://jira.opensymphony.com/images/icons/bug.gif" alt="Bug" border="0" /></a>
+                                    </td>
+                                <td nowrap="true">
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-157">CACHE-157</a>
+                                    </td>
+                                <td >
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-157">Cron expressions - leap days not always matched correctly</a>
+                                    </td>
+                                <td nowrap="true">
+                                            <img src="http://jira.opensymphony.com/images/icons/status_closed.gif" alt="Closed" border="0" />Closed
+                                    </td>
+                            </tr>
+                                    <tr class="rowNormal">
+                                                            <td nowrap="true">
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-131"><img src="http://jira.opensymphony.com/images/icons/task.gif" alt="Task" border="0" /></a>
+                                    </td>
+                                <td nowrap="true">
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-131">CACHE-131</a>
+                                    </td>
+                                <td >
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-131">JavaDoc: Missing class description - CacheContextListener</a>
+                                    </td>
+                                <td nowrap="true">
+                                            <img src="http://jira.opensymphony.com/images/icons/status_closed.gif" alt="Closed" border="0" />Closed
+                                    </td>
+                            </tr>
+                                    <tr class="rowAlternate">
+                                                            <td nowrap="true">
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-127"><img src="http://jira.opensymphony.com/images/icons/bug.gif" alt="Bug" border="0" /></a>
+                                    </td>
+                                <td nowrap="true">
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-127">CACHE-127</a>
+                                    </td>
+                                <td >
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-127">ConcurrentModificationException on flushGroup</a>
+                                    </td>
+                                <td nowrap="true">
+                                            <img src="http://jira.opensymphony.com/images/icons/status_closed.gif" alt="Closed" border="0" />Closed
+                                    </td>
+                            </tr>
+                                    <tr class="rowNormal">
+                                                            <td nowrap="true">
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-116"><img src="http://jira.opensymphony.com/images/icons/bug.gif" alt="Bug" border="0" /></a>
+                                    </td>
+                                <td nowrap="true">
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-116">CACHE-116</a>
+                                    </td>
+                                <td >
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-116">CacheFilter sends back a 304 (not modified) response when client cache is de-activated</a>
+                                    </td>
+                                <td nowrap="true">
+                                            <img src="http://jira.opensymphony.com/images/icons/status_closed.gif" alt="Closed" border="0" />Closed
+                                    </td>
+                            </tr>
+                                    <tr class="rowAlternate">
+                                                            <td nowrap="true">
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-112"><img src="http://jira.opensymphony.com/images/icons/bug.gif" alt="Bug" border="0" /></a>
+                                    </td>
+                                <td nowrap="true">
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-112">CACHE-112</a>
+                                    </td>
+                                <td >
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-112">Exception not thrown when not serializable object is persisted instead stack trace is persisted!</a>
+                                    </td>
+                                <td nowrap="true">
+                                            <img src="http://jira.opensymphony.com/images/icons/status_closed.gif" alt="Closed" border="0" />Closed
+                                    </td>
+                            </tr>
+                                    <tr class="rowNormal">
+                                                            <td nowrap="true">
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-111"><img src="http://jira.opensymphony.com/images/icons/improvement.gif" alt="Improvement" border="0" /></a>
+                                    </td>
+                                <td nowrap="true">
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-111">CACHE-111</a>
+                                    </td>
+                                <td >
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-111">public access for disk persistence configuration key</a>
+                                    </td>
+                                <td nowrap="true">
+                                            <img src="http://jira.opensymphony.com/images/icons/status_closed.gif" alt="Closed" border="0" />Closed
+                                    </td>
+                            </tr>
+                                    <tr class="rowAlternate">
+                                                            <td nowrap="true">
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-110"><img src="http://jira.opensymphony.com/images/icons/improvement.gif" alt="Improvement" border="0" /></a>
+                                    </td>
+                                <td nowrap="true">
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-110">CACHE-110</a>
+                                    </td>
+                                <td >
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-110">DiskPersistenceListener should escape '?'</a>
+                                    </td>
+                                <td nowrap="true">
+                                            <img src="http://jira.opensymphony.com/images/icons/status_closed.gif" alt="Closed" border="0" />Closed
+                                    </td>
+                            </tr>
+                                    <tr class="rowNormal">
+                                                            <td nowrap="true">
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-109"><img src="http://jira.opensymphony.com/images/icons/task.gif" alt="Task" border="0" /></a>
+                                    </td>
+                                <td nowrap="true">
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-109">CACHE-109</a>
+                                    </td>
+                                <td >
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-109">cache.blocking parameter missing in oscache.properties</a>
+                                    </td>
+                                <td nowrap="true">
+                                            <img src="http://jira.opensymphony.com/images/icons/status_closed.gif" alt="Closed" border="0" />Closed
+                                    </td>
+                            </tr>
+                                    <tr class="rowAlternate">
+                                                            <td nowrap="true">
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-108"><img src="http://jira.opensymphony.com/images/icons/bug.gif" alt="Bug" border="0" /></a>
+                                    </td>
+                                <td nowrap="true">
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-108">CACHE-108</a>
+                                    </td>
+                                <td >
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-108">FindBugs reports: Usage of GetResource may be unsafe if class Config is extended</a>
+                                    </td>
+                                <td nowrap="true">
+                                            <img src="http://jira.opensymphony.com/images/icons/status_closed.gif" alt="Closed" border="0" />Closed
+                                    </td>
+                            </tr>
+                                    <tr class="rowNormal">
+                                                            <td nowrap="true">
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-88"><img src="http://jira.opensymphony.com/images/icons/improvement.gif" alt="Improvement" border="0" /></a>
+                                    </td>
+                                <td nowrap="true">
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-88">CACHE-88</a>
+                                    </td>
+                                <td >
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-88">Don't create session object in cache tags unless necessary</a>
+                                    </td>
+                                <td nowrap="true">
+                                            <img src="http://jira.opensymphony.com/images/icons/status_closed.gif" alt="Closed" border="0" />Closed
+                                    </td>
+                            </tr>
+                                    <tr class="rowAlternate">
+                                                            <td nowrap="true">
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-61"><img src="http://jira.opensymphony.com/images/icons/improvement.gif" alt="Improvement" border="0" /></a>
+                                    </td>
+                                <td nowrap="true">
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-61">CACHE-61</a>
+                                    </td>
+                                <td >
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-61">Taglib URI Attribute</a>
+                                    </td>
+                                <td nowrap="true">
+                                            <img src="http://jira.opensymphony.com/images/icons/status_closed.gif" alt="Closed" border="0" />Closed
+                                    </td>
+                            </tr>
+                                    <tr class="rowNormal">
+                                                            <td nowrap="true">
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-38"><img src="http://jira.opensymphony.com/images/icons/bug.gif" alt="Bug" border="0" /></a>
+                                    </td>
+                                <td nowrap="true">
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-38">CACHE-38</a>
+                                    </td>
+                                <td >
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-38">oscache filter doesn't support correctly i18N</a>
+                                    </td>
+                                <td nowrap="true">
+                                            <img src="http://jira.opensymphony.com/images/icons/status_closed.gif" alt="Closed" border="0" />Closed
+                                    </td>
+                            </tr>
+            </table>
+</p>
+</p></p><h2 class="heading2"><a name="CompleteChangeLog-OSCache2.1"> OSCache 2.1</a></h2>
+<p class="paragraph"><h3 style="margin: 4px 0px 4px 0px;" class="heading3"><a name="CompleteChangeLog-ReleaseNotes"> Release Notes</a></h3></p>(18th January 2005 - by Andres March)
+<h4 class="heading4"><a name="CompleteChangeLog-NewFeatures%3A"> New Features:</a></h4>
+<ul class="star">
+<li> Added HashDiskPersistenceListner <span class="nobr"><a href="http://jira.opensymphony.com/browse/CACHE-132" title="Visit page outside Confluence">CACHE-132 <sup><img class="rendericon" src="/images/icons/linkext7.gif" height="7" width="7" align="absmiddle" alt="" border="0"/></sup></a></span> that hashes file names in order to eliminate nasty characters and overly long names</li>
+<li> Added property that allows cache entries to only be persisted when the memory capacity has been exceeded. The property is called: cache.persistence.overflow.only. It defaults to false for backwards compatibility meaning all cache entries are persisted when a listener has been registered. See <span class="nobr"><a href="http://jira.opensymphony.com/browse/CACHE-133" title="Visit page outside Confluence">CACHE-133 <sup><img class="rendericon" src="/images/icons/linkext7.gif" height="7" width="7" align="absmiddle" alt="" border="0"/></sup></a></span></li>
+<li> Check If-Modified-Since header in cache filter to increase performance, see <span class="nobr"><a href="http://jira.opensymphony.com/browse/CACHE-58" title="Visit page outside Confluence">CACHE-58 <sup><img class="rendericon" src="/images/icons/linkext7.gif" height="7" width="7" align="absmiddle" alt="" border="0"/></sup></a></span> and <span class="nobr"><a href="http://jira.opensymphony.com/browse/CACHE-70" title="Visit page outside Confluence">CACHE-70 <sup><img class="rendericon" src="/images/icons/linkext7.gif" height="7" width="7" align="absmiddle" alt="" border="0"/></sup></a></span></li>
+</ul>
+<h4 class="heading4"><a name="CompleteChangeLog-Improvements%3A"> Improvements:</a></h4>
+
+<ul class="star">
+<li> Updated jgroups jar regarding changed package name <span class="nobr"><a href="http://jira.opensymphony.com/browse/CACHE-85" title="Visit page outside Confluence">CACHE-85 <sup><img class="rendericon" src="/images/icons/linkext7.gif" height="7" width="7" align="absmiddle" alt="" border="0"/></sup></a></span>, <span class="nobr"><a href="http://jira.opensymphony.com/browse/CACHE-126" title="Visit page outside Confluence">CACHE-126<sup><img class="rendericon" src="/images/icons/linkext7.gif" height="7" width="7" align="absmiddle" alt="" border="0"/></sup></a></span> and configuration based upon recommendations from Bela Ban (javagroups maintainer).</li>
+<li> More evenly distributed disk caching, see <span class="nobr"><a href="http://jira.opensymphony.com/browse/CACHE-94" title="Visit page outside Confluence">CACHE-94 <sup><img class="rendericon" src="/images/icons/linkext7.gif" height="7" width="7" align="absmiddle" alt="" border="0"/></sup></a></span></li>
+<li> Public access for configuration properties, see <span class="nobr"><a href="http://jira.opensymphony.com/browse/CACHE-92" title="Visit page outside Confluence">CACHE-92 <sup><img class="rendericon" src="/images/icons/linkext7.gif" height="7" width="7" align="absmiddle" alt="" border="0"/></sup></a></span></li>
+<li> Public method to clear cache, see <span class="nobr"><a href="http://jira.opensymphony.com/browse/CACHE-104" title="Visit page outside Confluence">CACHE-104 <sup><img class="rendericon" src="/images/icons/linkext7.gif" height="7" width="7" align="absmiddle" alt="" border="0"/></sup></a></span>, <span class="nobr"><a href="http://jira.opensymphony.com/browse/CACHE-68" title="Visit page outside Confluence">CACHE-68<sup><img class="rendericon" src="/images/icons/linkext7.gif" height="7" width="7" align="absmiddle" alt="" border="0"/></sup></a></span></li>
+<li> Output the scope name&#039;s in toString() of ScopeEventListenerImpl, see <span class="nobr"><a href="http://jira.opensymphony.com/browse/CACHE-95" title="Visit page outside Confluence">CACHE-95 <sup><img class="rendericon" src="/images/icons/linkext7.gif" height="7" width="7" align="absmiddle" alt="" border="0"/></sup></a></span></li>
+<li> Call get() method on put() method call, see <span class="nobr"><a href="http://jira.opensymphony.com/browse/CACHE-105" title="Visit page outside Confluence">CACHE-105 <sup><img class="rendericon" src="/images/icons/linkext7.gif" height="7" width="7" align="absmiddle" alt="" border="0"/></sup></a></span></li>
+<li> Library updates<ul class="star">
+<li> upgrade to Commons Logging 1.0.4, see <span class="nobr"><a href="http://jira.opensymphony.com/browse/CACHE-102" title="Visit page outside Confluence">CACHE-102 <sup><img class="rendericon" src="/images/icons/linkext7.gif" height="7" width="7" align="absmiddle" alt="" border="0"/></sup></a></span></li>
+<li> upgrade to Commons Collections 3.1, see <span class="nobr"><a href="http://jira.opensymphony.com/browse/CACHE-103" title="Visit page outside Confluence">CACHE-103 <sup><img class="rendericon" src="/images/icons/linkext7.gif" height="7" width="7" align="absmiddle" alt="" border="0"/></sup></a></span></li>
+</ul></li>
+<li> Moved all docs to <span class="nobr"><a href="http://wiki.opensymphony.com/display/CACHE/Home" title="Visit page outside Confluence">wiki<sup><img class="rendericon" src="/images/icons/linkext7.gif" height="7" width="7" align="absmiddle" alt="" border="0"/></sup></a></span></li>
+<li> Website documentation updates.</li>
+</ul>
+<h4 class="heading4"><a name="CompleteChangeLog-BugFixes%3A"> Bug Fixes:</a></h4>
+
+<ul class="star">
+<li> <span class="nobr"><a href="http://jira.opensymphony.com/browse/CACHE-73" title="Visit page outside Confluence">CACHE-73 <sup><img class="rendericon" src="/images/icons/linkext7.gif" height="7" width="7" align="absmiddle" alt="" border="0"/></sup></a></span> - NullpointerException after deserialization of AbstractConcurrentReadCache</li>
+<li> <span class="nobr"><a href="http://jira.opensymphony.com/browse/CACHE-98" title="Visit page outside Confluence">CACHE-98 <sup><img class="rendericon" src="/images/icons/linkext7.gif" height="7" width="7" align="absmiddle" alt="" border="0"/></sup></a></span> - Disk cache not getting served first time for long keys</li>
+<li> <span class="nobr"><a href="http://jira.opensymphony.com/browse/CACHE-107" title="Visit page outside Confluence">CACHE-107 <sup><img class="rendericon" src="/images/icons/linkext7.gif" height="7" width="7" align="absmiddle" alt="" border="0"/></sup></a></span> - flushEntry does not behave correctly in cluster</li>
+<li> <span class="nobr"><a href="http://jira.opensymphony.com/browse/CACHE-118" title="Visit page outside Confluence">CACHE-118<sup><img class="rendericon" src="/images/icons/linkext7.gif" height="7" width="7" align="absmiddle" alt="" border="0"/></sup></a></span> - Updating groups doesn&#039;t work</li>
+<li> <span class="nobr"><a href="http://jira.opensymphony.com/browse/CACHE-119" title="Visit page outside Confluence">CACHE-119<sup><img class="rendericon" src="/images/icons/linkext7.gif" height="7" width="7" align="absmiddle" alt="" border="0"/></sup></a></span> - flush does not work correctly in a clustered environment</li>
+</ul><br/>
+<p>
+    <table  width="100%" cellspacing="0" class="grid">
+        <tr>
+            <th colspan="3" style="text-align: left;">
+                <a href="http://jira.opensymphony.com/secure/IssueNavigator.jspa?&pid=10001&fixfor=21223&sorter/field=issuekey&sorter/order=DESC&tempMax=25&reset=true&">OpenSymphony JIRA</a>
+                <span class="smalltext">(21 issues)</span>
+            </th>
+        </tr>
+        <tr>
+                        <th style="text-align: left;">
+                T                                                                                                                                                                            </th>
+                        <th style="text-align: left;">
+                                Key                                                                                                                                                            </th>
+                        <th style="text-align: left;">
+                                                Summary                                                                                                                                            </th>
+                    </tr>
+                                            <tr class="rowNormal">
+                                                            <td nowrap="true">
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-133"><img src="http://jira.opensymphony.com/images/icons/newfeature.gif" alt="New Feature" border="0" /></a>
+                                    </td>
+                                <td nowrap="true">
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-133">CACHE-133</a>
+                                    </td>
+                                <td >
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-133">added cache.persistence.overflow.only property</a>
+                                    </td>
+                            </tr>
+                                    <tr class="rowAlternate">
+                                                            <td nowrap="true">
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-132"><img src="http://jira.opensymphony.com/images/icons/newfeature.gif" alt="New Feature" border="0" /></a>
+                                    </td>
+                                <td nowrap="true">
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-132">CACHE-132</a>
+                                    </td>
+                                <td >
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-132">Added HashDiskPersistenceListner</a>
+                                    </td>
+                            </tr>
+                                    <tr class="rowNormal">
+                                                            <td nowrap="true">
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-126"><img src="http://jira.opensymphony.com/images/icons/bug.gif" alt="Bug" border="0" /></a>
+                                    </td>
+                                <td nowrap="true">
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-126">CACHE-126</a>
+                                    </td>
+                                <td >
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-126">java.lang.NoClassDefFoundError: org/javagroups/blocks/NotificationBus$Consumer</a>
+                                    </td>
+                            </tr>
+                                    <tr class="rowAlternate">
+                                                            <td nowrap="true">
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-119"><img src="http://jira.opensymphony.com/images/icons/bug.gif" alt="Bug" border="0" /></a>
+                                    </td>
+                                <td nowrap="true">
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-119">CACHE-119</a>
+                                    </td>
+                                <td >
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-119">flush does not work correctly in a clustered environment</a>
+                                    </td>
+                            </tr>
+                                    <tr class="rowNormal">
+                                                            <td nowrap="true">
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-118"><img src="http://jira.opensymphony.com/images/icons/bug.gif" alt="Bug" border="0" /></a>
+                                    </td>
+                                <td nowrap="true">
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-118">CACHE-118</a>
+                                    </td>
+                                <td >
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-118">Updating groups doesn't work</a>
+                                    </td>
+                            </tr>
+                                    <tr class="rowAlternate">
+                                                            <td nowrap="true">
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-107"><img src="http://jira.opensymphony.com/images/icons/bug.gif" alt="Bug" border="0" /></a>
+                                    </td>
+                                <td nowrap="true">
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-107">CACHE-107</a>
+                                    </td>
+                                <td >
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-107">flushEntry does not behave correctly in cluster</a>
+                                    </td>
+                            </tr>
+                                    <tr class="rowNormal">
+                                                            <td nowrap="true">
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-105"><img src="http://jira.opensymphony.com/images/icons/improvement.gif" alt="Improvement" border="0" /></a>
+                                    </td>
+                                <td nowrap="true">
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-105">CACHE-105</a>
+                                    </td>
+                                <td >
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-105">call get() method on put() method call</a>
+                                    </td>
+                            </tr>
+                                    <tr class="rowAlternate">
+                                                            <td nowrap="true">
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-104"><img src="http://jira.opensymphony.com/images/icons/improvement.gif" alt="Improvement" border="0" /></a>
+                                    </td>
+                                <td nowrap="true">
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-104">CACHE-104</a>
+                                    </td>
+                                <td >
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-104">Destroy cache</a>
+                                    </td>
+                            </tr>
+                                    <tr class="rowNormal">
+                                                            <td nowrap="true">
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-103"><img src="http://jira.opensymphony.com/images/icons/improvement.gif" alt="Improvement" border="0" /></a>
+                                    </td>
+                                <td nowrap="true">
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-103">CACHE-103</a>
+                                    </td>
+                                <td >
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-103">upgrade to Commons Collections 3.1</a>
+                                    </td>
+                            </tr>
+                                    <tr class="rowAlternate">
+                                                            <td nowrap="true">
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-102"><img src="http://jira.opensymphony.com/images/icons/improvement.gif" alt="Improvement" border="0" /></a>
+                                    </td>
+                                <td nowrap="true">
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-102">CACHE-102</a>
+                                    </td>
+                                <td >
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-102">upgrade to Commons Logging 1.0.4</a>
+                                    </td>
+                            </tr>
+                                    <tr class="rowNormal">
+                                                            <td nowrap="true">
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-98"><img src="http://jira.opensymphony.com/images/icons/bug.gif" alt="Bug" border="0" /></a>
+                                    </td>
+                                <td nowrap="true">
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-98">CACHE-98</a>
+                                    </td>
+                                <td >
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-98">Disk cache not getting served first time for long keys</a>
+                                    </td>
+                            </tr>
+                                    <tr class="rowAlternate">
+                                                            <td nowrap="true">
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-95"><img src="http://jira.opensymphony.com/images/icons/improvement.gif" alt="Improvement" border="0" /></a>
+                                    </td>
+                                <td nowrap="true">
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-95">CACHE-95</a>
+                                    </td>
+                                <td >
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-95">Output the scope name's in toString()</a>
+                                    </td>
+                            </tr>
+                                    <tr class="rowNormal">
+                                                            <td nowrap="true">
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-94"><img src="http://jira.opensymphony.com/images/icons/improvement.gif" alt="Improvement" border="0" /></a>
+                                    </td>
+                                <td nowrap="true">
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-94">CACHE-94</a>
+                                    </td>
+                                <td >
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-94">More evenly distributed disk caching</a>
+                                    </td>
+                            </tr>
+                                    <tr class="rowAlternate">
+                                                            <td nowrap="true">
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-92"><img src="http://jira.opensymphony.com/images/icons/improvement.gif" alt="Improvement" border="0" /></a>
+                                    </td>
+                                <td nowrap="true">
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-92">CACHE-92</a>
+                                    </td>
+                                <td >
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-92">public access for configuration properties</a>
+                                    </td>
+                            </tr>
+                                    <tr class="rowNormal">
+                                                            <td nowrap="true">
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-89"><img src="http://jira.opensymphony.com/images/icons/bug.gif" alt="Bug" border="0" /></a>
+                                    </td>
+                                <td nowrap="true">
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-89">CACHE-89</a>
+                                    </td>
+                                <td >
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-89">java.lang.NullPointerException : AbstractCacheAdministrator.finalizeListeners</a>
+                                    </td>
+                            </tr>
+                                    <tr class="rowAlternate">
+                                                            <td nowrap="true">
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-85"><img src="http://jira.opensymphony.com/images/icons/improvement.gif" alt="Improvement" border="0" /></a>
+                                    </td>
+                                <td nowrap="true">
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-85">CACHE-85</a>
+                                    </td>
+                                <td >
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-85">upgrade to JavaGroups 2.2.7</a>
+                                    </td>
+                            </tr>
+                                    <tr class="rowNormal">
+                                                            <td nowrap="true">
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-73"><img src="http://jira.opensymphony.com/images/icons/bug.gif" alt="Bug" border="0" /></a>
+                                    </td>
+                                <td nowrap="true">
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-73">CACHE-73</a>
+                                    </td>
+                                <td >
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-73">NullpointerException after deserialization of AbstractConcurrentReadCache</a>
+                                    </td>
+                            </tr>
+                                    <tr class="rowAlternate">
+                                                            <td nowrap="true">
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-72"><img src="http://jira.opensymphony.com/images/icons/bug.gif" alt="Bug" border="0" /></a>
+                                    </td>
+                                <td nowrap="true">
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-72">CACHE-72</a>
+                                    </td>
+                                <td >
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-72">NullPointerException in AbstractConcurrentReadCache.clear</a>
+                                    </td>
+                            </tr>
+                                    <tr class="rowNormal">
+                                                            <td nowrap="true">
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-71"><img src="http://jira.opensymphony.com/images/icons/bug.gif" alt="Bug" border="0" /></a>
+                                    </td>
+                                <td nowrap="true">
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-71">CACHE-71</a>
+                                    </td>
+                                <td >
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-71">Flush and refresh of cached pages fail under heavy load</a>
+                                    </td>
+                            </tr>
+                                    <tr class="rowAlternate">
+                                                            <td nowrap="true">
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-70"><img src="http://jira.opensymphony.com/images/icons/bug.gif" alt="Bug" border="0" /></a>
+                                    </td>
+                                <td nowrap="true">
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-70">CACHE-70</a>
+                                    </td>
+                                <td >
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-70">last modified problem</a>
+                                    </td>
+                            </tr>
+                                    <tr class="rowNormal">
+                                                            <td nowrap="true">
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-58"><img src="http://jira.opensymphony.com/images/icons/newfeature.gif" alt="New Feature" border="0" /></a>
+                                    </td>
+                                <td nowrap="true">
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-58">CACHE-58</a>
+                                    </td>
+                                <td >
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-58">Check If-Modified-Since header in cache filter</a>
+                                    </td>
+                            </tr>
+            </table>
+</p>
+
+<p class="paragraph"><h2 class="heading2"><a name="CompleteChangeLog-OSCache2.0.2"> OSCache 2.0.2</a></h2>
+<p class="paragraph"><h3 style="margin: 4px 0px 4px 0px;" class="heading3"><a name="CompleteChangeLog-ReleaseNotes"> Release Notes</a></h3></p>(22nd January 2004 - by Mathias Bogaert)<p class="paragraph"><h4 class="heading4"><a name="CompleteChangeLog-Improvements%3A"> Improvements:</a></h4></p><ul class="star">
+<li> Website documentation updates.</li>
+<li> Added OSCache in the Wild.</li>
+</ul>
+<h4 class="heading4"><a name="CompleteChangeLog-BugFixes%3A"> Bug Fixes:</a></h4>
+
+<ul class="star">
+<li> <span class="nobr"><a href="http://jira.opensymphony.com/browse/CACHE-63" title="Visit page outside Confluence">CACHE-63 <sup><img class="rendericon" src="/images/icons/linkext7.gif" height="7" width="7" align="absmiddle" alt="" border="0"/></sup></a></span> NullPointerException in GeneralCacheAdministrator#destroy().</li>
+<li> <span class="nobr"><a href="http://jira.opensymphony.com/browse/CACHE-44" title="Visit page outside Confluence">CACHE-44 <sup><img class="rendericon" src="/images/icons/linkext7.gif" height="7" width="7" align="absmiddle" alt="" border="0"/></sup></a></span> Multi threading issues with LRU Cache.</li>
+<li> <span class="nobr"><a href="http://jira.opensymphony.com/browse/CACHE-66" title="Visit page outside Confluence">CACHE-66 <sup><img class="rendericon" src="/images/icons/linkext7.gif" height="7" width="7" align="absmiddle" alt="" border="0"/></sup></a></span> DiskPersistenceListener is not Serializable.</li>
+<li> GeneralCacheAdministrator now creates the cache from within the constructor. This prevents possible threading issues if the cache is not initialized during application startup.</li>
+</ul>
+</p><h2 class="heading2"><a name="CompleteChangeLog-OSCache2.0.1"> OSCache 2.0.1</a></h2>
+<p class="paragraph"><h3 style="margin: 4px 0px 4px 0px;" class="heading3"><a name="CompleteChangeLog-ReleaseNotes"> Release Notes</a></h3></p>(4th November 2003 - by Chris Miller)
+<h4 class="heading4"><a name="CompleteChangeLog-Improvements%3A"> Improvements:</a></h4>
+
+<ul class="star">
+<li> <span class="nobr"><a href="http://jira.opensymphony.com/browse/CACHE-56" title="Visit page outside Confluence">CACHE-56 <sup><img class="rendericon" src="/images/icons/linkext7.gif" height="7" width="7" align="absmiddle" alt="" border="0"/></sup></a></span> Refresh period is no longer mandatory.</li>
+<li> <span class="nobr"><a href="http://jira.opensymphony.com/browse/CACHE-51" title="Visit page outside Confluence">CACHE-51 <sup><img class="rendericon" src="/images/icons/linkext7.gif" height="7" width="7" align="absmiddle" alt="" border="0"/></sup></a></span> Added an &lt;cache:addgroup /&gt; tag. This allows cache groups to be dynamically added from within a &lt;cache:cache /&gt; tag.</li>
+<li> Website documentation is now bundled with the OSCache distribution.</li>
+</ul>
+<h4 class="heading4"><a name="CompleteChangeLog-BugFixes%3A"> Bug Fixes:</a></h4>
+
+<ul class="star">
+<li> <span class="nobr"><a href="http://jira.opensymphony.com/browse/CACHE-59" title="Visit page outside Confluence">CACHE-59 <sup><img class="rendericon" src="/images/icons/linkext7.gif" height="7" width="7" align="absmiddle" alt="" border="0"/></sup></a></span> Silent mode could not be reset.</li>
+<li> <span class="nobr"><a href="http://jira.opensymphony.com/browse/CACHE-60" title="Visit page outside Confluence">CACHE-60 <sup><img class="rendericon" src="/images/icons/linkext7.gif" height="7" width="7" align="absmiddle" alt="" border="0"/></sup></a></span> Fixed deadlock problem when cancelUpdate() was called while under load.</li>
+</ul>
+<h4 class="heading4"><a name="CompleteChangeLog-Changesthatmayaffectbackwardscompatibility%3A"> Changes that may affect backwards compatibility:</a></h4>
+
+<ul class="star">
+<li> StringUtil.split() now returns a List rather than a String[].</li>
+</ul>
+<p class="paragraph"><h2 class="heading2"><a name="CompleteChangeLog-OSCache2.0"> OSCache 2.0</a></h2>
+<p class="paragraph"><h3 style="margin: 4px 0px 4px 0px;" class="heading3"><a name="CompleteChangeLog-ReleaseNotes"> Release Notes</a></h3></p>(22nd September 2003 - by Chris Miller)
+<h4 class="heading4"><a name="CompleteChangeLog-Improvements%3A"> Improvements:</a></h4>
+
+<ul class="star">
+<li> Minor FastCronParser speedup.</li>
+<li> Made ClusterNotification constants public.</li>
+<li> Dropped some of the logging levels from INFO down to DEBUG.</li>
+<li> Release has been split into two - a binary release and a full release (includes source).</li>
+</ul>
+<h4 class="heading4"><a name="CompleteChangeLog-BugFixes%3A"> Bug Fixes:</a></h4>
+
+<ul class="star">
+<li> <span class="nobr"><a href="http://jira.opensymphony.com/browse/CACHE-52" title="Visit page outside Confluence">CACHE-52 <sup><img class="rendericon" src="/images/icons/linkext7.gif" height="7" width="7" align="absmiddle" alt="" border="0"/></sup></a></span> Fixed a problem that caused no output on Tomcat for small JSP files.</li>
+<li> <span class="nobr"><a href="http://jira.opensymphony.com/browse/CACHE-53" title="Visit page outside Confluence">CACHE-53 <sup><img class="rendericon" src="/images/icons/linkext7.gif" height="7" width="7" align="absmiddle" alt="" border="0"/></sup></a></span> Updated documentation to explain that a PersistenceListener must be specified to enable caching to disk.</li>
+<li> <span class="nobr"><a href="http://jira.opensymphony.com/browse/CACHE-55" title="Visit page outside Confluence">CACHE-55 <sup><img class="rendericon" src="/images/icons/linkext7.gif" height="7" width="7" align="absmiddle" alt="" border="0"/></sup></a></span> JMS was throwing an exception on Weblogic.</li>
+<li> Altering the cache capacity on the fly using the administrator classes wasn&#039;t working correctly.</li>
+</ul></p><h2 class="heading2"><a name="CompleteChangeLog-OSCache2.0beta2"> OSCache 2.0 beta 2</a></h2>
+<p class="paragraph"><h3 style="margin: 4px 0px 4px 0px;" class="heading3"><a name="CompleteChangeLog-ReleaseNotes"> Release Notes</a></h3></p>(4th August 2003 - by Chris Miller)
+<h4 class="heading4"><a name="CompleteChangeLog-NewFeatures%3A"> New Features:</a></h4>
+
+<ul class="star">
+<li> Now supports JavaGroups version 2.1.</li>
+<li> JMS Clustering support has been added -Romulus Pasca.</li>
+<li> Clustering code has been refactored. As a result of this, some of the clustering configuration has changed since beta 1 - please see the updated clustering documentation for details.</li>
+<li> Performance enhancement: When running under JRE 1.3.x, the LRUCache will now attempt to use the Jakarta commons collections SequencedHashMap. If the commons-collections.jar is not present then the code resorts to using a LinkedList and a warning is logged. Note that under JRE 1.4.x and higher the commons-collections.jar is not required.</li>
+<li> Config.getProperties() method added.</li>
+</ul>
+<h4 class="heading4"><a name="CompleteChangeLog-BugFixes%3A"> Bug Fixes:</a></h4>
+
+<ul class="star">
+<li> <span class="nobr"><a href="http://jira.opensymphony.com/browse/CACHE-48" title="Visit page outside Confluence">CACHE-48 <sup><img class="rendericon" src="/images/icons/linkext7.gif" height="7" width="7" align="absmiddle" alt="" border="0"/></sup></a></span> FastCronParser no longer requires JDK 1.4.x.</li>
+<li> <span class="nobr"><a href="http://jira.opensymphony.com/browse/CACHE-45" title="Visit page outside Confluence">CACHE-45 <sup><img class="rendericon" src="/images/icons/linkext7.gif" height="7" width="7" align="absmiddle" alt="" border="0"/></sup></a></span> Fixed a serialization bug.</li>
+<li> The CachewideEvent was not holding the event date.</li>
+<li> Prevented an error from being logged in the CachewideEvent handling (even though no problem had occurred).</li>
+<li> Fixed a subtle bug in the concurrent unit test.</li>
+<li> The ServletCacheAdministrator&#039;s app scope cache is created on startup (via the CacheContextListener).</li>
+</ul><p class="paragraph"><h2 class="heading2"><a name="CompleteChangeLog-OSCache2.0beta1"> OSCache 2.0 beta 1</a></h2>
+<p class="paragraph"><h3 style="margin: 4px 0px 4px 0px;" class="heading3"><a name="CompleteChangeLog-ReleaseNotes"> Release Notes</a></h3></p>(19th July 2003 - by Chris Miller)
+<h4 class="heading4"><a name="CompleteChangeLog-NewFeatures%3A"> New Features:</a></h4>
+
+<ul class="star">
+<li> <span class="nobr"><a href="http://jira.opensymphony.com/browse/CACHE-11" title="Visit page outside Confluence">CACHE-11 <sup><img class="rendericon" src="/images/icons/linkext7.gif" height="7" width="7" align="absmiddle" alt="" border="0"/></sup></a></span> Cache grouping support. This allows cache entries to be placed into an arbitrary group or groups and flushed with a single flushGroup() call.</li>
+<li> <span class="nobr"><a href="http://jira.opensymphony.com/browse/CACHE-30" title="Visit page outside Confluence">CACHE-30 <sup><img class="rendericon" src="/images/icons/linkext7.gif" height="7" width="7" align="absmiddle" alt="" border="0"/></sup></a></span> Added support for expiring cache entries based on a cron expression. Entries that are older than the date/time that most recently matches the cron expression will be considered stale. This is exposed to the cache tag via the &#039;cron&#039; attribute. See cronTest.jsp for examples.</li>
+<li> Event listener support has been refactored and improved. It is now possible to specify a comma-delimited list of event listeners using this property. Previously only one class could be specified. Events listed here should implement the CacheEntryEventListener and/or the ScopeEventListener interfaces.</li>
+<li> New event CacheMapAccessEvent.STALE_HIT. This event is fired when an attempt is made to retrieve and entry from the cache, and the entry is found but is stale.</li>
+<li> Clustering support has been added as an event listener. Currently it is implemented using <span class="nobr"><a href="http://www.javagroups.com" title="Visit page outside Confluence">JavaGroups <sup><img class="rendericon" src="/images/icons/linkext7.gif" height="7" width="7" align="absmiddle" alt="" border="0"/></sup></a></span>. To enable, just add the BroadcastingCacheEventListener class to the cache.event.listeners property.</li>
+<li> Now uses Jakarta Commons Logging for all log messages. This means that the cache.debug configuration property is now ignored - use whatever logging configuration is appropriate for your logging setup instead. -Fabian Crabus</li>
+<li> <span class="nobr"><a href="http://jira.opensymphony.com/browse/CACHE-14" title="Visit page outside Confluence">CACHE-14, Matthias Nott <sup><img class="rendericon" src="/images/icons/linkext7.gif" height="7" width="7" align="absmiddle" alt="" border="0"/></sup></a></span> Now allows for content to be cached indefinitely without expiration.</li>
+<li> The build.xml &lt;javac ...&gt; directives now specify debug=&quot;true&quot;.</li>
+<li> Performance boost: When OSCache is running on JRE 1.4 or higher, LRUCache and FIFOCache use a LinkedHashSet instead of a LinkedList.</li>
+<li> Japloy is now used to ensure source is consistently formatted.</li>
+<li> Test cases now work on non-windows platforms. Also coverage reports added courtesy of clover.</li>
+</ul>
+<h4 class="heading4"><a name="CompleteChangeLog-Changesthatmayaffectbackwardscompatibility%3A"> Changes that may affect backwards compatibility:</a></h4>
+
+<ul class="star">
+<li> The cache.entryevent.classes property in the configuration file has been renamed to cache.event.listeners, since it accepts CacheEntryEventListener, ScopeEventListener and CacheMapAccessEventListener types.</li>
+<li> The cache.persistence.classes property has been renamed to cache.persistence.class since it is only possible to specify one PersistenceListener.</li>
+<li> For consistency, cache.unlimited_disk is now cache.unlimited.disk and cache.useHostDomainInKey is now cache.use.host.domain.in.key.</li>
+<li> The oscache.tld file now uses a taglib 1.2 DTD.</li>
+<li> To build OSCache, JDK 1.4.x or higher is required. There is however no runtime dependency on JDK 1.4.x.</li>
+<li> The Cache.flushPattern() method and &lt;cache:flush pattern=&quot;...&quot;/&gt; are deprecated. You are instead encouraged to group your cache entries when you add them to the cache and then use the Cache.flushGroup() method or the &lt;cache:flush group=&quot;...&quot;/&gt; tag to flush an entire cache group.</li>
+<li> Disk persistence now puts all files in the same directory. This has a number of side effects. Keys &gt;255 chars will cause problems. Also, similar keys might get mapped to the same file. For example, it is very inadvisable to have two keys with the names &#039;my_key&#039; and &#039;my.key&#039;.</li>
+<li> GeneralCacheAdministrator is no longer static. Users that relied on this behaviour can still hold onto a static reference to it with minor code changes.</li>
+<li> When a NeedsRefreshException is thrown, it is now vital that the cache entry is either updated, or Cache.cancelUpdate(key) is called to release the lock on this cache entry. This is a consequence of the fix for <span class="nobr"><a href="http://jira.opensymphony.com/browse/CACHE-42" title="Visit page outside Confluence">CACHE-42 <sup><img class="rendericon" src="/images/icons/linkext7.gif" height="7" width="7" align="absmiddle" alt="" border="0"/></sup></a></span>.</li>
+<li> CacheProperties class was removed. It didn&#039;t work on 1.7.5 anyway. The same effect can be achieved by specifying a subclass of Properties.</li>
+<li> Autogenerated cache keys now contain the request method (eg, HEAD, GET, etc).</li>
+<li> OSCache has been repackaged from &quot;com.opensymphony.module.oscache.&#42;&quot; to &quot;com.opensymphony.oscache.&#42;&quot;. Any code or configuration files that refer to &quot;com.opensymphony.module.oscache&quot; will need to be updated.</li>
+</ul>
+<h4 class="heading4"><a name="CompleteChangeLog-BugFixes%3A"> Bug Fixes:</a></h4>
+
+<ul class="star">
+<li> <span class="nobr"><a href="http://jira.opensymphony.com/browse/CACHE-4" title="Visit page outside Confluence">CACHE-4 <sup><img class="rendericon" src="/images/icons/linkext7.gif" height="7" width="7" align="absmiddle" alt="" border="0"/></sup></a></span> WebSphere 3.5.x compatibility.</li>
+<li> <span class="nobr"><a href="http://jira.opensymphony.com/browse/CACHE-5" title="Visit page outside Confluence">CACHE-5 <sup><img class="rendericon" src="/images/icons/linkext7.gif" height="7" width="7" align="absmiddle" alt="" border="0"/></sup></a></span> Added a mode attribute to the cache tag to allow content to be cached but not sent to the output stream. See oscacheTest.jsp for an example.</li>
+<li> <span class="nobr"><a href="http://jira.opensymphony.com/browse/CACHE-7" title="Visit page outside Confluence">CACHE-7 <sup><img class="rendericon" src="/images/icons/linkext7.gif" height="7" width="7" align="absmiddle" alt="" border="0"/></sup></a></span> &quot;cache&quot; Tag has no &quot;setEncoding&quot; method.</li>
+<li> <span class="nobr"><a href="http://jira.opensymphony.com/browse/CACHE-9" title="Visit page outside Confluence">CACHE-9 <sup><img class="rendericon" src="/images/icons/linkext7.gif" height="7" width="7" align="absmiddle" alt="" border="0"/></sup></a></span> It could be useful being able to specify directories relative to the web application dir. for config file and cache dir. Use new properties aware getInstance method.</li>
+<li> <span class="nobr"><a href="http://jira.opensymphony.com/browse/CACHE-10" title="Visit page outside Confluence">CACHE-10 <sup><img class="rendericon" src="/images/icons/linkext7.gif" height="7" width="7" align="absmiddle" alt="" border="0"/></sup></a></span> Cannot write and use custom class implementing CacheProperties.</li>
+<li> <span class="nobr"><a href="http://jira.opensymphony.com/browse/CACHE-13" title="Visit page outside Confluence">CACHE-13 <sup><img class="rendericon" src="/images/icons/linkext7.gif" height="7" width="7" align="absmiddle" alt="" border="0"/></sup></a></span> AbstractConcurrentReadCache loops indefinitely when persistRetrieve() returns null.</li>
+<li> <span class="nobr"><a href="http://jira.opensymphony.com/browse/CACHE-14" title="Visit page outside Confluence">CACHE-14 <sup><img class="rendericon" src="/images/icons/linkext7.gif" height="7" width="7" align="absmiddle" alt="" border="0"/></sup></a></span> You can now specify an unlimited refresh time by supplying a negative value for the duration.</li>
+<li> <span class="nobr"><a href="http://jira.opensymphony.com/browse/CACHE-17" title="Visit page outside Confluence">CACHE-17 <sup><img class="rendericon" src="/images/icons/linkext7.gif" height="7" width="7" align="absmiddle" alt="" border="0"/></sup></a></span> An example war is now included - &quot;ant example-war&quot;. Once deployed this can be tested using &quot;ant test-web&quot;.</li>
+<li> <span class="nobr"><a href="http://jira.opensymphony.com/browse/CACHE-26" title="Visit page outside Confluence">CACHE-26 <sup><img class="rendericon" src="/images/icons/linkext7.gif" height="7" width="7" align="absmiddle" alt="" border="0"/></sup></a></span> Security hole whereby certain keys can overwrite any file.</li>
+<li> <span class="nobr"><a href="http://jira.opensymphony.com/browse/CACHE-28" title="Visit page outside Confluence">CACHE-28 <sup><img class="rendericon" src="/images/icons/linkext7.gif" height="7" width="7" align="absmiddle" alt="" border="0"/></sup></a></span> URLs can now be used as keys with disk persistence.</li>
+<li> <span class="nobr"><a href="http://jira.opensymphony.com/browse/CACHE-31" title="Visit page outside Confluence">CACHE-31 <sup><img class="rendericon" src="/images/icons/linkext7.gif" height="7" width="7" align="absmiddle" alt="" border="0"/></sup></a></span> and <span class="nobr"><a href="http://jira.opensymphony.com/browse/CACHE-33" title="Visit page outside Confluence">CACHE-33 <sup><img class="rendericon" src="/images/icons/linkext7.gif" height="7" width="7" align="absmiddle" alt="" border="0"/></sup></a></span> The cache tag&#039;s refresh attribute will now be taken into account even if a custom refresh policy has been specified.</li>
+<li> <span class="nobr"><a href="http://jira.opensymphony.com/browse/CACHE-34" title="Visit page outside Confluence">CACHE-34 <sup><img class="rendericon" src="/images/icons/linkext7.gif" height="7" width="7" align="absmiddle" alt="" border="0"/></sup></a></span> Setting properties with AbstractCacheAdministrators. New getInstance method added to ServletCacheAdministrator that takes in properties.</li>
+<li> <span class="nobr"><a href="http://jira.opensymphony.com/browse/CACHE-35" title="Visit page outside Confluence">CACHE-35 <sup><img class="rendericon" src="/images/icons/linkext7.gif" height="7" width="7" align="absmiddle" alt="" border="0"/></sup></a></span> CacheFilter needs to distinguish between HEAD and GET requests.</li>
+<li> <span class="nobr"><a href="http://jira.opensymphony.com/browse/CACHE-39" title="Visit page outside Confluence">CACHE-39 <sup><img class="rendericon" src="/images/icons/linkext7.gif" height="7" width="7" align="absmiddle" alt="" border="0"/></sup></a></span> and <span class="nobr"><a href="http://jira.opensymphony.com/browse/CACHE-44" title="Visit page outside Confluence">CACHE-44 <sup><img class="rendericon" src="/images/icons/linkext7.gif" height="7" width="7" align="absmiddle" alt="" border="0"/></sup></a></span> Synchronization with LRUCache fixed.</li>
+<li> <span class="nobr"><a href="http://jira.opensymphony.com/browse/CACHE-42" title="Visit page outside Confluence">CACHE-42 <sup><img class="rendericon" src="/images/icons/linkext7.gif" height="7" width="7" align="absmiddle" alt="" border="0"/></sup></a></span> Threads will no longer race to (re)build expired or new cache entries. By default stale content will be served if available. This behaviour can be changed by setting oscache.blocking=true, which will instead cause threads to block until the new cache entry is available.</li>
+<li> <span class="nobr"><a href="http://jira.opensymphony.com/browse/CACHE-43" title="Visit page outside Confluence">CACHE-43 <sup><img class="rendericon" src="/images/icons/linkext7.gif" height="7" width="7" align="absmiddle" alt="" border="0"/></sup></a></span> Taglibs have been made spec-compliant. They now follow the guidelines at <span class="nobr"><a href="http://jakarta.apache.org/taglibs/guidelines.html." title="Visit page outside Confluence">&#104;ttp://jakarta.apache.org/taglibs/guidelines.html.<sup><img class="rendericon" src="/images/icons/linkext7.gif" height="7" width="7" align="absmiddle" alt="" border="0"/></sup></a></span></li>
+<li> Some synchronization issues were fixed in LRUCache.getItem() and AbstractConcurrentReadCache.setMaxEntries().</li>
+<li> ScopeEventListener classes were previously not able to be specified in the configuration even though the dispatching code was implemented. ScopeEventListeners can now be specified using the cache.event.listeners configuration property.</li>
+<li> CacheMapAccessEvents now only fire when an attempt is made to retrieve the actual cache content for external use. Previously these events were being fired in circumstances that were not of statistical interest - for example HIT and MISS events were being fired when updating or flushing entries from the cache.</li>
+<li> Minor bug in oscacheTestMultipleTagNoKey.jsp - some of the tag refresh times weren&#039;t correctly specified.</li>
+<li> cachetest.jsp - the &#039;refresh&#039; functionality wasn&#039;t working because the addition of the refresh parameter caused the cache key to be different. The key is now specified explicitly.</li>
+<li> EntryRefreshPolicy is now serializable so it can be persisted to the disk cache.</li>
+<li> ServletCacheAdministrator now sorts request parameters and filters out jsessionid so they have no impact on the generated cache key.</li>
+<li> CacheFilter only caches successful responses (status code == SC_OK).</li>
+</ul>
+<h4 class="heading4"><a name="CompleteChangeLog-KnownProblems%3A%28thesehaveexistedforsometimeinthe1.x.xversionsandwillbeaddressedinanupcoming2.x.xrelease%29"> Known Problems: (these have existed for some time in the 1.x.x versions and will be addressed in an upcoming 2.x.x release)</a></h4>
+
+<ul class="star">
+<li> Session caches (created using the ServletCacheAdministrator) have some known limitations:<br/>
+o Due to a workaround in the code, it is possible for a system under heavy load to get its persistent session caches confused across sessions.<br/>
+o Session caches will not work in a clustered environment.<br/>
+o Session caches have the same settings global settings applied to them as the application scope cache. This means that if you want a persistent cache for the application scope cache, the session caches will use it too.
+</li>
+</ul></p><h2 class="heading2"><a name="CompleteChangeLog-OSCache1.7.5"> OSCache 1.7.5</a></h2>
+<p class="paragraph"><h3 style="margin: 4px 0px 4px 0px;" class="heading3"><a name="CompleteChangeLog-ReleaseNotes"> Release Notes</a></h3>
+(5th January 2002 - by Mike Cannon-Brookes, mike@atlassian.com)</p><ul class="star">
+<li> Fixed up logging system slightly. All errors should now be logged with logError() and normal messages with log()</li>
+<li> Fixed bug in build file which put oscache.properties inside the oscache.jar (resulting in it being loaded badly in some containers)</li>
+<li> Changed cache.capacity in the default oscache.properties file to 1000. This means up to 1000 items will be cached in the default setup, and LRUCache will be used (100 seemed too small)</li>
+</ul>
+<p class="paragraph"><h2 class="heading2"><a name="CompleteChangeLog-OSCache1.7.4"> OSCache 1.7.4</a></h2>
+<p class="paragraph"><h3 style="margin: 4px 0px 4px 0px;" class="heading3"><a name="CompleteChangeLog-ReleaseNotes"> Release Notes</a></h3></p>(3rd December 2001 - by Francois Beauregard, fbeauregard@pyxis-tech.com, and<br/>
+Mike Cannon-Brookes, mike@atlassian.com)<br/>
+
+<ul class="star">
+<li> Made all servlet cache components serializable (fixes bug reported on list with JRun)</li>
+</ul></p><h2 class="heading2"><a name="CompleteChangeLog-OSCache1.7.3"> OSCache 1.7.3</a></h2>
+<p class="paragraph"><h3 style="margin: 4px 0px 4px 0px;" class="heading3"><a name="CompleteChangeLog-ReleaseNotes"> Release Notes</a></h3></p>(11th November 2001 - by Francois Beauregard, fbeauregard@pyxis-tech.com)<br/>
+
+<ul class="star">
+<li> TestCacheEntry had a test method with improper name (flush -&gt; testFlush)</li>
+<li> Pluggable entry refresh policy now available in the cache tag</li>
+</ul>
+
+<p class="paragraph"><h2 class="heading2"><a name="CompleteChangeLog-OSCache1.7.2"> OSCache 1.7.2</a></h2>
+<p class="paragraph"><h3 style="margin: 4px 0px 4px 0px;" class="heading3"><a name="CompleteChangeLog-ReleaseNotes"> Release Notes</a></h3></p>(31st October 2001 - by Mike Cannon-Brookes, mike@atlassian.com)<br/>
+
+<ul class="star">
+<li> Cleaned up <em class="emphasis">all</em> JavaDoc messages to ensure consistency and readability (removed unnecessary CVS tags, added &lt;code&gt; and &lt;pre&gt; where needed, added @return and @param to all methods)</li>
+<li> Renamed nbMaxEntries to cacheCapacity and cache.size property to cache.capacity (to fit better with Collections API where capacity is max size, size is current size)</li>
+<li> Renamed algoClass to algorithmClass for clarity.</li>
+<li> Fixed up build.xml so that test classes are compiled to a different location and not included in oscache.jar (to make it smaller footprint)</li>
+</ul></p><h2 class="heading2"><a name="CompleteChangeLog-OSCache1.7.1"> OSCache 1.7.1</a></h2>
+<p class="paragraph"><h3 style="margin: 4px 0px 4px 0px;" class="heading3"><a name="CompleteChangeLog-ReleaseNotes"> Release Notes</a></h3></p>(26th September 2001 - by Francois Beauregard, fbeauregard@pyxis-tech.com, and<br/>
+Alain Bergevin, abergevin@pyxis-tech.com, of Pyxis Technologies Inc.)<br/>
+
+<ul class="star">
+<li> Cache Events</li>
+<li> Persistence mechanism refactored</li>
+<li> Cache Algorithms FIFO + LRU (Limit the size of the cache)</li>
+<li> AbstractConcurrentReadCache from Doug Lea&#039;s ConcurrentReaderHashMap.<br/>
+Should give oscache performance improvement
+</li>
+<li> Disk Persistence does not need any locking strategies. Everything is handled by AbstractConcurrentReadCache</li>
+<li> Pluggable entry refresh policies</li>
+<li> Unlimited cache size for disk</li>
+<li> Specify Duration using Simple Date Format or ISO-8601 as suggested by Fredrik Lindgren)<br/>
+The next one that would make sense I think is being able to specify a specific time of day.
+</li>
+</ul>
+
+<p class="paragraph"><h2 class="heading2"><a name="CompleteChangeLog-OSCache1.7.0"> OSCache 1.7.0</a></h2>
+<p class="paragraph"><h3 style="margin: 4px 0px 4px 0px;" class="heading3"><a name="CompleteChangeLog-ReleaseNotes"> Release Notes</a></h3></p>(26th September 2001 - by Francois Beauregard, fbeauregard@pyxis-tech.com, and<br/>
+Alain Bergevin, abergevin@pyxis-tech.com, of Pyxis Technologies Inc.)<p class="paragraph">This version include some refactoring, corrections and new features.<br/>
+Here are the highlights:</p><ul class="star">
+<li> CacheAdministrator has been split in 3. We have now AbstractCacheAdministrator, and ServletCacheAdministrator and GeneralCacheAdministrator extends it</li>
+<li> Packages have been adjusted. We now have oscache.base, oscache.general and oscache.Servlet.<br/>
+Adjustement must be made to the oscache.tld
+</li>
+<li> ServletCacheHashMap has been created in order to reflect specific needs for Servlets. It extends CacheHashMap</li>
+<li> Support for multiple cache tag in a single page, without supplying a key. Nested cache tag are not yet supported (you need to manage keys in that case).</li>
+<li> OSCache can now cache any objects (not only JSP content) using GeneralCacheAdministrator</li>
+<li> GenerateKey now support suffixes (used to deal with multiple cache tags)</li>
+<li> A complete JUnit test suite has been created for osCache, including a JSP and a Servlet</li>
+<li> Added the required libraries for the test unit. The JUnit JAR has been upgraded to version 3.7</li>
+<li> Required libraries are now HHTPUnit, Tidy, JUnit 3.7 and JUnitPerf</li>
+<li> The cBuffer variable used for keyGeneration has been moved locally to GenerateKey since it was a threading issue</li>
+<li> The build file has been modified to include test running</li>
+<li> The flushAll method is now abstract since CacheAbstractAdministrator can&#039;t know all valid scopes</li>
+<li> Removed the retry logic for disk cache read and write (not used anymore)</li>
+<li> Fixed an issue with the needsRefresh method which returned an invalid value when invoked first by returning true and then invoked having to return false. Both case returned true.</li>
+<li> The doStartTag method in CacheTag has been modified to prevent returning null when cache content is missing (cache file deleted)</li>
+<li> The doAfterBody method in CacheTag has been modified in order to prevent hitting the cache twice in some situation</li>
+<li> The useBody method in CacheTag has been renamed to setUseBody in order to reflect its usage</li>
+<li> LoadProperties interface added to CacheProperties</li>
+<li> Added a NeedsRefreshException</li>
+<li> Retrofited the changed made by Kesav Kumar in order to retrieve the sessionId correctly</li>
+<li> Added code toughness to avoid working with invalid parameters in public methods</li>
+<li> Magic numbers and strings are now declared as constants</li>
+<li> Many methods are now declared as final or protected</li>
+<li> Imports are now more accurate, no more *</li>
+<li> Comments and some headers modified to reflect JavaDoc standard</li>
+</ul></p><h2 class="heading2"><a name="CompleteChangeLog-OSCache1.6.1"> OSCache 1.6.1</a></h2>
+<p class="paragraph"><h3 style="margin: 4px 0px 4px 0px;" class="heading3"><a name="CompleteChangeLog-ReleaseNotes"> Release Notes</a></h3></p>(16th September, 2001 - by Todd Gochenour, tgochenour@peregrine.com)<br/>
+
+<ul class="star">
+<li> Removed attribute &quot;encoding&quot; in all areas, since Object serialization stores strings in UTF-8 format, encoding is no longer necessary.</li>
+<li> Added Synchronization to getCacheEntry() to insure multiple threads do not access HashMap and get erroneous results.</li>
+<li> Implemented property cache.useHostDomainInKey (true/false) to prepend URL request server name to cache key when cache used by multiple servers. The &quot;cache.domainname&quot; property found in oscache.properties (not used in code) was removed.</li>
+<li> Corrected file caching logic so that multiple processes can share cache information (file locking). Missing still is the ability to signal processes that a cache needs to be flushed when using Memory Caching along with File Caching.</li>
+<li> Unit testing revealed some minor configuration bugs which were corrected.</li>
+</ul>
+<p class="paragraph"><h2 class="heading2"><a name="CompleteChangeLog-OSCache1.6"> OSCache 1.6</a></h2>
+<p class="paragraph"><h3 style="margin: 4px 0px 4px 0px;" class="heading3"><a name="CompleteChangeLog-ReleaseNotes"> Release Notes</a></h3></p>(5th September, 2001 - by Mike Cannon-Brookes, mike@atlassian.com)<br/>
+
+<ul class="star">
+<li> Changed the CacheEntry so that it caches Object rather than String (allowing image caching) (Serge Knystautas, sergek@lokitech.com)</li>
+<li> Cached objects are now serialized to disk so cannot be read by humans anymore (this allows us to cache Object) (Serge Knystautas, sergek@lokitech.com)</li>
+<li> Added a Servlet 2.3 CacheFilter (and associated response classes) that caches whole requests (Serge Knystautas, sergek@lokitech.com)</li>
+<li> Minor changes to CacheAdministrator (the way Cache and CacheEntry&#039;s are retrieved) - merging Serge and Todd&#039;s changes</li>
+</ul>
+</p><h2 class="heading2"><a name="CompleteChangeLog-OSCache1.5"> OSCache 1.5</a></h2>
+<p class="paragraph"><h3 style="margin: 4px 0px 4px 0px;" class="heading3"><a name="CompleteChangeLog-ReleaseNotes"> Release Notes</a></h3></p>(6th August, 2001 - by Todd Gochenour, tgochenour@peregrine.com)<br/>
+
+<ul class="star">
+<li> Added boolean &quot;cache.memory&quot; attribute to oscache.properties to eliminate memory consumption and rely strictly on disk storage.</li>
+<li> Added three interfaces &quot;CacheLog&quot;, &quot;CacheProperties&quot;, and &quot;CacheContents&quot; to allow plugable implementations for these functions. The CacheContents interface allows the pages to be cached using a database.</li>
+<li> Added &quot;Language&quot; attribute to CacheTag and FlushTag to distinguish a page that supports I18N generation. The ISO-639 language code is used when the scope of the page is &quot;Application&quot;. The code defines a subdirectory under the &quot;application&quot; directory of file caching.</li>
+<li> Modified the CacheAdministrator.generateKey() function to append the request&#039;s QueryString to the URI when automatically generating keys. The QueryString is encoded using the MD5 digest base64 algorithms.</li>
+<li> Added attribute &quot;encoding&quot; to a CacheTag so that the file IO does proper conversion when reading and writing the cache files. (per suggestion of Pedro Gomez)</li>
+<li> Added retries when SecurityException is thrown. Java has no built in exclusive file locking implementations. The file is written to a lock file and then renamed as an atomic operation so that multiple processes on the same box can reliable access cache data.</li>
+<li> Added &quot;pattern&quot; attribute to FlushTag which invokes a CacheHashMap.flushPattern() function to scan for and flush all keys that contain the value of the pattern. (per suggestion of Todd Rudrick)</li>
+<li> Added support for a CacheTag time value of zero which turns off caching for that tag. (per suggestion of Pedro Gomez)</li>
+</ul><p class="paragraph"><h2 class="heading2"><a name="CompleteChangeLog-OSCache1.3"> OSCache 1.3</a></h2>
+<p class="paragraph"><h3 style="margin: 4px 0px 4px 0px;" class="heading3"><a name="CompleteChangeLog-ReleaseNotes"> Release Notes</a></h3></p>(9th June, 2001 - by Mike Cannon-Brookes, mike@atlassian.com)<br/>
+
+<ul class="star">
+<li> Fixed a single bug in the file caching - should now work</li>
+<li> Added property to set the cache key (not sure if this is useful)</li>
+<li> Cleaned up a lot of the code, refactored slightly so that the tags are more light weight and rely more on the Administrator and CacheHashMap for functionality.</li>
+</ul>
+</p><h2 class="heading2"><a name="CompleteChangeLog-OSCache1.2.5"> OSCache 1.2.5</a></h2>
+<p class="paragraph"><h3 style="margin: 4px 0px 4px 0px;" class="heading3"><a name="CompleteChangeLog-ReleaseNotes"> Release Notes</a></h3></p>(18th May, 2001 - by Mike Cannon-Brookes, mike@atlassian.com)<br/>
+
+<ul class="star">
+<li> Added ability to turn off file caching (just remove or comment out cache.properties)</li>
+<li> Removed a pesky (but ineffectual) bug where session caches being removed from disk were throwing NullPointerExceptions</li>
+</ul><p class="paragraph"><h2 class="heading2"><a name="CompleteChangeLog-OSCache1.2.1"> OSCache 1.2.1</a></h2>
+<p class="paragraph"><h3 style="margin: 4px 0px 4px 0px;" class="heading3"><a name="CompleteChangeLog-ReleaseNotes"> Release Notes</a></h3></p>(10th May, 2001 - by Mike Cannon-Brookes, mike@atlassian.com)<br/>
+
+<ul class="star">
+<li> Speed improvements in CacheEntry and CacheAdministrator (by Kesav Kumar - kesavk@voquette.com)</li>
+<li> Fixed DOCTYPE in taglib.tld (also Kesav!)</li>
+<li> Removed backup / swap / temp files from zip (and changed build file)</li>
+</ul></p><h2 class="heading2"><a name="CompleteChangeLog-OSCache1.2"> OSCache 1.2</a></h2>
+<p class="paragraph"><h3 style="margin: 4px 0px 4px 0px;" class="heading3"><a name="CompleteChangeLog-ReleaseNotes"> Release Notes</a></h3></p>(28th March, 2001 - by Mike Cannon-Brookes, mike@atlassian.com)<br/>
+
+<ul class="star">
+<li> Fixed a large bug that resulted in CacheEntry&#039;s not refreshing. Large enough in a Caching library to demand a new point release <img class="rendericon" src="/images/icons/emoticons/wink.gif" height="20" width="20" align="absmiddle" alt="" border="0"/></li>
+</ul><p class="paragraph"><h2 class="heading2"><a name="CompleteChangeLog-OSCache1.1"> OSCache 1.1</a></h2>
+<p class="paragraph"><h3 style="margin: 4px 0px 4px 0px;" class="heading3"><a name="CompleteChangeLog-ReleaseNotes"> Release Notes</a></h3></p>(25th March, 2001 - by Mike Cannon-Brookes, mike@atlassian.com)<br/>
+
+<ul class="star">
+<li> Moved up to 1.1 because a lot of documentation improving and some small bug fixing has been done</li>
+<li> Javadocs should now be very readable for all classes and methods</li>
+<li> Fixed a NullPointer that was being thrown in CacheEntry.needsRefresh()</li>
+<li> Cleaned up the build file so it now produces releasable zip files easily</li>
+<li> Added servlet.jar so that the compiling now works OOB (Out Of the Box)</li>
+</ul></p><h2 class="heading2"><a name="CompleteChangeLog-OSCache1.0beta2"> OSCache 1.0 beta 2</a></h2>
+<p class="paragraph"><h3 style="margin: 4px 0px 4px 0px;" class="heading3"><a name="CompleteChangeLog-ReleaseNotes"> Release Notes</a></h3></p>(20th March, 2001 - by Mike Cannon-Brookes, mike@atlassian.com)<br/>
+
+<ul class="star">
+<li> Fixed more bugs.</li>
+<li> Moved things around so that the CacheAdministrator has more functionality and is now a Singleton (per web app context). This means no more depedency on ServletContextListener to start the CacheAdministrator.</li>
+<li> Therefore we are now Servlet 2.2 / JSP 1.1 compliant! w00!</li>
+</ul><p class="paragraph"><h2 class="heading2"><a name="CompleteChangeLog-OSCache1.0beta1"> OSCache 1.0 beta 1</a></h2>
+<p class="paragraph"><h3 style="margin: 4px 0px 4px 0px;" class="heading3"><a name="CompleteChangeLog-ReleaseNotes"> Release Notes</a></h3></p>(20th February, 2001 - by Mike Cannon-Brookes, mike@atlassian.com)<br/>
+
+<ul class="star">
+<li> Fixed a few bugs.</li>
+<li> Greatest of which there is no longer a disk leakage from session caches on disk.</li>
+<li> Also session caching bugs fixed, usecached bugs fixed - lots of work done here.</li>
+<li> Implemented to flush individual keys.</li>
+</ul></p><h2 class="heading2"><a name="CompleteChangeLog-OSCache1.0beta0"> OSCache 1.0 beta 0</a></h2>
+<p class="paragraph"><h3 style="margin: 4px 0px 4px 0px;" class="heading3"><a name="CompleteChangeLog-ReleaseNotes"> Release Notes</a></h3></p>(26th November, 2000 - by Mike Cannon-Brookes, mike@atlassian.com)<br/>
+
+<ul class="star">
+<li> Initial release of OSCache</li>
+<li> Conceptualised a few things I&#039;ve been working on over the past month.</li>
+<li> Added persistent on disk caching and error tolerance (through &lt;usecached /&gt; tag)</li>
+</ul>
+
+
+				    
+                    			    </td>
+		    </tr>
+	    </table>
+	    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+			<tr>
+				<td height="12" background="border/border_bottom.gif"><img src="border/spacer.gif" width="1" height="1" border="0"/></td>
+			</tr>
+		    <tr>
+			    <td align="center"><font color="grey">Document generated by Confluence on Apr 30, 2005 22:37</font></td>
+		    </tr>
+	    </table>
+    </body>
+</html>

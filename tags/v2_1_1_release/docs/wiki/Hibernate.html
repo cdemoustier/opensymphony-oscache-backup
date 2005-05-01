@@ -1,0 +1,44 @@
+<html>
+    <head>
+        <title>OSCache : Hibernate</title>
+	    <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">	    
+    </head>
+
+    <body>
+	    <table class="pagecontent" border="0" cellpadding="0" cellspacing="0" width="100%" bgcolor="#ffffff">
+		    <tr>
+			    <td valign="top" class="pagebody">
+				    <div class="pageheader">
+					    <span class="pagetitle">
+                            OSCache : Hibernate
+                                                    </span>
+				    </div>
+				    <div class="pagesubheading">
+					    This page last changed on Jan 17, 2005 by <font color="#0050B2">dres1011</font>.
+				    </div>
+
+				    <p class="paragraph"><a href="http://www.hibernate.org/" title="Visit page outside Confluence">Hibernate</a> is a powerful, ultra-high performance object/relational persistence and query service for Java. Hibernate lets you develop persistent objects following common Java idiom - including association, inheritance, polymorphism, composition and the Java collections framework. Extremely fine-grained, richly typed object models are possible.</p>Hibernate 2.1 features support for plugin cache providers and is designed to integrate with distributed caches (2.1 also implements more aggressive use of the cache). <b class="strong">net.sf.hibernate.cache.CacheProvider</b> is the extension point for user-defined cache integration.<p class="paragraph"><a href="http://www.hibernate.org/6.html" title="Visit page outside Confluence">Hibernate 2.1.1</a> or higher is required.</p><h3 class="heading3"><a name="Hibernate-hibernate.cache.providerclass"> hibernate.cache.provider_class</a></h3><p class="paragraph">OSCache and Hibernate 2.1 integrate though OSCacheProvider.</p><div align='center'><div class='informationMacroPadding'><table cellpadding='5' width='85%' cellspacing='0' class='warningMacro' border='0'><tr><td width='16' valign='top'><img src="/images/icons/emoticons/forbidden.png" width="16" height="16" align="absmiddle" alt="" border="0"></td><td><b class="strong">Warning</b><br /><br/>
+Unfortunately, at this time the OSCacheProvider distributed with Hibernate 2.1.x is not suited to clustering with OSCache.  A patch has been submitted to the Hibernate team but not yet applied.  Even if you do not require clustering, we recommend use of these patched versions of <a href="Hibernate Cache Provider.html" title="Hibernate Cache Provider">OSCacheProvider</a> and <a href="Hibernate Cache Adapter.html" title="Hibernate Cache Adapter">OSCache</a>.  Just cut-n-paste the code and use the provider class you create as the hibernate.cache.provider_class as shown below.
+</td></tr></table></div></div><p class="paragraph">To enable OSCache in Hibernate&#039;s configuration, add the following line to hibernate.cfg.xml:</p><div class="code"><div class="codeHeader"><b>hibernate.cfg.xml</b></div><div class="codeContent">
+<pre>&lt;property name=<span class="java&#45;quote">&quot;hibernate.cache.provider&#95;class&quot;</span>&gt;my.patched.provider.<span class="java&#45;keyword">package</span>.OSCacheProvider&lt;/property&gt;</pre>
+</div></div><p class="paragraph">The default refresh period is <a href="http://www.opensymphony.com/oscache/api/com/opensymphony/oscache/base/CacheEntry.html#INDEFINITE_EXPIRY" title="Visit page outside Confluence">CacheEntry.INDEFINITE_EXPIRY</a>. The first time a cacheable query is done, the cache has no effect on speed. On the second and successive queries, the cache will be populated and available to be hit.</p>NOTE: object identifiers must have well-behaved toString() methods.<p class="paragraph"><h3 class="heading3"><a name="Hibernate-CacheRegionConfiguration"> Cache Region Configuration</a></h3></p>To modify the refresh period, CRON expression, add the region configuration to your <a href="Configuration.html" title="Configuration">oscache.properties</a> file, as demonstrated below:<br/>
+
+<div class="preformatted"><div class="preformattedContent">
+<pre>com.mypackage.domain.Customer.refresh.period = 4000&#10;com.mypackage.domain.Customer.cron = &#42; &#42; 31 Feb &#42;&#10;&#10;#The maximum cache capacity can only be set per region if you use the &#10;#net.sf.hibernate.cache.OSCacheProvider distributed with Hibernate.  The patched &#10;#version distributed with OSCache only allows a single cache.capacity setting.&#10;com.mypackage.domain.Customer.capacity = 5000</pre>
+</div></div><p class="paragraph">The com.mypackage.domain.Customer is Hibernate&#039;s internal cache region, which defaults to the classname, and which can be altered by setting Hibernate&#039;s configuration property <a href="http://www.hibernate.org/hib_docs/reference/html_single/#session-configuration-s5" title="Visit page outside Confluence">hibernate.cache.region_prefix</a> .</p>
+
+				    
+                    			    </td>
+		    </tr>
+	    </table>
+	    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+			<tr>
+				<td height="12" background="border/border_bottom.gif"><img src="border/spacer.gif" width="1" height="1" border="0"/></td>
+			</tr>
+		    <tr>
+			    <td align="center"><font color="grey">Document generated by Confluence on Apr 30, 2005 22:37</font></td>
+		    </tr>
+	    </table>
+    </body>
+</html>
