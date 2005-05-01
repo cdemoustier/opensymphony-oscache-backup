@@ -8,8 +8,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import java.io.IOException;
-import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.io.OutputStreamWriter;
 
 import java.util.Locale;
 
@@ -33,7 +33,6 @@ public class CacheHttpServletResponseWrapper extends HttpServletResponseWrapper 
     private PrintWriter cachedWriter;
     private ResponseContent result = null;
     private SplitServletOutputStream cacheOut = null;
-    private boolean fragment = false;
     private int status = SC_OK;
 
     /**
@@ -42,23 +41,8 @@ public class CacheHttpServletResponseWrapper extends HttpServletResponseWrapper 
      * @param response The servlet response
      */
     public CacheHttpServletResponseWrapper(HttpServletResponse response) {
-        this(response, false);
-    }
-
-    /**
-     * Constructor
-     *
-     * @param response The servlet response
-     */
-    public CacheHttpServletResponseWrapper(HttpServletResponse response, boolean fragment) {
         super(response);
         result = new ResponseContent();
-        this.fragment = fragment;
-        
-        // setting a default last modified value based on object creation and remove the millis
-        long current = System.currentTimeMillis() / 1000;
-        result.setLastModified(current * 1000);
-        super.setDateHeader(CacheFilter.HEADER_LAST_MODIFIED, result.getLastModified());
     }
 
     /**
@@ -80,10 +64,6 @@ public class CacheHttpServletResponseWrapper extends HttpServletResponseWrapper 
      * @param value The content type
      */
     public void setContentType(String value) {
-        if (log.isDebugEnabled()) {
-            log.debug("ContentType: " + value);
-        }
-
         super.setContentType(value);
         result.setContentType(value);
     }
@@ -99,41 +79,11 @@ public class CacheHttpServletResponseWrapper extends HttpServletResponseWrapper 
             log.debug("dateheader: " + name + ": " + value);
         }
 
-        // only set the last modified value, if a complete page is cached
-        if ((!fragment) && (CacheFilter.HEADER_LAST_MODIFIED.equalsIgnoreCase(name))) {
+        if (CacheFilter.HEADER_LAST_MODIFIED.equalsIgnoreCase(name)) {
             result.setLastModified(value);
-        }
-
-        // implement RFC 2616 14.21 Expires (without max-age)
-        if (CacheFilter.HEADER_EXPIRES.equalsIgnoreCase(name)) {
-            result.setExpires(value);
         }
 
         super.setDateHeader(name, value);
-    }
-
-    /**
-     * Add the date of a header
-     *
-     * @param name The header name
-     * @param value The date
-     */
-    public void addDateHeader(String name, long value) {
-        if (log.isDebugEnabled()) {
-            log.debug("dateheader: " + name + ": " + value);
-        }
-
-        // only set the last modified value, if a complete page is cached
-        if ((!fragment) && (CacheFilter.HEADER_LAST_MODIFIED.equalsIgnoreCase(name))) {
-            result.setLastModified(value);
-        }
-
-        // implement RFC 2616 14.21 Expires (without max-age)
-        if (CacheFilter.HEADER_EXPIRES.equalsIgnoreCase(name)) {
-            result.setExpires(value);
-        }
-
-        super.addDateHeader(name, value);
     }
 
     /**
@@ -234,11 +184,6 @@ public class CacheHttpServletResponseWrapper extends HttpServletResponseWrapper 
         this.status = status;
     }
 
-    /**
-     * We override this so we can catch the response status. Only
-     * responses with a status of 200 (<code>SC_OK</code>) will
-     * be cached.
-     */
     public void sendRedirect(String location) throws IOException {
         this.status = SC_MOVED_TEMPORARILY;
         super.sendRedirect(location);

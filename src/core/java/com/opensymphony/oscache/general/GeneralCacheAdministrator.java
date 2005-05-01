@@ -107,15 +107,7 @@ public class GeneralCacheAdministrator extends AbstractCacheAdministrator {
     public Cache getCache() {
         return applicationCache;
     }
-    
-    /**
-     * Remove an object from the cache
-     *
-     * @param key             The key entered by the user.
-     */
-    public void removeEntry(String key) {
-        getCache().removeEntry(key);
-    }
+
     /**
      * Get an object from the cache
      *

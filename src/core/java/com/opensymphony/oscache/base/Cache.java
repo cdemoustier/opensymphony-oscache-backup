@@ -715,7 +715,7 @@ public class Cache implements Serializable {
      *
      * @param key The key of the entry to remove.
      */
-    public void removeEntry(String key) {
+    protected void removeEntry(String key) {
         removeEntry(key, null);
     }
 

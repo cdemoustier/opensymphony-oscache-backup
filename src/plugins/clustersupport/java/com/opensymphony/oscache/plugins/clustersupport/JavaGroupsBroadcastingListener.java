@@ -132,13 +132,8 @@ public class JavaGroupsBroadcastingListener extends AbstractBroadcastingListener
             log.info("JavaGroups shutting down...");
         }
 
-        // It's possible that the notification bus is null (CACHE-154)
-        if (bus != null) {
-            bus.stop();
-            bus = null;
-        } else {
-            log.warn("Notification bus wasn't initialized or finialize was invoked before!");
-        }
+        bus.stop();
+        bus = null;
 
         if (log.isInfoEnabled()) {
             log.info("JavaGroups shutdown complete.");

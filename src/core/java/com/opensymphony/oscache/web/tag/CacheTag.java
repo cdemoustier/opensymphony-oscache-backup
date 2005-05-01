@@ -415,18 +415,6 @@ public class CacheTag extends BodyTagSupport implements TryCatchFinally {
         if (cancelUpdateRequired && (actualKey != null)) {
             cache.cancelUpdate(actualKey);
         }
-        
-        // reset all states, CACHE-144
-        groups = null;
-        scope = PageContext.APPLICATION_SCOPE;
-        cron = null;
-        key = null;
-        language = null;
-        refreshPolicyClass = null;
-        refreshPolicyParam = null;
-        time = DEFAULT_TIMEOUT;
-        refresh = false;
-        mode = 0;
     }
 
     /**
