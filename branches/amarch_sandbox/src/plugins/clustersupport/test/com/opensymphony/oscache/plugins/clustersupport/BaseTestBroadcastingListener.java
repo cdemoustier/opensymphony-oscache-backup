@@ -19,30 +19,30 @@ import java.util.Date;
  */
 public abstract class BaseTestBroadcastingListener extends TestCase {
     /**
-     * The persistance listener used for the tests
-     */
+ * The persistance listener used for the tests
+ */
     protected static AbstractBroadcastingListener listener = null;
 
     /**
-     * A cache instance to use for the tests
-     */
+ * A cache instance to use for the tests
+ */
     protected static Cache cache = null;
 
     /**
-     * The number of tests in this class. This is used to keep
-     * track of how many tests remain; once we reach zero we shut
-     * down the broadcasting listener.
-     */
+ * The number of tests in this class. This is used to keep
+ * track of how many tests remain; once we reach zero we shut
+ * down the broadcasting listener.
+ */
     int testsRemaining = 0;
 
     /**
-     * Cache group
-     */
+ * Cache group
+ */
     private final String GROUP = "test group";
 
     /**
-     * Object key
-     */
+ * Object key
+ */
     private final String KEY = "Test clustersupport persistence listener key";
 
     public BaseTestBroadcastingListener(String str) {
@@ -50,9 +50,9 @@ public abstract class BaseTestBroadcastingListener extends TestCase {
     }
 
     /**
-     * Tests the listener by causing the cache to fire off all its
-     * events
-     */
+ * Tests the listener by causing the cache to fire off all its
+ * events
+ */
     public void testListener() {
         CacheEntry entry = new CacheEntry(KEY, null);
 
@@ -66,9 +66,9 @@ public abstract class BaseTestBroadcastingListener extends TestCase {
     }
 
     /**
-     * This method is invoked before each testXXXX methods of the
-     * class. It set up the broadcasting listener required for each test.
-     */
+ * This method is invoked before each testXXXX methods of the
+ * class. It set up the broadcasting listener required for each test.
+ */
     public void setUp() {
         // At first invocation, create a listener
         if (listener == null) {
@@ -77,7 +77,7 @@ public abstract class BaseTestBroadcastingListener extends TestCase {
             listener = getListener();
             assertNotNull(listener);
 
-            cache = new Cache(true, false, false);
+            cache = new CacheImpl(true, false, false);
             assertNotNull(cache);
 
             try {
@@ -91,8 +91,8 @@ public abstract class BaseTestBroadcastingListener extends TestCase {
     }
 
     /**
-     * Once all the tests are complete this will shut down the broadcasting listener.
-     */
+ * Once all the tests are complete this will shut down the broadcasting listener.
+ */
     protected void tearDown() throws Exception {
         if (--testsRemaining == 0) {
             try {
@@ -105,14 +105,14 @@ public abstract class BaseTestBroadcastingListener extends TestCase {
     }
 
     /**
-     * Child classes implement this to return the broadcasting listener instance
-     * that will be tested.
-     */
+ * Child classes implement this to return the broadcasting listener instance
+ * that will be tested.
+ */
     abstract AbstractBroadcastingListener getListener();
 
     /**
-     * Child classes implement this to return the configuration for their listener
-     * @return
-     */
+ * Child classes implement this to return the configuration for their listener
+ * @return
+ */
     abstract Config getConfig();
 }

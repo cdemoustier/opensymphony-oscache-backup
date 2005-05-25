@@ -6,6 +6,7 @@ package com.opensymphony.oscache.extra;
 
 import com.opensymphony.oscache.base.Cache;
 import com.opensymphony.oscache.base.CacheEntry;
+import com.opensymphony.oscache.base.CacheImpl;
 import com.opensymphony.oscache.base.events.CacheEntryEvent;
 import com.opensymphony.oscache.base.events.CacheGroupEvent;
 import com.opensymphony.oscache.base.events.CachePatternEvent;
@@ -24,36 +25,36 @@ import junit.framework.TestSuite;
  */
 public class TestCacheEntryEventListenerImpl extends TestCase {
     /**
-     * Key used for this test
-     */
+ * Key used for this test
+ */
     private final String KEY = "Test Cache Entry Event Listener Impl Key";
 
     /**
-     * Constructor
-     * <p>
-     * @param str The test name (required by JUnit)
-     */
+ * Constructor
+ * <p>
+ * @param str The test name (required by JUnit)
+ */
     public TestCacheEntryEventListenerImpl(String str) {
         super(str);
     }
 
     /**
-     * This methods returns the name of this test class to JUnit
-     * <p>
-     * @return The name of this class
-     */
+ * This methods returns the name of this test class to JUnit
+ * <p>
+ * @return The name of this class
+ */
     public static Test suite() {
         return new TestSuite(TestCacheEntryEventListenerImpl.class);
     }
 
     /**
-     * Test the basic implementation
-     */
+ * Test the basic implementation
+ */
     public void testCacheEntryEventListenerImpl() {
         // Construct the objects required for the tests
         CacheEntry entry = new CacheEntry(KEY);
         GeneralCacheAdministrator admin = new GeneralCacheAdministrator();
-        Cache cache = new Cache(admin.isMemoryCaching(), admin.isUnlimitedDiskCache(), admin.isOverflowPersistence());
+        Cache cache = new CacheImpl(admin.isMemoryCaching(), admin.isUnlimitedDiskCache(), admin.isOverflowPersistence());
         CacheEntryEvent event = new CacheEntryEvent(cache, entry, null);
         CacheEntryEventListenerImpl listener = new CacheEntryEventListenerImpl();
 

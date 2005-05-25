@@ -359,7 +359,7 @@ public abstract class AbstractCacheAdministrator implements java.io.Serializable
             return;
         }
 
-        Object[] listeners = cache.listenerList.getListenerList();
+        Object[] listeners = cache.getListenerList().getListenerList();
 
         for (int i = listeners.length - 2; i >= 0; i -= 2) {
             if (listeners[i + 1] instanceof LifecycleAware) {

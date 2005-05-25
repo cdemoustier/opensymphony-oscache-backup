@@ -6,6 +6,7 @@ package com.opensymphony.oscache.web;
 
 import com.opensymphony.oscache.base.Cache;
 import com.opensymphony.oscache.base.CacheEntry;
+import com.opensymphony.oscache.base.CacheImpl;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -25,25 +26,25 @@ import javax.servlet.jsp.PageContext;
  * @author <a href="mailto:fbeauregard@pyxis-tech.com">Francois Beauregard</a>
  * @version        $Revision$
  */
-public final class ServletCache extends Cache implements HttpSessionBindingListener, Serializable {
+public final class ServletCache extends CacheImpl implements HttpSessionBindingListener, Serializable {
     private static transient final Log log = LogFactory.getLog(ServletCache.class);
 
     /**
-     * The admin for this cache
-     */
+ * The admin for this cache
+ */
     private ServletCacheAdministrator admin;
 
     /**
-     * The scope of that cache.
-     */
+ * The scope of that cache.
+ */
     private int scope;
 
     /**
-     * Create a new ServletCache
-     *
-     * @param admin The ServletCacheAdministrator to administer this ServletCache.
-     * @param scope The scope of all entries in this hashmap
-     */
+ * Create a new ServletCache
+ *
+ * @param admin The ServletCacheAdministrator to administer this ServletCache.
+ * @param scope The scope of all entries in this hashmap
+ */
     public ServletCache(ServletCacheAdministrator admin, int scope) {
         super(admin.isMemoryCaching(), admin.isUnlimitedDiskCache(), admin.isOverflowPersistence());
         setScope(scope);
@@ -51,13 +52,13 @@ public final class ServletCache extends Cache implements HttpSessionBindingListe
     }
 
     /**
-     * Create a new Cache
-     *
-     * @param admin The CacheAdministrator to administer this Cache.
-     * @param algorithmClass The class that implement an algorithm
-     * @param limit The maximum cache size in number of entries
-     * @param scope The cache scope
-     */
+ * Create a new Cache
+ *
+ * @param admin The CacheAdministrator to administer this Cache.
+ * @param algorithmClass The class that implement an algorithm
+ * @param limit The maximum cache size in number of entries
+ * @param scope The cache scope
+ */
     public ServletCache(ServletCacheAdministrator admin, String algorithmClass, int limit, int scope) {
         super(admin.isMemoryCaching(), admin.isUnlimitedDiskCache(), admin.isOverflowPersistence(), admin.isBlocking(), algorithmClass, limit);
         setScope(scope);
@@ -65,10 +66,10 @@ public final class ServletCache extends Cache implements HttpSessionBindingListe
     }
 
     /**
-     * Get the cache scope
-     *
-     * @return The cache scope
-     */
+ * Get the cache scope
+ *
+ * @return The cache scope
+ */
     public int getScope() {
         return scope;
     }
@@ -78,19 +79,19 @@ public final class ServletCache extends Cache implements HttpSessionBindingListe
     }
 
     /**
-     * When this Cache is bound to the session, do nothing.
-     *
-     * @param event The SessionBindingEvent.
-     */
+ * When this Cache is bound to the session, do nothing.
+ *
+ * @param event The SessionBindingEvent.
+ */
     public void valueBound(HttpSessionBindingEvent event) {
     }
 
     /**
-     * When the users's session ends, all listeners are finalized and the
-     * session cache directory is deleted from disk.
-     *
-     * @param event The event that triggered this unbinding.
-     */
+ * When the users's session ends, all listeners are finalized and the
+ * session cache directory is deleted from disk.
+ *
+ * @param event The event that triggered this unbinding.
+ */
     public void valueUnbound(HttpSessionBindingEvent event) {
         if (log.isInfoEnabled()) {
             log.info("[Cache] Unbound from session " + event.getSession().getId() + " using name " + event.getName());
@@ -101,17 +102,17 @@ public final class ServletCache extends Cache implements HttpSessionBindingListe
     }
 
     /**
-     * Indicates whether or not the cache entry is stale. This overrides the
-     * {@link Cache#isStale(CacheEntry, int, String)} method to take into account any
-     * flushing that may have been applied to the scope that this cache belongs to.
-     *
-     * @param cacheEntry     The cache entry to test the freshness of.
-     * @param refreshPeriod  The maximum allowable age of the entry, in seconds.
-     * @param cronExpiry     A cron expression that defines fixed expiry dates and/or
-     * times for this cache entry.
-     *
-     * @return <code>true</code> if the entry is stale, <code>false</code> otherwise.
-     */
+ * Indicates whether or not the cache entry is stale. This overrides the
+ * {@link Cache#isStale(CacheEntry, int, String)} method to take into account any
+ * flushing that may have been applied to the scope that this cache belongs to.
+ *
+ * @param cacheEntry     The cache entry to test the freshness of.
+ * @param refreshPeriod  The maximum allowable age of the entry, in seconds.
+ * @param cronExpiry     A cron expression that defines fixed expiry dates and/or
+ * times for this cache entry.
+ *
+ * @return <code>true</code> if the entry is stale, <code>false</code> otherwise.
+ */
     protected boolean isStale(CacheEntry cacheEntry, int refreshPeriod, String cronExpiry) {
         return super.isStale(cacheEntry, refreshPeriod, cronExpiry) || admin.isScopeFlushed(cacheEntry, scope);
     }

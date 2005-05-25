@@ -37,7 +37,7 @@ public class DiskPersistenceListener extends AbstractDiskPersistenceListener {
         for (int i = 0; i < chars.length; i++) {
             char c = chars[i];
             int pos = CHARS_TO_CONVERT.indexOf(c);
- 
+
             if (pos >= 0) {
                 sb.append('_');
                 sb.append(i);

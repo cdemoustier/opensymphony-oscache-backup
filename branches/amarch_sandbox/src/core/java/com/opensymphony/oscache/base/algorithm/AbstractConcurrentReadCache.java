@@ -375,7 +375,7 @@ public abstract class AbstractConcurrentReadCache extends AbstractMap implements
         if (groupEntries == null) {
             // Not in the map, try the persistence layer
             groupEntries = persistRetrieveGroup(groupName);
-        } 
+        }
 
         return groupEntries;
     }
@@ -940,20 +940,20 @@ public abstract class AbstractConcurrentReadCache extends AbstractMap implements
                     };
         }
     }
-    
+
     /**
      * Get ref to group.
      * CACHE-127 Synchronized copying of the group entry set since
-     * the new HashSet(Collection c) constructor uses the iterator.  
-     * This may slow things down but it is better than a 
+     * the new HashSet(Collection c) constructor uses the iterator.
+     * This may slow things down but it is better than a
      * ConcurrentModificationException.  We might have to revisit the
      * code if performance is too adversely impacted.
      **/
     protected synchronized final Set getGroupForReading(String groupName) {
-    	Set group = (Set) getGroupsForReading().get(groupName);           
+        Set group = (Set) getGroupsForReading().get(groupName);
         return new HashSet(group);
     }
-    
+
     /**
      * Get ref to groups.
      * The reference and the cells it
