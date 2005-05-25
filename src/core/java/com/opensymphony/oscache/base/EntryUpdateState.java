@@ -103,7 +103,7 @@ public class EntryUpdateState {
      * to this method must be synchronized on the EntryUpdateState instance.
      */
     public void startUpdate() {
-        if ((state != NOT_YET_UPDATING) && (state != UPDATE_CANCELLED)) {
+        if ((state != NOT_YET_UPDATING) && (state != UPDATE_CANCELLED) && (state != UPDATE_COMPLETE)) {
             throw new IllegalStateException("Cannot begin cache update - current state (" + state + ") is not NOT_YET_UPDATING or UPDATE_CANCELLED");
         }
 

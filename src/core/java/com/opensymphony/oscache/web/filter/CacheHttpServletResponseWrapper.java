@@ -54,7 +54,7 @@ public class CacheHttpServletResponseWrapper extends HttpServletResponseWrapper 
         super(response);
         result = new ResponseContent();
         this.fragment = fragment;
-        
+
         // setting a default last modified value based on object creation and remove the millis
         long current = System.currentTimeMillis() / 1000;
         result.setLastModified(current * 1000);
@@ -283,6 +283,7 @@ public class CacheHttpServletResponseWrapper extends HttpServletResponseWrapper 
     public PrintWriter getWriter() throws IOException {
         if (cachedWriter == null) {
             String encoding = getCharacterEncoding();
+
             if (encoding != null) {
                 cachedWriter = new PrintWriter(new OutputStreamWriter(getOutputStream(), encoding));
             } else { // using the default character encoding

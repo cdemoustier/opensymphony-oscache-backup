@@ -32,7 +32,7 @@ public class ResponseContent implements Serializable {
     public String getContentType() {
         return contentType;
     }
-    
+
     /**
      * Set the content type. We capture this so that when we serve this
      * data from cache, we can set the correct content type on the response.
@@ -130,7 +130,7 @@ public class ResponseContent implements Serializable {
         if (contentType != null) {
             response.setContentType(contentType);
         }
-        
+
         // Don't support gzip compression if the content is a fragment of a page
         if (fragment) {
             acceptsGZip = false;
@@ -176,10 +176,10 @@ public class ResponseContent implements Serializable {
             response.setContentLength(content.length);
             out.write(content);
         }
+
         out.flush();
     }
-    
-    
+
     /**
      * @return true if the content is GZIP compressed
      */

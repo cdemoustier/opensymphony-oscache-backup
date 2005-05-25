@@ -42,7 +42,7 @@ public class CacheFilter implements Filter {
     public static final int FRAGMENT_AUTODETECT = -1;
     public static final int FRAGMENT_NO = 0;
     public static final int FRAGMENT_YES = 1;
-    
+
     // No cache options
     public static final int NOCACHE_OFF = 0;
     public static final int NOCACHE_SESSION_ID_IN_URL = 1;
@@ -52,7 +52,7 @@ public class CacheFilter implements Filter {
 
     // the policy for the expires header
     private ExpiresRefreshPolicy expiresRefreshPolicy;
-    
+
     // the logger
     private final Log log = LogFactory.getLog(this.getClass());
 
@@ -61,8 +61,8 @@ public class CacheFilter implements Filter {
     private ServletCacheAdministrator admin = null;
     private int cacheScope = PageContext.APPLICATION_SCOPE; // filter scope - default is APPLICATION
     private int fragment = FRAGMENT_AUTODETECT; // defines if this filter handles fragments of a page - default is auto detect
-    private int time = 60 * 60; // time before cache should be refreshed - default one hour (in seconds)
     private int nocache = NOCACHE_OFF; // defines special no cache option for the requests - default is off
+    private int time = 60 * 60; // time before cache should be refreshed - default one hour (in seconds)
 
     /**
      * Filter clean-up
@@ -93,6 +93,7 @@ public class CacheFilter implements Filter {
             chain.doFilter(request, response);
             return;
         }
+
         request.setAttribute(REQUEST_FILTERED, Boolean.TRUE);
 
         HttpServletRequest httpRequest = (HttpServletRequest) request;
@@ -105,6 +106,7 @@ public class CacheFilter implements Filter {
 
         // avoid useless session creation for application scope pages (CACHE-129)
         Cache cache;
+
         if (cacheScope == PageContext.SESSION_SCOPE) {
             cache = admin.getSessionScopeCache(httpRequest.getSession(true));
         } else {
@@ -119,20 +121,20 @@ public class CacheFilter implements Filter {
             }
 
             boolean acceptsGZip = false;
+
             if (!fragmentRequest) {
                 long clientLastModified = httpRequest.getDateHeader(HEADER_IF_MODIFIED_SINCE); // will return -1 if no header...
 
-                // only reply with SC_NOT_MODIFIED
-                // if the client has already the newest page and the reponse isn't a fragment in a page 
                 if ((clientLastModified != -1) && (clientLastModified >= respContent.getLastModified())) {
                     ((HttpServletResponse) response).setStatus(HttpServletResponse.SC_NOT_MODIFIED);
                     return;
                 }
-                
-                acceptsGZip = respContent.isContentGZiped() && acceptsGZipEncoding(httpRequest); 
+
+                acceptsGZip = respContent.isContentGZiped() && acceptsGZipEncoding(httpRequest);
             }
 
             respContent.writeTo(response, fragmentRequest, acceptsGZip);
+
             // acceptsGZip is used for performance reasons above; use the following line for CACHE-49
             // respContent.writeTo(response, fragmentRequest, acceptsGZipEncoding(httpRequest));
         } catch (NeedsRefreshException nre) {
@@ -191,7 +193,7 @@ public class CacheFilter implements Filter {
         } catch (Exception e) {
             log.info("Could not get init parameter 'time', defaulting to one hour.");
         }
-        
+
         // setting the refresh period for this cache filter
         expiresRefreshPolicy = new ExpiresRefreshPolicy(time);
 
@@ -221,19 +223,18 @@ public class CacheFilter implements Filter {
         } catch (Exception e) {
             log.info("Could not get init parameter 'fragment', defaulting to 'auto detect'.");
         }
-        
+
         try {
             String nocacheString = config.getInitParameter("nocache");
-            
+
             if (nocacheString.equals("off")) {
                 nocache = NOCACHE_OFF;
             } else if (nocacheString.equalsIgnoreCase("sessionIdInURL")) {
                 nocache = NOCACHE_SESSION_ID_IN_URL;
-            } 
+            }
         } catch (Exception e) {
             log.info("Could not get init parameter 'nocache', defaulting to 'off'.");
         }
-
     }
 
     /**
@@ -282,7 +283,7 @@ public class CacheFilter implements Filter {
     /**
      * isCacheable is a method allowing subclass to decide if a request is
      * cachable or not.
-     * 
+     *
      * @param request The servlet request
      * @return Returns a boolean indicating if the request can be cached or not.
      */
@@ -292,6 +293,7 @@ public class CacheFilter implements Filter {
 
         if (cachable) {
             HttpServletRequest requestHttp = (HttpServletRequest) request;
+
             if (nocache == NOCACHE_SESSION_ID_IN_URL) { // don't cache requests if session id is in URL
                 cachable = !requestHttp.isRequestedSessionIdFromURL();
             }
@@ -300,14 +302,14 @@ public class CacheFilter implements Filter {
         if (log.isDebugEnabled()) {
             log.debug("<cache>: the request " + ((cachable) ? "is" : "is not") + " cachable.");
         }
-        
+
         return cachable;
     }
-    
+
     /**
      * isCacheable is a method allowing subclass to decide if a response is
      * cachable or not.
-     * 
+     *
      * @param cacheResponse The HTTP servlet response
      * @return Returns a boolean indicating if the response can be cached or not.
      */
@@ -319,18 +321,18 @@ public class CacheFilter implements Filter {
         if (log.isDebugEnabled()) {
             log.debug("<cache>: the response " + ((cachable) ? "is" : "is not") + " cachable.");
         }
-        
+
         return cachable;
     }
 
     /**
      * Check if the client browser support gzip compression.
-     * 
+     *
      * @param request the http request
      * @return true if client browser supports GZIP
      */
     protected boolean acceptsGZipEncoding(HttpServletRequest request) {
         String acceptEncoding = request.getHeader(HEADER_ACCEPT_ENCODING);
-        return  (acceptEncoding != null) && (acceptEncoding.indexOf("gzip") != -1);
+        return (acceptEncoding != null) && (acceptEncoding.indexOf("gzip") != -1);
     }
 }

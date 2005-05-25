@@ -5,6 +5,7 @@
 package com.opensymphony.oscache.plugins.clustersupport;
 
 import com.opensymphony.oscache.base.Cache;
+import com.opensymphony.oscache.base.CacheImpl;
 import com.opensymphony.oscache.base.Config;
 import com.opensymphony.oscache.base.FinalizationException;
 import com.opensymphony.oscache.base.InitializationException;
@@ -45,7 +46,7 @@ public final class ListenForClusterTests {
     private void initListeners() {
         BaseTestBroadcastingListener testcase = null;
         AbstractBroadcastingListener listener;
-        Cache cache = new Cache(true, false, false);
+        Cache cache = new CacheImpl(true, false, false);
 
         // Add the JavaGroups listener
         try {
@@ -75,8 +76,8 @@ public final class ListenForClusterTests {
     }
 
     /**
-     * Starts up the cluster listeners.
-     */
+ * Starts up the cluster listeners.
+ */
     public static void main(String[] args) {
         ListenForClusterTests listen = new ListenForClusterTests();
 
@@ -86,8 +87,8 @@ public final class ListenForClusterTests {
     }
 
     /**
-     * Inner class that handles the shutdown event
-     */
+ * Inner class that handles the shutdown event
+ */
     class ShutdownHookThread extends Thread {
         protected String message;
 
@@ -96,9 +97,9 @@ public final class ListenForClusterTests {
         }
 
         /**
-         * This is executed when the application is forcibly shutdown (via
-         * CTRL-C etc). Any configured listeners are shut down here.
-         */
+ * This is executed when the application is forcibly shutdown (via
+ * CTRL-C etc). Any configured listeners are shut down here.
+ */
         public void run() {
             System.out.println("Shutting down the cluster listeners...");
 

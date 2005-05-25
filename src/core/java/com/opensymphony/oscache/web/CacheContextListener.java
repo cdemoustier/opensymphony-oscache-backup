@@ -13,7 +13,6 @@ import javax.servlet.ServletContextListener;
  * @author <a href="&#109;a&#105;&#108;&#116;&#111;:chris&#64;swebtec.&#99;&#111;&#109;">Chris Miller</a>
  */
 public class CacheContextListener implements ServletContextListener {
-
     /**
      * This notification occurs when the webapp is ready to process requests.<p>
      * We use this hook to cleanly start up the {@link ServletCacheAdministrator}
@@ -36,5 +35,4 @@ public class CacheContextListener implements ServletContextListener {
         ServletContext context = servletContextEvent.getServletContext();
         ServletCacheAdministrator.destroyInstance(context);
     }
-
 }

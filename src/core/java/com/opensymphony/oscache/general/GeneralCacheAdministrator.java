@@ -107,7 +107,7 @@ public class GeneralCacheAdministrator extends AbstractCacheAdministrator {
     public Cache getCache() {
         return applicationCache;
     }
-    
+
     /**
      * Remove an object from the cache
      *
@@ -116,6 +116,7 @@ public class GeneralCacheAdministrator extends AbstractCacheAdministrator {
     public void removeEntry(String key) {
         getCache().removeEntry(key);
     }
+
     /**
      * Get an object from the cache
      *
@@ -300,7 +301,7 @@ public class GeneralCacheAdministrator extends AbstractCacheAdministrator {
     private void createCache() {
         log.info("Creating new cache");
 
-        applicationCache = new Cache(isMemoryCaching(), isUnlimitedDiskCache(), isOverflowPersistence(), isBlocking(), algorithmClass, cacheCapacity);
+        applicationCache = new CacheImpl(isMemoryCaching(), isUnlimitedDiskCache(), isOverflowPersistence(), isBlocking(), algorithmClass, cacheCapacity);
 
         configureStandardListeners(applicationCache);
     }

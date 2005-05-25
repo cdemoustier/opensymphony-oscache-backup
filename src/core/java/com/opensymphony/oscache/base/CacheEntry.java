@@ -25,87 +25,88 @@ import java.util.Set;
  */
 public class CacheEntry implements Serializable {
     /**
-     * Default initialization value for the creation time and the last
-     * update time. This is a placeholder that indicates the value has
-     * not been set yet.
-     */
+ * Default initialization value for the creation time and the last
+ * update time. This is a placeholder that indicates the value has
+ * not been set yet.
+ */
     private static final byte NOT_YET = -1;
 
     /**
-     * Specifying this as the refresh period for the
-     * {@link #needsRefresh(int)} method will ensure
-     * an entry does not become stale until it is
-     * either explicitly flushed or a custom refresh
-     * policy causes the entry to expire.
-     */
+ * Specifying this as the refresh period for the
+ * {@link #needsRefresh(int)} method will ensure
+ * an entry does not become stale until it is
+ * either explicitly flushed or a custom refresh
+ * policy causes the entry to expire.
+ */
     public static final int INDEFINITE_EXPIRY = -1;
 
     /**
-     * The entry refresh policy object to use for this cache entry. This is optional.
-     */
+ * The entry refresh policy object to use for this cache entry. This is optional.
+ */
     private EntryRefreshPolicy policy = null;
+    private final EntryUpdateState updateState;
 
     /**
-     * The actual content that is being cached. Wherever possible this object
-     * should be serializable. This allows <code>PersistenceListener</code>s
-     * to serialize the cache entries to disk or database.
-     */
+ * The actual content that is being cached. Wherever possible this object
+ * should be serializable. This allows <code>PersistenceListener</code>s
+ * to serialize the cache entries to disk or database.
+ */
     private Object content = null;
 
     /**
-     * The set of cache groups that this cache entry belongs to, if any.
-     */
+ * The set of cache groups that this cache entry belongs to, if any.
+ */
     private Set groups = null;
 
     /**
-     *  The unique cache key for this entry
-     */
+ *  The unique cache key for this entry
+ */
     private String key;
 
     /**
-     * <code>true</code> if this entry was flushed
-     */
+ * <code>true</code> if this entry was flushed
+ */
     private boolean wasFlushed = false;
 
     /**
-     * The time this entry was created.
-     */
+ * The time this entry was created.
+ */
     private long created = NOT_YET;
 
     /**
-     * The time this emtry was last updated.
-     */
+ * The time this emtry was last updated.
+ */
     private long lastUpdate = NOT_YET;
 
     /**
-     * Construct a new CacheEntry using the key provided.
-     *
-     * @param key    The key of this CacheEntry
-     */
+ * Construct a new CacheEntry using the key provided.
+ *
+ * @param key    The key of this CacheEntry
+ */
     public CacheEntry(String key) {
         this(key, null);
     }
 
     /**
-     * Construct a CacheEntry.
-     *
-     * @param key      The unique key for this <code>CacheEntry</code>.
-     * @param policy   Object that implements refresh policy logic. This parameter
-     * is optional.
-     */
+ * Construct a CacheEntry.
+ *
+ * @param key      The unique key for this <code>CacheEntry</code>.
+ * @param policy   Object that implements refresh policy logic. This parameter
+ * is optional.
+ */
     public CacheEntry(String key, EntryRefreshPolicy policy) {
         this(key, policy, null);
     }
 
     /**
-     * Construct a CacheEntry.
-     *
-     * @param key     The unique key for this <code>CacheEntry</code>.
-     * @param policy  The object that implements the refresh policy logic. This
-     * parameter is optional.
-     * @param groups  The groups that this <code>CacheEntry</code> belongs to. This
-     * parameter is optional.
-     */
+ * Construct a CacheEntry.
+ *
+ * @param key     The unique key for this <code>CacheEntry</code>.
+ * @param policy  The object that implements the refresh policy logic. This
+ * parameter is optional.
+ * @param groups  The groups that this <code>CacheEntry</code> belongs to. This
+ * parameter is optional.
+ */
     public CacheEntry(String key, EntryRefreshPolicy policy, String[] groups) {
         this.key = key;
 
@@ -119,17 +120,18 @@ public class CacheEntry implements Serializable {
 
         this.policy = policy;
         this.created = System.currentTimeMillis();
+        this.updateState = new EntryUpdateState();
     }
 
     /**
-     * Sets the actual content that is being cached. Wherever possible this
-     * object should be <code>Serializable</code>, however it is not an
-     * absolute requirement when using a memory-only cache. Being <code>Serializable</code>
-     * allows <code>PersistenceListener</code>s to serialize the cache entries to disk
-     * or database.
-     *
-     * @param value The content to store in this CacheEntry.
-     */
+ * Sets the actual content that is being cached. Wherever possible this
+ * object should be <code>Serializable</code>, however it is not an
+ * absolute requirement when using a memory-only cache. Being <code>Serializable</code>
+ * allows <code>PersistenceListener</code>s to serialize the cache entries to disk
+ * or database.
+ *
+ * @param value The content to store in this CacheEntry.
+ */
     public synchronized void setContent(Object value) {
         content = value;
         lastUpdate = System.currentTimeMillis();
@@ -137,28 +139,28 @@ public class CacheEntry implements Serializable {
     }
 
     /**
-     * Get the cached content from this CacheEntry.
-     *
-     * @return The content of this CacheEntry.
-     */
+ * Get the cached content from this CacheEntry.
+ *
+ * @return The content of this CacheEntry.
+ */
     public Object getContent() {
         return content;
     }
 
     /**
-     * Get the date this CacheEntry was created.
-     *
-     * @return The date this CacheEntry was created.
-     */
+ * Get the date this CacheEntry was created.
+ *
+ * @return The date this CacheEntry was created.
+ */
     public long getCreated() {
         return created;
     }
 
     /**
-     * Sets the cache groups for this entry.
-     *
-     * @param groups A string array containing all the group names
-     */
+ * Sets the cache groups for this entry.
+ *
+ * @param groups A string array containing all the group names
+ */
     public synchronized void setGroups(String[] groups) {
         if (groups != null) {
             this.groups = new HashSet(groups.length);
@@ -174,10 +176,10 @@ public class CacheEntry implements Serializable {
     }
 
     /**
-     * Sets the cache groups for this entry
-     *
-     * @param groups A collection containing all the group names
-     */
+ * Sets the cache groups for this entry
+ *
+ * @param groups A collection containing all the group names
+ */
     public void setGroups(Collection groups) {
         if (groups != null) {
             this.groups = new HashSet(groups);
@@ -189,62 +191,62 @@ public class CacheEntry implements Serializable {
     }
 
     /**
-     * Gets the cache groups that this cache entry belongs to.
-     * These returned groups should be treated as immuatable.
-     *
-     * @return A set containing the names of all the groups that
-     * this cache entry belongs to.
-     */
+ * Gets the cache groups that this cache entry belongs to.
+ * These returned groups should be treated as immuatable.
+ *
+ * @return A set containing the names of all the groups that
+ * this cache entry belongs to.
+ */
     public Set getGroups() {
         return groups;
     }
 
     /**
-     * Get the key of this CacheEntry
-     *
-     * @return The key of this CacheEntry
-     */
+ * Get the key of this CacheEntry
+ *
+ * @return The key of this CacheEntry
+ */
     public String getKey() {
         return key;
     }
 
     /**
-     * Set the date this CacheEntry was last updated.
-     *
-     * @param update The time (in milliseconds) this CacheEntry was last updated.
-     */
+ * Set the date this CacheEntry was last updated.
+ *
+ * @param update The time (in milliseconds) this CacheEntry was last updated.
+ */
     public void setLastUpdate(long update) {
         lastUpdate = update;
     }
 
     /**
-     * Get the date this CacheEntry was last updated.
-     *
-     * @return The date this CacheEntry was last updated.
-     */
+ * Get the date this CacheEntry was last updated.
+ *
+ * @return The date this CacheEntry was last updated.
+ */
     public long getLastUpdate() {
         return lastUpdate;
     }
 
     /**
-     * Indicates whether this CacheEntry is a freshly created one and
-     * has not yet been assigned content or placed in a cache.
-     *
-     * @return <code>true</code> if this entry is newly created
-     */
+ * Indicates whether this CacheEntry is a freshly created one and
+ * has not yet been assigned content or placed in a cache.
+ *
+ * @return <code>true</code> if this entry is newly created
+ */
     public boolean isNew() {
         return lastUpdate == NOT_YET;
     }
 
     /**
-     * Get the size of the cache entry in bytes (roughly).<p>
-     *
-     * Currently this method only handles <code>String<code>s and
-     * {@link ResponseContent} objects.
-     *
-     * @return The approximate size of the entry in bytes, or -1 if the
-     * size could not be estimated.
-     */
+ * Get the size of the cache entry in bytes (roughly).<p>
+ *
+ * Currently this method only handles <code>String<code>s and
+ * {@link ResponseContent} objects.
+ *
+ * @return The approximate size of the entry in bytes, or -1 if the
+ * size could not be estimated.
+ */
     public int getSize() {
         // a char is two bytes
         int size = (key.length() * 2) + 4;
@@ -262,26 +264,26 @@ public class CacheEntry implements Serializable {
     }
 
     /**
-     * Flush the entry from cache.
-     * note that flushing the cache doesn't actually remove the cache contents
-     * it just tells the CacheEntry that it needs a refresh next time it is asked
-     * this is so that the content is still there for a <usecached />.
-     */
+ * Flush the entry from cache.
+ * note that flushing the cache doesn't actually remove the cache contents
+ * it just tells the CacheEntry that it needs a refresh next time it is asked
+ * this is so that the content is still there for a <usecached />.
+ */
     public void flush() {
         wasFlushed = true;
     }
 
     /**
-     * Check if this CacheEntry needs to be refreshed.
-     *
-     * @param refreshPeriod The period of refresh (in seconds). Passing in
-     * {@link #INDEFINITE_EXPIRY} will result in the content never becoming
-     * stale unless it is explicitly flushed, or expired by a custom
-     * {@link EntryRefreshPolicy}. Passing in 0 will always result in a
-     * refresh being required.
-     *
-     * @return Whether or not this CacheEntry needs refreshing.
-     */
+ * Check if this CacheEntry needs to be refreshed.
+ *
+ * @param refreshPeriod The period of refresh (in seconds). Passing in
+ * {@link #INDEFINITE_EXPIRY} will result in the content never becoming
+ * stale unless it is explicitly flushed, or expired by a custom
+ * {@link EntryRefreshPolicy}. Passing in 0 will always result in a
+ * refresh being required.
+ *
+ * @return Whether or not this CacheEntry needs refreshing.
+ */
     public boolean needsRefresh(int refreshPeriod) {
         boolean needsRefresh;
 
@@ -307,5 +309,9 @@ public class CacheEntry implements Serializable {
         }
 
         return needsRefresh;
+    }
+
+    public EntryUpdateState getUpdateState() {
+        return updateState;
     }
 }
