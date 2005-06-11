@@ -139,7 +139,7 @@ public class ResponseContent implements Serializable {
         // Don't add in the Last-Modified header in a fragment of a page
         if ((!fragment) && (lastModified != -1) && (response instanceof HttpServletResponse)) {
             ((HttpServletResponse) response).setDateHeader(CacheFilter.HEADER_LAST_MODIFIED, lastModified);
-        }
+        } // FIXME maybe remove header if it exists
 
         if (locale != null) {
             response.setLocale(locale);
@@ -149,7 +149,7 @@ public class ResponseContent implements Serializable {
 
         if (isContentGZiped()) {
             if (acceptsGZip) {
-                ((HttpServletResponse) response).addHeader("Content-Encoding", "gzip");
+                ((HttpServletResponse) response).addHeader(CacheFilter.HEADER_CONTENT_ENCODING, "gzip");
                 response.setContentLength(content.length);
                 out.write(content);
             } else {
