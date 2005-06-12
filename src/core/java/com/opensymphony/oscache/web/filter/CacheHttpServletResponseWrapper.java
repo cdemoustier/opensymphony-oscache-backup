@@ -42,15 +42,17 @@ public class CacheHttpServletResponseWrapper extends HttpServletResponseWrapper 
      * @param response The servlet response
      */
     public CacheHttpServletResponseWrapper(HttpServletResponse response) {
-        this(response, false);
+        this(response, false, Long.MAX_VALUE);
     }
 
     /**
      * Constructor
      *
      * @param response The servlet response
+     * @param fragment true if the repsonse indicates that it is a fragement of a page
+     * @param time the refresh time in millis
      */
-    public CacheHttpServletResponseWrapper(HttpServletResponse response, boolean fragment) {
+    public CacheHttpServletResponseWrapper(HttpServletResponse response, boolean fragment, long time) {
         super(response);
         result = new ResponseContent();
         this.fragment = fragment;
@@ -61,6 +63,9 @@ public class CacheHttpServletResponseWrapper extends HttpServletResponseWrapper 
             long current = System.currentTimeMillis() / 1000;
             result.setLastModified(current * 1000);
             super.setDateHeader(CacheFilter.HEADER_LAST_MODIFIED, result.getLastModified());
+            // setting the expires value
+            result.setExpires(result.getLastModified() + time);
+            super.setDateHeader(CacheFilter.HEADER_EXPIRES, result.getExpires());
         }
     }
 

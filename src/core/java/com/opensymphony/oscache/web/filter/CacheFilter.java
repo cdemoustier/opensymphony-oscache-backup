@@ -143,7 +143,7 @@ public class CacheFilter implements Filter {
                     log.info("<cache>: New cache entry, cache stale or cache scope flushed for " + key);
                 }
 
-                CacheHttpServletResponseWrapper cacheResponse = new CacheHttpServletResponseWrapper((HttpServletResponse) response, fragmentRequest);
+                CacheHttpServletResponseWrapper cacheResponse = new CacheHttpServletResponseWrapper((HttpServletResponse) response, fragmentRequest, time * 1000);
                 chain.doFilter(request, cacheResponse);
                 cacheResponse.flushBuffer();
 
@@ -280,7 +280,7 @@ public class CacheFilter implements Filter {
     }
 
     /**
-     * isCacheable is a method allowing subclass to decide if a request is
+     * isCacheable is a method allowing a subclass to decide if a request is
      * cachable or not.
      * 
      * @param request The servlet request
@@ -292,7 +292,7 @@ public class CacheFilter implements Filter {
 
         if (cachable) {
             HttpServletRequest requestHttp = (HttpServletRequest) request;
-            if (nocache == NOCACHE_SESSION_ID_IN_URL) { // don't cache requests if session id is in URL
+            if (nocache == NOCACHE_SESSION_ID_IN_URL) { // don't cache requests if session id is in the URL
                 cachable = !requestHttp.isRequestedSessionIdFromURL();
             }
         }

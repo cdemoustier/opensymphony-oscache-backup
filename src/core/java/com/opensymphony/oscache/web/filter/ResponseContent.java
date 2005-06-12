@@ -131,15 +131,25 @@ public class ResponseContent implements Serializable {
             response.setContentType(contentType);
         }
         
-        // Don't support gzip compression if the content is a fragment of a page
         if (fragment) {
+            // Don't support gzip compression if the content is a fragment of a page
             acceptsGZip = false;
+        } else {
+            // add special headers for a complete page
+            if (response instanceof HttpServletResponse) {
+                HttpServletResponse httpResponse = (HttpServletResponse) response;
+                
+                // add the last modified header
+                if (lastModified != -1) {
+                    httpResponse.setDateHeader(CacheFilter.HEADER_LAST_MODIFIED, lastModified);
+                }
+                
+                // add the expires header
+                if (expires != Long.MAX_VALUE) {
+                    httpResponse.setDateHeader(CacheFilter.HEADER_EXPIRES, expires);
+                }
+            }
         }
-
-        // Don't add in the Last-Modified header in a fragment of a page
-        if ((!fragment) && (lastModified != -1) && (response instanceof HttpServletResponse)) {
-            ((HttpServletResponse) response).setDateHeader(CacheFilter.HEADER_LAST_MODIFIED, lastModified);
-        } // FIXME maybe remove header if it exists
 
         if (locale != null) {
             response.setLocale(locale);
