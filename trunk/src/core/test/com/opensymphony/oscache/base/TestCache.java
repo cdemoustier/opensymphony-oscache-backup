@@ -4,8 +4,11 @@
  */
 package com.opensymphony.oscache.base;
 
+import java.util.Properties;
+
 import com.opensymphony.oscache.general.GeneralCacheAdministrator;
 
+import junit.framework.Assert;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
@@ -76,6 +79,127 @@ public class TestCache extends TestCase {
         map.flushPattern(null);
     }
 
+    /**
+     * Tests that with a very large amount of keys that added and trigger cache overflows, there is no memory leak
+     * @throws Exception
+     */
+    public void testBug174CacheOverflow() throws Exception {
+        
+        Properties p = new Properties();
+		p.setProperty(AbstractCacheAdministrator.CACHE_ALGORITHM_KEY, "com.opensymphony.oscache.base.algorithm.LRUCache");
+		p.setProperty(AbstractCacheAdministrator.CACHE_CAPACITY_KEY, "100");
+		GeneralCacheAdministrator admin = new GeneralCacheAdministrator(p);
+        
+        int cacheCapacity = 100;
+		int maxAddedCacheEntries = cacheCapacity*10;
+        String baseCacheKey= "baseKey";
+        String cacheValue ="same_value";
+
+		admin.setCacheCapacity(cacheCapacity);
+    	
+        Cache cache = admin.getCache();
+
+        //Add lots of different keys to trigger cache overflow
+		for (int keyIndex=0; keyIndex<maxAddedCacheEntries; keyIndex++) {
+			String key = baseCacheKey + keyIndex;
+			admin.putInCache(key, cacheValue);
+		}
+        
+		Assert.assertEquals("expected cache to be at its full capacity", cacheCapacity , cache.getNbEntries());
+		Assert.assertTrue("expected cache overflows to have cleaned UpdateState instances. got [" + cache.getNbUpdateState() + "] updates while max is [" + cacheCapacity + "]", cache.getNbUpdateState() <= cacheCapacity);
+    }
+
+    /**
+     * Tests that with a very large amount of keys that added and trigger cache overflows, there is no memory leak
+     * @throws Exception
+     */
+    public void testBug174CacheOverflowAndUpdate() throws Exception {
+    	Properties p = new Properties();
+		p.setProperty(AbstractCacheAdministrator.CACHE_ALGORITHM_KEY, "com.opensymphony.oscache.base.algorithm.LRUCache");
+		p.setProperty(AbstractCacheAdministrator.CACHE_CAPACITY_KEY, "100");
+		GeneralCacheAdministrator admin = new GeneralCacheAdministrator(p);
+        
+        int cacheCapacity = 100;
+		int maxAddedCacheEntries = cacheCapacity*10;
+        String baseCacheKey= "baseKey";
+        String cacheValue ="same_value";
+
+		admin.setCacheCapacity(cacheCapacity);
+    	
+        Cache cache = admin.getCache();
+
+        
+        //Add lots of different keys to trigger cache overflow, mixed with updates
+		//FIXME: we may need different threads to enter branches recovering from current update.  
+		for (int keyIndex=0; keyIndex<maxAddedCacheEntries; keyIndex++) {
+			String key = baseCacheKey + keyIndex;
+			admin.putInCache(key, cacheValue);
+			
+			try {
+				admin.getFromCache(key, 0);
+				fail("expected element [" + key + "] not to be present");
+			} catch (NeedsRefreshException e) {
+				admin.putInCache(key, cacheValue);
+			}
+		}
+        
+		Assert.assertEquals("expected cache to be at its full capacity", cacheCapacity , cache.getNbEntries());
+		Assert.assertTrue("expected cache overflows to have cleaned UpdateState instances. Nb states is:" + cache.getNbUpdateState() + " expected max="+ cacheCapacity, cache.getNbUpdateState() <= cacheCapacity);
+    }
+
+    
+    /**
+     * Tests that with a very large amount of keys accessed and cancelled, there is no memory leak
+     * @throws Exception
+     */
+    public void testBug174CacheMissesNonBlocking() throws Exception {
+    	testBug174CacheMisses(false);
+    }
+    
+    /**
+     * Tests that with a very large amount of keys accessed and cancelled, there is no memory leak
+     * @throws Exception
+     */
+    public void testBug174CacheMissesBlocking() throws Exception {
+    	testBug174CacheMisses(true);
+    }
+
+    /**
+     * Tests that with a very large amount of keys accessed and cancelled, there is no memory leak
+     * @throws Exception
+     */
+    public void testBug174CacheMisses(boolean block) throws Exception {
+    	Properties p = new Properties();
+		p.setProperty(AbstractCacheAdministrator.CACHE_ALGORITHM_KEY, "com.opensymphony.oscache.base.algorithm.LRUCache");
+		p.setProperty(AbstractCacheAdministrator.CACHE_CAPACITY_KEY, "100");
+		if (block) {
+			p.setProperty(AbstractCacheAdministrator.CACHE_BLOCKING_KEY, "true");
+		}
+		GeneralCacheAdministrator admin = new GeneralCacheAdministrator(p);
+        
+        int cacheCapacity = 100;
+		int maxAddedCacheEntries = cacheCapacity*10;
+        String baseCacheKey= "baseKey";
+        String cacheValue ="same_value";
+        
+		admin.setCacheCapacity(cacheCapacity);
+    	
+        Cache cache = admin.getCache();
+
+        //Access lots of different keys to trigger cache overflow
+		for (int keyIndex=0; keyIndex<maxAddedCacheEntries; keyIndex++) {
+			String key = baseCacheKey + keyIndex;
+			try {
+				admin.getFromCache(key);
+				fail("expected element [" + key + "] not to be present");
+			} catch (NeedsRefreshException e) {
+				admin.cancelUpdate(key);
+			}
+		}
+        
+		Assert.assertTrue("expected cache accesses to not leak past cache capacity. Nb states is:" + cache.getNbUpdateState() + " expected max="+ cacheCapacity, cache.getNbUpdateState() < cacheCapacity);
+    }
+    
     /**
      * Verify that we can put item in the cache and that they are correctly retrieved
      */
