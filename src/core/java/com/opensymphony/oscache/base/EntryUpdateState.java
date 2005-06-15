@@ -39,6 +39,13 @@ public class EntryUpdateState {
      * Current update state
      */
     int state = NOT_YET_UPDATING;
+    
+    /**
+     * A counter of the number of threads that are coordinated through this instance. When this counter gets to zero, then the reference to this
+     * instance may be released from the Cache instance.
+     * This is counter is protected by the EntryStateUpdate instance monitor.
+     */
+    private int nbConcurrentUses = 1;
 
     /**
      * This is the initial state when an instance this object is first created.
@@ -77,36 +84,74 @@ public class EntryUpdateState {
     /**
      * Updates the state to <code>UPDATE_CANCELLED</code>. This should <em>only<em>
      * be called by the thread that managed to get the update lock.
+     * @return the counter value after the operation completed
      */
-    public void cancelUpdate() {
+    public int cancelUpdate() {
         if (state != UPDATE_IN_PROGRESS) {
             throw new IllegalStateException("Cannot cancel cache update - current state (" + state + ") is not UPDATE_IN_PROGRESS");
         }
 
         state = UPDATE_CANCELLED;
+        return decrementUsageCounter();
     }
 
     /**
      * Updates the state to <code>UPDATE_COMPLETE</code>. This should <em>only</em>
      * be called by the thread that managed to get the update lock.
+     * @return the counter value after the operation completed
      */
-    public void completeUpdate() {
+    public int completeUpdate() {
         if (state != UPDATE_IN_PROGRESS) {
             throw new IllegalStateException("Cannot complete cache update - current state (" + state + ") is not UPDATE_IN_PROGRESS");
         }
 
         state = UPDATE_COMPLETE;
+        return decrementUsageCounter();
     }
 
     /**
      * Attempt to change the state to <code>UPDATE_IN_PROGRESS</code>. Calls
      * to this method must be synchronized on the EntryUpdateState instance.
+     * @return the counter value after the operation completed
      */
-    public void startUpdate() {
+    public int startUpdate() {
         if ((state != NOT_YET_UPDATING) && (state != UPDATE_CANCELLED)) {
             throw new IllegalStateException("Cannot begin cache update - current state (" + state + ") is not NOT_YET_UPDATING or UPDATE_CANCELLED");
         }
 
         state = UPDATE_IN_PROGRESS;
+        return incrementUsageCounter();
     }
+
+    /**
+     * Increments the usage counter by one
+     * @return the counter value after the increment
+     */
+	public synchronized int incrementUsageCounter() {
+		nbConcurrentUses++;
+		return nbConcurrentUses;
+	}
+	
+    /**
+     * Gets the current usage counter value
+     * @return a positive number.
+     */
+	public synchronized int getUsageCounter() {
+		return nbConcurrentUses;
+	}
+	
+	
+    /**
+     * Decrements the usage counter by one. This method may only be called when the usage number is greater than zero
+     * @return the counter value after the decrement
+     */
+	public synchronized int decrementUsageCounter() {
+		if (nbConcurrentUses <=0) {
+            throw new IllegalStateException("Cannot decrement usage counter, it is already equals to [" + nbConcurrentUses + "]");
+		}
+		nbConcurrentUses--;
+		return nbConcurrentUses;
+	}
+
+	
 }
