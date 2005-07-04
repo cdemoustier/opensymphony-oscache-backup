@@ -28,7 +28,7 @@ import javax.servlet.jsp.PageContext;
  * @author <a href="mailto:ltorunski@t-online.de">Lars Torunski</a>
  * @version $Revision$
  */
-public class CacheFilter implements Filter {
+public class CacheFilter implements Filter, ICacheKeyProvider {
     // Header
     public static final String HEADER_LAST_MODIFIED = "Last-Modified";
     public static final String HEADER_CONTENT_TYPE = "Content-Type";
@@ -63,6 +63,7 @@ public class CacheFilter implements Filter {
     private int fragment = FRAGMENT_AUTODETECT; // defines if this filter handles fragments of a page - default is auto detect
     private int time = 60 * 60; // time before cache should be refreshed - default one hour (in seconds)
     private int nocache = NOCACHE_OFF; // defines special no cache option for the requests - default is off
+    private ICacheKeyProvider cacheKeyProvider = this; // the provider of the cache key - default is the CacheFilter itselfs 
 
     /**
      * Filter clean-up
@@ -100,9 +101,6 @@ public class CacheFilter implements Filter {
         // checks if the response well be a fragment of a page
         boolean fragmentRequest = isFragment(httpRequest);
 
-        // generate the cache entry key
-        String key = generateEntryKey(httpRequest);
-
         // avoid useless session creation for application scope pages (CACHE-129)
         Cache cache;
         if (cacheScope == PageContext.SESSION_SCOPE) {
@@ -110,6 +108,9 @@ public class CacheFilter implements Filter {
         } else {
             cache = admin.getAppScopeCache(config.getServletContext());
         }
+
+        // generate the cache entry key
+        String key = createCacheKey(httpRequest, admin, cache);
 
         try {
             ResponseContent respContent = (ResponseContent) cache.getFromCache(key, time);
@@ -195,6 +196,7 @@ public class CacheFilter implements Filter {
         // setting the refresh period for this cache filter
         expiresRefreshPolicy = new ExpiresRefreshPolicy(time);
 
+        // filter parameter scope
         try {
             String scopeString = config.getInitParameter("scope");
 
@@ -211,6 +213,7 @@ public class CacheFilter implements Filter {
             log.info("Could not get init parameter 'scope', defaulting to 'application'.");
         }
 
+        // filter parameter fragment
         try {
             fragment = Integer.parseInt(config.getInitParameter("fragment"));
 
@@ -222,6 +225,7 @@ public class CacheFilter implements Filter {
             log.info("Could not get init parameter 'fragment', defaulting to 'auto detect'.");
         }
         
+        // filter parameter nocache
         try {
             String nocacheString = config.getInitParameter("nocache");
             
@@ -234,16 +238,36 @@ public class CacheFilter implements Filter {
             log.info("Could not get init parameter 'nocache', defaulting to 'off'.");
         }
 
+        // filter parameter ICacheKeyProvider
+        try {
+            String className = config.getInitParameter("ICacheKeyProvider");
+            
+            try {
+                Class clazz = Class.forName(className);
+
+                if (!ICacheKeyProvider.class.isAssignableFrom(clazz)) {
+                    log.error("Specified class '" + className + "' does not implement ICacheKeyProvider. Ignoring this listener.");
+                } else {
+                    cacheKeyProvider = (ICacheKeyProvider) clazz.newInstance();
+                }
+            } catch (ClassNotFoundException e) {
+                log.error("Class '" + className + "' not found. Ignoring this cache key provider.", e);
+            } catch (InstantiationException e) {
+                log.error("Class '" + className + "' could not be instantiated because it is not a concrete class. Ignoring this cache key provider.", e);
+            } catch (IllegalAccessException e) {
+                log.error("Class '" + className + "' could not be instantiated because it is not public. Ignoring this cache key provider.", e);
+            }
+            
+        } catch (Exception e) {
+            log.info("Could not get init parameter 'ICacheKeyProvider', defaulting to " + this.getClass().getName() + ".");
+        }
     }
 
     /**
-     * Creates the cache key for the CacheFilter.
-     *
-     * @param httpRequest
-     * @return the cache key
+     * @see com.opensymphony.oscache.web.filter.ICacheKeyProvider#createCacheKey(javax.servlet.http.HttpServletRequest, ServletCacheAdministrator, Cache)
      */
-    public String generateEntryKey(HttpServletRequest httpRequest) {
-        return admin.generateEntryKey(null, httpRequest, cacheScope);
+    public String createCacheKey(HttpServletRequest httpRequest, ServletCacheAdministrator scAdmin, Cache cache) {
+        return scAdmin.generateEntryKey(null, httpRequest, cacheScope);
     }
 
     /**
