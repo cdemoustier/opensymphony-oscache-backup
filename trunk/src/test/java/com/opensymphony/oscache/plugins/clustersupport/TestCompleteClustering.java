@@ -4,11 +4,6 @@
  */
 package com.opensymphony.oscache.plugins.clustersupport;
 
-import com.opensymphony.oscache.web.TestCompleteWeb;
-import com.opensymphony.oscache.web.TestOscacheFilter;
-import com.opensymphony.oscache.web.TestOscacheJsp;
-import com.opensymphony.oscache.web.TestOscacheServlet;
-
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;

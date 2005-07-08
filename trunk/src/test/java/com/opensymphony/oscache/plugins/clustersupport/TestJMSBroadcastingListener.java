@@ -9,8 +9,6 @@ import com.opensymphony.oscache.base.Config;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-import javax.naming.Context;
-
 /**
  * Test all the public methods of the broadcasting listener and assert the
  * return values
