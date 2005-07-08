@@ -4,8 +4,6 @@
  */
 package com.opensymphony.oscache.util;
 
-import com.opensymphony.oscache.base.TestCache;
-
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
