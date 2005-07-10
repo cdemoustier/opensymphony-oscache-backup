@@ -177,7 +177,10 @@ public class CacheFilter implements Filter, ICacheKeyProvider {
      * The default value is auto detect.</li>
      * <li><b>nocache</b> - defines which objects shouldn't be cached. Acceptable values
      * are <code>off</code> (default) and <code>sessionIdInURL</code> if the session id is
-     * contained in the URL.
+     * contained in the URL.</li>
+     * <li><b>ICacheKeyProvider</b> - Class implementing the interface <code>ICacheKeyProvider</code>.
+     * A developer can implement a method which provides cache keys based on the request, 
+     * the servlect cache administrator and cache.</li>
      *
      * @param filterConfig The filter configuration
      */
@@ -186,7 +189,7 @@ public class CacheFilter implements Filter, ICacheKeyProvider {
         config = filterConfig;
         admin = ServletCacheAdministrator.getInstance(config.getServletContext());
 
-        //Will work this out later
+        // filter parameter time
         try {
             time = Integer.parseInt(config.getInitParameter("time"));
         } catch (Exception e) {
