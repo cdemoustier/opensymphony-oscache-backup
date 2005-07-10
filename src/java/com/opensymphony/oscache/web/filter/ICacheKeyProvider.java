@@ -10,7 +10,8 @@ import com.opensymphony.oscache.base.Cache;
 import com.opensymphony.oscache.web.ServletCacheAdministrator;
 
 /**
- * Provider interface for cache key creation.
+ * Provider interface for cache key creation. A developer can implement a method which provides
+ * cache keys based on the request, the servlect cache administrator and cache.
  * 
  * JIRA issue: http://jira.opensymphony.com/browse/CACHE-179
  *
