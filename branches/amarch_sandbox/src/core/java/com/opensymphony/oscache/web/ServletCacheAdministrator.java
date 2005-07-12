@@ -353,10 +353,10 @@ public class ServletCacheAdministrator extends AbstractCacheAdministrator implem
     * @return The requested object
     * @throws NeedsRefreshException
     */
-    public Object getFromCache(int scope, HttpServletRequest request, String key, int refreshPeriod) throws NeedsRefreshException {
+    public Object getFromCache(int scope, HttpServletRequest request, String key, int refreshPeriod) {
         Cache cache = getCache(request, scope);
         key = this.generateEntryKey(key, request, scope);
-        return cache.getFromCache(key, refreshPeriod);
+        return cache.get(key, refreshPeriod);
     }
 
     /**
@@ -622,7 +622,7 @@ public class ServletCacheAdministrator extends AbstractCacheAdministrator implem
     public void putInCache(int scope, HttpServletRequest request, String key, Object content, EntryRefreshPolicy policy) {
         Cache cache = getCache(request, scope);
         key = this.generateEntryKey(key, request, scope);
-        cache.putInCache(key, content, policy);
+        cache.put(key, content, policy);
     }
 
     /**

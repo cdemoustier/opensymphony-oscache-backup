@@ -129,8 +129,8 @@ public class GeneralCacheAdministrator extends AbstractCacheAdministrator {
      * a stale entry is currently being rebuilt by another thread and cache blocking is
      * enabled (<code>cache.blocking=true</code>).
      */
-    public Object getFromCache(String key) throws NeedsRefreshException {
-        return getCache().getFromCache(key);
+    public Object getFromCache(String key)  {
+        return getCache().get(key);
     }
 
     /**
@@ -148,8 +148,8 @@ public class GeneralCacheAdministrator extends AbstractCacheAdministrator {
      * a stale entry is currently being rebuilt by another thread and cache blocking is
      * enabled (<code>cache.blocking=true</code>).
      */
-    public Object getFromCache(String key, int refreshPeriod) throws NeedsRefreshException {
-        return getCache().getFromCache(key, refreshPeriod);
+    public Object getFromCache(String key, int refreshPeriod) {
+        return getCache().get(key, refreshPeriod);
     }
 
     /**
@@ -170,8 +170,8 @@ public class GeneralCacheAdministrator extends AbstractCacheAdministrator {
      * a stale entry is currently being rebuilt by another thread and cache blocking is
      * enabled (<code>cache.blocking=true</code>).
      */
-    public Object getFromCache(String key, int refreshPeriod, String cronExpression) throws NeedsRefreshException {
-        return getCache().getFromCache(key, refreshPeriod, cronExpression);
+    public Object getFromCache(String key, int refreshPeriod, String cronExpression) {
+        return getCache().get(key, refreshPeriod, cronExpression);
     }
 
     /**
@@ -218,27 +218,6 @@ public class GeneralCacheAdministrator extends AbstractCacheAdministrator {
     }
 
     /**
-     * Flushes all items that belong to the specified group.
-     *
-     * @param group The name of the group to flush
-     */
-    public void flushGroup(String group) {
-        getCache().flushGroup(group);
-    }
-
-    /**
-     * Allows to flush all items that have a specified pattern in the key.
-     *
-     * @param pattern     Pattern.
-     * @deprecated For performance and flexibility reasons it is preferable to
-     * store cache entries in groups and use the {@link #flushGroup(String)} method
-     * instead of relying on pattern flushing.
-     */
-    public void flushPattern(String pattern) {
-        getCache().flushPattern(pattern);
-    }
-
-    /**
      * Put an object in a cache
      *
      * @param key       The key entered by the user
@@ -247,7 +226,7 @@ public class GeneralCacheAdministrator extends AbstractCacheAdministrator {
      */
     public void putInCache(String key, Object content, EntryRefreshPolicy policy) {
         Cache cache = getCache();
-        cache.putInCache(key, content, policy);
+        cache.put(key, content, policy);
     }
 
     /**
@@ -258,29 +237,6 @@ public class GeneralCacheAdministrator extends AbstractCacheAdministrator {
      */
     public void putInCache(String key, Object content) {
         putInCache(key, content, (EntryRefreshPolicy) null);
-    }
-
-    /**
-     * Puts an object in a cache
-     *
-     * @param key      The unique key for this cached object
-     * @param content  The object to store
-     * @param groups   The groups that this object belongs to
-     */
-    public void putInCache(String key, Object content, String[] groups) {
-        getCache().putInCache(key, content, groups);
-    }
-
-    /**
-     * Puts an object in a cache
-     *
-     * @param key      The unique key for this cached object
-     * @param content  The object to store
-     * @param groups   The groups that this object belongs to
-     * @param policy   The refresh policy to use
-     */
-    public void putInCache(String key, Object content, String[] groups, EntryRefreshPolicy policy) {
-        getCache().putInCache(key, content, groups, policy, null);
     }
 
     /**

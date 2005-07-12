@@ -4,19 +4,23 @@
  */
 package com.opensymphony.oscache.web.filter;
 
-import com.opensymphony.oscache.base.Cache;
-import com.opensymphony.oscache.base.NeedsRefreshException;
-import com.opensymphony.oscache.web.ServletCacheAdministrator;
+import java.io.IOException;
+
+import javax.servlet.Filter;
+import javax.servlet.FilterChain;
+import javax.servlet.FilterConfig;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.jsp.PageContext;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import java.io.IOException;
-
-import javax.servlet.*;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.jsp.PageContext;
+import com.opensymphony.oscache.base.Cache;
+import com.opensymphony.oscache.web.ServletCacheAdministrator;
 
 /**
  * CacheFilter is a filter that allows for server-side caching of post-processed servlet content.<p>
@@ -112,9 +116,9 @@ public class CacheFilter implements Filter {
         } else {
             cache = admin.getAppScopeCache(config.getServletContext());
         }
-
-        try {
-            ResponseContent respContent = (ResponseContent) cache.getFromCache(key, time);
+//
+//        try {
+            ResponseContent respContent = (ResponseContent) cache.get(key, time);
 
             if (log.isInfoEnabled()) {
                 log.info("<cache>: Using cached entry for " + key);
@@ -137,10 +141,10 @@ public class CacheFilter implements Filter {
 
             // acceptsGZip is used for performance reasons above; use the following line for CACHE-49
             // respContent.writeTo(response, fragmentRequest, acceptsGZipEncoding(httpRequest));
-        } catch (NeedsRefreshException nre) {
+//        } catch (NeedsRefreshException nre) {
             boolean updateSucceeded = false;
 
-            try {
+//            try {
                 if (log.isInfoEnabled()) {
                     log.info("<cache>: New cache entry, cache stale or cache scope flushed for " + key);
                 }
@@ -152,15 +156,15 @@ public class CacheFilter implements Filter {
                 // Only cache if the response is cacheable
                 if (isCacheable(cacheResponse)) {
                     //Store as the cache content the result of the response
-                    cache.putInCache(key, cacheResponse.getContent(), expiresRefreshPolicy);
+                    cache.put(key, cacheResponse.getContent(), expiresRefreshPolicy);
                     updateSucceeded = true;
                 }
-            } finally {
-                if (!updateSucceeded) {
-                    cache.cancelUpdate(key);
-                }
-            }
-        }
+//            } finally {
+//                if (!updateSucceeded) {
+//                    cache.cancelUpdate(key);
+//                }
+//            }
+//        }
     }
 
     /**

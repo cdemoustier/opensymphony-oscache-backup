@@ -56,8 +56,8 @@ public abstract class BaseTestBroadcastingListener extends TestCase {
     public void testListener() {
         CacheEntry entry = new CacheEntry(KEY, null);
 
-        cache.putInCache(KEY, entry);
-        cache.putInCache(KEY, entry, new String[] {GROUP});
+        cache.put(KEY, entry);
+        cache.put(KEY, entry, new String[] {GROUP});
         cache.flushEntry(KEY);
         cache.flushGroup(GROUP);
         cache.flushAll(new Date());
