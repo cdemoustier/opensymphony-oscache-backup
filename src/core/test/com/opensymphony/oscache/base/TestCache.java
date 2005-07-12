@@ -63,7 +63,7 @@ public class TestCache extends TestCase {
      */
     public void testFlushPattern() {
         // Try to flush with a bad pattern and ensure that our data is still there
-        map.putInCache(ENTRY_KEY, CONTENT);
+        map.put(ENTRY_KEY, CONTENT);
         map.flushPattern(ENTRY_KEY + "do not flush");
         getBackContent(map, CONTENT, NO_REFRESH_NEEDED, false);
 
@@ -81,7 +81,7 @@ public class TestCache extends TestCase {
      */
     public void testPutGetFromCache() {
         // We put content in the cache and get it back with and without refresh
-        map.putInCache(ENTRY_KEY, CONTENT);
+        map.put(ENTRY_KEY, CONTENT);
         getBackContent(map, CONTENT, NO_REFRESH_NEEDED, false);
         getBackContent(map, CONTENT, REFRESH_NEEDED, true);
 
@@ -89,14 +89,14 @@ public class TestCache extends TestCase {
 
         /** TODO Verify this logic */
         try {
-            assertNull(map.getFromCache("", NO_REFRESH_NEEDED));
+            assertNull(map.get("", NO_REFRESH_NEEDED));
         } catch (NeedsRefreshException nre) {
             map.cancelUpdate("");
         } catch (Exception e) {
         }
 
         try {
-            assertNull(map.getFromCache(null, NO_REFRESH_NEEDED));
+            assertNull(map.get(null, NO_REFRESH_NEEDED));
         } catch (NeedsRefreshException nre) {
             map.cancelUpdate(null);
         } catch (Exception e) {
@@ -108,11 +108,11 @@ public class TestCache extends TestCase {
      */
     public void testPutGetFromCacheWithPolicy() {
         // We put content in the cache and get it back
-        map.putInCache(ENTRY_KEY + "policy", CONTENT, new DummyAlwayRefreshEntryPolicy());
+        map.put(ENTRY_KEY + "policy", CONTENT, new DummyAlwayRefreshEntryPolicy());
 
         // Should get a refresh
         try {
-            map.getFromCache(ENTRY_KEY + "policy", -1);
+            map.get(ENTRY_KEY + "policy", -1);
             fail("Should have got a refresh.");
         } catch (NeedsRefreshException nre) {
             map.cancelUpdate(ENTRY_KEY + "policy");
@@ -135,7 +135,7 @@ public class TestCache extends TestCase {
      */
     private void getBackContent(Cache map, Object content, int refresh, boolean exceptionExpected) {
         try {
-            assertEquals(content, map.getFromCache(ENTRY_KEY, refresh));
+            assertEquals(content, map.get(ENTRY_KEY, refresh));
 
             if (exceptionExpected) {
                 fail("NeedsRefreshException should have been thrown!");

@@ -49,15 +49,8 @@ public interface Cache {
      *
      * @return The object from cache
      *
-     * @throws NeedsRefreshException Thrown when the object either
-     * doesn't exist, or exists but is stale. When this exception occurs,
-     * the CacheEntry corresponding to the supplied key will be locked
-     * and other threads requesting this entry will potentially be blocked
-     * until the caller repopulates the cache. If the caller choses not
-     * to repopulate the cache, they <em>must</em> instead call
-     * {@link #cancelUpdate(String)}.
      */
-    public abstract Object getFromCache(String key) throws NeedsRefreshException;
+    public abstract Object get(Object key) ;
 
     /**
      * Retrieve an object from the cache specifying its key.
@@ -69,15 +62,8 @@ public interface Cache {
      *
      * @return The object from cache
      *
-     * @throws NeedsRefreshException Thrown when the object either
-     * doesn't exist, or exists but is stale. When this exception occurs,
-     * the CacheEntry corresponding to the supplied key will be locked
-     * and other threads requesting this entry will potentially be blocked
-     * until the caller repopulates the cache. If the caller choses not
-     * to repopulate the cache, they <em>must</em> instead call
-     * {@link #cancelUpdate(String)}.
      */
-    public abstract Object getFromCache(String key, int refreshPeriod) throws NeedsRefreshException;
+    public abstract Object get(Object key, int refreshPeriod);
 
     /**
      * Retrieve an object from the cache specifying its key.
@@ -92,15 +78,8 @@ public interface Cache {
      *
      * @return The object from cache
      *
-     * @throws NeedsRefreshException Thrown when the object either
-     * doesn't exist, or exists but is stale. When this exception occurs,
-     * the CacheEntry corresponding to the supplied key will be locked
-     * and other threads requesting this entry will potentially be blocked
-     * until the caller repopulates the cache. If the caller choses not
-     * to repopulate the cache, they <em>must</em> instead call
-     * {@link #cancelUpdate(String)}.
      */
-    public abstract Object getFromCache(String key, int refreshPeriod, String cronExpiry) throws NeedsRefreshException;
+    public abstract Object get(Object key, int refreshPeriod, String cronExpiry);
 
     /**
      * Set the listener to use for data persistence. Only one
@@ -177,52 +156,14 @@ public interface Cache {
      */
     public abstract void flushEntry(String key, String origin);
 
-    /**
-     * Flushes all objects that belong to the supplied group. On completion
-     * this method fires a <tt>CacheEntryEventType.GROUP_FLUSHED</tt> event.
-     *
-     * @param group The group to flush
-     */
-    public abstract void flushGroup(String group);
-
-    /**
-     * Flushes all unexpired objects that belong to the supplied group. On
-     * completion this method fires a <tt>CacheEntryEventType.GROUP_FLUSHED</tt>
-     * event.
-     *
-     * @param group The group to flush
-     * @param origin The origin of this flush event (optional)
-     */
-    public abstract void flushGroup(String group, String origin);
-
-    /**
-     * Flush all entries with keys that match a given pattern
-     *
-     * @param  pattern The key must contain this given value
-     * @deprecated For performance and flexibility reasons it is preferable to
-     * store cache entries in groups and use the {@link #flushGroup(String)} method
-     * instead of relying on pattern flushing.
-     */
-    public abstract void flushPattern(String pattern);
-
-    /**
-     * Flush all entries with keys that match a given pattern
-     *
-     * @param  pattern The key must contain this given value
-     * @param origin The origin of this flush request
-     * @deprecated For performance and flexibility reasons it is preferable to
-     * store cache entries in groups and use the {@link #flushGroup(String, String)}
-     * method instead of relying on pattern flushing.
-     */
-    public abstract void flushPattern(String pattern, String origin);
-
+   
     /**
      * Put an object in the cache specifying the key to use.
      *
      * @param key       Key of the object in the cache.
      * @param content   The object to cache.
      */
-    public abstract void putInCache(String key, Object content);
+    public abstract void put(Object key, Object content);
 
     /**
      * Put an object in the cache specifying the key and refresh policy to use.
@@ -231,28 +172,17 @@ public interface Cache {
      * @param content   The object to cache.
      * @param policy   Object that implements refresh policy logic
      */
-    public abstract void putInCache(String key, Object content, EntryRefreshPolicy policy);
-
-    /**
-     * Put in object into the cache, specifying both the key to use and the
-     * cache groups the object belongs to.
-     *
-     * @param key       Key of the object in the cache
-     * @param content   The object to cache
-     * @param groups    The cache groups to add the object to
-     */
-    public abstract void putInCache(String key, Object content, String[] groups);
+    public abstract void put(Object key, Object content, EntryRefreshPolicy policy);
 
     /**
      * Put an object into the cache specifying both the key to use and the
      * cache groups the object belongs to.
      *
      * @param key       Key of the object in the cache
-     * @param groups    The cache groups to add the object to
      * @param content   The object to cache
      * @param policy    Object that implements the refresh policy logic
      */
-    public abstract void putInCache(String key, Object content, String[] groups, EntryRefreshPolicy policy, String origin);
+    public abstract void put(Object key, Object content, EntryRefreshPolicy policy, String origin);
 
     /**
      * Unregister a listener for Cache events.

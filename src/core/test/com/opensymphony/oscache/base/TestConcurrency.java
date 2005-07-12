@@ -97,7 +97,7 @@ public class TestConcurrency extends TestCase {
             }
 
             // Putting the entry in the cache should unblock the previous threads
-            admin.putInCache(key, VALUE);
+            admin.put(key, VALUE);
         }
     }
 
@@ -135,7 +135,7 @@ public class TestConcurrency extends TestCase {
             }
 
             try {
-                Object newValue = admin.getFromCache(key, -1);
+                Object newValue = admin.get(key, -1);
                 assertEquals(NEW_VALUE, newValue);
             } catch (NeedsRefreshException e) {
                 admin.cancelUpdate(key);
@@ -207,14 +207,14 @@ public class TestConcurrency extends TestCase {
             // Putting the entry in the cache should mean that threads now retrieve
             // the updated entry
             String newValue = "New value";
-            admin.putInCache(key, newValue);
+            admin.put(key, newValue);
 
             getEntry = new GetEntry(key, newValue, -1, false);
             thread = new Thread(getEntry);
             thread.start();
 
             try {
-                Object fromCache = admin.getFromCache(key, -1);
+                Object fromCache = admin.get(key, -1);
                 assertEquals(newValue, fromCache);
             } catch (NeedsRefreshException e) {
                 admin.cancelUpdate(key);
@@ -267,14 +267,14 @@ public class TestConcurrency extends TestCase {
 
             // Putting the entry in the cache should mean that threads now retrieve
             // the updated entry
-            admin.putInCache(key, NEW_VALUE);
+            admin.put(key, NEW_VALUE);
 
             getEntry = new GetEntry(key, NEW_VALUE, -1, false);
             thread = new Thread(getEntry);
             thread.start();
 
             try {
-                Object fromCache = admin.getFromCache(key, -1);
+                Object fromCache = admin.get(key, -1);
                 assertEquals(NEW_VALUE, fromCache);
             } catch (NeedsRefreshException e) {
                 admin.cancelUpdate(key);
@@ -406,7 +406,7 @@ public class TestConcurrency extends TestCase {
                     fail("Thread should have blocked until a new cache entry was ready");
                 } else {
                     // Put a new piece of content into the cache
-                    admin.putInCache(key, value);
+                    admin.put(key, value);
                 }
             }
         }
@@ -468,7 +468,7 @@ public class TestConcurrency extends TestCase {
             } catch (NeedsRefreshException nre) {
                 // Get the value
                 // Store in the cache
-                admin.putInCache(KEY, VALUE);
+                admin.put(KEY, VALUE);
             }
 
             // Flush occasionally

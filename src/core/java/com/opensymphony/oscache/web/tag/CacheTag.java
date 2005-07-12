@@ -4,17 +4,7 @@
  */
 package com.opensymphony.oscache.web.tag;
 
-import com.opensymphony.oscache.base.Cache;
-import com.opensymphony.oscache.base.NeedsRefreshException;
-import com.opensymphony.oscache.util.StringUtil;
-import com.opensymphony.oscache.web.ServletCacheAdministrator;
-import com.opensymphony.oscache.web.WebEntryRefreshPolicy;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import java.io.IOException;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,6 +13,14 @@ import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.BodyTagSupport;
 import javax.servlet.jsp.tagext.TryCatchFinally;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+import com.opensymphony.oscache.base.Cache;
+import com.opensymphony.oscache.util.StringUtil;
+import com.opensymphony.oscache.web.ServletCacheAdministrator;
+import com.opensymphony.oscache.web.WebEntryRefreshPolicy;
 
 /**
  * CacheTag is a tag that allows for server-side caching of post-processed JSP content.<p>
@@ -357,7 +355,7 @@ public class CacheTag extends BodyTagSupport implements TryCatchFinally {
                     cancelUpdateRequired = false;
 
                     if ((groups == null) || groups.isEmpty()) {
-                        cache.putInCache(actualKey, body, policy);
+                        cache.put(actualKey, body, policy);
                     } else {
                         String[] groupArray = new String[groups.size()];
                         groups.toArray(groupArray);
@@ -489,13 +487,13 @@ public class CacheTag extends BodyTagSupport implements TryCatchFinally {
 
         send out the cached version!
         */
-        try {
+//        try {
             if (refresh) {
                 // Force a refresh
-                content = (String) cache.getFromCache(actualKey, 0, cron);
+                content = (String) cache.get(actualKey, 0, cron);
             } else {
                 // Use the specified refresh period
-                content = (String) cache.getFromCache(actualKey, time, cron);
+                content = (String) cache.get(actualKey, time, cron);
             }
 
             try {
@@ -514,10 +512,10 @@ public class CacheTag extends BodyTagSupport implements TryCatchFinally {
             } catch (IOException e) {
                 throw new JspTagException("IO Exception: " + e.getMessage());
             }
-        } catch (NeedsRefreshException nre) {
-            cancelUpdateRequired = true;
-            content = (String) nre.getCacheContent();
-        }
+//        } catch (NeedsRefreshException nre) {
+//            cancelUpdateRequired = true;
+//            content = (String) nre.getCacheContent();
+//        }
 
         if (returnCode == EVAL_BODY_BUFFERED) {
             if (log.isDebugEnabled()) {

@@ -57,13 +57,6 @@ public final class CacheEntryEvent extends CacheEvent {
     }
 
     /**
-     * Retrieve the cache entry key
-     */
-    public String getKey() {
-        return entry.getKey();
-    }
-
-    /**
      * Retrieve the cache map where the entry resides.
      */
     public Cache getMap() {

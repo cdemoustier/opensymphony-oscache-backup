@@ -53,15 +53,11 @@ public class CacheEntry implements Serializable {
  */
     private Object content = null;
 
-    /**
- * The set of cache groups that this cache entry belongs to, if any.
- */
-    private Set groups = null;
 
     /**
  *  The unique cache key for this entry
  */
-    private String key;
+    private Object key;
 
     /**
  * <code>true</code> if this entry was flushed
@@ -94,7 +90,7 @@ public class CacheEntry implements Serializable {
  * @param policy   Object that implements refresh policy logic. This parameter
  * is optional.
  */
-    public CacheEntry(String key, EntryRefreshPolicy policy) {
+    public CacheEntry(Object key, EntryRefreshPolicy policy) {
         this(key, policy, null);
     }
 
@@ -107,16 +103,8 @@ public class CacheEntry implements Serializable {
  * @param groups  The groups that this <code>CacheEntry</code> belongs to. This
  * parameter is optional.
  */
-    public CacheEntry(String key, EntryRefreshPolicy policy, String[] groups) {
+    public CacheEntry(Object key, EntryRefreshPolicy policy, String[] groups) {
         this.key = key;
-
-        if (groups != null) {
-            this.groups = new HashSet(groups.length);
-
-            for (int i = 0; i < groups.length; i++) {
-                this.groups.add(groups[i]);
-            }
-        }
 
         this.policy = policy;
         this.created = System.currentTimeMillis();
@@ -156,57 +144,13 @@ public class CacheEntry implements Serializable {
         return created;
     }
 
-    /**
- * Sets the cache groups for this entry.
- *
- * @param groups A string array containing all the group names
- */
-    public synchronized void setGroups(String[] groups) {
-        if (groups != null) {
-            this.groups = new HashSet(groups.length);
-
-            for (int i = 0; i < groups.length; i++) {
-                this.groups.add(groups[i]);
-            }
-        } else {
-            this.groups = null;
-        }
-
-        lastUpdate = System.currentTimeMillis();
-    }
-
-    /**
- * Sets the cache groups for this entry
- *
- * @param groups A collection containing all the group names
- */
-    public void setGroups(Collection groups) {
-        if (groups != null) {
-            this.groups = new HashSet(groups);
-        } else {
-            this.groups = null;
-        }
-
-        lastUpdate = System.currentTimeMillis();
-    }
-
-    /**
- * Gets the cache groups that this cache entry belongs to.
- * These returned groups should be treated as immuatable.
- *
- * @return A set containing the names of all the groups that
- * this cache entry belongs to.
- */
-    public Set getGroups() {
-        return groups;
-    }
 
     /**
  * Get the key of this CacheEntry
  *
  * @return The key of this CacheEntry
  */
-    public String getKey() {
+    public Object getKey() {
         return key;
     }
 
@@ -241,15 +185,14 @@ public class CacheEntry implements Serializable {
     /**
  * Get the size of the cache entry in bytes (roughly).<p>
  *
- * Currently this method only handles <code>String<code>s and
+ * Currently this method only handles 
  * {@link ResponseContent} objects.
  *
  * @return The approximate size of the entry in bytes, or -1 if the
  * size could not be estimated.
  */
     public int getSize() {
-        // a char is two bytes
-        int size = (key.length() * 2) + 4;
+        int size = 0;
 
         if (content.getClass() == String.class) {
             size += ((content.toString().length() * 2) + 4);

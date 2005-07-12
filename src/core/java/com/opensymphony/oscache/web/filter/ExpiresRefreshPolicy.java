@@ -6,7 +6,6 @@ package com.opensymphony.oscache.web.filter;
 
 import com.opensymphony.oscache.base.CacheEntry;
 import com.opensymphony.oscache.base.EntryRefreshPolicy;
-import com.opensymphony.oscache.base.NeedsRefreshException;
 
 /**
  * Checks if a cache filter entry has expired.

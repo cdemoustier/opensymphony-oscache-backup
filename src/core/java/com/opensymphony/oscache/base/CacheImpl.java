@@ -4,6 +4,16 @@
  */
 package com.opensymphony.oscache.base;
 
+import java.io.Serializable;
+import java.text.ParseException;
+import java.util.Date;
+import java.util.Map;
+
+import javax.swing.event.EventListenerList;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import com.opensymphony.oscache.base.events.CacheEntryEvent;
 import com.opensymphony.oscache.base.events.CacheEntryEventListener;
 import com.opensymphony.oscache.base.events.CacheEntryEventType;
@@ -19,21 +29,6 @@ import com.opensymphony.oscache.base.persistence.PersistenceListener;
 import com.opensymphony.oscache.util.FastCronParser;
 
 import edu.emory.mathcs.backport.java.util.concurrent.ConcurrentHashMap;
-import edu.emory.mathcs.backport.java.util.concurrent.CopyOnWriteArraySet;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import java.io.Serializable;
-
-import java.text.ParseException;
-
-import java.util.Date;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
-
-import javax.swing.event.EventListenerList;
 
 /**
  * Provides an interface to the cache itself. Creating an instance of this class
@@ -63,12 +58,8 @@ public class CacheImpl implements Serializable, Cache {
     /**
      * The actual cache map. This is where the cached objects are held.
      */
-    private Map cacheMap = null;
+    private Map cacheMap = new ConcurrentHashMap();
 
-    /**
-    * The groups map. This is where the cached objects group memberships are stored.
-    */
-    private Map groups = null;
     private PersistenceListener persistenceListener;
 
     /**
@@ -81,6 +72,13 @@ public class CacheImpl implements Serializable, Cache {
     private boolean useMemoryCaching;
     private int capacity;
 
+	/**
+	 * 
+	 */
+	public CacheImpl() {
+
+		// TODO Auto-generated constructor stub
+	}
     /**
      * Create a new Cache
      *
@@ -89,7 +87,7 @@ public class CacheImpl implements Serializable, Cache {
      * @param overflowPersistence Specify if the persistent cache is used in overflow only mode
      */
     public CacheImpl(boolean useMemoryCaching, boolean unlimitedDiskCache, boolean overflowPersistence) {
-        this(useMemoryCaching, unlimitedDiskCache, overflowPersistence, false, null, 0);
+        this(useMemoryCaching, unlimitedDiskCache, overflowPersistence, false, 0);
     }
 
     /**
@@ -112,10 +110,9 @@ public class CacheImpl implements Serializable, Cache {
      * (<code>blocking == false</code>). the default is <code>false</code>,
      * which provides better performance but at the expense of slightly stale
      * data being served.
-     * @param algorithmClass The class implementing the desired algorithm
      * @param capacity The capacity
      */
-    public CacheImpl(boolean useMemoryCaching, boolean unlimitedDiskCache, boolean overflowPersistence, boolean blocking, String algorithmClass, int capacity) {
+    public CacheImpl(boolean useMemoryCaching, boolean unlimitedDiskCache, boolean overflowPersistence, boolean blocking, int capacity) {
         try {
             cacheMap = new ConcurrentHashMap();
         } catch (Exception e) {
@@ -129,7 +126,14 @@ public class CacheImpl implements Serializable, Cache {
         this.blocking = blocking;
     }
 
-    /* (non-Javadoc)
+    /**
+	 * @param capacity2
+	 */
+	public CacheImpl(int capacity) {
+		this.capacity = capacity;
+	}
+	
+	/* (non-Javadoc)
          * @see com.opensymphony.oscache.base.CacheAPI#setCapacity(int)
          */
     public void setCapacity(int capacity) {
@@ -152,21 +156,21 @@ public class CacheImpl implements Serializable, Cache {
     /* (non-Javadoc)
          * @see com.opensymphony.oscache.base.CacheAPI#getFromCache(java.lang.String)
          */
-    public Object getFromCache(String key) throws NeedsRefreshException {
-        return getFromCache(key, CacheEntry.INDEFINITE_EXPIRY, null);
+    public Object get(Object key){
+        return get(key, CacheEntry.INDEFINITE_EXPIRY, null);
     }
 
     /* (non-Javadoc)
          * @see com.opensymphony.oscache.base.CacheAPI#getFromCache(java.lang.String, int)
          */
-    public Object getFromCache(String key, int refreshPeriod) throws NeedsRefreshException {
-        return getFromCache(key, refreshPeriod, null);
+    public Object get(Object key, int refreshPeriod){
+        return get(key, refreshPeriod, null);
     }
 
     /* (non-Javadoc)
          * @see com.opensymphony.oscache.base.CacheAPI#getFromCache(java.lang.String, int, java.lang.String)
          */
-    public Object getFromCache(String key, int refreshPeriod, String cronExpiry) throws NeedsRefreshException {
+    public Object get(Object key, int refreshPeriod, String cronExpiry){
         CacheEntry cacheEntry = getCacheEntry(key, null, null);
 
         Object content = cacheEntry.getContent();
@@ -239,7 +243,7 @@ public class CacheImpl implements Serializable, Cache {
 
         // If we didn't end up getting a hit then we need to throw a NRE
         if (accessEventType != CacheMapAccessEventType.HIT) {
-            throw new NeedsRefreshException(content);
+//            throw new NeedsRefreshException(content);
         }
 
         return content;
@@ -322,112 +326,30 @@ public class CacheImpl implements Serializable, Cache {
     }
 
     /* (non-Javadoc)
-         * @see com.opensymphony.oscache.base.CacheAPI#flushGroup(java.lang.String)
-         */
-    public void flushGroup(String group) {
-        flushGroup(group, null);
-    }
-
-    /* (non-Javadoc)
-         * @see com.opensymphony.oscache.base.CacheAPI#flushGroup(java.lang.String, java.lang.String)
-         */
-    public void flushGroup(String group, String origin) {
-        // Flush all objects in the group
-        Set groupEntries = (Set) groups.get(group);
-
-        if (groupEntries != null) {
-            Iterator itr = groupEntries.iterator();
-            String key;
-            CacheEntry entry;
-
-            while (itr.hasNext()) {
-                key = (String) itr.next();
-                entry = (CacheEntry) cacheMap.get(key);
-
-                if ((entry != null) && !entry.needsRefresh(CacheEntry.INDEFINITE_EXPIRY)) {
-                    flushEntry(entry, NESTED_EVENT);
-                }
-            }
-        }
-
-        if (listenerList.getListenerCount() > 0) {
-            dispatchCacheGroupEvent(CacheEntryEventType.GROUP_FLUSHED, group, origin);
-        }
-    }
-
-    /* (non-Javadoc)
-         * @see com.opensymphony.oscache.base.CacheAPI#flushPattern(java.lang.String)
-         */
-    public void flushPattern(String pattern) {
-        flushPattern(pattern, null);
-    }
-
-    /* (non-Javadoc)
-         * @see com.opensymphony.oscache.base.CacheAPI#flushPattern(java.lang.String, java.lang.String)
-         */
-    public void flushPattern(String pattern, String origin) {
-        // Check the pattern
-        if ((pattern != null) && (pattern.length() > 0)) {
-            String key = null;
-            CacheEntry entry = null;
-            Iterator itr = cacheMap.keySet().iterator();
-
-            while (itr.hasNext()) {
-                key = (String) itr.next();
-
-                if (key.indexOf(pattern) >= 0) {
-                    entry = (CacheEntry) cacheMap.get(key);
-
-                    if (entry != null) {
-                        flushEntry(entry, origin);
-                    }
-                }
-            }
-
-            if (listenerList.getListenerCount() > 0) {
-                dispatchCachePatternEvent(CacheEntryEventType.PATTERN_FLUSHED, pattern, origin);
-            }
-        } else {
-            // Empty pattern, nothing to do
-        }
-    }
-
-    /* (non-Javadoc)
          * @see com.opensymphony.oscache.base.CacheAPI#putInCache(java.lang.String, java.lang.Object)
          */
-    public void putInCache(String key, Object content) {
-        putInCache(key, content, null, null, null);
+    public void put(Object key, Object content) {
+        put(key, content, null);
     }
 
     /* (non-Javadoc)
          * @see com.opensymphony.oscache.base.CacheAPI#putInCache(java.lang.String, java.lang.Object, com.opensymphony.oscache.base.EntryRefreshPolicy)
          */
-    public void putInCache(String key, Object content, EntryRefreshPolicy policy) {
-        putInCache(key, content, null, policy, null);
-    }
-
-    /* (non-Javadoc)
-         * @see com.opensymphony.oscache.base.CacheAPI#putInCache(java.lang.String, java.lang.Object, java.lang.String[])
-         */
-    public void putInCache(String key, Object content, String[] groups) {
-        putInCache(key, content, groups, null, null);
+    public void put(Object key, Object content, EntryRefreshPolicy policy) {
+        put(key, content, null, null);
     }
 
     /* (non-Javadoc)
          * @see com.opensymphony.oscache.base.CacheAPI#putInCache(java.lang.String, java.lang.Object, java.lang.String[], com.opensymphony.oscache.base.EntryRefreshPolicy, java.lang.String)
          */
-    public void putInCache(String key, Object content, String[] groups, EntryRefreshPolicy policy, String origin) {
+    public void put(Object key, Object content, EntryRefreshPolicy policy, String origin) {
         CacheEntry cacheEntry = getCacheEntry(key, policy, origin);
         boolean isNewEntry = cacheEntry.isNew();
 
         synchronized (cacheEntry) {
             cacheEntry.setContent(content);
-            cacheEntry.setGroups(groups);
             cacheMap.put(key, cacheEntry);
-
-            if (groups != null) {
-                addGroupMappings(key, groups);
-            }
+           
         }
 
         // Signal to any threads waiting on this update that it's now ready for them
@@ -445,37 +367,6 @@ public class CacheImpl implements Serializable, Cache {
         }
     }
 
-    /**
-    * Add this cache key to the groups specified groups.
-    * We have to treat the
-    * memory and disk group mappings seperately so they remain valid for their
-    * corresponding memory/disk caches. (eg if mem is limited to 100 entries
-    * and disk is unlimited, the group mappings will be different).
-    *
-    * @param key The cache key that we are ading to the groups.
-    * @param newGroups the set of groups we want to add this cache entry to.
-    * @param persist A flag to indicate whether the keys should be added to
-    * the persistent cache layer.
-    */
-    private void addGroupMappings(String key, String[] newGroups) {
-        // Add this CacheEntry to the groups that it is now a member of
-        for (int i = 0; i < newGroups.length; i++) {
-            String groupName = newGroups[i];
-
-            if (groups == null) {
-                groups = new ConcurrentHashMap();
-            }
-
-            Set group = (Set) groups.get(groupName);
-
-            if (group == null) {
-                group = new CopyOnWriteArraySet();
-                groups.put(groupName, group);
-            }
-
-            group.add(key);
-        }
-    }
 
     /* (non-Javadoc)
          * @see com.opensymphony.oscache.base.CacheAPI#removeCacheEventListener(com.opensymphony.oscache.base.events.CacheEventListener, java.lang.Class)
@@ -492,11 +383,11 @@ public class CacheImpl implements Serializable, Cache {
      * @param origin The origin of request (optional)
      * @return CacheEntry for the specified key.
      */
-    protected CacheEntry getCacheEntry(String key, EntryRefreshPolicy policy, String origin) {
+    protected CacheEntry getCacheEntry(Object key, EntryRefreshPolicy policy, String origin) {
         CacheEntry cacheEntry = null;
 
         // Verify that the key is valid
-        if ((key == null) || (key.length() == 0)) {
+        if (key == null) {
             throw new IllegalArgumentException("getCacheEntry called with an empty or null key");
         }
 
@@ -724,7 +615,7 @@ public class CacheImpl implements Serializable, Cache {
      * @param origin The origin of this flush event (optional)
      */
     private void flushEntry(CacheEntry entry, String origin) {
-        String key = entry.getKey();
+    	Object key = entry.getKey();
 
         // Flush the object itself
         entry.flush();
