@@ -4,7 +4,13 @@
  */
 package com.opensymphony.oscache.base.algorithm;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
+import java.util.LinkedList;
+import java.util.List;
+
+import com.opensymphony.oscache.base.CacheImpl;
 
 /**
  * FIFO (First In First Out) based queue algorithm for the cache.
@@ -18,7 +24,7 @@ import java.util.*;
  * @author        <a href="mailto:abergevin@pyxis-tech.com">Alain Bergevin</a>
  * @author        <a href="&#109;a&#105;&#108;&#116;&#111;:chris&#64;swebtec.&#99;&#111;&#109;">Chris Miller</a>
  */
-public class FIFOCache extends AbstractConcurrentReadCache {
+public class FIFOCache extends CacheImpl {
     /**
      * A queue containing all cache keys
      */
@@ -52,8 +58,7 @@ public class FIFOCache extends AbstractConcurrentReadCache {
      * @param capacity The maximum cache capacity.
      */
     public FIFOCache(int capacity) {
-        this();
-        maxEntries = capacity;
+        super(capacity);
     }
 
     /**

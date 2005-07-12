@@ -4,13 +4,17 @@
  */
 package com.opensymphony.oscache.general;
 
-import com.opensymphony.oscache.base.*;
+import java.util.Date;
+import java.util.Properties;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import java.util.Date;
-import java.util.Properties;
+import com.opensymphony.oscache.base.AbstractCacheAdministrator;
+import com.opensymphony.oscache.base.Cache;
+import com.opensymphony.oscache.base.CacheEntry;
+import com.opensymphony.oscache.base.CacheImpl;
+import com.opensymphony.oscache.base.EntryRefreshPolicy;
 
 /**
  * A GeneralCacheAdministrator creates, flushes and administers the cache.
@@ -257,7 +261,7 @@ public class GeneralCacheAdministrator extends AbstractCacheAdministrator {
     private void createCache() {
         log.info("Creating new cache");
 
-        applicationCache = new CacheImpl(isMemoryCaching(), isUnlimitedDiskCache(), isOverflowPersistence(), isBlocking(), algorithmClass, cacheCapacity);
+        applicationCache = new CacheImpl(isMemoryCaching(), isUnlimitedDiskCache(), isOverflowPersistence(), isBlocking(), cacheCapacity);
 
         configureStandardListeners(applicationCache);
     }

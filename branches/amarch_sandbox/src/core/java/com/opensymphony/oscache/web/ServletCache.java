@@ -4,18 +4,17 @@
  */
 package com.opensymphony.oscache.web;
 
-import com.opensymphony.oscache.base.Cache;
-import com.opensymphony.oscache.base.CacheEntry;
-import com.opensymphony.oscache.base.CacheImpl;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import java.io.Serializable;
 
 import javax.servlet.http.HttpSessionBindingEvent;
 import javax.servlet.http.HttpSessionBindingListener;
-import javax.servlet.jsp.PageContext;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+import com.opensymphony.oscache.base.Cache;
+import com.opensymphony.oscache.base.CacheEntry;
+import com.opensymphony.oscache.base.CacheImpl;
 
 /**
  * A simple extension of Cache that implements a session binding listener,
@@ -60,7 +59,7 @@ public final class ServletCache extends CacheImpl implements HttpSessionBindingL
  * @param scope The cache scope
  */
     public ServletCache(ServletCacheAdministrator admin, String algorithmClass, int limit, int scope) {
-        super(admin.isMemoryCaching(), admin.isUnlimitedDiskCache(), admin.isOverflowPersistence(), admin.isBlocking(), algorithmClass, limit);
+        super(admin.isMemoryCaching(), admin.isUnlimitedDiskCache(), admin.isOverflowPersistence(), admin.isBlocking(), limit);
         setScope(scope);
         this.admin = admin;
     }
