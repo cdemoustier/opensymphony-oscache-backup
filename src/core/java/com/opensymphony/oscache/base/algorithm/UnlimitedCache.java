@@ -4,6 +4,8 @@
  */
 package com.opensymphony.oscache.base.algorithm;
 
+import com.opensymphony.oscache.base.CacheImpl;
+
 
 /**
  * A simple unlimited cache that has no upper bound to the number of
@@ -13,14 +15,13 @@ package com.opensymphony.oscache.base.algorithm;
  * @author <a href="mailto:fbeauregard@pyxis-tech.com">Francois Beauregard</a>
  * @author <a href="mailto:abergevin@pyxis-tech.com">Alain Bergevin</a>
  */
-public final class UnlimitedCache extends AbstractConcurrentReadCache {
+public final class UnlimitedCache extends CacheImpl {
     /**
      * Creates an unlimited cache by calling the super class's constructor
      * with an <code>UNLIMITED</code> maximum number of entries.
      */
     public UnlimitedCache() {
-        super();
-        maxEntries = UNLIMITED;
+        super(-1);
     }
 
     /**
