@@ -4,7 +4,7 @@
  */
 package com.opensymphony.oscache.base.algorithm;
 
-import com.opensymphony.oscache.base.CacheImpl;
+import com.opensymphony.oscache.base.MemoryCache;
 import com.opensymphony.oscache.util.ClassLoaderUtil;
 
 import org.apache.commons.collections.SequencedHashMap;
@@ -34,7 +34,7 @@ import java.util.*;
  * @author <a href="mailto:abergevin@pyxis-tech.com">Alain Bergevin</a>
  * @author <a href="&#109;a&#105;&#108;&#116;&#111;:chris&#64;swebtec.&#99;&#111;&#109;">Chris Miller</a>
  */
-public class LRUCache extends CacheImpl {
+public class LRUCache extends MemoryCache {
     private static final Log log = LogFactory.getLog(LRUCache.class);
 
     /**

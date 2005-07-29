@@ -42,7 +42,7 @@ import edu.emory.mathcs.backport.java.util.concurrent.ConcurrentHashMap;
  * @author <a href="mailto:fbeauregard@pyxis-tech.com">Francois Beauregard</a>
  * @author <a href="&#109;a&#105;&#108;&#116;&#111;:chris&#64;swebtec.&#99;&#111;&#109;">Chris Miller</a>
  */
-public class CacheImpl implements Serializable, Cache {
+public class MemoryCache implements Serializable, Cache {
     private static transient final Log log = LogFactory.getLog(Cache.class);
 
     /**
@@ -75,7 +75,7 @@ public class CacheImpl implements Serializable, Cache {
 	/**
 	 * 
 	 */
-	public CacheImpl() {
+	public MemoryCache() {
 
 		// TODO Auto-generated constructor stub
 	}
@@ -86,7 +86,7 @@ public class CacheImpl implements Serializable, Cache {
      * @param unlimitedDiskCache Specify if the disk caching is unlimited
      * @param overflowPersistence Specify if the persistent cache is used in overflow only mode
      */
-    public CacheImpl(boolean useMemoryCaching, boolean unlimitedDiskCache, boolean overflowPersistence) {
+    public MemoryCache(boolean useMemoryCaching, boolean unlimitedDiskCache, boolean overflowPersistence) {
         this(useMemoryCaching, unlimitedDiskCache, overflowPersistence, false, 0);
     }
 
@@ -112,7 +112,7 @@ public class CacheImpl implements Serializable, Cache {
      * data being served.
      * @param capacity The capacity
      */
-    public CacheImpl(boolean useMemoryCaching, boolean unlimitedDiskCache, boolean overflowPersistence, boolean blocking, int capacity) {
+    public MemoryCache(boolean useMemoryCaching, boolean unlimitedDiskCache, boolean overflowPersistence, boolean blocking, int capacity) {
         try {
             cacheMap = new ConcurrentHashMap();
         } catch (Exception e) {
@@ -129,7 +129,7 @@ public class CacheImpl implements Serializable, Cache {
     /**
 	 * @param capacity2
 	 */
-	public CacheImpl(int capacity) {
+	public MemoryCache(int capacity) {
 		this.capacity = capacity;
 	}
 	

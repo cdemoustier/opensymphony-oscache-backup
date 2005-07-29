@@ -77,7 +77,7 @@ public abstract class BaseTestBroadcastingListener extends TestCase {
             listener = getListener();
             assertNotNull(listener);
 
-            cache = new CacheImpl(true, false, false);
+            cache = new MemoryCache(true, false, false);
             assertNotNull(cache);
 
             try {

@@ -6,7 +6,7 @@ package com.opensymphony.oscache.extra;
 
 import com.opensymphony.oscache.base.Cache;
 import com.opensymphony.oscache.base.CacheEntry;
-import com.opensymphony.oscache.base.CacheImpl;
+import com.opensymphony.oscache.base.MemoryCache;
 import com.opensymphony.oscache.base.events.CacheEntryEvent;
 import com.opensymphony.oscache.base.events.CacheGroupEvent;
 import com.opensymphony.oscache.base.events.CachePatternEvent;
@@ -54,7 +54,7 @@ public class TestCacheEntryEventListenerImpl extends TestCase {
         // Construct the objects required for the tests
         CacheEntry entry = new CacheEntry(KEY);
         GeneralCacheAdministrator admin = new GeneralCacheAdministrator();
-        Cache cache = new CacheImpl(admin.isMemoryCaching(), admin.isUnlimitedDiskCache(), admin.isOverflowPersistence());
+        Cache cache = new MemoryCache(admin.isMemoryCaching(), admin.isUnlimitedDiskCache(), admin.isOverflowPersistence());
         CacheEntryEvent event = new CacheEntryEvent(cache, entry, null);
         CacheEntryEventListenerImpl listener = new CacheEntryEventListenerImpl();
 

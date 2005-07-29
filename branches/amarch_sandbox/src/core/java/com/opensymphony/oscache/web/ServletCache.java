@@ -14,7 +14,7 @@ import org.apache.commons.logging.LogFactory;
 
 import com.opensymphony.oscache.base.Cache;
 import com.opensymphony.oscache.base.CacheEntry;
-import com.opensymphony.oscache.base.CacheImpl;
+import com.opensymphony.oscache.base.MemoryCache;
 
 /**
  * A simple extension of Cache that implements a session binding listener,
@@ -25,7 +25,7 @@ import com.opensymphony.oscache.base.CacheImpl;
  * @author <a href="mailto:fbeauregard@pyxis-tech.com">Francois Beauregard</a>
  * @version        $Revision$
  */
-public final class ServletCache extends CacheImpl implements HttpSessionBindingListener, Serializable {
+public final class ServletCache extends MemoryCache implements HttpSessionBindingListener, Serializable {
     private static transient final Log log = LogFactory.getLog(ServletCache.class);
 
     /**
