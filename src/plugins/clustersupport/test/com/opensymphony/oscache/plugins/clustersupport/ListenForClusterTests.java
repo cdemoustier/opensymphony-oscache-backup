@@ -5,7 +5,7 @@
 package com.opensymphony.oscache.plugins.clustersupport;
 
 import com.opensymphony.oscache.base.Cache;
-import com.opensymphony.oscache.base.CacheImpl;
+import com.opensymphony.oscache.base.MemoryCache;
 import com.opensymphony.oscache.base.Config;
 import com.opensymphony.oscache.base.FinalizationException;
 import com.opensymphony.oscache.base.InitializationException;
@@ -46,7 +46,7 @@ public final class ListenForClusterTests {
     private void initListeners() {
         BaseTestBroadcastingListener testcase = null;
         AbstractBroadcastingListener listener;
-        Cache cache = new CacheImpl(true, false, false);
+        Cache cache = new MemoryCache(true, false, false);
 
         // Add the JavaGroups listener
         try {

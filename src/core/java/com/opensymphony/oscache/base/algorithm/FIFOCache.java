@@ -10,7 +10,7 @@ import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 
-import com.opensymphony.oscache.base.CacheImpl;
+import com.opensymphony.oscache.base.MemoryCache;
 
 /**
  * FIFO (First In First Out) based queue algorithm for the cache.
@@ -24,7 +24,7 @@ import com.opensymphony.oscache.base.CacheImpl;
  * @author        <a href="mailto:abergevin@pyxis-tech.com">Alain Bergevin</a>
  * @author        <a href="&#109;a&#105;&#108;&#116;&#111;:chris&#64;swebtec.&#99;&#111;&#109;">Chris Miller</a>
  */
-public class FIFOCache extends CacheImpl {
+public class FIFOCache extends MemoryCache {
     /**
      * A queue containing all cache keys
      */

@@ -4,7 +4,7 @@
  */
 package com.opensymphony.oscache.base.algorithm;
 
-import com.opensymphony.oscache.base.CacheImpl;
+import com.opensymphony.oscache.base.MemoryCache;
 
 
 /**
@@ -15,7 +15,7 @@ import com.opensymphony.oscache.base.CacheImpl;
  * @author <a href="mailto:fbeauregard@pyxis-tech.com">Francois Beauregard</a>
  * @author <a href="mailto:abergevin@pyxis-tech.com">Alain Bergevin</a>
  */
-public final class UnlimitedCache extends CacheImpl {
+public final class UnlimitedCache extends MemoryCache {
     /**
      * Creates an unlimited cache by calling the super class's constructor
      * with an <code>UNLIMITED</code> maximum number of entries.

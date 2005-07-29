@@ -6,7 +6,7 @@ package com.opensymphony.oscache.base.events;
 
 import com.opensymphony.oscache.base.Cache;
 import com.opensymphony.oscache.base.CacheEntry;
-import com.opensymphony.oscache.base.CacheImpl;
+import com.opensymphony.oscache.base.MemoryCache;
 import com.opensymphony.oscache.general.GeneralCacheAdministrator;
 
 import junit.framework.Test;
@@ -52,7 +52,7 @@ public final class TestCacheEntryEvent extends TestCase {
     public void testCacheEntryEvent() {
         // Create all the required objects
         GeneralCacheAdministrator admin = new GeneralCacheAdministrator();
-        Cache map = new CacheImpl(admin.isMemoryCaching(), admin.isUnlimitedDiskCache(), admin.isOverflowPersistence());
+        Cache map = new MemoryCache(admin.isMemoryCaching(), admin.isUnlimitedDiskCache(), admin.isOverflowPersistence());
         CacheEntry entry = new CacheEntry(KEY);
         CacheEntryEvent event = new CacheEntryEvent(map, entry, null);
 

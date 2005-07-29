@@ -13,7 +13,7 @@ import org.apache.commons.logging.LogFactory;
 import com.opensymphony.oscache.base.AbstractCacheAdministrator;
 import com.opensymphony.oscache.base.Cache;
 import com.opensymphony.oscache.base.CacheEntry;
-import com.opensymphony.oscache.base.CacheImpl;
+import com.opensymphony.oscache.base.MemoryCache;
 import com.opensymphony.oscache.base.EntryRefreshPolicy;
 
 /**
@@ -261,7 +261,7 @@ public class GeneralCacheAdministrator extends AbstractCacheAdministrator {
     private void createCache() {
         log.info("Creating new cache");
 
-        applicationCache = new CacheImpl(isMemoryCaching(), isUnlimitedDiskCache(), isOverflowPersistence(), isBlocking(), cacheCapacity);
+        applicationCache = new MemoryCache(isMemoryCaching(), isUnlimitedDiskCache(), isOverflowPersistence(), isBlocking(), cacheCapacity);
 
         configureStandardListeners(applicationCache);
     }
