@@ -268,7 +268,7 @@ public abstract class AbstractConcurrentReadCache extends AbstractMap implements
      * <code>Set</code> of containing keys of all
      * the cache entries that belong to that particular group.
      */
-    protected HashMap groups = null;
+    protected HashMap groups = new HashMap();
     protected transient Set entrySet = null;
 
     // Views
