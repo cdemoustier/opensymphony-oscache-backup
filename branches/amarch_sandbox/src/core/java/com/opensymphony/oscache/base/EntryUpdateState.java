@@ -74,29 +74,6 @@ public class EntryUpdateState {
         return state == UPDATE_IN_PROGRESS;
     }
 
-    /**
-     * Updates the state to <code>UPDATE_CANCELLED</code>. This should <em>only<em>
-     * be called by the thread that managed to get the update lock.
-     */
-    public void cancelUpdate() {
-        if (state != UPDATE_IN_PROGRESS) {
-            throw new IllegalStateException("Cannot cancel cache update - current state (" + state + ") is not UPDATE_IN_PROGRESS");
-        }
-
-        state = UPDATE_CANCELLED;
-    }
-
-    /**
-     * Updates the state to <code>UPDATE_COMPLETE</code>. This should <em>only</em>
-     * be called by the thread that managed to get the update lock.
-     */
-    public void completeUpdate() {
-        if (state != UPDATE_IN_PROGRESS) {
-            throw new IllegalStateException("Cannot complete cache update - current state (" + state + ") is not UPDATE_IN_PROGRESS");
-        }
-
-        state = UPDATE_COMPLETE;
-    }
 
     /**
      * Attempt to change the state to <code>UPDATE_IN_PROGRESS</code>. Calls

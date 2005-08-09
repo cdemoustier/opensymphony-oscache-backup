@@ -4,13 +4,10 @@
  */
 package com.opensymphony.oscache.base;
 
-import com.opensymphony.oscache.web.filter.ResponseContent;
-
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
-
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * A CacheEntry instance represents one entry in the cache. It holds the object that
@@ -18,13 +15,18 @@ import java.util.Set;
  * cache key, the time it was cached, whether the entry has been flushed or not and
  * the groups it belongs to.
  *
- * @version        $Revision$
  * @author        <a href="mailto:mike@atlassian.com">Mike Cannon-Brookes</a>
  * @author        <a href="mailto:tgochenour@peregrine.com">Todd Gochenour</a>
  * @author <a href="mailto:fbeauregard@pyxis-tech.com">Francois Beauregard</a>
+ * @author <a href="mailto:oscache@andresmarch.com">Andres March</a>
  */
 public class CacheEntry implements Serializable {
     /**
+	 * 
+	 */
+	private static final long serialVersionUID = -3776911995865680219L;
+
+	/**
  * Default initialization value for the creation time and the last
  * update time. This is a placeholder that indicates the value has
  * not been set yet.
@@ -40,11 +42,20 @@ public class CacheEntry implements Serializable {
  */
     public static final int INDEFINITE_EXPIRY = -1;
 
+	
+
     /**
  * The entry refresh policy object to use for this cache entry. This is optional.
  */
     private EntryRefreshPolicy policy = null;
-    private final EntryUpdateState updateState;
+    
+    
+    
+    private int state;
+    
+    public static final int STATE_VALID = 0;
+    public static final int STATE_STALE = -1;
+    public static final int STATE_UPDATING = 1;
 
     /**
  * The actual content that is being cached. Wherever possible this object
@@ -83,16 +94,6 @@ public class CacheEntry implements Serializable {
         this(key, null);
     }
 
-    /**
- * Construct a CacheEntry.
- *
- * @param key      The unique key for this <code>CacheEntry</code>.
- * @param policy   Object that implements refresh policy logic. This parameter
- * is optional.
- */
-    public CacheEntry(Object key, EntryRefreshPolicy policy) {
-        this(key, policy, null);
-    }
 
     /**
  * Construct a CacheEntry.
@@ -100,18 +101,22 @@ public class CacheEntry implements Serializable {
  * @param key     The unique key for this <code>CacheEntry</code>.
  * @param policy  The object that implements the refresh policy logic. This
  * parameter is optional.
- * @param groups  The groups that this <code>CacheEntry</code> belongs to. This
- * parameter is optional.
  */
-    public CacheEntry(Object key, EntryRefreshPolicy policy, String[] groups) {
+    public CacheEntry(Object key, EntryRefreshPolicy policy) {
         this.key = key;
 
         this.policy = policy;
         this.created = System.currentTimeMillis();
-        this.updateState = new EntryUpdateState();
+        this.state = STATE_VALID;
     }
 
-    /**
+    public CacheEntry(Object key, Object value) {
+    		this(key, null);
+    		setContent(value);
+	}
+
+
+	/**
  * Sets the actual content that is being cached. Wherever possible this
  * object should be <code>Serializable</code>, however it is not an
  * absolute requirement when using a memory-only cache. Being <code>Serializable</code>
@@ -185,25 +190,24 @@ public class CacheEntry implements Serializable {
     /**
  * Get the size of the cache entry in bytes (roughly).<p>
  *
- * Currently this method only handles 
- * {@link ResponseContent} objects.
  *
  * @return The approximate size of the entry in bytes, or -1 if the
  * size could not be estimated.
  */
     public int getSize() {
-        int size = 0;
-
-        if (content.getClass() == String.class) {
-            size += ((content.toString().length() * 2) + 4);
-        } else if (content instanceof ResponseContent) {
-            size += ((ResponseContent) content).getSize();
-        } else {
-            return -1;
-        }
-
-        //add created, lastUpdate, and wasFlushed field sizes (1, 8, and 8)
-        return size + 17;
+    		ByteArrayOutputStream bout = new ByteArrayOutputStream();
+        ObjectOutputStream out;
+		try {
+			out = new ObjectOutputStream(bout);
+			out.writeObject(this);			
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return -1;
+		}
+		byte[] bytes = bout.toByteArray();
+		return bytes.length;
+        
     }
 
     /**
@@ -254,7 +258,42 @@ public class CacheEntry implements Serializable {
         return needsRefresh;
     }
 
-    public EntryUpdateState getUpdateState() {
-        return updateState;
+    public int getState() {
+        return state;
+    }
+
+
+	public boolean isUpdating() {
+		return state == STATE_UPDATING;
+	}
+
+
+	public void startUpdate() {
+		
+		state = STATE_UPDATING;
+	}
+	
+	/**
+     * Updates the state to <code>UPDATE_CANCELLED</code>. This should <em>only<em>
+     * be called by the thread that managed to get the update lock.
+     */
+    public void cancelUpdate() {
+        if (state != STATE_UPDATING) {
+            throw new IllegalStateException("Cannot cancel cache update - current state (" + state + ") is not UPDATE_IN_PROGRESS");
+        }
+
+        state = STATE_VALID;
+    }
+    
+    /**
+     * Updates the state to <code>UPDATE_COMPLETE</code>. This should <em>only</em>
+     * be called by the thread that managed to get the update lock.
+     */
+    public void completeUpdate() {
+        if (state != STATE_UPDATING) {
+            throw new IllegalStateException("Cannot complete cache update - current state (" + state + ") is not UPDATE_IN_PROGRESS");
+        }
+
+        state = STATE_VALID;
     }
 }

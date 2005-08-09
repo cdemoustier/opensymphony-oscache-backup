@@ -83,11 +83,6 @@ public class GeneralCacheAdministrator extends AbstractCacheAdministrator {
     private static transient final Log log = LogFactory.getLog(GeneralCacheAdministrator.class);
 
     /**
-     * Application cache
-     */
-    private Cache applicationCache = null;
-
-    /**
      * Create the cache administrator.
      */
     public GeneralCacheAdministrator() {
@@ -101,15 +96,6 @@ public class GeneralCacheAdministrator extends AbstractCacheAdministrator {
         super(p);
         log.info("Constructed GeneralCacheAdministrator()");
         createCache();
-    }
-
-    /**
-     * Grabs a cache
-     *
-     * @return The cache
-     */
-    public Cache getCache() {
-        return applicationCache;
     }
 
     /**
@@ -222,28 +208,6 @@ public class GeneralCacheAdministrator extends AbstractCacheAdministrator {
     }
 
     /**
-     * Put an object in a cache
-     *
-     * @param key       The key entered by the user
-     * @param content   The object to store
-     * @param policy    Object that implements refresh policy logic
-     */
-    public void putInCache(String key, Object content, EntryRefreshPolicy policy) {
-        Cache cache = getCache();
-        cache.put(key, content, policy);
-    }
-
-    /**
-     * Put an object in a cache
-     *
-     * @param key       The key entered by the user
-     * @param content   The object to store
-     */
-    public void putInCache(String key, Object content) {
-        putInCache(key, content, (EntryRefreshPolicy) null);
-    }
-
-    /**
      * Sets the cache capacity (number of items). If the cache contains
      * more than <code>capacity</code> items then items will be removed
      * to bring the cache back down to the new size.
@@ -261,7 +225,7 @@ public class GeneralCacheAdministrator extends AbstractCacheAdministrator {
     private void createCache() {
         log.info("Creating new cache");
 
-        applicationCache = new MemoryCache(isMemoryCaching(), isUnlimitedDiskCache(), isOverflowPersistence(), isBlocking(), cacheCapacity);
+        applicationCache = new MemoryCache(cacheCapacity);
 
         configureStandardListeners(applicationCache);
     }

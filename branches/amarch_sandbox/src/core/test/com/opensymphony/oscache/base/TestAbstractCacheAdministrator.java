@@ -16,7 +16,7 @@ import junit.framework.TestCase;
  * @version        $Revision$
  * @author <a href="mailto:abergevin@pyxis-tech.com">Alain Bergevin</a>
  */
-public abstract class TestAbstractCacheAdministrator extends TestCase {
+public class TestAbstractCacheAdministrator extends TestCase {
     // Constants used in the tests
     private final String CACHE_PATH_PROP = "cache.path";
     private final String CONTENT = "Content for the abstract cache admin test";
@@ -24,15 +24,18 @@ public abstract class TestAbstractCacheAdministrator extends TestCase {
     private final String INVALID_PROP_NAME = "INVALID_PROP_NAME";
     private final String TEST_LOG = "test log";
 
-    /**
-     * Constructor for the this test class.
-     * <p>
-     * @param str Test name (required by JUnit)
-     */
-    protected TestAbstractCacheAdministrator(String str) {
-        super(str);
-    }
+   
 
+    public void testGetAndPut() {
+    		AbstractCacheAdministrator admin = getAdmin();
+    		admin.setApplicationCache(new MemoryCache());
+    		Object value = admin.get(ENTRY_KEY);
+    		assertNull(value);
+    		admin.put(ENTRY_KEY, CONTENT);
+    		value = admin.get(ENTRY_KEY);
+    		assertEquals(value, CONTENT);    		
+    }
+    
     /**
      * Cannot be tested since CacheContents is an interface
      */
@@ -91,5 +94,8 @@ public abstract class TestAbstractCacheAdministrator extends TestCase {
     }
 
     // Abstract method that returns an instance of an admin
-    protected abstract AbstractCacheAdministrator getAdmin();
+    protected AbstractCacheAdministrator getAdmin() {
+    		return new AbstractCacheAdministrator() {
+    		};
+    }
 }
