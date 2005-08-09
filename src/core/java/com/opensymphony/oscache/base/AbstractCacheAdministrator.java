@@ -141,6 +141,11 @@ public abstract class AbstractCacheAdministrator implements java.io.Serializable
      */
     private boolean unlimitedDiskCache;
 
+	/**
+	 * Application cache
+	 */
+	protected Cache applicationCache = null;
+
     /**
      * Create the AbstractCacheAdministrator.
      * This will initialize all values and load the properties from oscache.properties.
@@ -162,6 +167,43 @@ public abstract class AbstractCacheAdministrator implements java.io.Serializable
             log.debug("Constructed AbstractCacheAdministrator()");
         }
     }
+    
+    protected Object get(Object key) {
+    		CacheEntry entry = getCache().get(key);
+    		return entry.getContent();
+    }
+    
+    protected void put(Object key, Object value) {
+    		CacheEntry entry = new CacheEntry(key, value);
+		synchronized (entry) {
+			CacheEntry oldEntry = getCache().put(key, entry);
+			// Signal to any threads waiting on this update that it's now ready for
+			// them
+			// in the cache!
+			completeUpdate(entry);
+			entry.notifyAll();
+		}
+    }
+    
+    /**
+	 * Removes the update state for the specified key and notifies any other
+	 * threads that are waiting on this object. This is called automatically by
+	 * the {@link #putInCache} method. This method must be called only when the entry is 
+	 * locked.
+	 * 
+	 * @param key
+	 *            The cache key that is no longer being updated.
+	 */
+	protected void completeUpdate(CacheEntry cacheEntry) {
+
+		if (cacheEntry != null) {
+			if (!cacheEntry.isUpdating()) {
+				cacheEntry.startUpdate();
+			}
+
+			cacheEntry.completeUpdate();
+		}
+	}
 
     /**
      * Sets the algorithm to use for the cache.
@@ -296,7 +338,7 @@ public abstract class AbstractCacheAdministrator implements java.io.Serializable
             Class clazz = Class.forName(persistenceClassname);
             PersistenceListener persistenceListener = (PersistenceListener) clazz.newInstance();
 
-            cache.setPersistenceListener(persistenceListener.configure(config));
+//            cache.setPersistenceListener(persistenceListener.configure(config));
         } catch (ClassNotFoundException e) {
             log.error("PersistenceListener class '" + persistenceClassname + "' not found. Check your configuration.", e);
         } catch (Exception e) {
@@ -338,11 +380,11 @@ public abstract class AbstractCacheAdministrator implements java.io.Serializable
                 }
 
                 if (listeners[i] instanceof CacheEntryEventListener) {
-                    cache.addCacheEventListener(listeners[i], CacheEntryEventListener.class);
+//                    cache.addCacheEventListener(listeners[i], CacheEntryEventListener.class);
                 }
 
                 if (listeners[i] instanceof CacheMapAccessEventListener) {
-                    cache.addCacheEventListener(listeners[i], CacheMapAccessEventListener.class);
+//                    cache.addCacheEventListener(listeners[i], CacheMapAccessEventListener.class);
                 }
             }
         }
@@ -361,17 +403,17 @@ public abstract class AbstractCacheAdministrator implements java.io.Serializable
             return;
         }
 
-        Object[] listeners = cache.getListenerList().getListenerList();
-
-        for (int i = listeners.length - 2; i >= 0; i -= 2) {
-            if (listeners[i + 1] instanceof LifecycleAware) {
-                try {
-                    ((LifecycleAware) listeners[i + 1]).finialize();
-                } catch (FinalizationException e) {
-                    log.error("Listener could not be finalized", e);
-                }
-            }
-        }
+//        Object[] listeners = cache.getListenerList().getListenerList();
+//
+//        for (int i = listeners.length - 2; i >= 0; i -= 2) {
+//            if (listeners[i + 1] instanceof LifecycleAware) {
+//                try {
+//                    ((LifecycleAware) listeners[i + 1]).finialize();
+//                } catch (FinalizationException e) {
+//                    log.error("Listener could not be finalized", e);
+//                }
+//            }
+//        }
     }
 
     /**
@@ -416,4 +458,27 @@ public abstract class AbstractCacheAdministrator implements java.io.Serializable
     private void loadProps(Properties p) {
         config = new Config(p);
     }
+
+	/**
+	 * Grabs a cache
+	 *
+	 * @return The cache
+	 */
+	public Cache getCache() {
+	    return applicationCache;
+	}
+
+	/**
+	 * @return Returns the applicationCache.
+	 */
+	public Cache getApplicationCache() {
+		return applicationCache;
+	}
+
+	/**
+	 * @param applicationCache The applicationCache to set.
+	 */
+	public void setApplicationCache(Cache applicationCache) {
+		this.applicationCache = applicationCache;
+	}
 }
