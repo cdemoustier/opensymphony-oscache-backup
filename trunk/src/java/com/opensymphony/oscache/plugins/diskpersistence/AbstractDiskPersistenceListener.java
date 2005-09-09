@@ -343,25 +343,28 @@ public abstract class AbstractDiskPersistenceListener implements PersistenceList
 
         try {
             fout = new FileOutputStream(file);
-            oout = new ObjectOutputStream(fout);
-            oout.writeObject(obj);
-            oout.flush();
+            try {
+                oout = new ObjectOutputStream(fout);
+                try {
+                    oout.writeObject(obj);
+                    oout.flush();
+                } finally {
+                    try {
+                        oout.close();
+                    } catch (Exception e) {
+                    }
+                }
+            } finally {
+                try {
+                    fout.close();
+                } catch (Exception e) {
+                }
+            }
         } catch (Exception e) {
             while (file.exists() && !file.delete()) {
                 ;
             }
-
             throw new CachePersistenceException("Unable to write '" + file + "' in the cache. Exception: " + e.getClass().getName() + ", Message: " + e.getMessage());
-        } finally {
-            try {
-                fout.close();
-            } catch (Exception e) {
-            }
-
-            try {
-                oout.close();
-            } catch (Exception e) {
-            }
         }
     }
 
