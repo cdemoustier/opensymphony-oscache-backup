@@ -14,7 +14,6 @@ import java.io.Serializable;
 
 import javax.servlet.http.HttpSessionBindingEvent;
 import javax.servlet.http.HttpSessionBindingListener;
-import javax.servlet.jsp.PageContext;
 
 /**
  * A simple extension of Cache that implements a session binding listener,
