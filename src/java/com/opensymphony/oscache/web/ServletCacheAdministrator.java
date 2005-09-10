@@ -159,9 +159,9 @@ public class ServletCacheAdministrator extends AbstractCacheAdministrator implem
     * are loaded from the oscache.properties file in the classpath.
     * @return Returns the CacheAdministrator instance for this context
     */
-    public static ServletCacheAdministrator getInstance(ServletContext context, Properties p) {
-        ServletCacheAdministrator admin;
-        admin = (ServletCacheAdministrator) context.getAttribute(CACHE_ADMINISTRATOR_KEY);
+    public synchronized static ServletCacheAdministrator getInstance(ServletContext context, Properties p) {
+
+        ServletCacheAdministrator admin = (ServletCacheAdministrator) context.getAttribute(CACHE_ADMINISTRATOR_KEY);
 
         // First time we need to create the administrator and store it in the
         // servlet context
