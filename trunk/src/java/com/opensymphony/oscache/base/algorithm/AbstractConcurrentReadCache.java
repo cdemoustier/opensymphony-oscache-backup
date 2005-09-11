@@ -950,7 +950,8 @@ public abstract class AbstractConcurrentReadCache extends AbstractMap implements
      * code if performance is too adversely impacted.
      **/
     protected synchronized final Set getGroupForReading(String groupName) {
-    	Set group = (Set) getGroupsForReading().get(groupName);           
+    	Set group = (Set) getGroupsForReading().get(groupName);
+        if (group == null) return null;
         return new HashSet(group);
     }
     
