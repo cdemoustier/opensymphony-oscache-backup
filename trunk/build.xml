@@ -280,7 +280,7 @@
             <fileset dir="${dist.dir}/docs"/>
         </copy>
         <copy todir="${tmp.dir}/src">
-            <fileset dir="${src}" excludes="etc/**,webapp/**"/>
+            <fileset dir="${src}" excludes="etc/**"/>
         </copy>
         <copy todir="${tmp.dir}/lib">
             <fileset dir="${lib.dir}" excludes="build/**" />
