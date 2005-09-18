@@ -1,0 +1,8 @@
+build
+build.test
+build.properties
+dist
+*.i*
+.settings
+.fbprefs
+.fbwarnings

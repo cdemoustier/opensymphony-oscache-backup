@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml-stylesheet type="text/xsl" href="http://www.jayasoft.fr/org/ivyrep/ivy-doc.xsl"?>
+<ivy-module version="1.0">
+    <info organisation="opensymphony" module="oscache"
+          revision="@VERSION@"
+          status="@STATUS@"
+          publication="@PUBLICATION@">
+        <license name="Apache" url="http://www.apache.org/licenses/LICENSE-2.0.txt"/>
+        <ivyauthor name="opensymphony" url="http://www.opensymphony.com/"/>
+
+        <description homepage="http://www.opensymphony.com/oscache/">
+		TODO
+        </description>
+    </info>
+    <configurations>
+        <conf name="default" description="Default configuration"/>
+    </configurations>
+    <publications>
+        <artifact name="oscache" type="jar" conf="default"/>
+    </publications>
+    <dependencies>
+        <dependency org="apache" name="commons-logging" rev="1.0.4"/>
+    </dependencies>
+</ivy-module>
