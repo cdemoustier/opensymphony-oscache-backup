@@ -13,27 +13,29 @@
             <format property="release" pattern="-dMMMyy" locale="en" timezone="GMT"/>
         </tstamp>
 
-        <!-- directory properties -->
-        <property name="build.dir" value="build"/>
-        <property name="build.test.dir" value="build.test"/>
-        <property name="dist.dir" value="dist"/>
-
-        <property name="src" location="src"/>
-        <property name="src.java" value="${src}/java"/>
-
-        <property name="test" value="${src}/test"/>
-        <property name="src.test" value="${test}/java"/>
-        
-        <property name="src.webapp" value="${src}/webapp"/>
-
-        <property name="doc.dir" value="docs"/>
-        <property name="lib.dir" value="lib"/>
-        <property name="tmp.dir" value="tmp"/>
-
         <property name="debug" value="true"/>
 
-        <!-- document properties -->
-        <property name="packages" value="com.opensymphony.oscache.*"/>
+        <!-- directory properties -->
+        <property name="lib" location="lib"/> <!-- defined in osbuild.xml -->
+        <property name="lib.core" value="${lib}/core"/> <!-- defined in osbuild.xml -->
+        <property name="lib.build" value="${lib}/build"/> <!-- defined in osbuild.xml -->
+        <property name="lib.optional" value="${lib}/plugins"/> <!-- overwritten -->
+
+        <property name="src" location="src"/> <!-- defined in osbuild.xml -->
+        <property name="src.java" value="${src}/java"/> <!-- defined in osbuild.xml -->
+        <property name="src.webapp" value="${src}/webapp"/> <!-- new -->
+
+        <property name="test" value="${src}/test"/> <!-- defined in osbuild.xml -->
+        <property name="src.test" value="${test}/java"/> <!-- defined in osbuild.xml -->
+        
+        <property name="build" value="build"/> <!-- defined in osbuild.xml -->
+        <property name="build.test.dir" value="build.test"/> <!-- ??? -->
+        <property name="dist" value="dist"/> <!-- defined in osbuild.xml -->
+
+        <property name="docs" value="docs"/> <!-- defined in osbuild.xml -->
+        <property name="docs.packages" value="com.opensymphony.*"/> <!-- defined in osbuild.xml -->
+
+        <property name="tmp.dir" value="tmp"/> <!-- ??? -->
 
         <!-- This property must match with what is included in the oscache.properties files -->
         <property name="test.cache.path" value="/tmp/cachetagscache"/>
@@ -43,7 +45,6 @@
         <available property="junit.available" classname="junit.framework.TestCase"/>
         <available property="clover.available" classname="org.apache.tools.ant.taskdefs.CloverCompilerAdapter"/>
     </target>
-
 
     <!-- Classpath -->
     <path id="cp">
@@ -67,54 +68,60 @@
     </taskdef>
 
     <target name="junit-check" depends="init" unless="junit.available">
-        <fail message="Cannot run test cases. Please copy lib/build/junit-3.8.1.jar to ${ant.home}/lib"/>
+        <fail message="Cannot run test cases. Please copy ${lib.build}/junit-3.8.1.jar to ${ant.home}/lib"/>
     </target>
 
     <target name="clover-check" depends="init" unless="clover.available">
-        <fail message="Cannot run coverage tests. Please copy lib/build/clover-1.2.3.jar to ${ant.home}/lib"/>
+        <fail message="Cannot run coverage tests. Please copy ${lib.build}/clover-1.2.3.jar to ${ant.home}/lib"/>
     </target>
 
     <!-- Prepares the build directory -->
     <target name="prepare" depends="init">
-        <mkdir dir="${build.dir}/META-INF"/>
-        <copy file="${src}/etc/${name}.tld" tofile="${build.dir}/META-INF/taglib.tld"/>
+        <mkdir dir="${build}/META-INF"/>
+        <copy file="${src}/etc/${name}.tld" tofile="${build}/META-INF/taglib.tld"/>
     </target>
 
 
     <!-- Compiles the core source code -->
     <target name="compile" depends="prepare">
-        <javac srcdir="${src.java}" destdir="${build.dir}" includes="com/opensymphony/oscache/**" debug="${debug}" classpathref="cp"/>
+        <javac srcdir="${src.java}" destdir="${build}" includes="com/opensymphony/oscache/**" debug="${debug}" classpathref="cp"/>
     </target>
 
 
     <!-- Prepares and compiles the web application, which includes the web test suite -->
     <target name="example-war" depends="jar">
-        <mkdir dir="${build.dir}/webapp"/>
+        <mkdir dir="${build}/webapp"/>
 
-        <javac srcdir="${src.webapp}/WEB-INF/classes" destdir="${build.dir}/webapp" includes="com/opensymphony/oscache/**" debug="${debug}" classpath="${build.dir}" classpathref="cp"/>
+        <javac srcdir="${src.webapp}/WEB-INF/classes" destdir="${build}/webapp" includes="com/opensymphony/oscache/**" debug="${debug}" classpath="${build}" classpathref="cp"/>
 
-        <war destfile="${dist.dir}/${name}-example.war" basedir="${src.webapp}" webxml="${src.webapp}/WEB-INF/web.xml" excludes="WEB-INF/web.xml">
-            <lib dir="${lib.dir}/core"/>
-            <lib file="${dist.dir}/${name}-${version}${release}.jar"/>
+        <war destfile="${dist}/${name}-example.war" basedir="${src.webapp}" webxml="${src.webapp}/WEB-INF/web.xml" excludes="WEB-INF/web.xml">
+            <lib dir="${lib.core}"/>
+            <lib file="${dist}/${name}-${version}${release}.jar"/>
             <webinf file="${src}/etc/${name}.tld"/>
-            <classes dir="${build.dir}/webapp"/>
+            <classes dir="${build}/webapp"/>
         </war>
     </target>
 
 
     <!-- Build a usable jar file -->
     <target name="jar" depends="format, compile">
-        <mkdir dir="${dist.dir}"/>
+        <mkdir dir="${dist}"/>
 
-        <jar jarfile="${dist.dir}/${name}-${version}${release}.jar" basedir="${build.dir}" includes="**" excludes="test/**, docs/**, *.war"/>
+        <jar jarfile="${dist}/${name}-${version}${release}.jar" basedir="${build}" includes="**" excludes="test/**, docs/**, *.war">
+            <manifest>
+                <attribute name="Implementation-Title" value="${fullname}"/>
+                <attribute name="Implementation-Version" value="${version}"/>
+                <attribute name="Implementation-Vendor" value="OpenSymphony"/>
+            </manifest>
+        </jar>
     </target>
 
 
     <!-- Cleans up generated stuff -->
     <target name="clean" depends="init">
-        <delete dir="${build.dir}"/>
+        <delete dir="${build}"/>
         <delete dir="${build.test.dir}"/>
-        <delete dir="${dist.dir}"/>
+        <delete dir="${dist}"/>
     </target>
 
     <target name="format" depends="init">
@@ -140,7 +147,7 @@
 
             <formatter type="xml"/>
 
-            <batchtest todir="${dist.dir}/docs/junit">
+            <batchtest todir="${dist}/docs/junit">
                 <fileset dir="${build.test.dir}">
                     <include name="**/TestComplete*.class"/>
                     <exclude name="**/web/*.*"/>
@@ -164,7 +171,7 @@
 
             <formatter type="xml"/>
 
-            <batchtest todir="${dist.dir}/docs/junit">
+            <batchtest todir="${dist}/docs/junit">
                 <fileset dir="${build.test.dir}">
                     <include name="**/TestCompleteCluster.class"/>
                 </fileset>
@@ -173,13 +180,13 @@
     </target>
 
     <target name="test-web" if="test.web.baseURL">
-        <mkdir dir="${dist.dir}/docs/junit"/>
+        <mkdir dir="${dist}/docs/junit"/>
         <mkdir dir="${build.test.dir}"/>
 
         <!-- Clear out any previous persistent cache directory -->
         <delete dir="${test.cache.path}"/>
 
-        <javac srcdir="${src.test}" destdir="${build.test.dir}" includes="com/opensymphony/oscache/web/**" debug="${debug}" classpath="${build.dir}" classpathref="cp"/>
+        <javac srcdir="${src.test}" destdir="${build.test.dir}" includes="com/opensymphony/oscache/web/**" debug="${debug}" classpath="${build}" classpathref="cp"/>
 
         <java classname="com.opensymphony.oscache.web.CheckDeployment" failonerror="true" classpath="${build.test.dir}" fork="yes">
             <arg value="${test.web.baseURL}"/>
@@ -191,13 +198,13 @@
             <sysproperty key="test.web.baseURL" value="${test.web.baseURL}"/>
             <classpath>
                 <pathelement location="${build.test.dir}"/>
-                <pathelement location="${build.dir}"/>
+                <pathelement location="${build}"/>
                 <path refid="cp"/>
             </classpath>
 
             <formatter type="xml"/>
             <formatter type="plain" useFile="false"/>
-            <batchtest todir="${dist.dir}/docs/junit">
+            <batchtest todir="${dist}/docs/junit">
                 <fileset dir="${build.test.dir}">
                     <include name="**/web/TestComplete*.class"/>
                     <include name="**/web/TestLoadComplete*.class"/>
@@ -209,8 +216,8 @@
 
     <!-- Run JUnit tests using different combinations of disk and memory caching -->
     <target name="test" depends="init, compile, example-war, clover-check, junit-check">
-        <mkdir dir="${dist.dir}/docs/junit"/>
-        <mkdir dir="${dist.dir}/docs/clover"/>
+        <mkdir dir="${dist}/docs/junit"/>
+        <mkdir dir="${dist}/docs/clover"/>
         <mkdir dir="${build.test.dir}"/>
 
         <taskdef resource="clovertasks"/>
@@ -255,17 +262,17 @@
 
     <!-- Generate JavaDoc -->
     <target name="javadocs" depends="init">
-        <mkdir dir="${dist.dir}/docs/api"/>
-        <javadoc sourcepath="${src.java}" destdir="${dist.dir}/docs/api"
-          packagenames="${packages}" classpathref="cp" author="true" version="true"
+        <mkdir dir="${dist}/docs/api"/>
+        <javadoc sourcepath="${src.java}" destdir="${dist}/docs/api"
+          packagenames="${docs.packages}" classpathref="cp" author="true" version="true"
           windowTitle="${Name} ${version}${release} API" doctitle="${Name}"
           footer="See &lt;a href=&quot;http://www.opensymphony.com/&quot; target=&quot;_top&quot;&gt;www.opensymphony.com&lt;/a&gt; for more information."
-          use="true" verbose="false" stylesheetfile="${doc.dir}/api.css" />
+          use="true" verbose="false" stylesheetfile="${docs}/api.css" />
     </target>
 
     <target name="docs" depends="javadocs, clover.report, junit.report">
-        <copy todir="${dist.dir}/docs">
-            <fileset dir="${doc.dir}"/>
+        <copy todir="${dist}/docs">
+            <fileset dir="${docs}"/>
         </copy>
     </target>
 
@@ -277,41 +284,41 @@
         <mkdir dir="${tmp.dir}/etc"/>
 
         <copy todir="${tmp.dir}/docs">
-            <fileset dir="${dist.dir}/docs"/>
+            <fileset dir="${dist}/docs"/>
         </copy>
         <copy todir="${tmp.dir}/src">
             <fileset dir="${src}" excludes="etc/**"/>
         </copy>
         <copy todir="${tmp.dir}/lib">
-            <fileset dir="${lib.dir}" excludes="build/**" />
+            <fileset dir="${lib}" excludes="build/**" />
         </copy>
 
-        <copy file="${dist.dir}/${name}-${version}${release}.jar" tofile="${tmp.dir}/${name}-${version}${release}.jar"/>
+        <copy file="${dist}/${name}-${version}${release}.jar" tofile="${tmp.dir}/${name}-${version}${release}.jar"/>
         <copy file="${src}/etc/oscache.properties" tofile="${tmp.dir}/etc/oscache.properties"/>
         <copy file="${src}/etc/${name}.tld" tofile="${tmp.dir}/etc/${name}.tld"/>
         <copy file="readme.txt" tofile="${tmp.dir}/readme.txt" failonerror="false"/>
 
-        <zip zipfile="${dist.dir}/${name}-${version}${release}-full.zip" basedir="${tmp.dir}" includes="**"/>
+        <zip zipfile="${dist}/${name}-${version}${release}-full.zip" basedir="${tmp.dir}" includes="**"/>
 
         <!-- Remove everything that's not in the binary release -->
         <delete dir="${tmp.dir}/src"/>
-        <delete dir="${tmp.dir}/lib/build"/>
+        <delete dir="${tmp.dir}/${lib.build}"/>
         <delete dir="${tmp.dir}/lib/plugins"/>
         <move todir="${tmp.dir}/lib">
             <fileset dir="${tmp.dir}/lib/core"/>
         </move>
-        <delete dir="${tmp.dir}/lib/core"/>
+        <delete dir="${tmp.dir}/${lib.core}"/>
         <delete dir="${tmp.dir}/docs/junit"/>
         <delete dir="${tmp.dir}/docs/clover"/>
 
-        <zip zipfile="${dist.dir}/${name}-${version}${release}-binary.zip" basedir="${tmp.dir}" includes="**"/>
+        <zip zipfile="${dist}/${name}-${version}${release}-binary.zip" basedir="${tmp.dir}" includes="**"/>
 
         <delete dir="${tmp.dir}"/>
     </target>
 
     <target name="clover.report" depends="test">
         <clover-report>
-            <current outfile="${dist.dir}/docs/clover">
+            <current outfile="${dist}/docs/clover">
                 <fileset dir="${src.java}" excludes="**/Test*"/>
                 <format type="html"/>
             </current>
@@ -319,11 +326,11 @@
     </target>
 
     <target name="junit.report" depends="test">
-        <junitreport todir="${dist.dir}/docs/junit">
-            <fileset dir="${dist.dir}/docs/junit">
+        <junitreport todir="${dist}/docs/junit">
+            <fileset dir="${dist}/docs/junit">
                 <include name="TEST-*.xml"/>
             </fileset>
-            <report format="frames" todir="${dist.dir}/docs/junit"/>
+            <report format="frames" todir="${dist}/docs/junit"/>
         </junitreport>
     </target>
 
