@@ -28,7 +28,7 @@ import javax.servlet.jsp.PageContext;
  * @author <a href="mailto:ltorunski@t-online.de">Lars Torunski</a>
  * @version $Revision$
  */
-public class CacheFilter implements Filter, ICacheKeyProvider {
+public class CacheFilter implements Filter, ICacheKeyProvider, ICacheGroupsProvider {
     // Header
     public static final String HEADER_LAST_MODIFIED = "Last-Modified";
     public static final String HEADER_CONTENT_TYPE = "Content-Type";
@@ -63,7 +63,8 @@ public class CacheFilter implements Filter, ICacheKeyProvider {
     private int fragment = FRAGMENT_AUTODETECT; // defines if this filter handles fragments of a page - default is auto detect
     private int time = 60 * 60; // time before cache should be refreshed - default one hour (in seconds)
     private int nocache = NOCACHE_OFF; // defines special no cache option for the requests - default is off
-    private ICacheKeyProvider cacheKeyProvider = this; // the provider of the cache key - default is the CacheFilter itselfs 
+    private ICacheKeyProvider cacheKeyProvider = this; // the provider of the cache key - default is the CacheFilter itselfs
+    private ICacheGroupsProvider cacheGroupsProvider = this; // the provider of the cache groups - default is the CacheFilter itselfs
 
     /**
      * Filter clean-up
@@ -150,8 +151,10 @@ public class CacheFilter implements Filter, ICacheKeyProvider {
 
                 // Only cache if the response is cacheable
                 if (isCacheable(cacheResponse)) {
-                    //Store as the cache content the result of the response
-                    cache.putInCache(key, cacheResponse.getContent(), expiresRefreshPolicy);
+                    // get the cache groups of the content
+                    String[] groups = cacheGroupsProvider.createCacheGroups(httpRequest, admin, cache);
+                    // Store as the cache content the result of the response
+                    cache.putInCache(key, cacheResponse.getContent(), groups, expiresRefreshPolicy, null);
                     updateSucceeded = true;
                 }
             } finally {
@@ -180,6 +183,9 @@ public class CacheFilter implements Filter, ICacheKeyProvider {
      * contained in the URL.</li>
      * <li><b>ICacheKeyProvider</b> - Class implementing the interface <code>ICacheKeyProvider</code>.
      * A developer can implement a method which provides cache keys based on the request, 
+     * the servlect cache administrator and cache.</li>
+     * <li><b>ICacheGroupsProvider</b> - Class implementing the interface <code>ICacheGroupsProvider</code>.
+     * A developer can implement a method which provides cache groups based on the request, 
      * the servlect cache administrator and cache.</li>
      *
      * @param filterConfig The filter configuration
@@ -249,7 +255,7 @@ public class CacheFilter implements Filter, ICacheKeyProvider {
                 Class clazz = Class.forName(className);
 
                 if (!ICacheKeyProvider.class.isAssignableFrom(clazz)) {
-                    log.error("Specified class '" + className + "' does not implement ICacheKeyProvider. Ignoring this listener.");
+                    log.error("Specified class '" + className + "' does not implement ICacheKeyProvider. Ignoring this provider.");
                 } else {
                     cacheKeyProvider = (ICacheKeyProvider) clazz.newInstance();
                 }
@@ -260,7 +266,29 @@ public class CacheFilter implements Filter, ICacheKeyProvider {
             } catch (IllegalAccessException e) {
                 log.error("Class '" + className + "' could not be instantiated because it is not public. Ignoring this cache key provider.", e);
             }
+        } catch (Exception e) {
+            log.info("Could not get init parameter 'ICacheKeyProvider', defaulting to " + this.getClass().getName() + ".");
+        }
+
+        // filter parameter ICacheGroupsProvider
+        try {
+            String className = config.getInitParameter("ICacheGroupsProvider");
             
+            try {
+                Class clazz = Class.forName(className);
+
+                if (!ICacheGroupsProvider.class.isAssignableFrom(clazz)) {
+                    log.error("Specified class '" + className + "' does not implement ICacheGroupsProvider. Ignoring this provider.");
+                } else {
+                    cacheGroupsProvider = (ICacheGroupsProvider) clazz.newInstance();
+                }
+            } catch (ClassNotFoundException e) {
+                log.error("Class '" + className + "' not found. Ignoring this cache key provider.", e);
+            } catch (InstantiationException e) {
+                log.error("Class '" + className + "' could not be instantiated because it is not a concrete class. Ignoring this cache groups provider.", e);
+            } catch (IllegalAccessException e) {
+                log.error("Class '" + className + "' could not be instantiated because it is not public. Ignoring this cache groups provider.", e);
+            }
         } catch (Exception e) {
             log.info("Could not get init parameter 'ICacheKeyProvider', defaulting to " + this.getClass().getName() + ".");
         }
@@ -271,6 +299,13 @@ public class CacheFilter implements Filter, ICacheKeyProvider {
      */
     public String createCacheKey(HttpServletRequest httpRequest, ServletCacheAdministrator scAdmin, Cache cache) {
         return scAdmin.generateEntryKey(null, httpRequest, cacheScope);
+    }
+
+    /**
+     * @see com.opensymphony.oscache.web.filter.ICacheGroupsProvider#createCacheGroups(javax.servlet.http.HttpServletRequest, ServletCacheAdministrator, Cache)
+     */
+    public String[] createCacheGroups(HttpServletRequest httpRequest, ServletCacheAdministrator scAdmin, Cache cache) {
+        return null;
     }
 
     /**
@@ -360,4 +395,5 @@ public class CacheFilter implements Filter, ICacheKeyProvider {
         String acceptEncoding = request.getHeader(HEADER_ACCEPT_ENCODING);
         return  (acceptEncoding != null) && (acceptEncoding.indexOf("gzip") != -1);
     }
+
 }

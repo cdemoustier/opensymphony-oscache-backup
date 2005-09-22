@@ -10,24 +10,24 @@ import com.opensymphony.oscache.base.Cache;
 import com.opensymphony.oscache.web.ServletCacheAdministrator;
 
 /**
- * Provider interface for cache key creation. A developer can implement a method which provides
- * cache keys based on the request, the servlet cache administrator and cache.
+ * Provider interface for cache groups creation in CacheFilter. A developer can implement a method which provides
+ * cache groups based on the request, the servlet cache administrator and cache.
  * 
- * JIRA issue: http://jira.opensymphony.com/browse/CACHE-179
+ * JIRA issue: http://jira.opensymphony.com/browse/CACHE-195
  *
  * @author <a href="mailto:ltorunski@t-online.de">Lars Torunski</a>
  * @version $Revision$
  */
-public interface ICacheKeyProvider {
+public interface ICacheGroupsProvider {
 
     /**
-     * Creates the cache key for the CacheFilter.
+     * Creates the cache groups for the CacheFilter.
      *
      * @param httpRequest the http request.
      * @param scAdmin the ServletCacheAdministrator of the cache
      * @param cache the cache of the ServletCacheAdministrator
      * @return the cache key
      */
-    public String createCacheKey(HttpServletRequest httpRequest, ServletCacheAdministrator scAdmin, Cache cache);
+    public String[] createCacheGroups(HttpServletRequest httpRequest, ServletCacheAdministrator scAdmin, Cache cache);
 
 }
