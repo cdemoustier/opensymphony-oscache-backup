@@ -3,11 +3,8 @@
 <!-- OSCache build file - http://www.opensymphony.com/oscache -->
 <project name="oscache" default="jar" basedir=".">
 
-    <property file="build.properties"/>
-
-    <!-- Initialise all the variables as required -->
-    <target name="init">
-
+    <!-- overridden properties (must be before the import!) -->
+   
         <!-- project properties -->
         <tstamp>
             <format property="release" pattern="-dMMMyy" locale="en" timezone="GMT"/>
@@ -44,8 +41,13 @@
 
         <available property="junit.available" classname="junit.framework.TestCase"/>
         <available property="clover.available" classname="org.apache.tools.ant.taskdefs.CloverCompilerAdapter"/>
-    </target>
 
+    <property name="common.build" value="../opensymphony/common/osbuild.xml"/>
+    <import file="${common.build}"/>
+    
+    <target name="init" depends="common.init">
+    </target>
+    
     <!-- Classpath -->
     <path id="cp">
         <fileset dir="lib">
@@ -56,16 +58,6 @@
     </path>
 
     <!-- Plugins Classpath -->
-
-    <path id="jalopy.classpath">
-        <fileset dir="lib/build/jalopy">
-            <include name="*.jar"/>
-        </fileset>
-    </path>
-
-    <taskdef name="jalopy" classname="de.hunsicker.jalopy.plugin.ant.AntPlugin">
-        <classpath refid="jalopy.classpath"/>
-    </taskdef>
 
     <target name="junit-check" depends="init" unless="junit.available">
         <fail message="Cannot run test cases. Please copy ${lib.build}/junit-3.8.1.jar to ${ant.home}/lib"/>
@@ -104,7 +96,7 @@
 
 
     <!-- Build a usable jar file -->
-    <target name="jar" depends="format, compile">
+    <target name="jar" depends="compile">
         <mkdir dir="${dist}"/>
 
         <jar jarfile="${dist}/${name}-${version}${release}.jar" basedir="${build}" includes="**" excludes="test/**, docs/**, *.war">
@@ -122,14 +114,6 @@
         <delete dir="${build}"/>
         <delete dir="${build.test.dir}"/>
         <delete dir="${dist}"/>
-    </target>
-
-    <target name="format" depends="init">
-        <jalopy fileformat="unix" convention="${src}/etc/jalopy.xml" history="file" historymethod="adler32" loglevel="error" threads="2" classpathref="cp">
-            <fileset dir="${src}">
-                <include name="**/*.java"/>
-            </fileset>
-        </jalopy>
     </target>
 
     <!-- Run the unit tests. This is used by the test target, so do not call directly -->
@@ -265,7 +249,7 @@
         <mkdir dir="${dist}/docs/api"/>
         <javadoc sourcepath="${src.java}" destdir="${dist}/docs/api"
           packagenames="${docs.packages}" classpathref="cp" author="true" version="true"
-          windowTitle="${Name} ${version}${release} API" doctitle="${Name}"
+          windowTitle="${name} ${version}${release} API" doctitle="${fullname}"
           footer="See &lt;a href=&quot;http://www.opensymphony.com/&quot; target=&quot;_top&quot;&gt;www.opensymphony.com&lt;/a&gt; for more information."
           use="true" verbose="false" stylesheetfile="${docs}/api.css" />
     </target>
