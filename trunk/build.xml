@@ -5,49 +5,48 @@
 
     <!-- overridden properties (must be before the import!) -->
    
-        <!-- project properties -->
-        <tstamp>
-            <format property="release" pattern="-dMMMyy" locale="en" timezone="GMT"/>
-        </tstamp>
+    <property name="lib" location="lib"/> <!-- defined in osbuild.xml -->
+    <property name="lib.core" value="${lib}/core"/> <!-- defined in osbuild.xml -->
+    <property name="lib.build" value="${lib}/build"/> <!-- defined in osbuild.xml -->
+    <property name="lib.optional" value="${lib}/plugins"/> <!-- overwritten -->
 
-        <property name="debug" value="true"/>
+    <property name="src" location="src"/> <!-- defined in osbuild.xml -->
+    <property name="src.java" value="${src}/java"/> <!-- defined in osbuild.xml -->
+    <property name="src.webapp" value="${src}/webapp"/> <!-- new -->
 
-        <!-- directory properties -->
-        <property name="lib" location="lib"/> <!-- defined in osbuild.xml -->
-        <property name="lib.core" value="${lib}/core"/> <!-- defined in osbuild.xml -->
-        <property name="lib.build" value="${lib}/build"/> <!-- defined in osbuild.xml -->
-        <property name="lib.optional" value="${lib}/plugins"/> <!-- overwritten -->
+    <property name="test" value="${src}/test"/> <!-- defined in osbuild.xml -->
+    <property name="src.test" value="${test}/java"/> <!-- defined in osbuild.xml -->
+    
+    <property name="build" value="build"/> <!-- defined in osbuild.xml -->
+    <property name="build.test.dir" value="build.test"/> <!-- ??? -->
+    <property name="dist" value="dist"/> <!-- defined in osbuild.xml -->
 
-        <property name="src" location="src"/> <!-- defined in osbuild.xml -->
-        <property name="src.java" value="${src}/java"/> <!-- defined in osbuild.xml -->
-        <property name="src.webapp" value="${src}/webapp"/> <!-- new -->
+    <property name="docs" value="docs"/> <!-- defined in osbuild.xml -->
+    <property name="docs.packages" value="com.opensymphony.*"/> <!-- defined in osbuild.xml -->
 
-        <property name="test" value="${src}/test"/> <!-- defined in osbuild.xml -->
-        <property name="src.test" value="${test}/java"/> <!-- defined in osbuild.xml -->
-        
-        <property name="build" value="build"/> <!-- defined in osbuild.xml -->
-        <property name="build.test.dir" value="build.test"/> <!-- ??? -->
-        <property name="dist" value="dist"/> <!-- defined in osbuild.xml -->
+    <property name="tmp.dir" value="tmp"/> <!-- ??? -->
 
-        <property name="docs" value="docs"/> <!-- defined in osbuild.xml -->
-        <property name="docs.packages" value="com.opensymphony.*"/> <!-- defined in osbuild.xml -->
+    <!-- This property must match with what is included in the oscache.properties files -->
+    <property name="test.cache.path" value="/tmp/cachetagscache"/>
 
-        <property name="tmp.dir" value="tmp"/> <!-- ??? -->
+    <property name="clover.initstring" location="${build.test.dir}/testcoverage.db"/>
 
-        <!-- This property must match with what is included in the oscache.properties files -->
-        <property name="test.cache.path" value="/tmp/cachetagscache"/>
+    <available property="junit.available" classname="junit.framework.TestCase"/>
+    <available property="clover.available" classname="org.apache.tools.ant.taskdefs.CloverCompilerAdapter"/>
 
-        <property name="clover.initstring" location="${build.test.dir}/testcoverage.db"/>
+    <!-- debug -->   
+    <property name="debug" value="true"/>
 
-        <available property="junit.available" classname="junit.framework.TestCase"/>
-        <available property="clover.available" classname="org.apache.tools.ant.taskdefs.CloverCompilerAdapter"/>
-
+    <!-- import common osbuild.xml -->
+    
     <property name="common.build" value="../opensymphony/common/osbuild.xml"/>
     <import file="${common.build}"/>
     
-    <target name="init" depends="common.init">
-    </target>
-    
+    <!-- project properties -->
+    <tstamp>
+        <format property="release" pattern="-dMMMyy" locale="en" timezone="GMT"/>
+    </tstamp>
+
     <!-- Classpath -->
     <path id="cp">
         <fileset dir="lib">
@@ -57,6 +56,11 @@
        </fileset>
     </path>
 
+    <!-- init -->
+    
+    <target name="init" depends="common.init">
+    </target>
+    
     <!-- Plugins Classpath -->
 
     <target name="junit-check" depends="init" unless="junit.available">
