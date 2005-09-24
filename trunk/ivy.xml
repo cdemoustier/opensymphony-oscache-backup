@@ -9,16 +9,34 @@
         <ivyauthor name="opensymphony" url="http://www.opensymphony.com/"/>
 
         <description homepage="http://www.opensymphony.com/oscache/">
-		TODO
+			OSCache is a caching solution that includes a JSP tag library and set of classes to perform 
+			fine grained dynamic caching of JSP content, servlet responses or arbitrary objects. It 
+			provides both in memory and persistent on disk caches, and can allow your site to have 
+			graceful error tolerance (eg if an error occurs like your db goes down, you can serve the 
+			cached content so people can still surf the site almost without knowing).
         </description>
     </info>
+    
     <configurations>
+        <conf name="build" visibility="private"/>
         <conf name="default" description="Default configuration"/>
     </configurations>
+    
     <publications>
         <artifact name="oscache" type="jar" conf="default"/>
     </publications>
+    
     <dependencies>
-        <dependency org="apache" name="commons-logging" rev="1.0.4"/>
+        <!-- build dependencies -->
+        <dependency org="apache" name="commons-logging" rev="1.0.4" conf="build->*"/>
+        <dependency org="apache" name="commons-collections" rev="3.1" conf="build->*"/>
+        <dependency org="jgroups" name="jgroups" rev="2.2.7" conf="build->*"/>
+        <dependency org="clover" name="clover" rev="1.3.9" conf="build->*"/>
+        <dependency org="junit" name="junit" rev="3.8.1" conf="build->*"/>
+        <dependency org="servletapi" name="servletapi" rev="2.3" conf="build->*"/>
+        <dependency org="jmsapi" name="jmsapi" rev="1.1" conf="build->*"/>
+
+        <!-- oscache itself -->
+        <dependency org="apache" name="commons-logging" rev="1.0.4" conf="default->default"/>
     </dependencies>
 </ivy-module>
