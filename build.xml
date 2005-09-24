@@ -5,34 +5,12 @@
 
     <!-- overridden properties (must be before the import!) -->
    
-    <property name="lib" location="lib"/> <!-- defined in osbuild.xml -->
-    <property name="lib.core" value="${lib}/core"/> <!-- defined in osbuild.xml -->
-    <property name="lib.build" value="${lib}/build"/> <!-- defined in osbuild.xml -->
     <property name="lib.optional" value="${lib}/plugins"/> <!-- overwritten -->
-
-    <property name="src" location="src"/> <!-- defined in osbuild.xml -->
-    <property name="src.java" value="${src}/java"/> <!-- defined in osbuild.xml -->
-    <property name="src.webapp" value="${src}/webapp"/> <!-- new -->
-
-    <property name="test" value="${src}/test"/> <!-- defined in osbuild.xml -->
-    <property name="src.test" value="${test}/java"/> <!-- defined in osbuild.xml -->
-    
-    <property name="build" value="build"/> <!-- defined in osbuild.xml -->
-    <property name="build.test.dir" value="build.test"/> <!-- ??? -->
-    <property name="dist" value="dist"/> <!-- defined in osbuild.xml -->
-
-    <property name="docs" value="docs"/> <!-- defined in osbuild.xml -->
-    <property name="docs.packages" value="com.opensymphony.*"/> <!-- defined in osbuild.xml -->
 
     <property name="tmp.dir" value="tmp"/> <!-- ??? -->
 
     <!-- This property must match with what is included in the oscache.properties files -->
     <property name="test.cache.path" value="/tmp/cachetagscache"/>
-
-    <property name="clover.initstring" location="${build.test.dir}/testcoverage.db"/>
-
-    <available property="junit.available" classname="junit.framework.TestCase"/>
-    <available property="clover.available" classname="org.apache.tools.ant.taskdefs.CloverCompilerAdapter"/>
 
     <!-- debug -->   
     <property name="debug" value="true"/>
@@ -41,8 +19,14 @@
     
     <property name="common.build" value="../opensymphony/common/osbuild.xml"/>
     <import file="${common.build}"/>
+ 
+    <!-- TODO use property name="build.clover" value="${build}/clover" -->
+    <property name="clover.initstring" location="${build.test}/testcoverage.db"/>
     
     <!-- project properties -->
+
+    <property name="src.webapp" value="${src}/webapp"/> <!-- new -->
+
     <tstamp>
         <format property="release" pattern="-dMMMyy" locale="en" timezone="GMT"/>
     </tstamp>
@@ -59,8 +43,27 @@
     <!-- init -->
     
     <target name="init" depends="common.init">
+        <!-- Disabled at the moment   
+        <taskdef name="ivy-configure" classname="fr.jayasoft.ivy.ant.IvyConfigure"/>
+        <taskdef name="ivy-resolve" classname="fr.jayasoft.ivy.ant.IvyResolve"/>
+        <taskdef name="ivy-retrieve" classname="fr.jayasoft.ivy.ant.IvyRetrieve"/>
+        <taskdef name="ivy-publish" classname="fr.jayasoft.ivy.ant.IvyPublish"/>
+        <taskdef name="ivy-report" classname="fr.jayasoft.ivy.ant.IvyReport"/>
+        <taskdef name="ivy-deliver" classname="fr.jayasoft.ivy.ant.IvyDeliver"/>
+
+        <ivy-retrieve/>
+        -->
     </target>
+ 
+    <!-- Ivy -->   
     
+    <!-- Disabled at the moment   
+    <target name="ivyrep.copy-ivy" depends="init">
+        <ivy-deliver deliverpattern="${ivyrep.path}/opensymphony/${name}/[artifact]-[revision].[ext]"
+                     pubrevision="${version}-${TIME}" pubdate="${TIME}"/>
+    </target>
+    -->
+
     <!-- Plugins Classpath -->
 
     <target name="junit-check" depends="init" unless="junit.available">
@@ -114,10 +117,7 @@
 
 
     <!-- Cleans up generated stuff -->
-    <target name="clean" depends="init">
-        <delete dir="${build}"/>
-        <delete dir="${build.test.dir}"/>
-        <delete dir="${dist}"/>
+    <target name="clean" depends="common.clean">
     </target>
 
     <!-- Run the unit tests. This is used by the test target, so do not call directly -->
@@ -129,14 +129,14 @@
 
         <junit printsummary="yes" haltonfailure="no" haltonerror="yes" fork="yes">
             <classpath>
-                <pathelement location="${build.test.dir}"/>
+                <pathelement location="${build.test}"/>
                 <path refid="cp"/>
             </classpath>
 
             <formatter type="xml"/>
 
             <batchtest todir="${dist}/docs/junit">
-                <fileset dir="${build.test.dir}">
+                <fileset dir="${build.test}">
                     <include name="**/TestComplete*.class"/>
                     <exclude name="**/web/*.*"/>
                     <exclude name="**/clustersupport/*.*"/>
@@ -153,14 +153,14 @@
 
         <junit printsummary="yes" haltonfailure="no" haltonerror="yes" fork="yes">
             <classpath>
-                <pathelement location="${build.test.dir}"/>
+                <pathelement location="${build.test}"/>
                 <path refid="cp"/>
             </classpath>
 
             <formatter type="xml"/>
 
             <batchtest todir="${dist}/docs/junit">
-                <fileset dir="${build.test.dir}">
+                <fileset dir="${build.test}">
                     <include name="**/TestCompleteCluster.class"/>
                 </fileset>
             </batchtest>
@@ -169,14 +169,14 @@
 
     <target name="test-web" if="test.web.baseURL">
         <mkdir dir="${dist}/docs/junit"/>
-        <mkdir dir="${build.test.dir}"/>
+        <mkdir dir="${build.test}"/>
 
         <!-- Clear out any previous persistent cache directory -->
         <delete dir="${test.cache.path}"/>
 
-        <javac srcdir="${src.test}" destdir="${build.test.dir}" includes="com/opensymphony/oscache/web/**" debug="${debug}" classpath="${build}" classpathref="cp"/>
+        <javac srcdir="${src.test}" destdir="${build.test}" includes="com/opensymphony/oscache/web/**" debug="${debug}" classpath="${build}" classpathref="cp"/>
 
-        <java classname="com.opensymphony.oscache.web.CheckDeployment" failonerror="true" classpath="${build.test.dir}" fork="yes">
+        <java classname="com.opensymphony.oscache.web.CheckDeployment" failonerror="true" classpath="${build.test}" fork="yes">
             <arg value="${test.web.baseURL}"/>
         </java>
 
@@ -185,7 +185,7 @@
         <junit printsummary="yes" haltonfailure="no" haltonerror="yes" fork="yes">
             <sysproperty key="test.web.baseURL" value="${test.web.baseURL}"/>
             <classpath>
-                <pathelement location="${build.test.dir}"/>
+                <pathelement location="${build.test}"/>
                 <pathelement location="${build}"/>
                 <path refid="cp"/>
             </classpath>
@@ -193,7 +193,7 @@
             <formatter type="xml"/>
             <formatter type="plain" useFile="false"/>
             <batchtest todir="${dist}/docs/junit">
-                <fileset dir="${build.test.dir}">
+                <fileset dir="${build.test}">
                     <include name="**/web/TestComplete*.class"/>
                     <include name="**/web/TestLoadComplete*.class"/>
                 </fileset>
@@ -206,36 +206,36 @@
     <target name="test" depends="init, compile, example-war, clover-check, junit-check">
         <mkdir dir="${dist}/docs/junit"/>
         <mkdir dir="${dist}/docs/clover"/>
-        <mkdir dir="${build.test.dir}"/>
+        <mkdir dir="${build.test}"/>
 
         <taskdef resource="clovertasks"/>
-        <javac destdir="${build.test.dir}" debug="${debug}" classpathref="cp" compiler="org.apache.tools.ant.taskdefs.CloverCompilerAdapter">
+        <javac destdir="${build.test}" debug="${debug}" classpathref="cp" compiler="org.apache.tools.ant.taskdefs.CloverCompilerAdapter">
             <src path="${src.java}"/>
         </javac>
-        <javac destdir="${build.test.dir}" debug="${debug}" classpathref="cp">
+        <javac destdir="${build.test}" debug="${debug}" classpathref="cp">
             <src path="${src.test}"/>
         </javac>
         
         <!-- Run tests using Memory Cache Only -->
-        <copy file="${src.test}/oscacheMemoryOnly.properties" tofile="${build.test.dir}/oscache.properties" overwrite="yes"/>
+        <copy file="${src.test}/oscacheMemoryOnly.properties" tofile="${build.test}/oscache.properties" overwrite="yes"/>
         <echo message="Running tests with memory cache only" level="info"/>
         <antcall target="test-base"/>
         <antcall target="test-web"/>
 
         <!-- Rerun tests using Disk Cache Only -->
-        <copy file="${src.test}/oscacheDiskOnly.properties" tofile="${build.test.dir}/oscache.properties" overwrite="yes"/>
+        <copy file="${src.test}/oscacheDiskOnly.properties" tofile="${build.test}/oscache.properties" overwrite="yes"/>
         <echo message="Running tests with disk cache only" level="info"/>
         <antcall target="test-base"/>
         <antcall target="test-web"/>
 
         <!-- ReRun tests using Disk and Memory Cache -->
-        <copy file="${src.test}/oscacheDiskAndMemory.properties" tofile="${build.test.dir}/oscache.properties" overwrite="yes"/>
+        <copy file="${src.test}/oscacheDiskAndMemory.properties" tofile="${build.test}/oscache.properties" overwrite="yes"/>
         <echo message="Running tests with disk and memory caches" level="info"/>
         <antcall target="test-base"/>
         <antcall target="test-web"/>
     
         <!-- ReRun tests using Memory and Disk Overflow Cache -->   
-        <copy file="${src.test}/oscacheMemoryAndOverflowToDisk.properties" tofile="${build.test.dir}/oscache.properties" overwrite="yes"/>
+        <copy file="${src.test}/oscacheMemoryAndOverflowToDisk.properties" tofile="${build.test}/oscache.properties" overwrite="yes"/>
         <echo message="Running tests with memory and disk overflow caches" level="info"/>
         <antcall target="test-base"/>
         <antcall target="test-web"/>
@@ -253,7 +253,7 @@
         <mkdir dir="${dist}/docs/api"/>
         <javadoc sourcepath="${src.java}" destdir="${dist}/docs/api"
           packagenames="${docs.packages}" classpathref="cp" author="true" version="true"
-          windowTitle="${name} ${version}${release} API" doctitle="${fullname}"
+          windowTitle="${fullname} ${version}${release} API" doctitle="${fullname}"
           footer="See &lt;a href=&quot;http://www.opensymphony.com/&quot; target=&quot;_top&quot;&gt;www.opensymphony.com&lt;/a&gt; for more information."
           use="true" verbose="false" stylesheetfile="${docs}/api.css" />
     </target>
