@@ -43,9 +43,14 @@ public class CacheFilter implements Filter, ICacheKeyProvider, ICacheGroupsProvi
     public static final int FRAGMENT_NO = 0;
     public static final int FRAGMENT_YES = 1;
     
-    // No cache options
+    // No cache parameter
     public static final int NOCACHE_OFF = 0;
     public static final int NOCACHE_SESSION_ID_IN_URL = 1;
+    
+    // Expires parameter
+    public static final long EXPIRES_OFF = 0;
+    public static final long EXPIRES_ON = 1;
+    public static final long EXPIRES_TIME = -1;
 
     // request attribute to avoid reentrance
     private final static String REQUEST_FILTERED = "__oscache_filtered";
@@ -63,6 +68,7 @@ public class CacheFilter implements Filter, ICacheKeyProvider, ICacheGroupsProvi
     private int fragment = FRAGMENT_AUTODETECT; // defines if this filter handles fragments of a page - default is auto detect
     private int time = 60 * 60; // time before cache should be refreshed - default one hour (in seconds)
     private int nocache = NOCACHE_OFF; // defines special no cache option for the requests - default is off
+    private long expires = EXPIRES_ON; // defines if the expires-header will be sent - default is on
     private ICacheKeyProvider cacheKeyProvider = this; // the provider of the cache key - default is the CacheFilter itselfs
     private ICacheGroupsProvider cacheGroupsProvider = this; // the provider of the cache groups - default is the CacheFilter itselfs
 
@@ -145,7 +151,7 @@ public class CacheFilter implements Filter, ICacheKeyProvider, ICacheGroupsProvi
                     log.info("<cache>: New cache entry, cache stale or cache scope flushed for " + key);
                 }
 
-                CacheHttpServletResponseWrapper cacheResponse = new CacheHttpServletResponseWrapper((HttpServletResponse) response, fragmentRequest, time * 1000);
+                CacheHttpServletResponseWrapper cacheResponse = new CacheHttpServletResponseWrapper((HttpServletResponse) response, fragmentRequest, time * 1000, expires);
                 chain.doFilter(request, cacheResponse);
                 cacheResponse.flushBuffer();
 
@@ -170,20 +176,30 @@ public class CacheFilter implements Filter, ICacheKeyProvider, ICacheGroupsProvi
      * instance and configures the filter based on any initialization parameters.<p>
      * The supported initialization parameters are:
      * <ul>
+     * 
      * <li><b>time</b> - the default time (in seconds) to cache content for. The default
      * value is 3600 seconds (one hour).</li>
+     * 
      * <li><b>scope</b> - the default scope to cache content in. Acceptable values
      * are <code>application</code> (default), <code>session</code>, <code>request</code> and
-     * <code>page</code>.
+     * <code>page</code>.</li>
+     * 
      * <li><b>fragment</b> - defines if this filter handles fragments of a page. Acceptable values
-     * are <code>-1</code> (auto detect), <code>0</code> (false) and <code>1</code> (true).
-     * The default value is auto detect.</li>
+     * are <code>auto</code> (default) for auto detect, <code>no</code> and <code>yes</code>.</li>
+     * 
      * <li><b>nocache</b> - defines which objects shouldn't be cached. Acceptable values
      * are <code>off</code> (default) and <code>sessionIdInURL</code> if the session id is
      * contained in the URL.</li>
+     * 
+     * <li><b>expires</b> - defines if the expires header will be sent in the response. Acceptable values are
+     * <code>off</code> for don't sending the header, even it is set in the filter chain, 
+     * <code>on</code> (default) for sending it if it is set in the filter chain and 
+     * <code>time</code> the expires information will be intialized based on the time parameter and creation time of the content.</li>
+     * 
      * <li><b>ICacheKeyProvider</b> - Class implementing the interface <code>ICacheKeyProvider</code>.
      * A developer can implement a method which provides cache keys based on the request, 
      * the servlect cache administrator and cache.</li>
+     * 
      * <li><b>ICacheGroupsProvider</b> - Class implementing the interface <code>ICacheGroupsProvider</code>.
      * A developer can implement a method which provides cache groups based on the request, 
      * the servlect cache administrator and cache.</li>
@@ -224,11 +240,29 @@ public class CacheFilter implements Filter, ICacheKeyProvider, ICacheGroupsProvi
 
         // filter parameter fragment
         try {
-            fragment = Integer.parseInt(config.getInitParameter("fragment"));
-
-            if ((fragment < FRAGMENT_AUTODETECT) || (fragment > FRAGMENT_YES)) {
-                log.info("Wrong init parameter 'fragment', setting to 'auto detect':" + fragment);
+            String fragmentString = config.getInitParameter("fragment");
+            
+            if (fragmentString.equals("no")) {
+                fragment = FRAGMENT_NO;
+            } else if (fragmentString.equals("yes")) {
+                fragment = FRAGMENT_YES;
+            } else if (fragmentString.equalsIgnoreCase("auto")) {
                 fragment = FRAGMENT_AUTODETECT;
+            } else {
+                // FIXME in 2.2 RC the values were -1, 0. In 2.2.1 or >= 2.3 delete this code
+                try {
+                    fragment = Integer.parseInt(fragmentString);
+
+                    if ((fragment < FRAGMENT_AUTODETECT) || (fragment > FRAGMENT_YES)) {
+                        log.info("Wrong init parameter 'fragment', setting to 'auto detect': " + fragment);
+                        fragment = FRAGMENT_AUTODETECT;
+                    }
+                    
+                    log.warn("The used value '" + fragmentString + "' for the fragment parameter is deprecated.");
+                } catch (Exception e2) {
+                    log.info("Could not get init parameter 'fragment', defaulting to 'auto detect'.");
+                }
+                // end of deletion
             }
         } catch (Exception e) {
             log.info("Could not get init parameter 'fragment', defaulting to 'auto detect'.");
@@ -245,6 +279,21 @@ public class CacheFilter implements Filter, ICacheKeyProvider, ICacheGroupsProvi
             } 
         } catch (Exception e) {
             log.info("Could not get init parameter 'nocache', defaulting to 'off'.");
+        }
+
+        // filter parameter expires
+        try {
+            String expiresString = config.getInitParameter("expires");
+            
+            if (expiresString.equals("off")) {
+                expires = EXPIRES_OFF;
+            } else if (expiresString.equals("on")) {
+                expires = EXPIRES_ON;
+            } else if (expiresString.equalsIgnoreCase("time")) {
+                expires = EXPIRES_TIME;
+            } 
+        } catch (Exception e) {
+            log.info("Could not get init parameter 'expires', defaulting to 'on'.");
         }
 
         // filter parameter ICacheKeyProvider
@@ -290,7 +339,7 @@ public class CacheFilter implements Filter, ICacheKeyProvider, ICacheGroupsProvi
                 log.error("Class '" + className + "' could not be instantiated because it is not public. Ignoring this cache groups provider.", e);
             }
         } catch (Exception e) {
-            log.info("Could not get init parameter 'ICacheKeyProvider', defaulting to " + this.getClass().getName() + ".");
+            log.info("Could not get init parameter 'ICacheGroupsProvider', defaulting to " + this.getClass().getName() + ".");
         }
     }
 
