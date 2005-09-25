@@ -1,55 +1,58 @@
 <html>
     <head>
-        <title>OSCache : OSCache 2.1</title>
+        <title>OSCache - 
+        OSCache 2.1
+         </title>
 	    <link rel="stylesheet" href="styles/site.css" type="text/css" />
-        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">	    
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
     </head>
 
     <body>
 	    <table class="pagecontent" border="0" cellpadding="0" cellspacing="0" width="100%" bgcolor="#ffffff">
 		    <tr>
 			    <td valign="top" class="pagebody">
-				    <div class="pageheader">
-					    <span class="pagetitle">
-                            OSCache : OSCache 2.1
-                                                    </span>
-				    </div>
-				    <div class="pagesubheading">
-					    This page last changed on Jan 23, 2005 by <font color="#0050B2">lars t</font>.
-				    </div>
+				    <h3><a name="OSCache2.1-ReleaseNotes">Release Notes</a></h3>
 
-				    <p class="paragraph"><h3 style="margin: 4px 0px 4px 0px;" class="heading3"><a name="OSCache2.1-ReleaseNotes"> Release Notes</a></h3></p>(18th January 2005 - by Andres March)
-<h4 class="heading4"><a name="OSCache2.1-NewFeatures%3A"> New Features:</a></h4>
-<ul class="star">
-<li> Added HashDiskPersistenceListner <a href="http://jira.opensymphony.com/browse/CACHE-132" title="Visit page outside Confluence">CACHE-132 </a> that hashes file names in order to eliminate nasty characters and overly long names</li>
-<li> Added property that allows cache entries to only be persisted when the memory capacity has been exceeded. The property is called: cache.persistence.overflow.only. It defaults to false for backwards compatibility meaning all cache entries are persisted when a listener has been registered. See <a href="http://jira.opensymphony.com/browse/CACHE-133" title="Visit page outside Confluence">CACHE-133 </a></li>
-<li> Check If-Modified-Since header in cache filter to increase performance, see <a href="http://jira.opensymphony.com/browse/CACHE-58" title="Visit page outside Confluence">CACHE-58 </a> and <a href="http://jira.opensymphony.com/browse/CACHE-70" title="Visit page outside Confluence">CACHE-70 </a></li>
+<p>(18th January 2005 - by Andres March)</p>
+<h4><a name="OSCache2.1-NewFeatures%3A">New Features:</a></h4>
+<ul>
+	<li>Added HashDiskPersistenceListner <a href="http://jira.opensymphony.com/browse/CACHE-132" title="Visit page outside Confluence">CACHE-132 </a> that hashes file names in order to eliminate nasty characters and overly long names</li>
+	<li>Added property that allows cache entries to only be persisted when the memory capacity has been exceeded. The property is called: cache.persistence.overflow.only. It defaults to false for backwards compatibility meaning all cache entries are persisted when a listener has been registered. See <a href="http://jira.opensymphony.com/browse/CACHE-133" title="Visit page outside Confluence">CACHE-133 </a></li>
+	<li>Check If-Modified-Since header in cache filter to increase performance, see <a href="http://jira.opensymphony.com/browse/CACHE-58" title="Visit page outside Confluence">CACHE-58 </a> and <a href="http://jira.opensymphony.com/browse/CACHE-70" title="Visit page outside Confluence">CACHE-70 </a></li>
 </ul>
-<h4 class="heading4"><a name="OSCache2.1-Improvements%3A"> Improvements:</a></h4>
 
-<ul class="star">
-<li> Updated jgroups jar regarding changed package name <a href="http://jira.opensymphony.com/browse/CACHE-85" title="Visit page outside Confluence">CACHE-85 </a>, <a href="http://jira.opensymphony.com/browse/CACHE-126" title="Visit page outside Confluence">CACHE-126</a> and configuration based upon recommendations from Bela Ban (javagroups maintainer).</li>
-<li> More evenly distributed disk caching, see <a href="http://jira.opensymphony.com/browse/CACHE-94" title="Visit page outside Confluence">CACHE-94 </a></li>
-<li> Public access for configuration properties, see <a href="http://jira.opensymphony.com/browse/CACHE-92" title="Visit page outside Confluence">CACHE-92 </a></li>
-<li> Public method to clear cache, see <a href="http://jira.opensymphony.com/browse/CACHE-104" title="Visit page outside Confluence">CACHE-104 </a>, <a href="http://jira.opensymphony.com/browse/CACHE-68" title="Visit page outside Confluence">CACHE-68</a></li>
-<li> Output the scope name&#039;s in toString() of ScopeEventListenerImpl, see <a href="http://jira.opensymphony.com/browse/CACHE-95" title="Visit page outside Confluence">CACHE-95 </a></li>
-<li> Call get() method on put() method call, see <a href="http://jira.opensymphony.com/browse/CACHE-105" title="Visit page outside Confluence">CACHE-105 </a></li>
-<li> Library updates<ul class="star">
-<li> upgrade to Commons Logging 1.0.4, see <a href="http://jira.opensymphony.com/browse/CACHE-102" title="Visit page outside Confluence">CACHE-102 </a></li>
-<li> upgrade to Commons Collections 3.1, see <a href="http://jira.opensymphony.com/browse/CACHE-103" title="Visit page outside Confluence">CACHE-103 </a></li>
-</ul></li>
-<li> Moved all docs to <a href="http://wiki.opensymphony.com/display/CACHE/Home" title="Visit page outside Confluence">wiki</a></li>
-<li> Website documentation updates.</li>
+
+<h4><a name="OSCache2.1-Improvements%3A">Improvements:</a></h4>
+
+<ul>
+	<li>Updated jgroups jar regarding changed package name <a href="http://jira.opensymphony.com/browse/CACHE-85" title="Visit page outside Confluence">CACHE-85 </a>, <a href="http://jira.opensymphony.com/browse/CACHE-126" title="Visit page outside Confluence">CACHE-126</a> and configuration based upon recommendations from Bela Ban (javagroups maintainer).</li>
+	<li>More evenly distributed disk caching, see <a href="http://jira.opensymphony.com/browse/CACHE-94" title="Visit page outside Confluence">CACHE-94 </a></li>
+	<li>Public access for configuration properties, see <a href="http://jira.opensymphony.com/browse/CACHE-92" title="Visit page outside Confluence">CACHE-92 </a></li>
+	<li>Public method to clear cache, see <a href="http://jira.opensymphony.com/browse/CACHE-104" title="Visit page outside Confluence">CACHE-104 </a>, <a href="http://jira.opensymphony.com/browse/CACHE-68" title="Visit page outside Confluence">CACHE-68</a></li>
+	<li>Output the scope name's in toString() of ScopeEventListenerImpl, see <a href="http://jira.opensymphony.com/browse/CACHE-95" title="Visit page outside Confluence">CACHE-95 </a></li>
+	<li>Call get() method on put() method call, see <a href="http://jira.opensymphony.com/browse/CACHE-105" title="Visit page outside Confluence">CACHE-105 </a></li>
+	<li>Library updates
+	<ul>
+		<li>upgrade to Commons Logging 1.0.4, see <a href="http://jira.opensymphony.com/browse/CACHE-102" title="Visit page outside Confluence">CACHE-102 </a></li>
+		<li>upgrade to Commons Collections 3.1, see <a href="http://jira.opensymphony.com/browse/CACHE-103" title="Visit page outside Confluence">CACHE-103 </a></li>
+	</ul>
+	</li>
+	<li>Moved all docs to <a href="http://wiki.opensymphony.com/display/CACHE/Home" title="Visit page outside Confluence">wiki</a></li>
+	<li>Website documentation updates.</li>
 </ul>
-<h4 class="heading4"><a name="OSCache2.1-BugFixes%3A"> Bug Fixes:</a></h4>
 
-<ul class="star">
-<li> <a href="http://jira.opensymphony.com/browse/CACHE-73" title="Visit page outside Confluence">CACHE-73 </a> - NullpointerException after deserialization of AbstractConcurrentReadCache</li>
-<li> <a href="http://jira.opensymphony.com/browse/CACHE-98" title="Visit page outside Confluence">CACHE-98 </a> - Disk cache not getting served first time for long keys</li>
-<li> <a href="http://jira.opensymphony.com/browse/CACHE-107" title="Visit page outside Confluence">CACHE-107 </a> - flushEntry does not behave correctly in cluster</li>
-<li> <a href="http://jira.opensymphony.com/browse/CACHE-118" title="Visit page outside Confluence">CACHE-118</a> - Updating groups doesn&#039;t work</li>
-<li> <a href="http://jira.opensymphony.com/browse/CACHE-119" title="Visit page outside Confluence">CACHE-119</a> - flush does not work correctly in a clustered environment</li>
-</ul><br/>
+
+<h4><a name="OSCache2.1-BugFixes%3A">Bug Fixes:</a></h4>
+
+<ul>
+	<li><a href="http://jira.opensymphony.com/browse/CACHE-73" title="Visit page outside Confluence">CACHE-73 </a> - NullpointerException after deserialization of AbstractConcurrentReadCache</li>
+	<li><a href="http://jira.opensymphony.com/browse/CACHE-98" title="Visit page outside Confluence">CACHE-98 </a> - Disk cache not getting served first time for long keys</li>
+	<li><a href="http://jira.opensymphony.com/browse/CACHE-107" title="Visit page outside Confluence">CACHE-107 </a> - flushEntry does not behave correctly in cluster</li>
+	<li><a href="http://jira.opensymphony.com/browse/CACHE-118" title="Visit page outside Confluence">CACHE-118</a> - Updating groups doesn't work</li>
+	<li><a href="http://jira.opensymphony.com/browse/CACHE-119" title="Visit page outside Confluence">CACHE-119</a> - flush does not work correctly in a clustered environment</li>
+</ul>
+
+
 <p>
     <table  width="100%" cellspacing="0" class="grid">
         <tr>
@@ -301,17 +304,7 @@
 </p>
 
 
-
-				    
                     			    </td>
-		    </tr>
-	    </table>
-	    <table border="0" cellpadding="0" cellspacing="0" width="100%">
-			<tr>
-				<td height="12" background="border/border_bottom.gif"><img src="border/spacer.gif" width="1" height="1" border="0"/></td>
-			</tr>
-		    <tr>
-			    <td align="center"><font color="grey">Document generated by Confluence on Apr 30, 2005 22:37</font></td>
 		    </tr>
 	    </table>
     </body>

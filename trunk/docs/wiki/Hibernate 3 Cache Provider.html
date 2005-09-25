@@ -1,7 +1,7 @@
 <html>
     <head>
         <title>OSCache - 
-        Hibernate Cache Provider
+        Hibernate 3 Cache Provider
          </title>
 	    <link rel="stylesheet" href="styles/site.css" type="text/css" />
         <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -11,18 +11,13 @@
 	    <table class="pagecontent" border="0" cellpadding="0" cellspacing="0" width="100%" bgcolor="#ffffff">
 		    <tr>
 			    <td valign="top" class="pagebody">
-				    <p>Patched version of OSCacheProvider.java originally created by Mathias Bogaert.</p>
+				    <p>Patched version of OSCacheProvider.java for Hibernate 3.0 - originally created by Mathias Bogaert.</p>
 
 <div class="code" style="border-style: solid; "><div class="codeHeader" style="border-bottom-style: solid; "><b>OSCacheProvider.java</b></div><div class="codeContent">
 <pre class="code-java"><span class="code-keyword">import</span> java.util.Properties;
-
-<span class="code-keyword">import</span> net.sf.hibernate.cache.Cache;
-<span class="code-keyword">import</span> net.sf.hibernate.cache.CacheException;
-<span class="code-keyword">import</span> net.sf.hibernate.cache.CacheProvider;
-<span class="code-keyword">import</span> net.sf.hibernate.cache.Timestamper;
-<span class="code-keyword">import</span> net.sf.hibernate.util.PropertiesHelper;
-<span class="code-keyword">import</span> net.sf.hibernate.util.StringHelper;
-
+<span class="code-keyword">import</span> org.hibernate.util.PropertiesHelper;
+<span class="code-keyword">import</span> org.hibernate.util.StringHelper;
+<span class="code-keyword">import</span> org.hibernate.cache.*;
 <span class="code-keyword">import</span> com.opensymphony.oscache.base.CacheEntry;
 <span class="code-keyword">import</span> com.opensymphony.oscache.base.Config;
 
@@ -70,6 +65,25 @@
 		<span class="code-keyword">return</span> Timestamper.next();
 	}
 
+	<span class="code-keyword">public</span> <span class="code-object">boolean</span> isMinimalPutsEnabledByDefault() {
+		<span class="code-keyword">return</span> <span class="code-keyword">false</span>;
+	}
+
+	/**
+	 * Callback to perform any necessary cleanup of the underlying cache implementation
+	 * during SessionFactory.close().
+	 */
+	<span class="code-keyword">public</span> void stop() {
+	}
+
+	/**
+	 * Callback to perform any necessary initialization of the underlying cache implementation
+	 * during SessionFactory construction.
+	 *
+	 * @param properties current configuration settings.
+	 */
+	<span class="code-keyword">public</span> void start(Properties properties) <span class="code-keyword">throws</span> CacheException {
+	}    
 }</pre>
 </div></div>
 

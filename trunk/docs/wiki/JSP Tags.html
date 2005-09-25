@@ -1,105 +1,197 @@
 <html>
     <head>
-        <title>OSCache : JSP Tags</title>
+        <title>OSCache - 
+         Tags
+        </title>
 	    <link rel="stylesheet" href="styles/site.css" type="text/css" />
-        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">	    
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
     </head>
 
     <body>
 	    <table class="pagecontent" border="0" cellpadding="0" cellspacing="0" width="100%" bgcolor="#ffffff">
 		    <tr>
 			    <td valign="top" class="pagebody">
-				    <div class="pageheader">
-					    <span class="pagetitle">
-                            OSCache : JSP Tags
-                                                    </span>
-				    </div>
-				    <div class="pagesubheading">
-					    This page last changed on Jan 17, 2005 by <font color="#0050B2">dres1011</font>.
-				    </div>
+				    <p><b>OSCache</b> comes with a JSP tag library that controls all its major functions. The tags are listed below with descriptions, attributes and examples of use.</p>
 
-				    <p class="paragraph"><b class="strong">OSCache</b> comes with a JSP tag library that controls all its major functions. The tags are listed below with descriptions, attributes and examples of use.</p>For instructions on installing OSCache in a web application, see the <a href="Installation Guide.html" title="Installation Guide">Installation Guide</a>.<p class="paragraph">The tags are:</p><ul class="star">
-<li> <a href="#JSPTags-cache" title="cache on JSP Tags">cache</a> - The main caching tag</li>
-<li> <a href="#JSPTags-usecached" title="usecached on JSP Tags">usecached</a> - A nested tag to force using a cached version.</li>
-<li> <a href="#JSPTags-flush" title="flush on JSP Tags">flush</a> - To flush caches programmatically.</li>
-<li> <a href="#JSPTags-addgroup" title="addgroup on JSP Tags">addgroup</a> - This tag must be nested inside &lt;cache:cache/&gt;. It allows groups to be dynamically added to a cached block.</li>
-</ul>
-<div align='center'><div class='informationMacroPadding'><table cellpadding='5' width='85%' cellspacing='0' class='infoMacro' border='0'><tr><td width='16' valign='top'><img src="/images/icons/emoticons/information.png" width="16" height="16" align="absmiddle" alt="" border="0"></td><td><b class="strong">Tag Legend</b><br />
-<ul class="star">
-<li> For all listed attributes,  <font color="red">req</font> means it that attribute is required and any value in <b class="strong">&#91; &#93;</b> is a default value. All attributes can accept runtime expressions.</li>
-</ul>
-<ul class="star">
-<li> From the title of the tag you can see whether or not the tag has a body:<ul class="star">
-<li> <b class="strong">&lt;tag&gt;&lt;/tag&gt;</b> tags always have a body</li>
-<li> <b class="strong">&lt;tag /&gt;</b> does not have a body</li>
-<li> <b class="strong">&lt;tag /&gt;&lt;/tag&gt;</b> can have a body or not depending on the circumstances.</li>
-</ul></li>
-</ul></td></tr></table></div></div><p class="paragraph"><h3 class="heading3"><a name="JSPTags-%3Caname%3D%22JSPTagscache%22%3E%3C%2Fa%3E%26lt%3Bcache%26gt%3B%26lt%3B%2Fcache%26gt%3B"> <a name="JSPTags-cache"></a>&lt;cache&gt;&lt;/cache&gt;</a></h3></p><h4 class="heading4"><a name="JSPTags-Description%3A"> Description:</a></h4><p class="paragraph">This is the main tag of OSCache. The body of the tag will be cached according to the attributes specified. The first time a cache is used the body content is executed and cached.</p>    Each subsequent time the tag is run, it will check to see if the cached content is stale. Content is considered stale due to one (or more) of the following being true:<br/>
+<p>For instructions on installing OSCache in a web application, see the <a href="Installation Guide.html" title="Installation Guide">Installation Guide</a>.</p>
 
-<ul class="star">
-<li> The cached body content has been in the cache for longer than the time specified by the time or duration attribute.</li>
-<li> The cron attribute matches a date/time that is more recent than the time the body content was originally cached.</li>
-<li> The scope the body content is cached in was flushed since the content was originally cached.</li>
-</ul><br/>
-    If the cached body content is stale, the tag will execute the body again and recache the new body content. Otherwise it will serve the cached content and the body will be skipped (resulting in a large speed increase).<p class="paragraph"><h4 class="heading4"><a name="JSPTags-Attributes%3A"> Attributes:</a></h4></p><ul class="star">
-<li> <b class="strong">key</b> - &#91;The request URI + query string&#93; - The cache key, any string. This should be unique for the given scope since duplicate keys will map to the same cache entry. The default value uses an escaped version of the URI and query string of the current page.<br/>
-It is possible to specify multiple cache tags in the same page without specifying keys - in this situation an index is appended to the key of subsequent tags. However this usage is discouraged since if the flow of the page is inconsistent, or cache tags are nested, the indicies will potentially change each time the page is executed, resulting in seemingly jumbled cache entries.
-</li>
-<li> <b class="strong">scope</b> - &#91;application&#93; - The scope of this cache (valid values are &quot;application&quot; and &quot;session&quot;).</li>
-<li> <b class="strong">time</b> - &#91;3600&#93; The amount of time to cache this content for (in seconds). (Default is 3600 seconds, one hour). Supplying a negative value for this attribute means that the content never expires.</li>
-<li> <b class="strong">duration</b> - &#91;&#93; - The duration of this cache (this attribute is an alternative to time). duration can be specified using Simple Date Format or ISO-8601 date format.</li>
-<li> <b class="strong">cron</b> - &#91;&#93; - A cron expression that determines when this cached content will expire. This allows content to be expired at particular dates and/or times, rather than once a cache entry reaches a certain age. See <a href="Cron Expressions.html" title="Cron Expressions">Cron Expressions</a> to read more about this attribute.</li>
-<li> <b class="strong">refresh</b> - &#91;false&#93; - A boolean. If true, the cache will be refreshed regardless of whether it is considered stale or not. This enables you to decide at runtime whether or not to rebuild the content.</li>
-<li> <b class="strong">mode</b> - &#91;&#93; - Setting this to &quot;silent&quot; will prevent the body of the tag from being written to the output stream. This may be useful if you want to preload the cache with content without actually displaying that content to the user.</li>
-<li> <b class="strong">groups</b> - &#91;&#93; - A comma-delimited list of group names can be provided. This allows cache entries to be grouped according to your needs. Grouping is useful when you have cached content that depends on other parts of your application or data - when that dependency changes, flushing the relevant group will cause all cache entries in that group to be expired.</li>
-<li> <b class="strong">language</b> - &#91;&#93; - The ISO-639 language code to distinguish different content cached under an otherwise identical key. This is useful on a multilingual site where the same JSP code is used to render content in different languages depending on the current user&#039;s preferences.</li>
-<li> <b class="strong">refreshpolicyclass</b> - &#91;&#93; - A fully-qualified classname that extends com.opensymphony.oscache.web.WebEntryRefreshPolicy. This allows you to programmatically determine whether cached content should be exipired.</li>
-<li> <b class="strong">refreshpolicyparam</b> - &#91;&#93; - Any arbitrary parameters that you need to pass through to the refreshpolicyclass. Specifying this attribute without specifying a refreshpolicyclass will have no effect.
+<p>The tags are:</p>
+
+<ul>
+	<li><a href="#JSPTags-cache" title="cache on JSP Tags">cache</a> - The main caching tag</li>
+	<li><a href="#JSPTags-usecached" title="usecached on JSP Tags">usecached</a> - A nested tag to force using a cached version.</li>
+	<li><a href="#JSPTags-flush" title="flush on JSP Tags">flush</a> - To flush caches programmatically.</li>
+	<li><a href="#JSPTags-addgroup" title="addgroup on JSP Tags">addgroup</a> - This tag must be nested inside &lt;cache:cache/&gt;. It allows groups to be dynamically added to a cached block.</li>
+</ul>
+
+
+<div class="information-block" align='center'><div class='informationMacroPadding'><table cellpadding='5' width='85%' cellspacing='0' class='infoMacro' border='0'><tr><td width='16' valign='top'><img src="/images/icons/emoticons/information.gif" width="16" height="16" align="absmiddle" alt="" border="0"></td><td><b class="strong">Tag Legend</b><br />
+<ul>
+	<li>For all listed attributes,  <font color="red">req</font> means it that attribute is required and any value in <b>[ ]</b> is a default value. All attributes can accept runtime expressions.</li>
+</ul>
+
+
+<ul>
+	<li>From the title of the tag you can see whether or not the tag has a body:
+	<ul>
+		<li><b>&lt;tag&gt;&lt;/tag&gt;</b> tags always have a body</li>
+		<li><b>&lt;tag /&gt;</b> does not have a body</li>
+		<li><b>&lt;tag /&gt;&lt;/tag&gt;</b> can have a body or not depending on the circumstances.</li>
+	</ul>
+	</li>
+</ul>
+</td></tr></table></div></div>
+
+<h3><a name="JSPTags-%3Ccache%3E%3C%2Fcache%3E"><a name="JSPTags-cache"></a>&lt;cache&gt;&lt;/cache&gt;</a></h3>
+
+<h4><a name="JSPTags-Description%3A">Description:</a></h4>
+
+<p>    This is the main tag of OSCache. The body of the tag will be cached according to the attributes specified. The first time a cache is used the body content is executed and cached.</p>
+
+<p>    Each subsequent time the tag is run, it will check to see if the cached content is stale. Content is considered stale due to one (or more) of the following being true:</p>
+
+<ul>
+	<li>The cached body content has been in the cache for longer than the time specified by the time or duration attribute.</li>
+	<li>The cron attribute matches a date/time that is more recent than the time the body content was originally cached.</li>
+	<li>The scope the body content is cached in was flushed since the content was originally cached.</li>
+</ul>
+
+
+<p>    If the cached body content is stale, the tag will execute the body again and recache the new body content. Otherwise it will serve the cached content and the body will be skipped (resulting in a large speed increase).</p>
+
+<h4><a name="JSPTags-Attributes%3A">Attributes:</a></h4>
+
+<ul>
+	<li><b>key</b> - [The request URI + query string] - The cache key, any string. This should be unique for the given scope since duplicate keys will map to the same cache entry. The default value uses an escaped version of the URI and query string of the current page.<br/>
+      It is possible to specify multiple cache tags in the same page without specifying keys - in this situation an index is appended to the key of subsequent tags. However this usage is discouraged since if the flow of the page is inconsistent, or cache tags are nested, the indicies will potentially change each time the page is executed, resulting in seemingly jumbled cache entries.</li>
+	<li><b>scope</b> - [application] - The scope of this cache (valid values are "application" and "session").</li>
+	<li><b>time</b> - [3600] The amount of time to cache this content for (in seconds). (Default is 3600 seconds, one hour). Supplying a negative value for this attribute means that the content never expires.</li>
+	<li><b>duration</b> - [] - The duration of this cache (this attribute is an alternative to time). duration can be specified using Simple Date Format or ISO-8601 date format.</li>
+	<li><b>cron</b> - [] - A cron expression that determines when this cached content will expire. This allows content to be expired at particular dates and/or times, rather than once a cache entry reaches a certain age. See <a href="Cron Expressions.html" title="Cron Expressions">Cron Expressions</a> to read more about this attribute.</li>
+	<li><b>refresh</b> - [false] - A boolean. If true, the cache will be refreshed regardless of whether it is considered stale or not. This enables you to decide at runtime whether or not to rebuild the content.</li>
+	<li><b>mode</b> - [] - Setting this to "silent" will prevent the body of the tag from being written to the output stream. This may be useful if you want to preload the cache with content without actually displaying that content to the user.</li>
+	<li><b>groups</b> - [] - A comma-delimited list of group names can be provided. This allows cache entries to be grouped according to your needs. Grouping is useful when you have cached content that depends on other parts of your application or data - when that dependency changes, flushing the relevant group will cause all cache entries in that group to be expired.</li>
+	<li><b>language</b> - [] - The ISO-639 language code to distinguish different content cached under an otherwise identical key. This is useful on a multilingual site where the same JSP code is used to render content in different languages depending on the current user's preferences.</li>
+	<li><b>refreshpolicyclass</b> - [] - A fully-qualified classname that extends com.opensymphony.oscache.web.WebEntryRefreshPolicy. This allows you to programmatically determine whether cached content should be exipired.</li>
+	<li><b>refreshpolicyparam</b> - [] - Any arbitrary parameters that you need to pass through to the refreshpolicyclass. Specifying this attribute without specifying a refreshpolicyclass will have no effect.
 <div class="code"><div class="codeHeader"><b>Examples</b></div><div class="codeContent">
-<pre>This will cache the JSP content using the current URI as a key (which means <span class="java&#45;keyword">this</span> must be the only cache tag on the page to work).&#10;&#10;    &lt;cache:cache&gt;&#10;         &#8230; some jsp content ...&#10;    &lt;/cache:cache&gt;&#10;&#10;    This will cache the content with a constant key in the user&#039;s session scope. Any page that uses <span class="java&#45;keyword">this</span> key will access one shared cache.&#10;&#10;    &lt;cache:cache key=<span class="java&#45;quote">&quot;foobar&quot;</span> scope=<span class="java&#45;quote">&quot;session&quot;</span>&gt;&#10;         &#8230; some jsp content ...&#10;    &lt;/cache:cache&gt;&#10;&#10;    This will cache the content with a programmatic key (here a product ID) <span class="java&#45;keyword">for</span> 30 minutes. It will also refresh <span class="java&#45;keyword">if</span> the variable needRefresh &#10;is <span class="java&#45;keyword">true</span>.&#10;&#10;    &lt;cache:cache key=<span class="java&#45;quote">&quot;&lt;&#37;= product.getId() &#37;&gt;&quot;</span> time=<span class="java&#45;quote">&quot;1800&quot;</span> refresh=<span class="java&#45;quote">&quot;&lt;&#37;= needRefresh &#37;&gt;&quot;</span>&gt;&#10;         &#8230; some jsp content ...&#10;    &lt;/cache:cache&gt;&#10;&#10;    This will cache the content with a programmatic key, expiring it every morning at 2am. It will also refresh <span class="java&#45;keyword">if</span> the variable needRefresh &#10;is <span class="java&#45;keyword">true</span>.&#10;&#10;    &lt;cache:cache key=<span class="java&#45;quote">&quot;&lt;&#37;= product.getId() &#37;&gt;&quot;</span> cron=<span class="java&#45;quote">&quot;0 2 &#42; &#42; &#42;&quot;</span> refresh=<span class="java&#45;quote">&quot;&lt;&#37;= needRefresh &#37;&gt;&quot;</span>&gt;&#10;         &#8230; some jsp content ...&#10;    &lt;/cache:cache&gt;&#10;&#10;    Suppose we had a dynamic list of categories that we pull from a database, and we also store currency exchange rates that get updated &#10;occasionally by calling a webservice. Suppose also that we have some content that displays information about both the categories and the &#10;current exchange rate values. The following example caches the body content and assigns it to two cache groups, <span class="java&#45;quote">&quot;currencyData&quot;</span> and &#10;<span class="java&#45;quote">&quot;categoryList&quot;</span>. When the exchange rates or the category list is updated, the appropriate group can be flushed causing <span class="java&#45;keyword">this</span> content (along &#10;with any other content associated with that group) to be exipired and then rebuilt the next time the page is processed:&#10;&#10;    &lt;cache:cache key=<span class="java&#45;quote">&quot;&lt;&#37;= product.getId() &#37;&gt;&quot;</span> time=<span class="java&#45;quote">&quot;&#45;1&quot;</span> group=<span class="java&#45;quote">&quot;currencyData, categories&quot;</span>&gt;&#10;         &#8230; display category list ...&#10;         &#8230; display currency information ...&#10;    &lt;/cache:cache&gt;</pre>
-</div></div>
-</li>
+<pre class="code-xml">This will cache the JSP content using the current URI as a key (which means this must be the only cache tag on the page to work).
+
+    <span class="code-tag">&lt;cache:cache&gt;</span>
+         ... some jsp content ...
+    <span class="code-tag">&lt;/cache:cache&gt;</span>
+
+    This will cache the content with a constant key in the user's session scope. Any page that uses this key will access one shared cache.
+
+    <span class="code-tag">&lt;cache:cache key=<span class="code-quote">"foobar"</span> scope=<span class="code-quote">"session"</span>&gt;</span>
+         ... some jsp content ...
+    <span class="code-tag">&lt;/cache:cache&gt;</span>
+
+    This will cache the content with a programmatic key (here a product ID) for 30 minutes. It will also refresh if the variable needRefresh 
+is true.
+
+    <span class="code-tag">&lt;cache:cache key=<span class="code-quote">"&lt;%= product.getId() %&gt;</span>"</span> time=<span class="code-quote">"1800"</span> refresh=<span class="code-quote">"<span class="code-tag">&lt;%= needRefresh %&gt;</span>"</span>&gt;
+         ... some jsp content ...
+    <span class="code-tag">&lt;/cache:cache&gt;</span>
+
+    This will cache the content with a programmatic key, expiring it every morning at 2am. It will also refresh if the variable needRefresh 
+is true.
+
+    <span class="code-tag">&lt;cache:cache key=<span class="code-quote">"&lt;%= product.getId() %&gt;</span>"</span> cron=<span class="code-quote">"0 2 * * *"</span> refresh=<span class="code-quote">"<span class="code-tag">&lt;%= needRefresh %&gt;</span>"</span>&gt;
+         ... some jsp content ...
+    <span class="code-tag">&lt;/cache:cache&gt;</span>
+
+    Suppose we had a dynamic list of categories that we pull from a database, and we also store currency exchange rates that get updated 
+occasionally by calling a webservice. Suppose also that we have some content that displays information about both the categories and the 
+current exchange rate values. The following example caches the body content and assigns it to two cache groups, <span class="code-quote">"currencyData"</span> and 
+<span class="code-quote">"categoryList"</span>. When the exchange rates or the category list is updated, the appropriate group can be flushed causing this content (along 
+with any other content associated with that group) to be exipired and then rebuilt the next time the page is processed:
+
+    <span class="code-tag">&lt;cache:cache key=<span class="code-quote">"&lt;%= product.getId() %&gt;</span>"</span> time=<span class="code-quote">"-1"</span> group=<span class="code-quote">"currencyData, categories"</span>&gt;
+         ... display category list ...
+         ... display currency information ...
+    <span class="code-tag">&lt;/cache:cache&gt;</span></pre>
+</div></div></li>
 </ul>
-<h3 class="heading3"><a name="JSPTags-%3Caname%3D%22JSPTagsusecached%22%3E%3C%2Fa%3E%26lt%3Busecached%2F%26gt%3B"> <a name="JSPTags-usecached"></a>&lt;usecached /&gt;</a></h3>
-<h4 class="heading4"><a name="JSPTags-Description%3A"> Description:</a></h4>
-This tag is nested within a &lt;cache&gt; tag and tells its parent whether or not to use the cached version.<p class="paragraph"><h4 class="heading4"><a name="JSPTags-Attributes%3A"> Attributes:</a></h4>
-<ul class="star">
-<li> <b class="strong">use</b> - &#91;true&#93; - A boolean that tells the tag whether or not to use the cached version. (true = use cached version). This is useful for<br/>
+
+
+<h3><a name="JSPTags-%3Cusecached%2F%3E"><a name="JSPTags-usecached"></a>&lt;usecached /&gt;</a></h3>
+<h4><a name="JSPTags-Description%3A">Description:</a></h4>
+<p>This tag is nested within a &lt;cache&gt; tag and tells its parent whether or not to use the cached version.</p>
+
+<h4><a name="JSPTags-Attributes%3A">Attributes:</a></h4>
+<ul>
+	<li><b>use</b> - [true] - A boolean that tells the tag whether or not to use the cached version. (true = use cached version). This is useful for<br/>
 programmatic control of the cache.
 <div class="code"><div class="codeHeader"><b>Example</b></div><div class="codeContent">
-<pre>This is a good example of error tolerance. If an exception occurs, the cached version of <span class="java&#45;keyword">this</span> content will be output instead.&#10;&#10;    &lt;cache:cache&gt;&#10;         &lt;&#37; <span class="java&#45;keyword">try</span> &#123; &#37;&gt;&#10;         &#8230; some jsp content ...&#10;         &lt;&#37; &#125; <span class="java&#45;keyword">catch</span> (Exception e) &#123; &#37;&gt;&#10;              &lt;cache:usecached /&gt;&#10;         &lt;&#37; &#125; &#37;&gt;&#10;    &lt;/cache:cache&gt;</pre>
-</div></div>
-</li>
-</ul>
-<h3 class="heading3"><a name="JSPTags-%3Caname%3D%22JSPTagsflush%22%3E%3C%2Fa%3E%26lt%3Bflush%2F%26gt%3B"> <a name="JSPTags-flush"></a>&lt;flush /&gt;</a></h3></p><h4 class="heading4"><a name="JSPTags-Description%3A"> Description:</a></h4>
-    This tag is used to flush caches at runtime. It is especially useful because it can be coded into the administration section of your site so that admins can decide when to flush the caches.<p class="paragraph"><h4 class="heading4"><a name="JSPTags-Attributes%3A"> Attributes:</a></h4></p><ul class="star">
-<li> <b class="strong">scope</b> - &#91;all&#93; - This decides what scope will be flushed. Valid values are &quot;application&quot;, &quot;session&quot; and null. A null scope will flush all caches, regardless of their scope.</li>
-<li> <b class="strong">key</b> - [] - When a key and a scope are both given, just that single cache entry will be marked to be flushed. When it is next accessed, it will be refreshed. It is not valid to specify a key without a scope.</li>
-<li> <b class="strong">group</b> - [] - Specifying a group will cause all cache entries in the group to be flushed. It is not valid to specify a group without a scope.</li>
-<li> <b class="strong">pattern</b> - [] - Any keys that contain this string will be flushed from the specified scope. It is not valid to specify a pattern without a scope. (Note: pattern flushing has been deprecated - you are encouraged to use the grouping functionality instead. It is more flexible and provides better performance.)</li>
-<li> <b class="strong">language</b> - [] - The ISO-639 language code to distinguish different content cached under an otherwise identical key. This is useful on a multilingual site where the same JSP code is used to render content in different languages depending on the current user&#039;s preferences.</li>
-</ul>
-<div class="code"><div class="codeContent">
-<pre>This will flush the application scope.&#10;&#10;    &lt;cache:flush scope=<span class="java&#45;quote">&quot;application&quot;</span> /&gt;&#10;&#10;    This will flush the cache entry with key <span class="java&#45;quote">&quot;foobar&quot;</span> in the session scope.&#10;&#10;    &lt;cache:flush scope=<span class="java&#45;quote">&quot;session&quot;</span> key=<span class="java&#45;quote">&quot;foobar&quot;</span> /&gt;&#10;&#10;    This will flush all cache entries in the <span class="java&#45;quote">&quot;currencyData&quot;</span> group from the application scope.&#10;&#10;    &lt;cache:flush scope=<span class="java&#45;quote">&quot;application&quot;</span> group=<span class="java&#45;quote">&quot;currencyData&quot;</span> /&gt;</pre>
-</div></div><p class="paragraph"><h3 class="heading3"><a name="JSPTags-%3Caname%3D%22JSPTagsaddgroup%22%3E%3C%2Fa%3E%26lt%3Baddgroup%2F%26gt%3B"> <a name="JSPTags-addgroup"></a>&lt;addgroup /&gt;</a></h3></p><h4 class="heading4"><a name="JSPTags-Description%3A"> Description:</a></h4><p class="paragraph">This tag must be nested inside a &lt;cache:cache/&gt; tag. It allows groups to be dynamically added to a cached block. It is useful when the group(s) a cached block should belong to are unknown until the block is actually rendered. As each group is &#039;discovered&#039;, this tag can be used to add the group to the block&#039;s group list.</p><h4 class="heading4"><a name="JSPTags-Attributes%3A"> Attributes:</a></h4>
+<pre class="code-xml">This is a good example of error tolerance. If an exception occurs, the cached version of this content will be output instead.
 
-<ul class="star">
-<li> <b class="strong">group</b> - <font color="red">req</font> - The name of the group to add the enclosing cache block to.</li>
+    <span class="code-tag">&lt;cache:cache&gt;</span>
+         <span class="code-tag">&lt;% try { %&gt;</span>
+         ... some jsp content ...
+         <span class="code-tag">&lt;% } catch (Exception e) { %&gt;</span>
+              <span class="code-tag">&lt;cache:usecached /&gt;</span>
+         <span class="code-tag">&lt;% } %&gt;</span>
+    <span class="code-tag">&lt;/cache:cache&gt;</span></pre>
+</div></div></li>
 </ul>
-<div class="code"><div class="codeContent">
-<pre>This will add the cache block with the key &#039;test1&#039; to groups &#039;group1&#039; and &#039;group2&#039;.&#10;&#10;    &lt;cache:cache key=<span class="java&#45;quote">&quot;test1&quot;</span>&gt;&#10;         &lt;cache:addgroup group=<span class="java&#45;quote">&quot;group1&quot;</span> /&gt;&#10;         &#8230; some jsp content ...&#10;         &lt;cache:addgroup group=<span class="java&#45;quote">&quot;group2&quot;</span> /&gt;&#10;         &#8230; some more jsp content ...&#10;    &lt;/cache:cache&gt;</pre>
+
+
+<h3><a name="JSPTags-%3Cflush%2F%3E"><a name="JSPTags-flush"></a>&lt;flush /&gt;</a></h3>
+
+<h4><a name="JSPTags-Description%3A">Description:</a></h4>
+<p>    This tag is used to flush caches at runtime. It is especially useful because it can be coded into the administration section of your site so that admins can decide when to flush the caches.</p>
+
+<h4><a name="JSPTags-Attributes%3A">Attributes:</a></h4>
+
+<ul>
+	<li><b>scope</b> - [all] - This decides what scope will be flushed. Valid values are "application", "session" and null. A null scope will flush all caches, regardless of their scope.</li>
+	<li><b>key</b> - [] - When a key and a scope are both given, just that single cache entry will be marked to be flushed. When it is next accessed, it will be refreshed. It is not valid to specify a key without a scope.</li>
+	<li><b>group</b> - [] - Specifying a group will cause all cache entries in the group to be flushed. It is not valid to specify a group without a scope.</li>
+	<li><b>pattern</b> - [] - Any keys that contain this string will be flushed from the specified scope. It is not valid to specify a pattern without a scope. (Note: pattern flushing has been deprecated - you are encouraged to use the grouping functionality instead. It is more flexible and provides better performance.)</li>
+	<li><b>language</b> - [] - The ISO-639 language code to distinguish different content cached under an otherwise identical key. This is useful on a multilingual site where the same JSP code is used to render content in different languages depending on the current user's preferences.</li>
+</ul>
+
+
+<div class="code"><div class="codeHeader"><b>Example</b></div><div class="codeContent">
+<pre class="code-xml">This will flush the application scope.
+
+    <span class="code-tag">&lt;cache:flush scope=<span class="code-quote">"application"</span> /&gt;</span>
+
+    This will flush the cache entry with key <span class="code-quote">"foobar"</span> in the session scope.
+
+    <span class="code-tag">&lt;cache:flush scope=<span class="code-quote">"session"</span> key=<span class="code-quote">"foobar"</span> /&gt;</span>
+
+    This will flush all cache entries in the <span class="code-quote">"currencyData"</span> group from the application scope.
+
+    <span class="code-tag">&lt;cache:flush scope=<span class="code-quote">"application"</span> group=<span class="code-quote">"currencyData"</span> /&gt;</span></pre>
 </div></div>
 
-				    
+<h3><a name="JSPTags-%3Caddgroup%2F%3E"><a name="JSPTags-addgroup"></a>&lt;addgroup /&gt;</a></h3>
+
+<h4><a name="JSPTags-Description%3A">Description:</a></h4>
+
+<p>    This tag must be nested inside a &lt;cache:cache/&gt; tag. It allows groups to be dynamically added to a cached block. It is useful when the group(s) a cached block should belong to are unknown until the block is actually rendered. As each group is 'discovered', this tag can be used to add the group to the block's group list.</p>
+
+<h4><a name="JSPTags-Attributes%3A">Attributes:</a></h4>
+
+<ul>
+	<li><b>group</b> - <font color="red">req</font> - The name of the group to add the enclosing cache block to.</li>
+</ul>
+
+
+<div class="code"><div class="codeHeader"><b>Example</b></div><div class="codeContent">
+<pre class="code-xml">This will add the cache block with the key 'test1' to groups 'group1' and 'group2'.
+
+    <span class="code-tag">&lt;cache:cache key=<span class="code-quote">"test1"</span>&gt;</span>
+         <span class="code-tag">&lt;cache:addgroup group=<span class="code-quote">"group1"</span> /&gt;</span>
+         ... some jsp content ...
+         <span class="code-tag">&lt;cache:addgroup group=<span class="code-quote">"group2"</span> /&gt;</span>
+         ... some more jsp content ...
+    <span class="code-tag">&lt;/cache:cache&gt;</span></pre>
+</div></div>
+
                     			    </td>
-		    </tr>
-	    </table>
-	    <table border="0" cellpadding="0" cellspacing="0" width="100%">
-			<tr>
-				<td height="12" background="border/border_bottom.gif"><img src="border/spacer.gif" width="1" height="1" border="0"/></td>
-			</tr>
-		    <tr>
-			    <td align="center"><font color="grey">Document generated by Confluence on Apr 30, 2005 22:37</font></td>
 		    </tr>
 	    </table>
     </body>

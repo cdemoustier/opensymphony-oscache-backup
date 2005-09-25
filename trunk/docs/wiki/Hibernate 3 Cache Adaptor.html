@@ -1,7 +1,7 @@
 <html>
     <head>
         <title>OSCache - 
-        Hibernate Cache Adapter
+        Hibernate 3 Cache Adaptor
          </title>
 	    <link rel="stylesheet" href="styles/site.css" type="text/css" />
         <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -11,16 +11,15 @@
 	    <table class="pagecontent" border="0" cellpadding="0" cellspacing="0" width="100%" bgcolor="#ffffff">
 		    <tr>
 			    <td valign="top" class="pagebody">
-				    <p>Patched version of OSCache.java originally created by Mathias Bogaert.</p>
+				    <p>Patched version of OSCache.java for Hibernate 3 - originally created by Mathias Bogaert.</p>
 
 <div class="code" style="border-style: solid; "><div class="codeHeader" style="border-bottom-style: solid; "><b>OSCache.java</b></div><div class="codeContent">
 <pre class="code-java"><span class="code-keyword">import</span> java.util.Properties;
+<span class="code-keyword">import</span> java.util.Map;
 
-<span class="code-keyword">import</span> net.sf.hibernate.cache.Cache;
-<span class="code-keyword">import</span> net.sf.hibernate.cache.CacheException;
-<span class="code-keyword">import</span> net.sf.hibernate.cache.Timestamper;
-<span class="code-keyword">import</span> net.sf.hibernate.util.PropertiesHelper;
-<span class="code-keyword">import</span> net.sf.hibernate.util.StringHelper;
+<span class="code-keyword">import</span> org.hibernate.util.PropertiesHelper;
+<span class="code-keyword">import</span> org.hibernate.util.StringHelper;
+<span class="code-keyword">import</span> org.hibernate.cache.*;
 
 <span class="code-keyword">import</span> com.opensymphony.oscache.base.Config;
 <span class="code-keyword">import</span> com.opensymphony.oscache.base.CacheEntry;
@@ -43,7 +42,8 @@
 	 */
 	<span class="code-keyword">private</span> <span class="code-keyword">static</span> GeneralCacheAdministrator cache = <span class="code-keyword">new</span> GeneralCacheAdministrator();
 
-    <span class="code-keyword">private</span> <span class="code-keyword">static</span> <span class="code-object">Integer</span> capacity = PropertiesHelper.getInteger(OSCACHE_CAPACITY, OSCACHE_PROPERTIES);
+    <span class="code-keyword">private</span> <span class="code-keyword">static</span> <span class="code-object">Integer</span> capacity = PropertiesHelper.getInteger(OSCACHE_CAPACITY,
+                                                                  OSCACHE_PROPERTIES);
 
     <span class="code-keyword">static</span> {
         <span class="code-keyword">if</span> (capacity != <span class="code-keyword">null</span>) cache.setCacheCapacity(capacity.intValue());
@@ -55,7 +55,7 @@
     <span class="code-keyword">private</span> <span class="code-keyword">final</span> <span class="code-object">String</span>[] regionGroups;
 	
 	<span class="code-keyword">private</span> <span class="code-object">String</span> toString(<span class="code-object">Object</span> key) {
-		<span class="code-keyword">return</span> <span class="code-object">String</span>.valueOf(key) + StringHelper.DOT + regionName;
+		<span class="code-keyword">return</span> <span class="code-object">String</span>.valueOf(key) + <span class="code-quote">"."</span> + regionName;
 	}
 
 	<span class="code-keyword">public</span> OSCache(<span class="code-object">int</span> refreshPeriod, <span class="code-object">String</span> cron, <span class="code-object">String</span> region) {
@@ -106,11 +106,38 @@
 	}
 
 	<span class="code-keyword">public</span> <span class="code-object">int</span> getTimeout() {
-		<span class="code-keyword">return</span> CacheEntry.INDEFINITE_EXPIRY;
+		<span class="code-keyword">return</span> Timestamper.ONE_MS * 60000; <span class="code-comment">//ie. 60 seconds
+</span>	}
+
+	<span class="code-keyword">public</span> Map toMap() {
+		<span class="code-keyword">throw</span> <span class="code-keyword">new</span> UnsupportedOperationException();
+	}    
+
+	<span class="code-keyword">public</span> <span class="code-object">long</span> getElementCountOnDisk() {
+		<span class="code-keyword">return</span> -1;
 	}
 
+	<span class="code-keyword">public</span> <span class="code-object">long</span> getElementCountInMemory() {
+		<span class="code-keyword">return</span> -1;
+	}
+    
+	<span class="code-keyword">public</span> <span class="code-object">long</span> getSizeInMemory() {
+		<span class="code-keyword">return</span> -1;
+	}
+
+	<span class="code-keyword">public</span> <span class="code-object">String</span> getRegionName() {
+		<span class="code-keyword">return</span> regionName;
+	}
+
+	<span class="code-keyword">public</span> void update(<span class="code-object">Object</span> key, <span class="code-object">Object</span> value) <span class="code-keyword">throws</span> CacheException {
+		put(key, value);
+	}    
+
+	<span class="code-keyword">public</span> <span class="code-object">Object</span> read(<span class="code-object">Object</span> key) <span class="code-keyword">throws</span> CacheException {
+		<span class="code-keyword">return</span> get(key);
+	}
 }</pre>
-</div></div> 
+</div></div>
 
                     			    </td>
 		    </tr>
