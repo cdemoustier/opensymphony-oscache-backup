@@ -35,6 +35,7 @@ public class CacheHttpServletResponseWrapper extends HttpServletResponseWrapper 
     private SplitServletOutputStream cacheOut = null;
     private boolean fragment = false;
     private int status = SC_OK;
+    private long expires = CacheFilter.EXPIRES_ON;
 
     /**
      * Constructor
@@ -42,7 +43,7 @@ public class CacheHttpServletResponseWrapper extends HttpServletResponseWrapper 
      * @param response The servlet response
      */
     public CacheHttpServletResponseWrapper(HttpServletResponse response) {
-        this(response, false, Long.MAX_VALUE);
+        this(response, false, Long.MAX_VALUE, CacheFilter.EXPIRES_ON);
     }
 
     /**
@@ -51,11 +52,13 @@ public class CacheHttpServletResponseWrapper extends HttpServletResponseWrapper 
      * @param response The servlet response
      * @param fragment true if the repsonse indicates that it is a fragement of a page
      * @param time the refresh time in millis
+     * @param expires defines if expires header will be send, @see CacheFilter
      */
-    public CacheHttpServletResponseWrapper(HttpServletResponse response, boolean fragment, long time) {
+    public CacheHttpServletResponseWrapper(HttpServletResponse response, boolean fragment, long time, long expires) {
         super(response);
         result = new ResponseContent();
         this.fragment = fragment;
+        this.expires = expires;
         
         // only set the last modified value, if a complete page is cached
         if (!fragment) {
@@ -64,8 +67,10 @@ public class CacheHttpServletResponseWrapper extends HttpServletResponseWrapper 
             result.setLastModified(current * 1000);
             super.setDateHeader(CacheFilter.HEADER_LAST_MODIFIED, result.getLastModified());
             // setting the expires value
-            result.setExpires(result.getLastModified() + time);
-            super.setDateHeader(CacheFilter.HEADER_EXPIRES, result.getExpires());
+            if (expires == CacheFilter.EXPIRES_TIME) {
+                result.setExpires(result.getLastModified() + time);
+                super.setDateHeader(CacheFilter.HEADER_EXPIRES, result.getExpires());
+            }
         }
     }
 
@@ -113,7 +118,7 @@ public class CacheHttpServletResponseWrapper extends HttpServletResponseWrapper 
         }
 
         // implement RFC 2616 14.21 Expires (without max-age)
-        if (CacheFilter.HEADER_EXPIRES.equalsIgnoreCase(name)) {
+        if ((expires != CacheFilter.EXPIRES_OFF) && (CacheFilter.HEADER_EXPIRES.equalsIgnoreCase(name))) {
             result.setExpires(value);
         }
 
@@ -137,7 +142,7 @@ public class CacheHttpServletResponseWrapper extends HttpServletResponseWrapper 
         }
 
         // implement RFC 2616 14.21 Expires (without max-age)
-        if (CacheFilter.HEADER_EXPIRES.equalsIgnoreCase(name)) {
+        if ((expires != CacheFilter.EXPIRES_OFF) && (CacheFilter.HEADER_EXPIRES.equalsIgnoreCase(name))) {
             result.setExpires(value);
         }
 
