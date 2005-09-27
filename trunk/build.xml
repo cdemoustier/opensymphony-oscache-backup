@@ -43,7 +43,6 @@
     <!-- init -->
     
     <target name="init" depends="common.init">
-        <!-- Disabled at the moment   
         <taskdef name="ivy-configure" classname="fr.jayasoft.ivy.ant.IvyConfigure"/>
         <taskdef name="ivy-resolve" classname="fr.jayasoft.ivy.ant.IvyResolve"/>
         <taskdef name="ivy-retrieve" classname="fr.jayasoft.ivy.ant.IvyRetrieve"/>
@@ -52,17 +51,14 @@
         <taskdef name="ivy-deliver" classname="fr.jayasoft.ivy.ant.IvyDeliver"/>
 
         <ivy-retrieve/>
-        -->
     </target>
  
     <!-- Ivy -->   
     
-    <!-- Disabled at the moment   
     <target name="ivyrep.copy-ivy" depends="init">
         <ivy-deliver deliverpattern="${ivyrep.path}/opensymphony/${name}/[artifact]-[revision].[ext]"
                      pubrevision="${version}-${TIME}" pubdate="${TIME}"/>
     </target>
-    -->
 
     <!-- Plugins Classpath -->
 
