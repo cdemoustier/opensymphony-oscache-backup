@@ -6,6 +6,7 @@
     <!-- overridden properties (must be before the import!) -->
    
     <property name="lib.optional" value="${lib}/plugins"/> <!-- overwritten -->
+    <property name="jar.excludes" value="test/**, docs/**, *.war, **/*.html"/>
 
     <property name="tmp.dir" value="tmp"/> <!-- ??? -->
 
@@ -26,10 +27,6 @@
     <!-- project properties -->
 
     <property name="src.webapp" value="${src}/webapp"/> <!-- new -->
-
-    <tstamp>
-        <format property="release" pattern="-dMMMyy" locale="en" timezone="GMT"/>
-    </tstamp>
 
     <!-- Classpath -->
     <path id="cp">
@@ -72,14 +69,14 @@
 
     <!-- Prepares the build directory -->
     <target name="prepare" depends="init">
-        <mkdir dir="${build}/META-INF"/>
-        <copy file="${src}/etc/${name}.tld" tofile="${build}/META-INF/taglib.tld"/>
+        <mkdir dir="${build.java}/META-INF"/>
+        <copy file="${src}/etc/${name}.tld" tofile="${build.java}/META-INF/taglib.tld"/>
     </target>
 
 
     <!-- Compiles the core source code -->
     <target name="compile" depends="prepare">
-        <javac srcdir="${src.java}" destdir="${build}" includes="com/opensymphony/oscache/**" debug="${debug}" classpathref="cp"/>
+        <javac srcdir="${src.java}" destdir="${build.java}" includes="com/opensymphony/oscache/**" debug="${debug}" classpathref="cp"/>
     </target>
 
 
@@ -87,11 +84,11 @@
     <target name="example-war" depends="jar">
         <mkdir dir="${build}/webapp"/>
 
-        <javac srcdir="${src.webapp}/WEB-INF/classes" destdir="${build}/webapp" includes="com/opensymphony/oscache/**" debug="${debug}" classpath="${build}" classpathref="cp"/>
+        <javac srcdir="${src.webapp}/WEB-INF/classes" destdir="${build}/webapp" includes="com/opensymphony/oscache/**" debug="${debug}" classpath="${build.java}" classpathref="cp"/>
 
         <war destfile="${dist}/${name}-example.war" basedir="${src.webapp}" webxml="${src.webapp}/WEB-INF/web.xml" excludes="WEB-INF/web.xml">
             <lib dir="${lib.core}"/>
-            <lib file="${dist}/${name}-${version}${release}.jar"/>
+            <lib file="${build}/${name}-${version}.jar"/>
             <webinf file="${src}/etc/${name}.tld"/>
             <classes dir="${build}/webapp"/>
         </war>
@@ -100,25 +97,15 @@
 
     <!-- Build a usable jar file -->
     <target name="jar" depends="compile">
-        <mkdir dir="${dist}"/>
+        <mkdir dir="${build}"/>
 
-        <!--   
-        ERROR - /home/os-j2ee/common-build/osbuild.xml:325: Warning: Could not find file /opt/j2ee/domains/opensymphony.com/ci/anthill/AnthillPro/work/cvsrepositorydriver/oscache.HEAD.test/oscache/build/oscache-2.2-rc2.jar to copy.
-        ${build} ? siehe osbuild bzw. webwork
-        -->
-  
-        <jar jarfile="${dist}/${name}-${version}${release}.jar" basedir="${build}" includes="**" excludes="test/**, docs/**, *.war">
+        <jar jarfile="${build}/${name}-${version}.jar" basedir="${build.java}" excludes="${jar.excludes}">
             <manifest>
                 <attribute name="Implementation-Title" value="${fullname}"/>
                 <attribute name="Implementation-Version" value="${version}"/>
                 <attribute name="Implementation-Vendor" value="OpenSymphony"/>
             </manifest>
         </jar>
-    </target>
-
-
-    <!-- Cleans up generated stuff -->
-    <target name="clean" depends="common.clean">
     </target>
 
     <!-- Run the unit tests. This is used by the test target, so do not call directly -->
@@ -250,6 +237,10 @@
 
     <!-- Create the distribution zip files -->
     <target name="dist" depends="clean, jar, docs, example-war, clover.report, junit.report">
+        <!-- copy the standard file -->
+        <copy file="${build}/${name}-${version}.jar" tofile="${dist}/${name}-${version}.jar"/>
+   
+        <!-- create the full package -->
         <mkdir dir="${tmp.dir}/docs"/>
         <mkdir dir="${tmp.dir}/src"/>
         <mkdir dir="${tmp.dir}/lib"/>
@@ -265,12 +256,12 @@
             <fileset dir="${lib}" excludes="build/**, *.jar" />
         </copy>
 
-        <copy file="${dist}/${name}-${version}${release}.jar" tofile="${tmp.dir}/${name}-${version}${release}.jar"/>
+        <copy file="${build}/${name}-${version}.jar" tofile="${tmp.dir}/${name}-${version}.jar"/>
         <copy file="${src}/etc/oscache.properties" tofile="${tmp.dir}/etc/oscache.properties"/>
         <copy file="${src}/etc/${name}.tld" tofile="${tmp.dir}/etc/${name}.tld"/>
         <copy file="readme.txt" tofile="${tmp.dir}/readme.txt" failonerror="false"/>
 
-        <zip zipfile="${dist}/${name}-${version}${release}-full.zip" basedir="${tmp.dir}" includes="**"/>
+        <zip zipfile="${dist}/${name}-${version}-full.zip" basedir="${tmp.dir}" includes="**"/>
 
         <!-- Remove everything that's not in the binary release -->
         <delete dir="${tmp.dir}/src"/>
@@ -283,7 +274,7 @@
         <delete dir="${tmp.dir}/docs/junit"/>
         <delete dir="${tmp.dir}/docs/clover"/>
 
-        <zip zipfile="${dist}/${name}-${version}${release}-binary.zip" basedir="${tmp.dir}" includes="**"/>
+        <zip zipfile="${dist}/${name}-${version}-binary.zip" basedir="${tmp.dir}" includes="**"/>
 
         <delete dir="${tmp.dir}"/>
     </target>
