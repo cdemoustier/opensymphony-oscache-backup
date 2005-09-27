@@ -102,6 +102,11 @@
     <target name="jar" depends="compile">
         <mkdir dir="${dist}"/>
 
+        <!--   
+        ERROR - /home/os-j2ee/common-build/osbuild.xml:325: Warning: Could not find file /opt/j2ee/domains/opensymphony.com/ci/anthill/AnthillPro/work/cvsrepositorydriver/oscache.HEAD.test/oscache/build/oscache-2.2-rc2.jar to copy.
+        ${build} ? siehe osbuild bzw. webwork
+        -->
+  
         <jar jarfile="${dist}/${name}-${version}${release}.jar" basedir="${build}" includes="**" excludes="test/**, docs/**, *.war">
             <manifest>
                 <attribute name="Implementation-Title" value="${fullname}"/>
@@ -131,7 +136,7 @@
 
             <formatter type="xml"/>
 
-            <batchtest todir="${dist}/docs/junit">
+            <batchtest todir="${dist.docs}/junit">
                 <fileset dir="${build.test}">
                     <include name="**/TestComplete*.class"/>
                     <exclude name="**/web/*.*"/>
@@ -155,7 +160,7 @@
 
             <formatter type="xml"/>
 
-            <batchtest todir="${dist}/docs/junit">
+            <batchtest todir="${dist.docs}/junit">
                 <fileset dir="${build.test}">
                     <include name="**/TestCompleteCluster.class"/>
                 </fileset>
@@ -164,7 +169,7 @@
     </target>
 
     <target name="test-web" if="test.web.baseURL">
-        <mkdir dir="${dist}/docs/junit"/>
+        <mkdir dir="${dist.docs}/junit"/>
         <mkdir dir="${build.test}"/>
 
         <!-- Clear out any previous persistent cache directory -->
@@ -188,7 +193,7 @@
 
             <formatter type="xml"/>
             <formatter type="plain" useFile="false"/>
-            <batchtest todir="${dist}/docs/junit">
+            <batchtest todir="${dist.docs}/junit">
                 <fileset dir="${build.test}">
                     <include name="**/web/TestComplete*.class"/>
                     <include name="**/web/TestLoadComplete*.class"/>
@@ -200,8 +205,8 @@
 
     <!-- Run JUnit tests using different combinations of disk and memory caching -->
     <target name="test" depends="init, compile, example-war, clover-check, junit-check">
-        <mkdir dir="${dist}/docs/junit"/>
-        <mkdir dir="${dist}/docs/clover"/>
+        <mkdir dir="${dist.docs}/junit"/>
+        <mkdir dir="${dist.docs}/clover"/>
         <mkdir dir="${build.test}"/>
 
         <taskdef resource="clovertasks"/>
@@ -243,23 +248,6 @@
         <delete dir="${test.cache.path}"/>
     </target>
 
-
-    <!-- Generate JavaDoc -->
-    <target name="javadocs" depends="init">
-        <mkdir dir="${dist}/docs/api"/>
-        <javadoc sourcepath="${src.java}" destdir="${dist}/docs/api"
-          packagenames="${docs.packages}" classpathref="cp" author="true" version="true"
-          windowTitle="${fullname} ${version}${release} API" doctitle="${fullname}"
-          footer="See &lt;a href=&quot;http://www.opensymphony.com/&quot; target=&quot;_top&quot;&gt;www.opensymphony.com&lt;/a&gt; for more information."
-          use="true" verbose="false" stylesheetfile="${docs}/api.css" />
-    </target>
-
-    <target name="docs" depends="javadocs, clover.report, junit.report">
-        <copy todir="${dist}/docs">
-            <fileset dir="${docs}"/>
-        </copy>
-    </target>
-
     <!-- Create the distribution zip files -->
     <target name="dist" depends="clean, jar, docs, example-war, clover.report, junit.report">
         <mkdir dir="${tmp.dir}/docs"/>
@@ -268,13 +256,13 @@
         <mkdir dir="${tmp.dir}/etc"/>
 
         <copy todir="${tmp.dir}/docs">
-            <fileset dir="${dist}/docs"/>
+            <fileset dir="${dist.docs}"/>
         </copy>
         <copy todir="${tmp.dir}/src">
             <fileset dir="${src}" excludes="etc/**"/>
         </copy>
         <copy todir="${tmp.dir}/lib">
-            <fileset dir="${lib}" excludes="build/**" />
+            <fileset dir="${lib}" excludes="build/**, *.jar" />
         </copy>
 
         <copy file="${dist}/${name}-${version}${release}.jar" tofile="${tmp.dir}/${name}-${version}${release}.jar"/>
@@ -302,7 +290,7 @@
 
     <target name="clover.report" depends="test">
         <clover-report>
-            <current outfile="${dist}/docs/clover">
+            <current outfile="${dist.docs}/clover">
                 <fileset dir="${src.java}" excludes="**/Test*"/>
                 <format type="html"/>
             </current>
@@ -310,14 +298,17 @@
     </target>
 
     <target name="junit.report" depends="test">
-        <junitreport todir="${dist}/docs/junit">
-            <fileset dir="${dist}/docs/junit">
+        <junitreport todir="${dist.docs}/junit">
+            <fileset dir="${dist.docs}/junit">
                 <include name="TEST-*.xml"/>
             </fileset>
-            <report format="frames" todir="${dist}/docs/junit"/>
+            <report format="frames" todir="${dist.docs}/junit"/>
         </junitreport>
     </target>
 
-    <target name="reports" depends="junit.report,clover.report"/>
-
+    <target name="reports" depends="common.reports">
+        <mkdir dir="${dist.docs}/dependencies"/>
+        <ivy-report todir="${dist.docs}/dependencies" graph="false"/>
+    </target>
+    
 </project>
