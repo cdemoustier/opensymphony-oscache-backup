@@ -74,6 +74,7 @@
     <!-- Prepares and compiles the web application, which includes the web test suite -->
     <target name="example-war" depends="jar">
         <mkdir dir="${build}/webapp"/>
+        <mkdir dir="${dist}"/>
 
         <javac srcdir="${src.webapp}/WEB-INF/classes" destdir="${build}/webapp" includes="com/opensymphony/oscache/**" debug="${debug}" classpath="${build.java}" classpathref="cp"/>
 
