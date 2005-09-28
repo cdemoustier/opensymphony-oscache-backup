@@ -28,15 +28,6 @@
 
     <property name="src.webapp" value="${src}/webapp"/> <!-- new -->
 
-    <!-- Classpath -->
-    <path id="cp">
-        <fileset dir="lib">
-            <include name="build/*.jar"/>
-            <include name="core/*.jar"/>
-            <include name="plugins/**/*.jar"/>
-       </fileset>
-    </path>
-
     <!-- init -->
     
     <target name="init" depends="common.init">
@@ -87,7 +78,7 @@
         <javac srcdir="${src.webapp}/WEB-INF/classes" destdir="${build}/webapp" includes="com/opensymphony/oscache/**" debug="${debug}" classpath="${build.java}" classpathref="cp"/>
 
         <war destfile="${dist}/${name}-example.war" basedir="${src.webapp}" webxml="${src.webapp}/WEB-INF/web.xml" excludes="WEB-INF/web.xml">
-            <lib dir="${lib.core}"/>
+            <lib dir="${lib}"/>
             <lib file="${build}/${name}-${version}.jar"/>
             <webinf file="${src}/etc/${name}.tld"/>
             <classes dir="${build}/webapp"/>
@@ -253,7 +244,7 @@
             <fileset dir="${src}" excludes="etc/**"/>
         </copy>
         <copy todir="${tmp.dir}/lib">
-            <fileset dir="${lib}" excludes="build/**, *.jar" />
+            <fileset dir="${lib}"/>
         </copy>
 
         <copy file="${build}/${name}-${version}.jar" tofile="${tmp.dir}/${name}-${version}.jar"/>
@@ -266,11 +257,6 @@
         <!-- Remove everything that's not in the binary release -->
         <delete dir="${tmp.dir}/src"/>
         <delete dir="${tmp.dir}/${lib.build}"/>
-        <delete dir="${tmp.dir}/lib/plugins"/>
-        <move todir="${tmp.dir}/lib">
-            <fileset dir="${tmp.dir}/lib/core"/>
-        </move>
-        <delete dir="${tmp.dir}/${lib.core}"/>
         <delete dir="${tmp.dir}/docs/junit"/>
         <delete dir="${tmp.dir}/docs/clover"/>
 
