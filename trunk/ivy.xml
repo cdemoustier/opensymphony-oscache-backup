@@ -41,6 +41,6 @@
         <dependency org="apache" name="commons-collections" rev="3.1" conf="default->*"/>
 
         <!-- jgroups -->
-        <dependency org="jgroups" name="jgroups-all" rev="2.2.7" conf="jgroups->*"/>
+        <dependency org="jgroups" name="jgroups-all" rev="2.2.8" conf="jgroups->*"/>
     </dependencies>
 </ivy-module>
