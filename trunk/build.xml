@@ -30,7 +30,7 @@
 
     <!-- init -->
     
-    <target name="init" depends="common.init">
+    <target name="init" depends="ivy-check,common.init">
         <taskdef name="ivy-configure" classname="fr.jayasoft.ivy.ant.IvyConfigure"/>
         <taskdef name="ivy-resolve" classname="fr.jayasoft.ivy.ant.IvyResolve"/>
         <taskdef name="ivy-retrieve" classname="fr.jayasoft.ivy.ant.IvyRetrieve"/>
@@ -48,16 +48,12 @@
                      pubrevision="${version}-${TIME}" pubdate="${TIME}"/>
     </target>
 
-    <!-- Plugins Classpath -->
-
-    <target name="junit-check" depends="init" unless="junit.available">
-        <fail message="Cannot run test cases. Please copy ${lib.build}/junit-3.8.1.jar to ${ant.home}/lib"/>
+    <available property="ivy.available" classname="fr.jayasoft.ivy.ant.IvyRetrieve"/>
+   
+    <target name="ivy-check" unless="ivy.available">
+        <fail message="Please download Ivy at http://www.jayasoft.org/ivy and copy ivy.jar to ${ant.home}${file.separator}lib"/>
     </target>
-
-    <target name="clover-check" depends="init" unless="clover.available">
-        <fail message="Cannot run coverage tests. Please copy ${lib.build}/clover-1.2.3.jar to ${ant.home}/lib"/>
-    </target>
-
+   
     <!-- Prepares the build directory -->
     <target name="prepare" depends="init">
         <mkdir dir="${build.java}/META-INF"/>
