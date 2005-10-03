@@ -75,8 +75,9 @@
         <javac srcdir="${src.webapp}/WEB-INF/classes" destdir="${build}/webapp" includes="com/opensymphony/oscache/**" debug="${debug}" classpath="${build.java}" classpathref="cp"/>
 
         <war destfile="${dist}/${name}-example.war" basedir="${src.webapp}" webxml="${src.webapp}/WEB-INF/web.xml" excludes="WEB-INF/web.xml">
-            <lib dir="${lib}"/>
             <lib file="${build}/${name}-${version}.jar"/>
+            <lib file="${lib}/commons-collections.jar"/>
+            <lib file="${lib}/commons-logging.jar"/>
             <webinf file="${src}/etc/${name}.tld"/>
             <classes dir="${build}/webapp"/>
         </war>
@@ -240,11 +241,13 @@
         <copy todir="${tmp.dir}/src">
             <fileset dir="${src}" excludes="etc/**"/>
         </copy>
-        <copy todir="${tmp.dir}/lib">
-            <fileset dir="${lib}"/>
-        </copy>
+        
+        <copy file="${lib}/commons-collections.jar" todir="${tmp.dir}/lib"/>
+        <copy file="${lib}/commons-logging.jar" todir="${tmp.dir}/lib"/>
+        <copy file="${lib}/jgroups-all.jar" todir="${tmp.dir}/lib"/>
 
-        <copy file="${build}/${name}-${version}.jar" tofile="${tmp.dir}/${name}-${version}.jar"/>
+        <copy file="${build}/${name}-${version}.jar" todir="${tmp.dir}"/>
+        
         <copy file="${src}/etc/oscache.properties" tofile="${tmp.dir}/etc/oscache.properties"/>
         <copy file="${src}/etc/${name}.tld" tofile="${tmp.dir}/etc/${name}.tld"/>
         <copy file="readme.txt" tofile="${tmp.dir}/readme.txt" failonerror="false"/>
@@ -256,6 +259,7 @@
         <delete dir="${tmp.dir}/${lib.build}"/>
         <delete dir="${tmp.dir}/docs/junit"/>
         <delete dir="${tmp.dir}/docs/clover"/>
+        <delete file="${tmp.lib}/jgroups-all.jar"/>
 
         <zip zipfile="${dist}/${name}-${version}-binary.zip" basedir="${tmp.dir}" includes="**"/>
 
