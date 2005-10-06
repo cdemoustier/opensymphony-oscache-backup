@@ -117,7 +117,7 @@ public class CacheFilter implements Filter, ICacheKeyProvider, ICacheGroupsProvi
         }
 
         // generate the cache entry key
-        String key = createCacheKey(httpRequest, admin, cache);
+        String key = cacheKeyProvider.createCacheKey(httpRequest, admin, cache);
 
         try {
             ResponseContent respContent = (ResponseContent) cache.getFromCache(key, time);
