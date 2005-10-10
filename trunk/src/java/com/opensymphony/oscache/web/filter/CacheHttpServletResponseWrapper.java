@@ -60,7 +60,7 @@ public class CacheHttpServletResponseWrapper extends HttpServletResponseWrapper 
         this.fragment = fragment;
         this.expires = expires;
         
-        // only set the last modified value, if a complete page is cached
+        // only set inital values for last modified and expires, when a complete page is cached
         if (!fragment) {
             // setting a default last modified value based on object creation and remove the millis
             long current = System.currentTimeMillis() / 1000;
@@ -113,14 +113,18 @@ public class CacheHttpServletResponseWrapper extends HttpServletResponseWrapper 
         }
 
         // only set the last modified value, if a complete page is cached
-        if ((!fragment) && (CacheFilter.HEADER_LAST_MODIFIED.equalsIgnoreCase(name))) {
-            result.setLastModified(value);
-        }
+        if (CacheFilter.HEADER_LAST_MODIFIED.equalsIgnoreCase(name)) {
+            if (!fragment) {
+                result.setLastModified(value);
+            } // TODO should we return now by fragments to avoid putting the header to the response?
+        } 
 
         // implement RFC 2616 14.21 Expires (without max-age)
         if ((expires != CacheFilter.EXPIRES_OFF) && (CacheFilter.HEADER_EXPIRES.equalsIgnoreCase(name))) {
-            result.setExpires(value);
-        }
+            if (!fragment) {
+                result.setExpires(value);
+            } // TODO should we return now by fragments to avoid putting the header to the response?
+        } 
 
         super.setDateHeader(name, value);
     }
@@ -137,14 +141,18 @@ public class CacheHttpServletResponseWrapper extends HttpServletResponseWrapper 
         }
 
         // only set the last modified value, if a complete page is cached
-        if ((!fragment) && (CacheFilter.HEADER_LAST_MODIFIED.equalsIgnoreCase(name))) {
-            result.setLastModified(value);
-        }
+        if (CacheFilter.HEADER_LAST_MODIFIED.equalsIgnoreCase(name)) {
+            if (!fragment) {
+                result.setLastModified(value);
+            } // TODO should we return now by fragments to avoid putting the header to the response?
+        } 
 
         // implement RFC 2616 14.21 Expires (without max-age)
         if ((expires != CacheFilter.EXPIRES_OFF) && (CacheFilter.HEADER_EXPIRES.equalsIgnoreCase(name))) {
-            result.setExpires(value);
-        }
+            if (!fragment) {
+                result.setExpires(value);
+            } // TODO should we return now by fragments to avoid putting the header to the response?
+        } 
 
         super.addDateHeader(name, value);
     }
