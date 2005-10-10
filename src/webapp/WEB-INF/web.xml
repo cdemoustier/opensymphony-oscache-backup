@@ -7,12 +7,16 @@
     <display-name>OSCache</display-name>
 
     <filter>
-        <filter-name>oscache</filter-name>
+        <filter-name>CacheFilter</filter-name>
         <filter-class>com.opensymphony.oscache.web.filter.CacheFilter</filter-class>
+            <init-param>
+                <param-name>time</param-name>
+                <param-value>60</param-value>
+            </init-param>
     </filter>
 
     <filter-mapping>
-        <filter-name>oscache</filter-name>
+        <filter-name>CacheFilter</filter-name>
         <url-pattern>/filter/*</url-pattern>
     </filter-mapping>
 
@@ -21,23 +25,18 @@
     </listener>
 
     <servlet>
-        <servlet-name>oscache</servlet-name>
+        <servlet-name>OSCacheServlet</servlet-name>
         <servlet-class>com.opensymphony.oscache.web.OscacheServlet</servlet-class>
         <load-on-startup>1</load-on-startup>
     </servlet>
 
     <servlet-mapping>
-        <servlet-name>oscache</servlet-name>
+        <servlet-name>OSCacheServlet</servlet-name>
         <url-pattern>/cacheServlet/*</url-pattern>
     </servlet-mapping>
 
     <session-config>
         <session-timeout>5</session-timeout>
     </session-config>
-
-    <taglib>
-        <taglib-uri>oscache</taglib-uri>
-        <taglib-location>/WEB-INF/oscache.tld</taglib-location>
-    </taglib>
 
 </web-app>
