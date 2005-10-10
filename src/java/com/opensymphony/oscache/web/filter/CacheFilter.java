@@ -105,7 +105,7 @@ public class CacheFilter implements Filter, ICacheKeyProvider, ICacheGroupsProvi
 
         HttpServletRequest httpRequest = (HttpServletRequest) request;
 
-        // checks if the response well be a fragment of a page
+        // checks if the response will be a fragment of a page
         boolean fragmentRequest = isFragment(httpRequest);
 
         // avoid useless session creation for application scope pages (CACHE-129)
@@ -131,7 +131,7 @@ public class CacheFilter implements Filter, ICacheKeyProvider, ICacheGroupsProvi
                 long clientLastModified = httpRequest.getDateHeader(HEADER_IF_MODIFIED_SINCE); // will return -1 if no header...
 
                 // only reply with SC_NOT_MODIFIED
-                // if the client has already the newest page and the reponse isn't a fragment in a page 
+                // if the client has already the newest page and the response isn't a fragment in a page 
                 if ((clientLastModified != -1) && (clientLastModified >= respContent.getLastModified())) {
                     ((HttpServletResponse) response).setStatus(HttpServletResponse.SC_NOT_MODIFIED);
                     return;
