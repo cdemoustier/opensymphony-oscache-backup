@@ -1,6 +1,6 @@
 <%@ page import="java.util.*" %>
 
-<%@ taglib uri="oscache" prefix="cache" %>
+<%@ taglib uri="http://www.opensymphony.com/oscache" prefix="cache" %>
 
 <%
 
