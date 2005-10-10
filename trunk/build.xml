@@ -78,7 +78,6 @@
             <lib file="${build}/${name}-${version}.jar"/>
             <lib file="${lib}/commons-collections.jar"/>
             <lib file="${lib}/commons-logging.jar"/>
-            <webinf file="${src}/etc/${name}.tld"/>
             <classes dir="${build}/webapp"/>
         </war>
     </target>
