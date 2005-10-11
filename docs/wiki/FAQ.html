@@ -66,32 +66,32 @@
 
 <h4><a name="FAQ-CanyougivemesomeexamplesofhowtheOSCachetagsareused%3F"><a name="FAQ-tags"></a>Can you give me some examples of how the OSCache tags are used?</a></h4>
 <div class="code"><div class="codeHeader"><b>Example 1</b></div><div class="codeContent">
-<div class="error"><span class="error">Unable to find source-code formatter for language: xml .</span> Available languages are: xhtml, javascript, java, none, html, actionscript, xml, sql</div><pre class="code-xml ">&lt;cache:cache time=<span class="code-quote">"600"</span>&gt;
-        &lt;%= myBean.getTitle() %&gt;
-    &lt;/cache:cache&gt;</pre>
+<pre class="code-xml"><span class="code-tag">&lt;cache:cache time=<span class="code-quote">"600"</span>&gt;</span>
+        <span class="code-tag">&lt;%= myBean.getTitle() %&gt;</span>
+    <span class="code-tag">&lt;/cache:cache&gt;</span></pre>
 </div></div>
 <p>This will only access your EJB once every 10 minutes. Every other request it will just serve the cached JSP content that was produced the first time (this results in much faster page loading).</p>
 
 <div class="code"><div class="codeHeader"><b>Example 2</b></div><div class="codeContent">
-<div class="error"><span class="error">Unable to find source-code formatter for language: xml .</span> Available languages are: xhtml, javascript, java, none, html, actionscript, xml, sql</div><pre class="code-xml ">&lt;cache:cache key=<span class="code-quote">"foobar"</span> scope=<span class="code-quote">"session"</span>&gt;
-        &lt;%= myBean.getTitle() %&gt;
-    &lt;/cache:cache&gt;</pre>
+<pre class="code-xml"><span class="code-tag">&lt;cache:cache key=<span class="code-quote">"foobar"</span> scope=<span class="code-quote">"session"</span>&gt;</span>
+        <span class="code-tag">&lt;%= myBean.getTitle() %&gt;</span>
+    <span class="code-tag">&lt;/cache:cache&gt;</span></pre>
 </div></div>
 <p>This time the cache is keyed (you could have a programmatic key here too, like &lt;%= foobarString %&gt;) and it's scoped by session.</p>
 
 <p>This is revolutionary as far as caching goes. You can now have cached content, that's different for every user! No more full page caches with no dynamic content!</p>
 
 <div class="code"><div class="codeHeader"><b>Example 3</b></div><div class="codeContent">
-<div class="error"><span class="error">Unable to find source-code formatter for language: xml .</span> Available languages are: xhtml, javascript, java, none, html, actionscript, xml, sql</div><pre class="code-xml ">(a very powerful &amp; useful way to use the taglibs):
+<pre class="code-xml">(a very powerful &amp; useful way to use the taglibs):
 
-    &lt;cache:cache&gt;
-        &lt;% <span class="code-keyword">try</span> { %&gt;
-            &lt;%= myBean.getTitle() %&gt;&gt;
-        &lt;% } <span class="code-keyword">catch</span> (Exception e) { %&gt;
-            &lt;% application.log(<span class="code-quote">"Exception occurred in myBean.getTitle(): "</span> + e); %&gt;
-            &lt;cache:usecached /&gt;
-        &lt;% } %&gt;
-    &lt;/cache:cache&gt;</pre>
+    <span class="code-tag">&lt;cache:cache&gt;</span>
+        <span class="code-tag">&lt;% try { %&gt;</span>
+            <span class="code-tag">&lt;%= myBean.getTitle() %&gt;</span>&gt;
+        <span class="code-tag">&lt;% } catch (Exception e) { %&gt;</span>
+            <span class="code-tag">&lt;% application.log(<span class="code-quote">"Exception occurred in myBean.getTitle(): "</span> + e); %&gt;</span>
+            <span class="code-tag">&lt;cache:usecached /&gt;</span>
+        <span class="code-tag">&lt;% } %&gt;</span>
+    <span class="code-tag">&lt;/cache:cache&gt;</span></pre>
 </div></div>
 <p>If a RemoteException occurs trying to get the EJB title (for example the database goes down) the cached content will be served so the user will not suspect a thing. No error page as per a normal JSP application. What does this mean? It means greater error tolerance in your JSP apps!</p>
 
@@ -141,19 +141,19 @@
 
 
 <div class="code"><div class="codeHeader"><b>Example 1:displayProduct.jsp</b></div><div class="codeContent">
-<div class="error"><span class="error">Unable to find source-code formatter for language: xml .</span> Available languages are: xhtml, javascript, java, none, html, actionscript, xml, sql</div><pre class="code-xml ">...
-    &lt;cache:cache key=<span class="code-quote">"myKey1"</span> groups=<span class="code-quote">"product100,datafeed"</span>&gt;
-        &lt;%= myProductBean.getProduct(100).getName() %&gt;
-        &lt;%= myDatafeedBean.getDataFeed().getTotal() %&gt;
-    &lt;/cache:cache&gt;
+<pre class="code-xml">...
+    <span class="code-tag">&lt;cache:cache key=<span class="code-quote">"myKey1"</span> groups=<span class="code-quote">"product100,datafeed"</span>&gt;</span>
+        <span class="code-tag">&lt;%= myProductBean.getProduct(100).getName() %&gt;</span>
+        <span class="code-tag">&lt;%= myDatafeedBean.getDataFeed().getTotal() %&gt;</span>
+    <span class="code-tag">&lt;/cache:cache&gt;</span>
     ...</pre>
 </div></div>
 <div class="code"><div class="codeHeader"><b>Example 2:updateDatafeed.jsp</b></div><div class="codeContent">
-<div class="error"><span class="error">Unable to find source-code formatter for language: xml .</span> Available languages are: xhtml, javascript, java, none, html, actionscript, xml, sql</div><pre class="code-xml ">...
-    &lt;%= myDatafeedBean.refreshDatafeed() %&gt;
+<pre class="code-xml">...
+    <span class="code-tag">&lt;%= myDatafeedBean.refreshDatafeed() %&gt;</span>
 
-    &lt;%-- Flush all cache entries that depend on the datafeed --%&gt;
-    &lt;cache:flush group=<span class="code-quote">"datafeed"</span> scope=<span class="code-quote">"application"</span>&gt;
+    <span class="code-tag">&lt;%-- Flush all cache entries that depend on the datafeed --%&gt;</span>
+    <span class="code-tag">&lt;cache:flush group=<span class="code-quote">"datafeed"</span> scope=<span class="code-quote">"application"</span>&gt;</span>
     ...</pre>
 </div></div>
 
