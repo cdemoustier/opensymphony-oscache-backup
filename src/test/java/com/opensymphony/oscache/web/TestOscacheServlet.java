@@ -20,6 +20,7 @@ import junit.framework.TestSuite;
  * @author <a href="mailto:abergevin@pyxis-tech.com">Alain Bergevin</a>
  */
 public final class TestOscacheServlet extends TestCase {
+
     // The instance of a webconversation to invoke pages
     static WebConversation wc = null;
     private final String APPLICATION_SCOPE = "scope=application&";
@@ -62,32 +63,35 @@ public final class TestOscacheServlet extends TestCase {
             wc = new WebConversation();
         }
     }
-
+    
     /**
      * Test the cache module using a servlet
      */
     public void testOscacheServlet() {
         // Make a first call just to initialize the servlet
-        invokeServlet(NO_REFRESH_WANTED);
+        String newResponse = invokeServlet(NO_REFRESH_WANTED);
 
         // Connect to the servlet using the application scope
         String previousReponse = invokeServlet(NO_REFRESH_WANTED);
 
         // Call again an verify that the content hasn't changed
-        assertTrue(previousReponse.equals(invokeServlet(NO_REFRESH_WANTED)));
+        newResponse = invokeServlet(NO_REFRESH_WANTED);
+        assertTrue("new response is " + newResponse + " should be the same to " + newResponse, previousReponse.equals(newResponse));
 
         // Call again an verify that the content is updated
-        String newResponse = invokeServlet(REFRESH_WANTED);
-        assertTrue("new response is " + newResponse + " expected it to be different", !previousReponse.equals(newResponse));
+        newResponse = invokeServlet(REFRESH_WANTED);
+        assertFalse("new response " + newResponse + " expected it to be different.", previousReponse.equals(newResponse));
         previousReponse = newResponse;
 
         // Call short delay so content should be refresh, but it will not since
         // we ask to use the item already in cache
-        assertTrue(previousReponse.equals(invokeServlet(REFRESH_WANTED, FORCE_CACHE_USE)));
+        newResponse = invokeServlet(REFRESH_WANTED, FORCE_CACHE_USE);
+        assertTrue("new response is " + newResponse + " should be the same to " + newResponse, previousReponse.equals(newResponse));
 
         // Call with long delay so the item would not need refresh, but we'll ask
         // a refresh anyway
-        assertTrue(!previousReponse.equals(invokeServlet(NO_REFRESH_WANTED, FORCE_REFRESH)));
+        newResponse = invokeServlet(NO_REFRESH_WANTED, FORCE_REFRESH);
+        assertFalse("new response " + newResponse + " expected it to be different.", previousReponse.equals(newResponse));
 
         // Verify that the cache key and the cache entry are present in the output and
         // that their values are correct
@@ -170,15 +174,20 @@ public final class TestOscacheServlet extends TestCase {
      * @return The HTML page returned by the servlet
      */
     private String invokeServlet(int refresh, String URL) {
+        // wait 10 millis to change the time, see System.currentTimeMillis() in OscacheServlet
         try {
-            // Invoke the servlet
-            WebResponse resp = wc.getResponse(constructURL(SERVLET_URL) + APPLICATION_SCOPE + KEY + REFRESH_PERIOD + refresh + "&" + URL);
+            Thread.sleep(10);
+        } catch (InterruptedException ignore) {
+        }
 
+        // Invoke the servlet
+        try {
+            String request = constructURL(SERVLET_URL) + APPLICATION_SCOPE + KEY + REFRESH_PERIOD + refresh + "&" + URL;
+            WebResponse resp = wc.getResponse(request);
             return resp.getText();
         } catch (Exception ex) {
             ex.printStackTrace();
-            fail("Exception raised!");
-
+            fail("Exception raised! " + ex.getMessage());
             return "";
         }
     }
