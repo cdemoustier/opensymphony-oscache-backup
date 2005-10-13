@@ -47,6 +47,11 @@ public class CacheFilter implements Filter, ICacheKeyProvider, ICacheGroupsProvi
     public static final int NOCACHE_OFF = 0;
     public static final int NOCACHE_SESSION_ID_IN_URL = 1;
     
+    // Last Modified parameter
+    public static final long LAST_MODIFIED_OFF = 0;
+    public static final long LAST_MODIFIED_ON = 1;
+    public static final long LAST_MODIFIED_INITIAL = -1;
+    
     // Expires parameter
     public static final long EXPIRES_OFF = 0;
     public static final long EXPIRES_ON = 1;
@@ -68,6 +73,7 @@ public class CacheFilter implements Filter, ICacheKeyProvider, ICacheGroupsProvi
     private int fragment = FRAGMENT_AUTODETECT; // defines if this filter handles fragments of a page - default is auto detect
     private int time = 60 * 60; // time before cache should be refreshed - default one hour (in seconds)
     private int nocache = NOCACHE_OFF; // defines special no cache option for the requests - default is off
+    private long lastModified = LAST_MODIFIED_INITIAL; // defines if the last-modified-header will be sent - default is intial setting
     private long expires = EXPIRES_ON; // defines if the expires-header will be sent - default is on
     private ICacheKeyProvider cacheKeyProvider = this; // the provider of the cache key - default is the CacheFilter itselfs
     private ICacheGroupsProvider cacheGroupsProvider = this; // the provider of the cache groups - default is the CacheFilter itselfs
@@ -127,7 +133,7 @@ public class CacheFilter implements Filter, ICacheKeyProvider, ICacheGroupsProvi
             }
 
             boolean acceptsGZip = false;
-            if (!fragmentRequest) {
+            if ((!fragmentRequest) && (lastModified != LAST_MODIFIED_OFF)) {
                 long clientLastModified = httpRequest.getDateHeader(HEADER_IF_MODIFIED_SINCE); // will return -1 if no header...
 
                 // only reply with SC_NOT_MODIFIED
@@ -151,7 +157,7 @@ public class CacheFilter implements Filter, ICacheKeyProvider, ICacheGroupsProvi
                     log.info("<cache>: New cache entry, cache stale or cache scope flushed for " + key);
                 }
 
-                CacheHttpServletResponseWrapper cacheResponse = new CacheHttpServletResponseWrapper((HttpServletResponse) response, fragmentRequest, time * 1000, expires);
+                CacheHttpServletResponseWrapper cacheResponse = new CacheHttpServletResponseWrapper((HttpServletResponse) response, fragmentRequest, time * 1000, lastModified, expires);
                 chain.doFilter(request, cacheResponse);
                 cacheResponse.flushBuffer();
 
@@ -190,6 +196,11 @@ public class CacheFilter implements Filter, ICacheKeyProvider, ICacheGroupsProvi
      * <li><b>nocache</b> - defines which objects shouldn't be cached. Acceptable values
      * are <code>off</code> (default) and <code>sessionIdInURL</code> if the session id is
      * contained in the URL.</li>
+     * 
+     * <li><b>lastModified</b> - defines if the last modified header will be sent in the response. Acceptable values are
+     * <code>off</code> for don't sending the header, even it is set in the filter chain, 
+     * <code>on</code> for sending it if it is set in the filter chain and 
+     * <code>inital</code> (default) the last modified information will be set based on the current time and changes are allowed.</li>
      * 
      * <li><b>expires</b> - defines if the expires header will be sent in the response. Acceptable values are
      * <code>off</code> for don't sending the header, even it is set in the filter chain, 
@@ -248,21 +259,6 @@ public class CacheFilter implements Filter, ICacheKeyProvider, ICacheGroupsProvi
                 fragment = FRAGMENT_YES;
             } else if (fragmentString.equalsIgnoreCase("auto")) {
                 fragment = FRAGMENT_AUTODETECT;
-            } else {
-                // FIXME in 2.2 RC the values were -1, 0. In 2.2.1 or >= 2.3 delete this code
-                try {
-                    fragment = Integer.parseInt(fragmentString);
-
-                    if ((fragment < FRAGMENT_AUTODETECT) || (fragment > FRAGMENT_YES)) {
-                        log.info("Wrong init parameter 'fragment', setting to 'auto detect': " + fragment);
-                        fragment = FRAGMENT_AUTODETECT;
-                    }
-                    
-                    log.warn("The used value '" + fragmentString + "' for the fragment parameter is deprecated.");
-                } catch (Exception e2) {
-                    log.info("Could not get init parameter 'fragment', defaulting to 'auto detect'.");
-                }
-                // end of deletion
             }
         } catch (Exception e) {
             log.info("Could not get init parameter 'fragment', defaulting to 'auto detect'.");
@@ -281,6 +277,21 @@ public class CacheFilter implements Filter, ICacheKeyProvider, ICacheGroupsProvi
             log.info("Could not get init parameter 'nocache', defaulting to 'off'.");
         }
 
+        // filter parameter last modified
+        try {
+            String lastModifiedString = config.getInitParameter("lastModified");
+            
+            if (lastModifiedString.equals("off")) {
+                lastModified = LAST_MODIFIED_OFF;
+            } else if (lastModifiedString.equals("on")) {
+                lastModified = LAST_MODIFIED_ON;
+            } else if (lastModifiedString.equalsIgnoreCase("initial")) {
+                lastModified = LAST_MODIFIED_INITIAL;
+            } 
+        } catch (Exception e) {
+            log.info("Could not get init parameter 'lastModified', defaulting to 'initial'.");
+        }
+        
         // filter parameter expires
         try {
             String expiresString = config.getInitParameter("expires");

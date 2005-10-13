@@ -36,6 +36,7 @@ public class CacheHttpServletResponseWrapper extends HttpServletResponseWrapper 
     private boolean fragment = false;
     private int status = SC_OK;
     private long expires = CacheFilter.EXPIRES_ON;
+    private long lastModified = CacheFilter.LAST_MODIFIED_INITIAL;
 
     /**
      * Constructor
@@ -43,7 +44,7 @@ public class CacheHttpServletResponseWrapper extends HttpServletResponseWrapper 
      * @param response The servlet response
      */
     public CacheHttpServletResponseWrapper(HttpServletResponse response) {
-        this(response, false, Long.MAX_VALUE, CacheFilter.EXPIRES_ON);
+        this(response, false, Long.MAX_VALUE, CacheFilter.EXPIRES_ON, CacheFilter.LAST_MODIFIED_INITIAL);
     }
 
     /**
@@ -52,20 +53,24 @@ public class CacheHttpServletResponseWrapper extends HttpServletResponseWrapper 
      * @param response The servlet response
      * @param fragment true if the repsonse indicates that it is a fragement of a page
      * @param time the refresh time in millis
+     * @param lastModified defines if last modified header will be send, @see CacheFilter
      * @param expires defines if expires header will be send, @see CacheFilter
      */
-    public CacheHttpServletResponseWrapper(HttpServletResponse response, boolean fragment, long time, long expires) {
+    public CacheHttpServletResponseWrapper(HttpServletResponse response, boolean fragment, long time, long lastModified, long expires) {
         super(response);
         result = new ResponseContent();
         this.fragment = fragment;
         this.expires = expires;
+        this.lastModified = lastModified;
         
         // only set inital values for last modified and expires, when a complete page is cached
         if (!fragment) {
             // setting a default last modified value based on object creation and remove the millis
-            long current = System.currentTimeMillis() / 1000;
-            result.setLastModified(current * 1000);
-            super.setDateHeader(CacheFilter.HEADER_LAST_MODIFIED, result.getLastModified());
+            if (lastModified == CacheFilter.LAST_MODIFIED_INITIAL) {
+                long current = System.currentTimeMillis() / 1000;
+                result.setLastModified(current * 1000);
+                super.setDateHeader(CacheFilter.HEADER_LAST_MODIFIED, result.getLastModified());
+            }
             // setting the expires value
             if (expires == CacheFilter.EXPIRES_TIME) {
                 result.setExpires(result.getLastModified() + time);
@@ -113,7 +118,7 @@ public class CacheHttpServletResponseWrapper extends HttpServletResponseWrapper 
         }
 
         // only set the last modified value, if a complete page is cached
-        if (CacheFilter.HEADER_LAST_MODIFIED.equalsIgnoreCase(name)) {
+        if ((lastModified != CacheFilter.LAST_MODIFIED_OFF) && (CacheFilter.HEADER_LAST_MODIFIED.equalsIgnoreCase(name))) {
             if (!fragment) {
                 result.setLastModified(value);
             } // TODO should we return now by fragments to avoid putting the header to the response?
@@ -141,7 +146,7 @@ public class CacheHttpServletResponseWrapper extends HttpServletResponseWrapper 
         }
 
         // only set the last modified value, if a complete page is cached
-        if (CacheFilter.HEADER_LAST_MODIFIED.equalsIgnoreCase(name)) {
+        if ((lastModified != CacheFilter.LAST_MODIFIED_OFF) && (CacheFilter.HEADER_LAST_MODIFIED.equalsIgnoreCase(name))) {
             if (!fragment) {
                 result.setLastModified(value);
             } // TODO should we return now by fragments to avoid putting the header to the response?
