@@ -157,7 +157,7 @@ public class CacheFilter implements Filter, ICacheKeyProvider, ICacheGroupsProvi
                     log.info("<cache>: New cache entry, cache stale or cache scope flushed for " + key);
                 }
 
-                CacheHttpServletResponseWrapper cacheResponse = new CacheHttpServletResponseWrapper((HttpServletResponse) response, fragmentRequest, time * 1000, lastModified, expires);
+                CacheHttpServletResponseWrapper cacheResponse = new CacheHttpServletResponseWrapper((HttpServletResponse) response, fragmentRequest, time * 1000L, lastModified, expires);
                 chain.doFilter(request, cacheResponse);
                 cacheResponse.flushBuffer();
 
