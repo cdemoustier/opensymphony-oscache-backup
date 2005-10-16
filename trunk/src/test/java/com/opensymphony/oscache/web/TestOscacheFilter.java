@@ -28,6 +28,10 @@ public final class TestOscacheFilter extends TestCase {
     private final String PARAM_1 = "abc=123";
     private final String PARAM_2 = "xyz=321";
     private final String SESSION_ID = "jsessionid=12345678";
+    // Constants definition to access OscacheServlet
+    private final String SERVLET_URL = "cacheServlet/?";
+    private final String FORCE_REFRESH = "forceRefresh=true&";
+
 
     /**
      * Constructor required by JUnit
@@ -65,26 +69,32 @@ public final class TestOscacheFilter extends TestCase {
 
         // Connect to the page to allow the initial JSP compilation
         compileJSP(baseUrl);
+        
+        // Flush the cache to avoid getting refreshed content from previous tests
+        flushCache();
 
         // Call the page for the second time
-        String stringResponse = invokeURL(baseUrl, 500);
+        String stringResponse = invokeURL(baseUrl, 250);
 
         // Connect again, we should have the same content
-        assertTrue(stringResponse.equals(invokeURL(baseUrl, 0)));
+        String newResponse = invokeURL(baseUrl, 0);
+        assertTrue("new response " + newResponse + " should be the same to " + stringResponse, stringResponse.equals(newResponse));
 
         // Try again with a session ID this time. The session ID should get filtered
         // out of the cache key so the content should be the same
-        assertTrue(stringResponse.equals(invokeURL(baseUrl + "?" + SESSION_ID, 500)));
+        newResponse = invokeURL(baseUrl + "?" + SESSION_ID, 250);
+        assertTrue("new response " + newResponse + " should be the same to " + stringResponse, stringResponse.equals(newResponse));
 
         // Connect again with extra params, the content should be different
-        String newResponse = invokeURL(baseUrl + "?" + PARAM_1 + "&" + PARAM_2, 1000);
-        assertTrue(!stringResponse.equals(newResponse));
+        newResponse = invokeURL(baseUrl + "?" + PARAM_1 + "&" + PARAM_2, 500);
+        assertFalse("new response " + newResponse + " expected it to be different to last one.", stringResponse.equals(newResponse));
 
         stringResponse = newResponse;
 
         // Connect again with the parameters in a different order. We should still
         // get the same content.
-        assertTrue(stringResponse.equals(invokeURL(baseUrl + "?" + PARAM_2 + "&" + PARAM_1, 0)));
+        newResponse = invokeURL(baseUrl + "?" + PARAM_2 + "&" + PARAM_1, 0);
+        assertTrue(stringResponse.equals(newResponse));
 
         // Connect again with the same parameters, but throw the session ID into
         // the mix again. The content should remain the same.
@@ -122,6 +132,17 @@ public final class TestOscacheFilter extends TestCase {
         }
     }
 
+    /** 
+     * Flushes the cache to avoid recieving content from previous tests
+     */
+    private void flushCache() {
+        String flushUrl = constructURL(SERVLET_URL + FORCE_REFRESH);
+        
+        String stringResponse = invokeURL(flushUrl, 0);
+        
+        assertTrue("Flushing the cache failed!", stringResponse.indexOf("This is some cache content") > 0);
+    }
+
     /**
      *  Reads the base url from the test.web.baseURL system property and
      *  append the given URL.
@@ -129,7 +150,7 @@ public final class TestOscacheFilter extends TestCase {
      *  @param Url  Url to append to the base.
      *  @return Complete URL
      */
-    private String constructURL(String Url) {
+    private String constructURL(String url) {
         String base = System.getProperty(BASE_URL_SYSTEM_PRP);
         String constructedUrl = null;
 
@@ -138,7 +159,7 @@ public final class TestOscacheFilter extends TestCase {
                 base = base + "/";
             }
 
-            constructedUrl = base + Url;
+            constructedUrl = base + url;
         } else {
             fail("System property test.web.baseURL needs to be set to the proper server to use.");
         }
