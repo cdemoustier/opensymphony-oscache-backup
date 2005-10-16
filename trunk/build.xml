@@ -82,7 +82,15 @@
         </war>
     </target>
 
+    
+    <!-- Deploy example war for the test web -->
+    <target name="deploy-example-war" depends="example-war" if="test.web.deployDir">
+        <!-- Use auto deployment of app server, e.g. BEA WLS -->   
+        <copy file="${dist}/${name}-example.war" tofile="${test.web.deployDir}/${name}-example.war" overwrite="yes"/>
+        <!-- if your pc is to fast, sleep here for a while -->   
+    </target>
 
+    
     <!-- Build a usable jar file -->
     <target name="jar" depends="compile">
         <mkdir dir="${build}"/>
@@ -97,13 +105,13 @@
     </target>
 
     <!-- Run the unit tests. This is used by the test target, so do not call directly -->
-    <target name="test-base">
+    <target name="test-base" unless="test.failure">
         <taskdef name="junit" classname="org.apache.tools.ant.taskdefs.optional.junit.JUnitTask"/>
 
         <!-- Clear out any previous persistent cache directory -->
         <delete dir="${test.cache.path}" failonerror="false"/>
 
-        <junit printsummary="yes" haltonfailure="no" haltonerror="yes" fork="yes">
+        <junit printsummary="yes" haltonfailure="no" haltonerror="yes" fork="yes" forkmode="once" failureproperty="test.failure">
             <classpath>
                 <pathelement location="${build.test}"/>
                 <path refid="cp"/>
@@ -121,13 +129,13 @@
         </junit>
     </target>
 
-    <target name="test-cluster" if="test.cluster">
+    <target name="test-cluster" if="test.cluster" unless="test.failure">
         <taskdef name="junit" classname="org.apache.tools.ant.taskdefs.optional.junit.JUnitTask"/>
 
         <!-- Clear out any previous persistent cache directory -->
         <delete dir="${test.cache.path}" failonerror="false"/>
 
-        <junit printsummary="yes" haltonfailure="no" haltonerror="yes" fork="yes">
+        <junit printsummary="yes" haltonfailure="no" haltonerror="yes" fork="yes" forkmode="once" failureproperty="test.failure">
             <classpath>
                 <pathelement location="${build.test}"/>
                 <path refid="cp"/>
@@ -143,7 +151,7 @@
         </junit>
     </target>
 
-    <target name="test-web" if="test.web.baseURL">
+    <target name="test-web" if="test.web.baseURL" unless="test.failure">
         <mkdir dir="${dist.docs}/junit"/>
         <mkdir dir="${build.test}"/>
 
@@ -158,7 +166,7 @@
 
         <taskdef name="junit" classname="org.apache.tools.ant.taskdefs.optional.junit.JUnitTask"/>
 
-        <junit printsummary="yes" haltonfailure="no" haltonerror="yes" fork="yes">
+        <junit printsummary="yes" haltonfailure="no" haltonerror="yes" fork="yes" forkmode="once" failureproperty="test.failure">
             <sysproperty key="test.web.baseURL" value="${test.web.baseURL}"/>
             <classpath>
                 <pathelement location="${build.test}"/>
@@ -168,6 +176,7 @@
 
             <formatter type="xml"/>
             <formatter type="plain" useFile="false"/>
+            
             <batchtest todir="${dist.docs}/junit">
                 <fileset dir="${build.test}">
                     <include name="**/web/TestComplete*.class"/>
@@ -179,7 +188,7 @@
 
 
     <!-- Run JUnit tests using different combinations of disk and memory caching -->
-    <target name="test" depends="init, compile, example-war, clover-check, junit-check">
+    <target name="test" depends="init, compile, example-war, deploy-example-war, clover-check, junit-check">
         <mkdir dir="${dist.docs}/junit"/>
         <mkdir dir="${dist.docs}/clover"/>
         <mkdir dir="${build.test}"/>
@@ -263,8 +272,19 @@
         <zip zipfile="${dist}/${name}-${version}-binary.zip" basedir="${tmp.dir}" includes="**"/>
 
         <delete dir="${tmp.dir}"/>
+     
+        <!-- Creates checksum for the distribution files -->   
+        <checksum>
+          <fileset dir="${dist}">
+            <include name="*.jar"/>
+            <include name="*.zip"/>
+            <include name="*.war"/>
+          </fileset>
+        </checksum>
+
     </target>
 
+   
     <target name="clover.report" depends="test">
         <clover-report>
             <current outfile="${dist.docs}/clover">
@@ -281,6 +301,9 @@
             </fileset>
             <report format="frames" todir="${dist.docs}/junit"/>
         </junitreport>
+     
+        <!-- we fail here (instead of in the test target) so that the reports get generated first) -->
+        <fail if="test.failure" message="Tests did not all pass, failing!"/>
     </target>
 
     <target name="reports" depends="common.reports">
