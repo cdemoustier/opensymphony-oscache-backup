@@ -76,22 +76,22 @@ public final class TestOscacheServlet extends TestCase {
 
         // Call again an verify that the content hasn't changed
         newResponse = invokeServlet(NO_REFRESH_WANTED);
-        assertTrue("new response is " + newResponse + " should be the same to " + newResponse, previousReponse.equals(newResponse));
+        assertTrue("new response " + newResponse + " should be the same to " + previousReponse, previousReponse.equals(newResponse));
 
         // Call again an verify that the content is updated
         newResponse = invokeServlet(REFRESH_WANTED);
-        assertFalse("new response " + newResponse + " expected it to be different.", previousReponse.equals(newResponse));
+        assertFalse("new response " + newResponse + " expected it to be different to last one.", previousReponse.equals(newResponse));
         previousReponse = newResponse;
 
         // Call short delay so content should be refresh, but it will not since
         // we ask to use the item already in cache
         newResponse = invokeServlet(REFRESH_WANTED, FORCE_CACHE_USE);
-        assertTrue("new response is " + newResponse + " should be the same to " + newResponse, previousReponse.equals(newResponse));
+        assertTrue("new response " + newResponse + " should be the same to " + previousReponse, previousReponse.equals(newResponse));
 
         // Call with long delay so the item would not need refresh, but we'll ask
         // a refresh anyway
         newResponse = invokeServlet(NO_REFRESH_WANTED, FORCE_REFRESH);
-        assertFalse("new response " + newResponse + " expected it to be different.", previousReponse.equals(newResponse));
+        assertFalse("new response " + newResponse + " expected it to be different to last one.", previousReponse.equals(newResponse));
 
         // Verify that the cache key and the cache entry are present in the output and
         // that their values are correct
