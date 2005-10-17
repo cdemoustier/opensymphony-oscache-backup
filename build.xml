@@ -27,7 +27,22 @@
     <!-- project properties -->
 
     <property name="src.webapp" value="${src}/webapp"/> <!-- new -->
+ 
+    <patternset id="src.test.pattern.base">
+        <include name="**/TestComplete*.class"/>
+        <exclude name="**/web/*.*"/>
+        <exclude name="**/clustersupport/*.*"/>
+    </patternset>
 
+    <patternset id="src.test.pattern.web">
+        <include name="**/web/TestComplete*.class"/>
+        <include name="**/web/TestLoadComplete*.class"/>
+    </patternset>
+
+    <patternset id="src.test.pattern.cluster">
+        <include name="**/TestCompleteCluster.class"/>
+    </patternset>
+   
     <!-- init -->
     
     <target name="init" depends="ivy-check,common.init">
@@ -87,7 +102,8 @@
     <target name="deploy-example-war" depends="example-war" if="test.web.deployDir">
         <!-- Use auto deployment of app server, e.g. BEA WLS -->   
         <copy file="${dist}/${name}-example.war" tofile="${test.web.deployDir}/${name}-example.war" overwrite="yes"/>
-        <!-- if your pc is to fast, sleep here for a while -->   
+        <!-- if your pc is to fast, sleep here for a while -->
+        <sleep minutes="1"/> 
     </target>
 
     
@@ -103,137 +119,177 @@
             </manifest>
         </jar>
     </target>
+ 
+ 
+    <!-- macrodef for tests -->
+    
+    <macrodef name="testBase">
+        <attribute name="file"/>
+        <attribute name="message"/>
+        <sequential>
+            <echo message="@{message}" level="info"/>
+            <copy file="@{file}" tofile="${build.test}/oscache.properties" overwrite="yes"/>
+         
+            <!-- Clear out any previous persistent cache directory -->
+            <delete dir="${test.cache.path}" failonerror="false"/>
 
-    <!-- Run the unit tests. This is used by the test target, so do not call directly -->
-    <target name="test-base" unless="test.failure">
-        <taskdef name="junit" classname="org.apache.tools.ant.taskdefs.optional.junit.JUnitTask"/>
+            <junit printsummary="yes" haltonfailure="no" haltonerror="yes" fork="yes" failureproperty="test.failure">
+                <classpath>
+                    <pathelement location="${build.test}"/>
+                    <path refid="cp"/>
+                </classpath>
 
-        <!-- Clear out any previous persistent cache directory -->
-        <delete dir="${test.cache.path}" failonerror="false"/>
+                <formatter type="xml"/>
 
-        <junit printsummary="yes" haltonfailure="no" haltonerror="yes" fork="yes" forkmode="once" failureproperty="test.failure">
-            <classpath>
-                <pathelement location="${build.test}"/>
-                <path refid="cp"/>
-            </classpath>
+                <batchtest todir="${dist.docs}/junit">
+                    <fileset dir="${build.test}">
+                        <patternset refid="src.test.pattern.base"/>
+                    </fileset>
+                </batchtest>
+            </junit>
+         
+            <!-- Clear out persistent cache directory -->
+            <delete dir="${test.cache.path}" failonerror="false"/>
+   
+        </sequential>
+    </macrodef>
+    
+    <macrodef name="testWeb">
+        <attribute name="file"/>
+        <attribute name="message"/>
+        <sequential>
+            <echo message="@{message}" level="info"/>
+            <copy file="@{file}" tofile="${build.test}/oscache.properties" overwrite="yes"/>
+         
+            <!-- Clear out any previous persistent cache directory -->
+            <delete dir="${test.cache.path}" failonerror="false"/>
 
-            <formatter type="xml"/>
+            <javac srcdir="${src.test}" destdir="${build.test}" includes="com/opensymphony/oscache/web/**" debug="${debug}" classpath="${build}" classpathref="cp"/>
 
-            <batchtest todir="${dist.docs}/junit">
-                <fileset dir="${build.test}">
-                    <include name="**/TestComplete*.class"/>
-                    <exclude name="**/web/*.*"/>
-                    <exclude name="**/clustersupport/*.*"/>
-                </fileset>
-            </batchtest>
-        </junit>
-    </target>
+            <java classname="com.opensymphony.oscache.web.CheckDeployment" failonerror="true" classpath="${build.test}" fork="yes">
+                <arg value="${test.web.baseURL}"/>
+            </java>
 
-    <target name="test-cluster" if="test.cluster" unless="test.failure">
-        <taskdef name="junit" classname="org.apache.tools.ant.taskdefs.optional.junit.JUnitTask"/>
+            <junit printsummary="yes" haltonfailure="no" haltonerror="yes" fork="yes" failureproperty="test.failure">
+                <sysproperty key="test.web.baseURL" value="${test.web.baseURL}"/>
+                <classpath>
+                    <pathelement location="${build.test}"/>
+                    <pathelement location="${build}"/>
+                    <path refid="cp"/>
+                </classpath>
 
-        <!-- Clear out any previous persistent cache directory -->
-        <delete dir="${test.cache.path}" failonerror="false"/>
-
-        <junit printsummary="yes" haltonfailure="no" haltonerror="yes" fork="yes" forkmode="once" failureproperty="test.failure">
-            <classpath>
-                <pathelement location="${build.test}"/>
-                <path refid="cp"/>
-            </classpath>
-
-            <formatter type="xml"/>
-
-            <batchtest todir="${dist.docs}/junit">
-                <fileset dir="${build.test}">
-                    <include name="**/TestCompleteCluster.class"/>
-                </fileset>
-            </batchtest>
-        </junit>
-    </target>
-
-    <target name="test-web" if="test.web.baseURL" unless="test.failure">
-        <mkdir dir="${dist.docs}/junit"/>
-        <mkdir dir="${build.test}"/>
-
-        <!-- Clear out any previous persistent cache directory -->
-        <delete dir="${test.cache.path}"/>
-
-        <javac srcdir="${src.test}" destdir="${build.test}" includes="com/opensymphony/oscache/web/**" debug="${debug}" classpath="${build}" classpathref="cp"/>
-
-        <java classname="com.opensymphony.oscache.web.CheckDeployment" failonerror="true" classpath="${build.test}" fork="yes">
-            <arg value="${test.web.baseURL}"/>
-        </java>
-
-        <taskdef name="junit" classname="org.apache.tools.ant.taskdefs.optional.junit.JUnitTask"/>
-
-        <junit printsummary="yes" haltonfailure="no" haltonerror="yes" fork="yes" forkmode="once" failureproperty="test.failure">
-            <sysproperty key="test.web.baseURL" value="${test.web.baseURL}"/>
-            <classpath>
-                <pathelement location="${build.test}"/>
-                <pathelement location="${build}"/>
-                <path refid="cp"/>
-            </classpath>
-
-            <formatter type="xml"/>
-            <formatter type="plain" useFile="false"/>
+                <formatter type="xml"/>
+                <formatter type="plain" useFile="false"/>
+                
+                <batchtest todir="${dist.docs}/junit">
+                    <fileset dir="${build.test}">
+                        <patternset refid="src.test.pattern.web"/>
+                    </fileset>
+                </batchtest>
+            </junit>
             
-            <batchtest todir="${dist.docs}/junit">
-                <fileset dir="${build.test}">
-                    <include name="**/web/TestComplete*.class"/>
-                    <include name="**/web/TestLoadComplete*.class"/>
-                </fileset>
-            </batchtest>
-        </junit>
-    </target>
+            <!-- Clear out persistent cache directory -->
+            <delete dir="${test.cache.path}" failonerror="false"/>
+            
+        </sequential>
+    </macrodef>
 
-
-    <!-- Run JUnit tests using different combinations of disk and memory caching -->
-    <target name="test" depends="init, compile, example-war, deploy-example-war, clover-check, junit-check">
+    <!-- Compiling sources for junit tests and clover -->   
+    <target name="test-compile" depends="junit-check, clover-check">
         <mkdir dir="${dist.docs}/junit"/>
         <mkdir dir="${dist.docs}/clover"/>
         <mkdir dir="${build.test}"/>
 
         <taskdef resource="clovertasks"/>
+        <taskdef name="junit" classname="org.apache.tools.ant.taskdefs.optional.junit.JUnitTask"/>
+   
         <javac destdir="${build.test}" debug="${debug}" classpathref="cp" compiler="org.apache.tools.ant.taskdefs.CloverCompilerAdapter">
             <src path="${src.java}"/>
         </javac>
         <javac destdir="${build.test}" debug="${debug}" classpathref="cp">
             <src path="${src.test}"/>
         </javac>
-        
-        <!-- Run tests using Memory Cache Only -->
-        <copy file="${src.test}/oscacheMemoryOnly.properties" tofile="${build.test}/oscache.properties" overwrite="yes"/>
-        <echo message="Running tests with memory cache only" level="info"/>
-        <antcall target="test-base"/>
-        <antcall target="test-web"/>
-
-        <!-- Rerun tests using Disk Cache Only -->
-        <copy file="${src.test}/oscacheDiskOnly.properties" tofile="${build.test}/oscache.properties" overwrite="yes"/>
-        <echo message="Running tests with disk cache only" level="info"/>
-        <antcall target="test-base"/>
-        <antcall target="test-web"/>
-
-        <!-- ReRun tests using Disk and Memory Cache -->
-        <copy file="${src.test}/oscacheDiskAndMemory.properties" tofile="${build.test}/oscache.properties" overwrite="yes"/>
-        <echo message="Running tests with disk and memory caches" level="info"/>
-        <antcall target="test-base"/>
-        <antcall target="test-web"/>
-    
-        <!-- ReRun tests using Memory and Disk Overflow Cache -->   
-        <copy file="${src.test}/oscacheMemoryAndOverflowToDisk.properties" tofile="${build.test}/oscache.properties" overwrite="yes"/>
-        <echo message="Running tests with memory and disk overflow caches" level="info"/>
-        <antcall target="test-base"/>
-        <antcall target="test-web"/>
-            
-        <!-- Run clustering tests -->
-        <echo message="Running tests with memory caches and clustering" level="info"/>
-        <antcall target="test-cluster"/>
-
-        <delete dir="${test.cache.path}"/>
     </target>
 
+    <!-- Run base tests -->   
+    <target name="test-base-mc" depends="test-compile" unless="test.failure" description="run base tests">
+        <!-- Run tests using Memory Cache Only -->
+        <testBase file="${src.test}/oscacheMemoryOnly.properties" message="Running base tests with memory cache only"/>
+    </target>
+
+    <target name="test-base-dc" depends="test-compile" unless="test.failure" description="run base tests">
+        <!-- Rerun tests using Disk Cache Only -->
+        <testBase file="${src.test}/oscacheDiskOnly.properties" message="Running base tests with disk cache only"/>
+    </target>
+
+    <target name="test-base-dmc" depends="test-compile" unless="test.failure" description="run base tests">
+        <!-- ReRun tests using Disk and Memory Cache -->
+        <testBase file="${src.test}/oscacheDiskAndMemory.properties" message="Running base tests with disk and memory caches"/>
+    </target>
+
+    <target name="test-base-mdoc" depends="test-compile" unless="test.failure" description="run base tests">
+        <!-- ReRun tests using Memory and Disk Overflow Cache -->   
+        <testBase file="${src.test}/oscacheMemoryAndOverflowToDisk.properties" message="Running base tests with memory and disk overflow caches"/>
+    </target>
+
+    <target name="test-base" depends="test-base-mc, test-base-dc, test-base-dmc, test-base-mdoc" description="run all base tests"/>
+   
+    <!-- Run web tests -->   
+    <target name="test-web-mc" depends="test-compile, example-war, deploy-example-war" unless="test.failure" if="test.web.baseURL" description="run web tests">
+        <!-- Run tests using Memory Cache Only -->
+        <testWeb file="${src.test}/oscacheMemoryOnly.properties" message="Running web tests with memory cache only"/>
+    </target>
+
+    <target name="test-web-dc" depends="test-compile, example-war, deploy-example-war" unless="test.failure" if="test.web.baseURL" description="run web tests">
+        <!-- Rerun tests using Disk Cache Only -->
+        <testWeb file="${src.test}/oscacheDiskOnly.properties" message="Running web tests with disk cache only"/>
+    </target>
+
+    <target name="test-web-dmc" depends="test-compile, example-war, deploy-example-war" unless="test.failure" if="test.web.baseURL" description="run web tests">
+        <!-- ReRun tests using Disk and Memory Cache -->
+        <testWeb file="${src.test}/oscacheDiskAndMemory.properties" message="Running web tests with disk and memory caches"/>
+    </target>
+
+    <target name="test-web-mdoc" depends="test-compile, example-war, deploy-example-war" unless="test.failure" if="test.web.baseURL" description="run web tests">
+        <!-- ReRun tests using Memory and Disk Overflow Cache -->   
+        <testWeb file="${src.test}/oscacheMemoryAndOverflowToDisk.properties" message="Running web tests with memory and disk overflow caches"/>
+    </target>
+    
+    <target name="test-web" depends="test-web-mc, test-web-dc, test-web-dmc, test-web-mdoc" description="run all web tests"/>
+   
+    <!-- Run clustering tests -->
+    <target name="test-cluster" depends="test-compile" unless="test.failure" if="test-cluster" description="run cluster tests">
+        <echo message="Running tests with memory caches and clustering" level="info"/>
+     
+        <!-- Clear out any previous persistent cache directory -->
+        <delete dir="${test.cache.path}" failonerror="false"/>
+
+        <junit printsummary="yes" haltonfailure="no" haltonerror="yes" fork="yes" failureproperty="test.failure">
+            <classpath>
+                <pathelement location="${build.test}"/>
+                <path refid="cp"/>
+            </classpath>
+
+            <formatter type="xml"/>
+
+            <batchtest todir="${dist.docs}/junit">
+                <fileset dir="${build.test}">
+                    <patternset refid="src.test.pattern.cluster"/>
+                </fileset>
+            </batchtest>
+        </junit>
+     
+        <!-- Clear out persistent cache directory -->
+        <delete dir="${test.cache.path}" failonerror="false"/>
+    </target>
+
+    
+    <!-- Run JUnit tests using different combinations of disk and memory caching -->
+    <target name="test" depends="test-base, test-web, test-cluster" description="run all tests"/>
+ 
+    
     <!-- Create the distribution zip files -->
-    <target name="dist" depends="clean, jar, docs, example-war, clover.report, junit.report">
+    <target name="dist" depends="jar, docs, example-war">
         <!-- copy the standard file -->
         <copy file="${build}/${name}-${version}.jar" tofile="${dist}/${name}-${version}.jar"/>
    
