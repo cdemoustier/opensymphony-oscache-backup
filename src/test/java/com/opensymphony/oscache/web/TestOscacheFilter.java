@@ -74,7 +74,7 @@ public final class TestOscacheFilter extends TestCase {
         flushCache();
 
         // Call the page for the second time
-        String stringResponse = invokeURL(baseUrl, 250);
+        String stringResponse = invokeURL(baseUrl, 500);
 
         // Connect again, we should have the same content
         String newResponse = invokeURL(baseUrl, 0);
@@ -82,11 +82,11 @@ public final class TestOscacheFilter extends TestCase {
 
         // Try again with a session ID this time. The session ID should get filtered
         // out of the cache key so the content should be the same
-        newResponse = invokeURL(baseUrl + "?" + SESSION_ID, 250);
+        newResponse = invokeURL(baseUrl + "?" + SESSION_ID, 500);
         assertTrue("new response " + newResponse + " should be the same to " + stringResponse, stringResponse.equals(newResponse));
 
         // Connect again with extra params, the content should be different
-        newResponse = invokeURL(baseUrl + "?" + PARAM_1 + "&" + PARAM_2, 500);
+        newResponse = invokeURL(baseUrl + "?" + PARAM_1 + "&" + PARAM_2, 1000);
         assertFalse("new response " + newResponse + " expected it to be different to last one.", stringResponse.equals(newResponse));
 
         stringResponse = newResponse;
@@ -100,6 +100,30 @@ public final class TestOscacheFilter extends TestCase {
         // the mix again. The content should remain the same.
         newResponse = invokeURL(baseUrl + "?" + SESSION_ID + "&" + PARAM_1 + "&" + PARAM_2, 0);
         assertTrue(stringResponse.equals(newResponse));
+    }
+
+    /**
+     * Test the OSCache filter with fast requests
+     */
+    public void testOSCacheFilterFast() {
+        /*
+        String baseUrl = constructURL(BASE_PAGE);
+
+        // Connect to the page to allow the initial JSP compilation
+        compileJSP(baseUrl);
+        
+        for (int i = 0; i < 5; i++) {
+            // Flush the cache to avoid getting refreshed content from previous tests
+            flushCache();
+            // build the url
+            String url = baseUrl + "?i=" + i;
+            String response = invokeURL(url, 0);
+            for (int j = 0; j < 3; j++) {
+                String newResponse = invokeURL(url, 0);
+                assertTrue("new response " + newResponse + " should be the same to " + response, response.equals(newResponse));
+            }
+        }
+        */
     }
 
     /**
