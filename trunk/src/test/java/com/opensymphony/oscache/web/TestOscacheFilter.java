@@ -59,6 +59,7 @@ public final class TestOscacheFilter extends TestCase {
         if (wc == null) {
             wc = new WebConversation();
         }
+        compileJSP(constructURL(BASE_PAGE));
     }
 
     /**
@@ -67,9 +68,6 @@ public final class TestOscacheFilter extends TestCase {
     public void testOscacheFilter() {
         String baseUrl = constructURL(BASE_PAGE);
 
-        // Connect to the page to allow the initial JSP compilation
-        compileJSP(baseUrl);
-        
         // Flush the cache to avoid getting refreshed content from previous tests
         flushCache();
 
@@ -106,24 +104,19 @@ public final class TestOscacheFilter extends TestCase {
      * Test the OSCache filter with fast requests
      */
     public void testOSCacheFilterFast() {
-        /*
         String baseUrl = constructURL(BASE_PAGE);
 
-        // Connect to the page to allow the initial JSP compilation
-        compileJSP(baseUrl);
-        
         for (int i = 0; i < 5; i++) {
             // Flush the cache to avoid getting refreshed content from previous tests
             flushCache();
             // build the url
             String url = baseUrl + "?i=" + i;
-            String response = invokeURL(url, 0);
+            String response = invokeURL(url, 500);
             for (int j = 0; j < 3; j++) {
-                String newResponse = invokeURL(url, 0);
+                String newResponse = invokeURL(url, 500);
                 assertTrue("new response " + newResponse + " should be the same to " + response, response.equals(newResponse));
             }
         }
-        */
     }
 
     /**
