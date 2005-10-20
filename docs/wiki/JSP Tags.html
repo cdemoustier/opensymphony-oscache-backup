@@ -13,7 +13,14 @@
 			    <td valign="top" class="pagebody">
 				    <p><b>OSCache</b> comes with a JSP tag library that controls all its major functions. The tags are listed below with descriptions, attributes and examples of use.</p>
 
-<p>For instructions on installing OSCache in a web application, see the <a href="Installation Guide.html" title="Installation Guide">Installation Guide</a>.</p>
+<p>For instructions on installing OSCache in a web application, see the <a href="Installation Guide.html" title="Installation Guide">Installation Guide</a>. You just have to add the following line declaring the OSCache custom tag library for use on the jsp page:</p>
+
+<div class="information-block" align='center'><div class='informationMacroPadding'><table cellpadding='5' width='85%' cellspacing='0' class='tipMacro' border='0'><tr><td width='16' valign='top'><img src="/images/icons/emoticons/check.gif" width="16" height="16" align="absmiddle" alt="" border="0"></td><td><b class="strong">Taglib URI</b><br />
+<p><tt>&lt;%@ taglib uri="http://www.opensymphony.com/oscache" prefix="oscache" %&gt;</tt></p>
+
+<p>In OSCache releases before 2.1.1 you have to change the URI to <tt>/oscache</tt>, see <a href="http://jira.opensymphony.com/browse/CACHE-61" title="Visit page outside Confluence">CACHE-61</a>.</p></td></tr></table></div></div>
+
+<h3><a name="JSPTags-Summary">Summary</a></h3>
 
 <p>The tags are:</p>
 
@@ -41,6 +48,7 @@
 	</li>
 </ul>
 </td></tr></table></div></div>
+
 
 <h3><a name="JSPTags-%3Ccache%3E%3C%2Fcache%3E"><a name="JSPTags-cache"></a>&lt;cache&gt;&lt;/cache&gt;</a></h3>
 

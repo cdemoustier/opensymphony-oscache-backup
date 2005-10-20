@@ -11,7 +11,7 @@
 	    <table class="pagecontent" border="0" cellpadding="0" cellspacing="0" width="100%" bgcolor="#ffffff">
 		    <tr>
 			    <td valign="top" class="pagebody">
-				    <p>OSCache comes with a servlet filter that enables you to transparently cache entire pages of your website, and even binary files. Caching of binary files is extremely useful when they are generated dynamically, eg PDF files or images. In addition by using the last modified header the transaction overhead and server load is reduced excellently which speed ups the server response time.</p>
+				    <p><b>OSCache</b> comes with a servlet filter that enables you to transparently cache entire pages of your website, and even binary files. Caching of binary files is extremely useful when they are generated dynamically, eg PDF files or images. In addition by using the last modified header the transaction overhead and server load is reduced excellently which speed ups the server response time.</p>
 
 <p>Besides bugs being fixed in the upcoming 2.2 release, major improvements have been made to the CacheFilter in many ways:</p>
 
@@ -35,12 +35,20 @@
 
 <h3><a name="CacheFilter-Configuringthefilter">Configuring the filter</a></h3>
 
-<p>To configure the filter, add something like the following to your <tt>web.xml</tt> file (obviously you will want to set the URL pattern to match only the content you want to cache; this example will cache all JSP pages):</p>
+<p>To configure the filter, add something like the following to your <tt>web.xml</tt> file (obviously you will want to set the URL pattern to match only the content you want to cache; this example will cache all JSP pages for 10 minutes in session scope):</p>
 
 <div class="code"><div class="codeContent">
 <pre class="code-xml"><span class="code-tag">&lt;filter&gt;</span>
     <span class="code-tag">&lt;filter-name&gt;</span>CacheFilter<span class="code-tag">&lt;/filter-name&gt;</span>
     <span class="code-tag">&lt;filter-class&gt;</span>com.opensymphony.oscache.web.filter.CacheFilter<span class="code-tag">&lt;/filter-class&gt;</span>
+    <span class="code-tag">&lt;init-param&gt;</span>
+        <span class="code-tag">&lt;param-name&gt;</span>time<span class="code-tag">&lt;/param-name&gt;</span>
+        <span class="code-tag">&lt;param-value&gt;</span>600<span class="code-tag">&lt;/param-value&gt;</span>
+    <span class="code-tag">&lt;/init-param&gt;</span>
+    <span class="code-tag">&lt;init-param&gt;</span>
+        <span class="code-tag">&lt;param-name&gt;</span>scope<span class="code-tag">&lt;/param-name&gt;</span>
+        <span class="code-tag">&lt;param-value&gt;</span>session<span class="code-tag">&lt;/param-value&gt;</span>
+    <span class="code-tag">&lt;/init-param&gt;</span>
 <span class="code-tag">&lt;/filter&gt;</span>
 
 <span class="code-tag">&lt;filter-mapping&gt;</span>
@@ -66,6 +74,10 @@
 
 <p>Defines which objects shouldn't be cached. Acceptable values are <em>off</em> (default) for caching all objects and <em>sessionIdInURL</em> if the session id is contained in the URL.</p>
 
+<h4><a name="CacheFilter-Parameter%3AlastModified%28NEW%21Since2.2final%29">Parameter: lastModified (NEW! Since 2.2 final)</a></h4>
+
+<p>Defines if the last modified header will be sent in the response. Acceptable values are <em>off</em> for don't sending the header, even it is set in the filter chain, <em>on</em> for sending it if it is set in the filter chain and <em>initial</em> the last modified information will be set based on current time.</p>
+
 <h4><a name="CacheFilter-Parameter%3Aexpires%28NEW%21Since2.2final%29">Parameter: expires (NEW! Since 2.2 final)</a></h4>
 
 <p>Defines if the expires header will be sent in the response. Acceptable values are <em>off</em> for don't sending the header, even it is set in the filter chain, <em>on</em> (default) for sending it if it is set in the filter chain and <em>time</em> the expires information will be intialized based on the time parameter and creation time of the content.</p>
@@ -80,25 +92,6 @@
 <h4><a name="CacheFilter-Parameter%3AICacheGroupsProvider%28NEW%21Since2.2final%29">Parameter: ICacheGroupsProvider (NEW! Since 2.2 final)</a></h4>
 
 <p>Specify a class which implements the interface <tt>ICacheGroupsProvider</tt>. A developer can implement a class which provides cache groups based on the request, the servlect cache administrator and the cache.</p>
-
-<h3><a name="CacheFilter-Example">Example</a></h3>
-
-<p>As an example, the following settings would cache content for 10 minutes in session scope:</p>
-
-<div class="code"><div class="codeContent">
-<pre class="code-xml"><span class="code-tag">&lt;filter&gt;</span>
-    <span class="code-tag">&lt;filter-name&gt;</span>CacheFilter<span class="code-tag">&lt;/filter-name&gt;</span>
-    <span class="code-tag">&lt;filter-class&gt;</span>com.opensymphony.oscache.web.filter.CacheFilter<span class="code-tag">&lt;/filter-class&gt;</span>
-    <span class="code-tag">&lt;init-param&gt;</span>
-        <span class="code-tag">&lt;param-name&gt;</span>time<span class="code-tag">&lt;/param-name&gt;</span>
-        <span class="code-tag">&lt;param-value&gt;</span>600<span class="code-tag">&lt;/param-value&gt;</span>
-    <span class="code-tag">&lt;/init-param&gt;</span>
-    <span class="code-tag">&lt;init-param&gt;</span>
-        <span class="code-tag">&lt;param-name&gt;</span>scope<span class="code-tag">&lt;/param-name&gt;</span>
-        <span class="code-tag">&lt;param-value&gt;</span>session<span class="code-tag">&lt;/param-value&gt;</span>
-    <span class="code-tag">&lt;/init-param&gt;</span>
-<span class="code-tag">&lt;/filter&gt;</span></pre>
-</div></div>
 
                     			    </td>
 		    </tr>
