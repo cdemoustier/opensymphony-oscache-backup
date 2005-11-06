@@ -11,20 +11,18 @@
 	    <table class="pagecontent" border="0" cellpadding="0" cellspacing="0" width="100%" bgcolor="#ffffff">
 		    <tr>
 			    <td valign="top" class="pagebody">
-				    <h3><a name="OSCache2.2-ReleaseNotesReleaseCandidate">Release Notes - Release Candidate</a></h3>
+				    <h3><a name="OSCache2.2-ReleaseNotesFinal">Release Notes - Final</a></h3>
 
-<p>(18th September 2005 - by Lars Torunski)</p>
+<p>(6th November 2005 - by Lars Torunski)</p>
 
-<h4><a name="OSCache2.2-Besidesbugsbeingfixed%2CmajorimprovementshavebeenmadetotheCacheFilterinmanyways%3A">Besides bugs being fixed, major improvements have been made to the CacheFilter in many ways:</a></h4>
+<h4><a name="OSCache2.2-Additionallytothe2.2RCOSCache2.2RCimprovements%2Cthefinalreleasewasenhancedby%3A">Additionally to the <a href="OSCache 2.2 RC.html" title="OSCache 2.2 RC">2.2 RC</a> improvements, the final release was enhanced by:</a></h4>
 
 <ul>
-	<li>Default initialization of the last modified header which reduces transaction overhead and server load</li>
-	<li>Support of GZip filters in the filter chain</li>
-	<li>Custom key generation by subclassing CacheFilter or by implementing a special interface</li>
-	<li>Preserving more http headers, e.g. the expires header</li>
-	<li>Special handling for fragments of a page</li>
-	<li>Avoids session creation for application scope pages</li>
-	<li>Multiple matching cache filters won't dead-lock the response anymore</li>
+	<li>Allow cache group definition in CacheFilter</li>
+	<li>Option to specify when to send Expires-Header</li>
+	<li>Allow disabling initial set of the last modified header</li>
+	<li>Continuous Integration and Dependency Management with Ivy</li>
+	<li>Update to JGroups 2.2.8</li>
 </ul>
 
 
@@ -34,8 +32,8 @@
     <table  width="100%" cellspacing="0" class="grid">
         <tr>
             <th colspan="4" style="text-align: left;">
-                <a href="http://jira.opensymphony.com/secure/IssueNavigator.jspa?&pid=10001&fixfor=21450&sorter/field=issuekey&sorter/order=DESC&tempMax=25&reset=true&">OpenSymphony JIRA</a>
-                <span class="smalltext">(22 issues)</span>
+                <a href="http://jira.opensymphony.com/secure/IssueNavigator.jspa?&pid=10001&fixfor=21550&sorter/field=issuekey&sorter/order=DESC&tempMax=25&reset=true&">OpenSymphony JIRA</a>
+                <span class="smalltext">(11 issues)</span>
             </th>
         </tr>
         <tr>
@@ -50,13 +48,13 @@
                     </tr>
                                             <tr class="rowNormal">
                                                             <td nowrap="true">
-                                            <a href="http://jira.opensymphony.com/browse/CACHE-189"><img src="http://jira.opensymphony.com/images/icons/bug.gif" alt="Bug" border="0" /></a>
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-211"><img src="http://jira.opensymphony.com/images/icons/task.gif" alt="Task" border="0" /></a>
                                     </td>
                                 <td nowrap="true">
-                                            <a href="http://jira.opensymphony.com/browse/CACHE-189">CACHE-189</a>
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-211">CACHE-211</a>
                                     </td>
                                 <td >
-                                            <a href="http://jira.opensymphony.com/browse/CACHE-189">AbstractDiskPersistenceListener.store hangs on exception</a>
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-211">Create check sums for the distribution files</a>
                                     </td>
                                 <td nowrap="true">
                                             <img src="http://jira.opensymphony.com/images/icons/status_closed.gif" alt="Closed" border="0" />Closed
@@ -64,41 +62,13 @@
                             </tr>
                                     <tr class="rowAlternate">
                                                             <td nowrap="true">
-                                            <a href="http://jira.opensymphony.com/browse/CACHE-185"><img src="http://jira.opensymphony.com/images/icons/bug.gif" alt="Bug" border="0" /></a>
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-210"><img src="http://jira.opensymphony.com/images/icons/task.gif" alt="Task" border="0" /></a>
                                     </td>
                                 <td nowrap="true">
-                                            <a href="http://jira.opensymphony.com/browse/CACHE-185">CACHE-185</a>
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-210">CACHE-210</a>
                                     </td>
                                 <td >
-                                            <a href="http://jira.opensymphony.com/browse/CACHE-185">Filtered requests will be re-requested twice</a>
-                                    </td>
-                                <td nowrap="true">
-                                            <img src="http://jira.opensymphony.com/images/icons/status_resolved.gif" alt="Resolved" border="0" />Resolved
-                                    </td>
-                            </tr>
-                                    <tr class="rowNormal">
-                                                            <td nowrap="true">
-                                            <a href="http://jira.opensymphony.com/browse/CACHE-184"><img src="http://jira.opensymphony.com/images/icons/bug.gif" alt="Bug" border="0" /></a>
-                                    </td>
-                                <td nowrap="true">
-                                            <a href="http://jira.opensymphony.com/browse/CACHE-184">CACHE-184</a>
-                                    </td>
-                                <td >
-                                            <a href="http://jira.opensymphony.com/browse/CACHE-184">Filter deadlock with external apps (mostly spiders)</a>
-                                    </td>
-                                <td nowrap="true">
-                                            <img src="http://jira.opensymphony.com/images/icons/status_closed.gif" alt="Closed" border="0" />Closed
-                                    </td>
-                            </tr>
-                                    <tr class="rowAlternate">
-                                                            <td nowrap="true">
-                                            <a href="http://jira.opensymphony.com/browse/CACHE-179"><img src="http://jira.opensymphony.com/images/icons/improvement.gif" alt="Improvement" border="0" /></a>
-                                    </td>
-                                <td nowrap="true">
-                                            <a href="http://jira.opensymphony.com/browse/CACHE-179">CACHE-179</a>
-                                    </td>
-                                <td >
-                                            <a href="http://jira.opensymphony.com/browse/CACHE-179">Provider interface for method createCacheKey</a>
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-210">Review: If last test-base and last test-web overwrite previous unit test reports</a>
                                     </td>
                                 <td nowrap="true">
                                             <img src="http://jira.opensymphony.com/images/icons/status_closed.gif" alt="Closed" border="0" />Closed
@@ -106,41 +76,13 @@
                             </tr>
                                     <tr class="rowNormal">
                                                             <td nowrap="true">
-                                            <a href="http://jira.opensymphony.com/browse/CACHE-174"><img src="http://jira.opensymphony.com/images/icons/bug.gif" alt="Bug" border="0" /></a>
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-204"><img src="http://jira.opensymphony.com/images/icons/improvement.gif" alt="Improvement" border="0" /></a>
                                     </td>
                                 <td nowrap="true">
-                                            <a href="http://jira.opensymphony.com/browse/CACHE-174">CACHE-174</a>
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-204">CACHE-204</a>
                                     </td>
                                 <td >
-                                            <a href="http://jira.opensymphony.com/browse/CACHE-174">Regression in fix of CACHE-170: UpdateStateEntry may leak when entry are removed</a>
-                                    </td>
-                                <td nowrap="true">
-                                            <img src="http://jira.opensymphony.com/images/icons/status_resolved.gif" alt="Resolved" border="0" />Resolved
-                                    </td>
-                            </tr>
-                                    <tr class="rowAlternate">
-                                                            <td nowrap="true">
-                                            <a href="http://jira.opensymphony.com/browse/CACHE-173"><img src="http://jira.opensymphony.com/images/icons/bug.gif" alt="Bug" border="0" /></a>
-                                    </td>
-                                <td nowrap="true">
-                                            <a href="http://jira.opensymphony.com/browse/CACHE-173">CACHE-173</a>
-                                    </td>
-                                <td >
-                                            <a href="http://jira.opensymphony.com/browse/CACHE-173">NullPointerException while flushing inexistant group</a>
-                                    </td>
-                                <td nowrap="true">
-                                            <img src="http://jira.opensymphony.com/images/icons/status_closed.gif" alt="Closed" border="0" />Closed
-                                    </td>
-                            </tr>
-                                    <tr class="rowNormal">
-                                                            <td nowrap="true">
-                                            <a href="http://jira.opensymphony.com/browse/CACHE-170"><img src="http://jira.opensymphony.com/images/icons/bug.gif" alt="Bug" border="0" /></a>
-                                    </td>
-                                <td nowrap="true">
-                                            <a href="http://jira.opensymphony.com/browse/CACHE-170">CACHE-170</a>
-                                    </td>
-                                <td >
-                                            <a href="http://jira.opensymphony.com/browse/CACHE-170">Data race handling Cache.updateStates results in Thread hangs when the blocking mode is used in concurrence</a>
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-204">Allow disabling initial set of the last modified header</a>
                                     </td>
                                 <td nowrap="true">
                                             <img src="http://jira.opensymphony.com/images/icons/status_closed.gif" alt="Closed" border="0" />Closed
@@ -148,13 +90,13 @@
                             </tr>
                                     <tr class="rowAlternate">
                                                             <td nowrap="true">
-                                            <a href="http://jira.opensymphony.com/browse/CACHE-169"><img src="http://jira.opensymphony.com/images/icons/improvement.gif" alt="Improvement" border="0" /></a>
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-203"><img src="http://jira.opensymphony.com/images/icons/task.gif" alt="Task" border="0" /></a>
                                     </td>
                                 <td nowrap="true">
-                                            <a href="http://jira.opensymphony.com/browse/CACHE-169">CACHE-169</a>
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-203">CACHE-203</a>
                                     </td>
                                 <td >
-                                            <a href="http://jira.opensymphony.com/browse/CACHE-169">Default initialization of the last modified header</a>
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-203">Change JSP tag URI in pages of example war</a>
                                     </td>
                                 <td nowrap="true">
                                             <img src="http://jira.opensymphony.com/images/icons/status_closed.gif" alt="Closed" border="0" />Closed
@@ -162,13 +104,13 @@
                             </tr>
                                     <tr class="rowNormal">
                                                             <td nowrap="true">
-                                            <a href="http://jira.opensymphony.com/browse/CACHE-161"><img src="$icons.get( $item.getElementValue('type') )" alt="Sub-task" border="0" /></a>
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-202"><img src="http://jira.opensymphony.com/images/icons/bug.gif" alt="Bug" border="0" /></a>
                                     </td>
                                 <td nowrap="true">
-                                            <a href="http://jira.opensymphony.com/browse/CACHE-161">CACHE-161</a>
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-202">CACHE-202</a>
                                     </td>
                                 <td >
-                                            <a href="http://jira.opensymphony.com/browse/CACHE-161">CacheFilter easier sub-classing via isCacheable</a>
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-202">Expires header should not be inital set in fragments</a>
                                     </td>
                                 <td nowrap="true">
                                             <img src="http://jira.opensymphony.com/images/icons/status_closed.gif" alt="Closed" border="0" />Closed
@@ -176,13 +118,13 @@
                             </tr>
                                     <tr class="rowAlternate">
                                                             <td nowrap="true">
-                                            <a href="http://jira.opensymphony.com/browse/CACHE-160"><img src="http://jira.opensymphony.com/images/icons/bug.gif" alt="Bug" border="0" /></a>
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-201"><img src="http://jira.opensymphony.com/images/icons/bug.gif" alt="Bug" border="0" /></a>
                                     </td>
                                 <td nowrap="true">
-                                            <a href="http://jira.opensymphony.com/browse/CACHE-160">CACHE-160</a>
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-201">CACHE-201</a>
                                     </td>
                                 <td >
-                                            <a href="http://jira.opensymphony.com/browse/CACHE-160">ExpiresRefreshPolicy always set in CacheFilter</a>
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-201">Defined interface for ICacheKeyProvider not used in CacheFilter</a>
                                     </td>
                                 <td nowrap="true">
                                             <img src="http://jira.opensymphony.com/images/icons/status_closed.gif" alt="Closed" border="0" />Closed
@@ -190,83 +132,27 @@
                             </tr>
                                     <tr class="rowNormal">
                                                             <td nowrap="true">
-                                            <a href="http://jira.opensymphony.com/browse/CACHE-155"><img src="http://jira.opensymphony.com/images/icons/newfeature.gif" alt="New Feature" border="0" /></a>
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-199"><img src="http://jira.opensymphony.com/images/icons/task.gif" alt="Task" border="0" /></a>
                                     </td>
                                 <td nowrap="true">
-                                            <a href="http://jira.opensymphony.com/browse/CACHE-155">CACHE-155</a>
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-199">CACHE-199</a>
                                     </td>
                                 <td >
-                                            <a href="http://jira.opensymphony.com/browse/CACHE-155">Support of GZip filters in the filter chain</a>
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-199">Continuous Integration and Dependency Management with Ivy</a>
                                     </td>
                                 <td nowrap="true">
-                                            <img src="http://jira.opensymphony.com/images/icons/status_resolved.gif" alt="Resolved" border="0" />Resolved
+                                            <img src="http://jira.opensymphony.com/images/icons/status_closed.gif" alt="Closed" border="0" />Closed
                                     </td>
                             </tr>
                                     <tr class="rowAlternate">
                                                             <td nowrap="true">
-                                            <a href="http://jira.opensymphony.com/browse/CACHE-154"><img src="http://jira.opensymphony.com/images/icons/bug.gif" alt="Bug" border="0" /></a>
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-198"><img src="http://jira.opensymphony.com/images/icons/task.gif" alt="Task" border="0" /></a>
                                     </td>
                                 <td nowrap="true">
-                                            <a href="http://jira.opensymphony.com/browse/CACHE-154">CACHE-154</a>
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-198">CACHE-198</a>
                                     </td>
                                 <td >
-                                            <a href="http://jira.opensymphony.com/browse/CACHE-154">NullPointerException in JavaGroupsBroadcastingListener</a>
-                                    </td>
-                                <td nowrap="true">
-                                            <img src="http://jira.opensymphony.com/images/icons/status_resolved.gif" alt="Resolved" border="0" />Resolved
-                                    </td>
-                            </tr>
-                                    <tr class="rowNormal">
-                                                            <td nowrap="true">
-                                            <a href="http://jira.opensymphony.com/browse/CACHE-148"><img src="http://jira.opensymphony.com/images/icons/bug.gif" alt="Bug" border="0" /></a>
-                                    </td>
-                                <td nowrap="true">
-                                            <a href="http://jira.opensymphony.com/browse/CACHE-148">CACHE-148</a>
-                                    </td>
-                                <td >
-                                            <a href="http://jira.opensymphony.com/browse/CACHE-148">getInstance call not thread-safe</a>
-                                    </td>
-                                <td nowrap="true">
-                                            <img src="http://jira.opensymphony.com/images/icons/status_resolved.gif" alt="Resolved" border="0" />Resolved
-                                    </td>
-                            </tr>
-                                    <tr class="rowAlternate">
-                                                            <td nowrap="true">
-                                            <a href="http://jira.opensymphony.com/browse/CACHE-144"><img src="http://jira.opensymphony.com/images/icons/bug.gif" alt="Bug" border="0" /></a>
-                                    </td>
-                                <td nowrap="true">
-                                            <a href="http://jira.opensymphony.com/browse/CACHE-144">CACHE-144</a>
-                                    </td>
-                                <td >
-                                            <a href="http://jira.opensymphony.com/browse/CACHE-144">CacheTag doesn't  clear variables in doStartTag / doFinally</a>
-                                    </td>
-                                <td nowrap="true">
-                                            <img src="http://jira.opensymphony.com/images/icons/status_resolved.gif" alt="Resolved" border="0" />Resolved
-                                    </td>
-                            </tr>
-                                    <tr class="rowNormal">
-                                                            <td nowrap="true">
-                                            <a href="http://jira.opensymphony.com/browse/CACHE-143"><img src="http://jira.opensymphony.com/images/icons/improvement.gif" alt="Improvement" border="0" /></a>
-                                    </td>
-                                <td nowrap="true">
-                                            <a href="http://jira.opensymphony.com/browse/CACHE-143">CACHE-143</a>
-                                    </td>
-                                <td >
-                                            <a href="http://jira.opensymphony.com/browse/CACHE-143">Report expected expiry to clients/browsers/proxy</a>
-                                    </td>
-                                <td nowrap="true">
-                                            <img src="http://jira.opensymphony.com/images/icons/status_resolved.gif" alt="Resolved" border="0" />Resolved
-                                    </td>
-                            </tr>
-                                    <tr class="rowAlternate">
-                                                            <td nowrap="true">
-                                            <a href="http://jira.opensymphony.com/browse/CACHE-138"><img src="http://jira.opensymphony.com/images/icons/task.gif" alt="Task" border="0" /></a>
-                                    </td>
-                                <td nowrap="true">
-                                            <a href="http://jira.opensymphony.com/browse/CACHE-138">CACHE-138</a>
-                                    </td>
-                                <td >
-                                            <a href="http://jira.opensymphony.com/browse/CACHE-138">Document new parameters in the wiki</a>
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-198">Update to JGroups 2.2.8</a>
                                     </td>
                                 <td nowrap="true">
                                             <img src="http://jira.opensymphony.com/images/icons/status_closed.gif" alt="Closed" border="0" />Closed
@@ -274,27 +160,27 @@
                             </tr>
                                     <tr class="rowNormal">
                                                             <td nowrap="true">
-                                            <a href="http://jira.opensymphony.com/browse/CACHE-135"><img src="http://jira.opensymphony.com/images/icons/newfeature.gif" alt="New Feature" border="0" /></a>
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-196"><img src="http://jira.opensymphony.com/images/icons/improvement.gif" alt="Improvement" border="0" /></a>
                                     </td>
                                 <td nowrap="true">
-                                            <a href="http://jira.opensymphony.com/browse/CACHE-135">CACHE-135</a>
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-196">CACHE-196</a>
                                     </td>
                                 <td >
-                                            <a href="http://jira.opensymphony.com/browse/CACHE-135">CacheFilter for fragements of a page</a>
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-196">Option to specify when to send Expires-Header</a>
                                     </td>
                                 <td nowrap="true">
-                                            <img src="http://jira.opensymphony.com/images/icons/status_resolved.gif" alt="Resolved" border="0" />Resolved
+                                            <img src="http://jira.opensymphony.com/images/icons/status_closed.gif" alt="Closed" border="0" />Closed
                                     </td>
                             </tr>
                                     <tr class="rowAlternate">
                                                             <td nowrap="true">
-                                            <a href="http://jira.opensymphony.com/browse/CACHE-129"><img src="http://jira.opensymphony.com/images/icons/bug.gif" alt="Bug" border="0" /></a>
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-195"><img src="http://jira.opensymphony.com/images/icons/improvement.gif" alt="Improvement" border="0" /></a>
                                     </td>
                                 <td nowrap="true">
-                                            <a href="http://jira.opensymphony.com/browse/CACHE-129">CACHE-129</a>
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-195">CACHE-195</a>
                                     </td>
                                 <td >
-                                            <a href="http://jira.opensymphony.com/browse/CACHE-129">CacheFilter will create useless sessions for application-scope pages</a>
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-195">Allow cache group generation in CacheFilter</a>
                                     </td>
                                 <td nowrap="true">
                                             <img src="http://jira.opensymphony.com/images/icons/status_closed.gif" alt="Closed" border="0" />Closed
@@ -302,58 +188,16 @@
                             </tr>
                                     <tr class="rowNormal">
                                                             <td nowrap="true">
-                                            <a href="http://jira.opensymphony.com/browse/CACHE-128"><img src="http://jira.opensymphony.com/images/icons/bug.gif" alt="Bug" border="0" /></a>
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-194"><img src="http://jira.opensymphony.com/images/icons/task.gif" alt="Task" border="0" /></a>
                                     </td>
                                 <td nowrap="true">
-                                            <a href="http://jira.opensymphony.com/browse/CACHE-128">CACHE-128</a>
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-194">CACHE-194</a>
                                     </td>
                                 <td >
-                                            <a href="http://jira.opensymphony.com/browse/CACHE-128">Multiple matching filters will dead-lock the response</a>
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-194">Update Documentation</a>
                                     </td>
                                 <td nowrap="true">
-                                            <img src="http://jira.opensymphony.com/images/icons/status_resolved.gif" alt="Resolved" border="0" />Resolved
-                                    </td>
-                            </tr>
-                                    <tr class="rowAlternate">
-                                                            <td nowrap="true">
-                                            <a href="http://jira.opensymphony.com/browse/CACHE-120"><img src="http://jira.opensymphony.com/images/icons/newfeature.gif" alt="New Feature" border="0" /></a>
-                                    </td>
-                                <td nowrap="true">
-                                            <a href="http://jira.opensymphony.com/browse/CACHE-120">CACHE-120</a>
-                                    </td>
-                                <td >
-                                            <a href="http://jira.opensymphony.com/browse/CACHE-120">New nocache option when body contains a jsessionid</a>
-                                    </td>
-                                <td nowrap="true">
-                                            <img src="http://jira.opensymphony.com/images/icons/status_resolved.gif" alt="Resolved" border="0" />Resolved
-                                    </td>
-                            </tr>
-                                    <tr class="rowNormal">
-                                                            <td nowrap="true">
-                                            <a href="http://jira.opensymphony.com/browse/CACHE-83"><img src="http://jira.opensymphony.com/images/icons/bug.gif" alt="Bug" border="0" /></a>
-                                    </td>
-                                <td nowrap="true">
-                                            <a href="http://jira.opensymphony.com/browse/CACHE-83">CACHE-83</a>
-                                    </td>
-                                <td >
-                                            <a href="http://jira.opensymphony.com/browse/CACHE-83">CacheHttpServletResponseWrapper &amp; ResponseContent dont preserver Http headers</a>
-                                    </td>
-                                <td nowrap="true">
-                                            <img src="http://jira.opensymphony.com/images/icons/status_resolved.gif" alt="Resolved" border="0" />Resolved
-                                    </td>
-                            </tr>
-                                    <tr class="rowAlternate">
-                                                            <td nowrap="true">
-                                            <a href="http://jira.opensymphony.com/browse/CACHE-69"><img src="http://jira.opensymphony.com/images/icons/improvement.gif" alt="Improvement" border="0" /></a>
-                                    </td>
-                                <td nowrap="true">
-                                            <a href="http://jira.opensymphony.com/browse/CACHE-69">CACHE-69</a>
-                                    </td>
-                                <td >
-                                            <a href="http://jira.opensymphony.com/browse/CACHE-69">Custom Key Generation on CacheFilter</a>
-                                    </td>
-                                <td nowrap="true">
-                                            <img src="http://jira.opensymphony.com/images/icons/status_closed.gif" alt="Closed" border="0" />Closed
+                                            <img src="http://jira.opensymphony.com/images/icons/status_inprogress.gif" alt="In Progress" border="0" />In Progress
                                     </td>
                             </tr>
             </table>
