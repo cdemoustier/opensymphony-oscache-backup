@@ -1,0 +1,146 @@
+<html>
+    <head>
+        <title>OSCache - 
+        Hibernate 3 Cache Adaptor
+         </title>
+	    <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body>
+	    <table class="pagecontent" border="0" cellpadding="0" cellspacing="0" width="100%" bgcolor="#ffffff">
+		    <tr>
+			    <td valign="top" class="pagebody">
+				    <p>Patched version of OSCache.java for Hibernate 3 - originally created by Mathias Bogaert.</p>
+
+<div class="code" style="border-style: solid; "><div class="codeHeader" style="border-bottom-style: solid; "><b>OSCache.java</b></div><div class="codeContent">
+<pre class="code-java"><span class="code-keyword">import</span> java.util.Properties;
+<span class="code-keyword">import</span> java.util.Map;
+
+<span class="code-keyword">import</span> org.hibernate.util.PropertiesHelper;
+<span class="code-keyword">import</span> org.hibernate.util.StringHelper;
+<span class="code-keyword">import</span> org.hibernate.cache.*;
+
+<span class="code-keyword">import</span> com.opensymphony.oscache.base.Config;
+<span class="code-keyword">import</span> com.opensymphony.oscache.base.CacheEntry;
+<span class="code-keyword">import</span> com.opensymphony.oscache.base.NeedsRefreshException;
+<span class="code-keyword">import</span> com.opensymphony.oscache.general.GeneralCacheAdministrator;
+
+/**
+ * Adapter <span class="code-keyword">for</span> the OSCache implementation
+ */
+<span class="code-keyword">public</span> class OSCache <span class="code-keyword">implements</span> Cache {
+    
+    /** 
+     * The &lt;tt&gt;OSCache&lt;/tt&gt; cache capacity property suffix. 
+     */
+    <span class="code-keyword">public</span> <span class="code-keyword">static</span> <span class="code-keyword">final</span> <span class="code-object">String</span> OSCACHE_CAPACITY = <span class="code-quote">"cache.capacity"</span>;
+
+    <span class="code-keyword">private</span> <span class="code-keyword">static</span> <span class="code-keyword">final</span> Properties OSCACHE_PROPERTIES = <span class="code-keyword">new</span> Config().getProperties();
+	/** 
+	 * The OSCache 2.0 cache administrator. 
+	 */
+	<span class="code-keyword">private</span> <span class="code-keyword">static</span> GeneralCacheAdministrator cache = <span class="code-keyword">new</span> GeneralCacheAdministrator();
+
+    <span class="code-keyword">private</span> <span class="code-keyword">static</span> <span class="code-object">Integer</span> capacity = PropertiesHelper.getInteger(OSCACHE_CAPACITY,
+                                                                  OSCACHE_PROPERTIES);
+
+    <span class="code-keyword">static</span> {
+        <span class="code-keyword">if</span> (capacity != <span class="code-keyword">null</span>) cache.setCacheCapacity(capacity.intValue());
+    }
+    
+	<span class="code-keyword">private</span> <span class="code-keyword">final</span> <span class="code-object">int</span> refreshPeriod;
+	<span class="code-keyword">private</span> <span class="code-keyword">final</span> <span class="code-object">String</span> cron;
+	<span class="code-keyword">private</span> <span class="code-keyword">final</span> <span class="code-object">String</span> regionName;
+    <span class="code-keyword">private</span> <span class="code-keyword">final</span> <span class="code-object">String</span>[] regionGroups;
+	
+	<span class="code-keyword">private</span> <span class="code-object">String</span> toString(<span class="code-object">Object</span> key) {
+		<span class="code-keyword">return</span> <span class="code-object">String</span>.valueOf(key) + <span class="code-quote">"."</span> + regionName;
+	}
+
+	<span class="code-keyword">public</span> OSCache(<span class="code-object">int</span> refreshPeriod, <span class="code-object">String</span> cron, <span class="code-object">String</span> region) {
+		<span class="code-keyword">this</span>.refreshPeriod = refreshPeriod;
+		<span class="code-keyword">this</span>.cron = cron;
+		<span class="code-keyword">this</span>.regionName = region;
+        <span class="code-keyword">this</span>.regionGroups = <span class="code-keyword">new</span> <span class="code-object">String</span>[] {region};
+	}
+
+	<span class="code-keyword">public</span> <span class="code-object">Object</span> get(<span class="code-object">Object</span> key) <span class="code-keyword">throws</span> CacheException {
+		<span class="code-keyword">try</span> {
+			<span class="code-keyword">return</span> cache.getFromCache( toString(key), refreshPeriod, cron );
+		}
+		<span class="code-keyword">catch</span> (NeedsRefreshException e) {
+			cache.cancelUpdate( toString(key) );
+			<span class="code-keyword">return</span> <span class="code-keyword">null</span>;
+		}
+	}
+
+	<span class="code-keyword">public</span> void put(<span class="code-object">Object</span> key, <span class="code-object">Object</span> value) <span class="code-keyword">throws</span> CacheException {
+		cache.putInCache( toString(key), value, regionGroups );
+	}
+
+	<span class="code-keyword">public</span> void remove(<span class="code-object">Object</span> key) <span class="code-keyword">throws</span> CacheException {
+		cache.flushEntry( toString(key) );
+	}
+
+	<span class="code-keyword">public</span> void clear() <span class="code-keyword">throws</span> CacheException {
+		cache.flushGroup(regionName);
+	}
+
+	<span class="code-keyword">public</span> void destroy() <span class="code-keyword">throws</span> CacheException {
+		<span class="code-keyword">synchronized</span> (cache) {
+		    cache.destroy();
+        }
+	}
+
+	<span class="code-keyword">public</span> void lock(<span class="code-object">Object</span> key) <span class="code-keyword">throws</span> CacheException {
+		<span class="code-comment">// local cache, so we use synchronization
+</span>	}
+
+	<span class="code-keyword">public</span> void unlock(<span class="code-object">Object</span> key) <span class="code-keyword">throws</span> CacheException {
+		<span class="code-comment">// local cache, so we use synchronization
+</span>	}
+
+	<span class="code-keyword">public</span> <span class="code-object">long</span> nextTimestamp() {
+		<span class="code-keyword">return</span> Timestamper.next();
+	}
+
+	<span class="code-keyword">public</span> <span class="code-object">int</span> getTimeout() {
+		<span class="code-keyword">return</span> Timestamper.ONE_MS * 60000; <span class="code-comment">//ie. 60 seconds
+</span>	}
+
+	<span class="code-keyword">public</span> Map toMap() {
+		<span class="code-keyword">throw</span> <span class="code-keyword">new</span> UnsupportedOperationException();
+	}    
+
+	<span class="code-keyword">public</span> <span class="code-object">long</span> getElementCountOnDisk() {
+		<span class="code-keyword">return</span> -1;
+	}
+
+	<span class="code-keyword">public</span> <span class="code-object">long</span> getElementCountInMemory() {
+		<span class="code-keyword">return</span> -1;
+	}
+    
+	<span class="code-keyword">public</span> <span class="code-object">long</span> getSizeInMemory() {
+		<span class="code-keyword">return</span> -1;
+	}
+
+	<span class="code-keyword">public</span> <span class="code-object">String</span> getRegionName() {
+		<span class="code-keyword">return</span> regionName;
+	}
+
+	<span class="code-keyword">public</span> void update(<span class="code-object">Object</span> key, <span class="code-object">Object</span> value) <span class="code-keyword">throws</span> CacheException {
+		put(key, value);
+	}    
+
+	<span class="code-keyword">public</span> <span class="code-object">Object</span> read(<span class="code-object">Object</span> key) <span class="code-keyword">throws</span> CacheException {
+		<span class="code-keyword">return</span> get(key);
+	}
+}</pre>
+</div></div>
+
+                    			    </td>
+		    </tr>
+	    </table>
+    </body>
+</html>

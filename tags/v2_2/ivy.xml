@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml-stylesheet type="text/xsl" href="http://www.jayasoft.fr/org/ivyrep/ivy-doc.xsl"?>
+<ivy-module version="1.0">
+    <info organisation="opensymphony" module="oscache"
+          revision="2.2"
+          status="integration"
+          publication="20051106120000">
+        <license name="Apache" url="http://www.apache.org/licenses/LICENSE-2.0.txt"/>
+        <ivyauthor name="opensymphony" url="http://www.opensymphony.com/"/>
+
+        <description homepage="http://www.opensymphony.com/oscache/">
+			OSCache is a caching solution that includes a JSP tag library and set of classes to perform 
+			fine grained dynamic caching of JSP content, servlet responses or arbitrary objects. It 
+			provides both in memory and persistent on disk caches, and can allow your site to have 
+			graceful error tolerance (eg if an error occurs like your db goes down, you can serve the 
+			cached content so people can still surf the site almost without knowing).
+        </description>
+    </info>
+    
+    <configurations>
+        <conf name="build" visibility="private"/>
+        <conf name="default" description="Default configuration"/>
+        <conf name="jgroups" description="JGroups integration"/>
+    </configurations>
+
+    <publications>
+        <artifact name="oscache" type="jar" conf="default"/>
+    </publications>
+    
+    <dependencies>
+        <!-- build dependencies -->
+        <dependency org="clover" name="clover" rev="1.3.9" conf="build->*"/>
+        <dependency org="junit" name="junit" rev="3.8.1" conf="build->*"/>
+        <dependency org="javax.servlet" name="servletapi" rev="2.3" conf="build->*"/>
+        <dependency org="javax.jms" name="jms" rev="1.1" conf="build->*"/>
+        <dependency org="httpunit" name="httpunit" rev="1.6" conf="build->*"/>
+        <dependency org="junitperf" name="junitperf" rev="1.8" conf="build->*"/>
+
+        <!-- oscache -->
+        <dependency org="apache" name="commons-logging" rev="1.0.4" conf="default->*"/>
+        <dependency org="apache" name="commons-collections" rev="3.1" conf="default->*"/>
+
+        <!-- jgroups -->
+        <dependency org="jgroups" name="jgroups-all" rev="2.2.8" conf="jgroups->*"/>
+    </dependencies>
+</ivy-module>

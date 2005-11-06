@@ -1,0 +1,71 @@
+<html>
+    <head>
+        <title>OSCache - 
+         Usage
+        </title>
+	    <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body>
+	    <table class="pagecontent" border="0" cellpadding="0" cellspacing="0" width="100%" bgcolor="#ffffff">
+		    <tr>
+			    <td valign="top" class="pagebody">
+				    <p>Beside the <a href="JSP Tags.html" title="JSP Tags">JSP tag library</a> and the <a href="CacheFilter.html" title="CacheFilter">CacheFilter</a> you can use OSCache through its straightforward API. E.g.   you can use the <a href="http://www.opensymphony.com/oscache/api/com/opensymphony/oscache/general/GeneralCacheAdministrator.html" title="Visit page outside Confluence">GeneralCacheAdministrator</a> to create, flush and administrate the cache.</p>
+
+<h4><a name="APIUsage-Typicalusewithfailover">Typical use with fail over</a></h4>
+
+<div class="code"><div class="codeContent">
+<pre class="code-java"><span class="code-object">String</span> myKey = <span class="code-quote">"myKey"</span>;
+<span class="code-object">String</span> myValue;
+<span class="code-object">int</span> myRefreshPeriod = 1000;
+<span class="code-keyword">try</span> {
+    <span class="code-comment">// Get from the cache
+</span>    myValue = (<span class="code-object">String</span>) admin.getFromCache(myKey, myRefreshPeriod);
+} <span class="code-keyword">catch</span> (NeedsRefreshException nre) {
+    <span class="code-keyword">try</span> {
+        <span class="code-comment">// Get the value (probably from the database)
+</span>        myValue = <span class="code-quote">"This is the content retrieved."</span>;
+        <span class="code-comment">// Store in the cache
+</span>        admin.putInCache(myKey, myValue);
+    } <span class="code-keyword">catch</span> (Exception ex) {
+        <span class="code-comment">// We have the current content <span class="code-keyword">if</span> we want fail-over.
+</span>        myValue = (<span class="code-object">String</span>) nre.getCacheContent();
+        <span class="code-comment">// It is essential that cancelUpdate is called <span class="code-keyword">if</span> the
+</span>        <span class="code-comment">// cached content is not rebuilt
+</span>        admin.cancelUpdate(myKey);
+    }
+}</pre>
+</div></div>
+
+<h4><a name="APIUsage-Typicalusewithoutfailover">Typical use without fail over</a></h4>
+
+<div class="code"><div class="codeContent">
+<pre class="code-java"><span class="code-object">String</span> myKey = <span class="code-quote">"myKey"</span>;
+<span class="code-object">String</span> myValue;
+<span class="code-object">int</span> myRefreshPeriod = 1000;
+<span class="code-keyword">try</span> {
+    <span class="code-comment">// Get from the cache
+</span>    myValue = (<span class="code-object">String</span>) admin.getFromCache(myKey, myRefreshPeriod);
+} <span class="code-keyword">catch</span> (NeedsRefreshException nre) {
+    <span class="code-keyword">try</span> {
+        <span class="code-comment">// Get the value (probably from the database)
+</span>        myValue = <span class="code-quote">"This is the content retrieved."</span>;
+        <span class="code-comment">// Store in the cache
+</span>        admin.putInCache(myKey, myValue);
+        updated = <span class="code-keyword">true</span>;
+    } <span class="code-keyword">finally</span> {
+        <span class="code-keyword">if</span> (!updated) {
+            <span class="code-comment">// It is essential that cancelUpdate is called <span class="code-keyword">if</span> the
+</span>            <span class="code-comment">// cached content could not be rebuilt
+</span>            admin.cancelUpdate(myKey);
+        }
+    }
+}</pre>
+</div></div>
+
+                    			    </td>
+		    </tr>
+	    </table>
+    </body>
+</html>
