@@ -318,33 +318,25 @@ public abstract class AbstractDiskPersistenceListener implements PersistenceList
     * @throws CachePersistenceException
     */
     protected void store(File file, Object obj) throws CachePersistenceException {
-        // check if the directory structure required exists and create it if it doesn't
-        File filepath = new File(file.getParent());
+        // check if file exists before testing if parent exists
+        if (!file.exists()) {
+            // check if the directory structure required exists and create it if it doesn't
+            File filepath = new File(file.getParent());
 
-        try {
-            if (!filepath.exists()) {
-                filepath.mkdirs();
+            try {
+                if (!filepath.exists()) {
+                    filepath.mkdirs();
+                }
+            } catch (Exception e) {
+                throw new CachePersistenceException("Unable to create the directory " + filepath);
             }
-        } catch (Exception e) {
-            throw new CachePersistenceException("Unable to create the directory " + filepath);
-        }
-
-        // Loop until we are able to delete (No current read).
-        // The cache must ensure that there are never two concurrent threads
-        // doing write (store and delete) operations on the same item.
-        // Delete only should be enough but file.exists prevents infinite loop
-        while (file.exists() && !file.delete()) {
-            ;
         }
 
         // Write the object to disk
-        FileOutputStream fout = null;
-        ObjectOutputStream oout = null;
-
         try {
-            fout = new FileOutputStream(file);
+            FileOutputStream fout = new FileOutputStream(file);
             try {
-                oout = new ObjectOutputStream(fout);
+                ObjectOutputStream oout = new ObjectOutputStream(new BufferedOutputStream(fout));
                 try {
                     oout.writeObject(obj);
                     oout.flush();
@@ -479,11 +471,10 @@ public abstract class AbstractDiskPersistenceListener implements PersistenceList
 
         // Read the file if it exists
         if (fileExist) {
-            BufferedInputStream in = null;
             ObjectInputStream oin = null;
 
             try {
-                in = new BufferedInputStream(new FileInputStream(file));
+                BufferedInputStream in = new BufferedInputStream(new FileInputStream(file));
                 oin = new ObjectInputStream(in);
                 readContent = oin.readObject();
             } catch (Exception e) {
@@ -493,17 +484,13 @@ public abstract class AbstractDiskPersistenceListener implements PersistenceList
                 // The cache has the logic to retry reading.
                 throw new CachePersistenceException("Unable to read '" + file.getAbsolutePath() + "' from the cache: " + e);
             } finally {
+              // HHDE: no need to close in. Will be closed by oin
                 try {
                     oin.close();
                 } catch (Exception ex) {
                 }
-
-                try {
-                    in.close();
-                } catch (Exception ex) {
                 }
             }
-        }
 
         return readContent;
     }
