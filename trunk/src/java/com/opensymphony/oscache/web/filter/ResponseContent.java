@@ -83,6 +83,7 @@ public class ResponseContent implements Serializable {
     /**
      * Get an output stream. This is used by the {@link SplitServletOutputStream}
      * to capture the original (uncached) response into a byte array.
+     * @return the original (uncached) response, returns null if response is already committed.
      */
     public OutputStream getOutputStream() {
         return bout;
@@ -104,7 +105,10 @@ public class ResponseContent implements Serializable {
      * stream into a byte array.
      */
     public void commit() {
-        content = bout.toByteArray();
+        if (bout != null) {
+            content = bout.toByteArray();
+            bout = null;
+        }
     }
 
     /**
