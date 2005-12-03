@@ -295,18 +295,30 @@ public abstract class AbstractDiskPersistenceListener implements PersistenceList
             // Use default value
         }
     }
+    
+    // try 30s to delete the file
+    private static final long DELETE_THREAD_SLEEP = 500;
+    private static final int DELETE_COUNT = 60; 
 
     protected void remove(File file) throws CachePersistenceException {
+        int count = DELETE_COUNT;
         try {
             // Loop until we are able to delete (No current read).
             // The cache must ensure that there are never two concurrent threads
             // doing write (store and delete) operations on the same item.
             // Delete only should be enough but file.exists prevents infinite loop
-            while (!file.delete() && file.exists()) {
-                ;
+            while (file.exists() && !file.delete() && count != 0) {
+                count--;
+                try {
+                    Thread.sleep(DELETE_THREAD_SLEEP);
+                } catch (InterruptedException ignore) {
+                } 
             }
         } catch (Exception e) {
             throw new CachePersistenceException("Unable to remove '" + file + "' from the cache: " + e);
+        }
+        if (file.exists() && count == 0) {
+            throw new CachePersistenceException("Unable to delete '" + file + "' from the cache. "+DELETE_COUNT+" attempts at "+DELETE_THREAD_SLEEP+" milliseconds intervals.");
         }
     }
 
@@ -353,8 +365,13 @@ public abstract class AbstractDiskPersistenceListener implements PersistenceList
                 }
             }
         } catch (Exception e) {
-            while (file.exists() && !file.delete()) {
-                ;
+            int count = DELETE_COUNT;
+            while (file.exists() && !file.delete() && count != 0) {
+                count--;
+                try {
+                    Thread.sleep(DELETE_THREAD_SLEEP);
+                } catch (InterruptedException ignore) {
+                } 
             }
             throw new CachePersistenceException("Unable to write '" + file + "' in the cache. Exception: " + e.getClass().getName() + ", Message: " + e.getMessage());
         }
