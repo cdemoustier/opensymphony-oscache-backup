@@ -352,6 +352,14 @@ public class Cache implements Serializable {
             log.error("The class '" + clazz.getName() + "' is not a CacheEventListener. Ignoring this listener.");
         }
     }
+    
+    /**
+     * Returns the list of all CacheEventListeners.
+     * @return the CacheEventListener's list of the Cache
+     */
+    public EventListenerList getCacheEventListenerList() {
+        return listenerList;
+    }
 
     /**
      * Cancels any pending update for this cache entry. This should <em>only</em>
