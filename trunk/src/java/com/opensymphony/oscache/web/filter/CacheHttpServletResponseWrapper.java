@@ -30,7 +30,7 @@ public class CacheHttpServletResponseWrapper extends HttpServletResponseWrapper 
      * We cache the printWriter so we can maintain a single instance
      * of it no matter how many times it is requested.
      */
-    private PrintWriter cachedWriter;
+    private PrintWriter cachedWriter = null;
     private ResponseContent result = null;
     private SplitServletOutputStream cacheOut = null;
     private boolean fragment = false;
@@ -328,6 +328,48 @@ public class CacheHttpServletResponseWrapper extends HttpServletResponseWrapper 
 
         if (cachedWriter != null) {
             cachedWriter.flush();
+        }
+    }
+
+    /**
+     * @see javax.servlet.ServletResponseWrapper#isCommitted()
+     */
+    public boolean isCommitted() {
+        return super.isCommitted() || (result.getOutputStream() == null);
+    }
+
+    /**
+     * @see javax.servlet.ServletResponseWrapper#reset()
+     */
+    public void reset() {
+        if (!isCommitted()) {
+            super.reset();
+            cachedWriter = null;
+            result = null;
+            cacheOut = null;
+            fragment = false;
+            status = SC_OK;
+            expires = CacheFilter.EXPIRES_ON;
+            lastModified = CacheFilter.LAST_MODIFIED_INITIAL;
+        } else {
+            throw new IllegalStateException("Can't reset CacheHttpServletResponseWrapper, because it's already committed!");
+        }
+    }
+
+    /**
+     * @see javax.servlet.ServletResponseWrapper#resetBuffer()
+     */
+    public void resetBuffer() {
+        if (!isCommitted()) {
+            super.resetBuffer();
+            cachedWriter = null;
+            result = null;
+            cacheOut = null;
+            fragment = false;
+            // The resetBuffer method clears content in the buffer if the
+            // response is not committed without clearing the headers and status code.
+        } else {
+            throw new IllegalStateException("Can't reset buffer CacheHttpServletResponseWrapper, because it's already committed!");
         }
     }
 }
