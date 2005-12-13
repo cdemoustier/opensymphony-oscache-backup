@@ -138,4 +138,15 @@
         </attribute>
     </tag>
 
+    <tag>
+        <name>addgroups</name>
+        <tag-class>com.opensymphony.oscache.web.tag.GroupsTag</tag-class>
+        <description>A tag to add a comma-delimited list of groups to an ancestor cache tag</description>
+        <attribute>
+            <name>groups</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
+    
 </taglib>

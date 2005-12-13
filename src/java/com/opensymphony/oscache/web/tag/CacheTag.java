@@ -206,6 +206,7 @@ public class CacheTag extends BodyTagSupport implements TryCatchFinally {
      * @param groups A comma-delimited list of groups that the cache entry belongs to.
      */
     public void setGroups(String groups) {
+    	// FIXME: ArrayList doesn't avoid duplicates
         this.groups = StringUtil.split(groups, ',');
     }
 
@@ -216,10 +217,25 @@ public class CacheTag extends BodyTagSupport implements TryCatchFinally {
      */
     void addGroup(String group) {
         if (groups == null) {
+        	// FIXME: ArrayList doesn't avoid duplicates
             groups = new ArrayList();
         }
 
         groups.add(group);
+    }
+
+    /**
+     * Adds comma-delimited list of groups that the cache entry belongs to.
+     *
+     * @param groups A comma-delimited list of groups that the cache entry belongs to also.
+     */
+    void addGroups(String groupsString) {
+        if (groups == null) {
+        	// FIXME: ArrayList doesn't avoid duplicates
+            groups = new ArrayList();
+        }
+
+        groups.addAll(StringUtil.split(groupsString, ','));
     }
 
     /**
