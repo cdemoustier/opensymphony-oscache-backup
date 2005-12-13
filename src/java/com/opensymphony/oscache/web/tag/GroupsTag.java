@@ -19,7 +19,7 @@ public class GroupsTag extends TagSupport {
         CacheTag ancestorCacheTag = (CacheTag) TagSupport.findAncestorWithClass(this, CacheTag.class);
 
         if (ancestorCacheTag == null) {
-            throw new JspTagException("GroupTag cannot be used from outside a CacheTag");
+            throw new JspTagException("GroupsTag cannot be used from outside a CacheTag");
         }
 
         ancestorCacheTag.addGroups(String.valueOf(groups));
