@@ -22,7 +22,7 @@
 <p>OSCache and Hibernate 2.1 integrate though OSCacheProvider. </p>
 
 <div class="information-block" align='center'><div class='informationMacroPadding'><table cellpadding='5' width='85%' cellspacing='0' class='warningMacro' border='0'><tr><td width='16' valign='top'><img src="/images/icons/emoticons/forbidden.gif" width="16" height="16" align="absmiddle" alt="" border="0"></td><td><b class="strong">Warning</b><br />
-<p>Unfortunately, at this time the OSCacheProvider distributed with Hibernate 2.1.x is not suited to clustering with OSCache.  A patch has been submitted to the Hibernate team but not yet applied.  Even if you do not require clustering, we recommend use of these patched versions of <a href="Hibernate Cache Provider.html" title="Hibernate Cache Provider">OSCacheProvider</a> and <a href="Hibernate Cache Adapter.html" title="Hibernate Cache Adapter">OSCache</a> for Hibernate 2.x and <a href="Hibernate 3 Cache Provider.html" title="Hibernate 3 Cache Provider">OSCacheProvider</a> and <a href="Hibernate 3 Cache Adaptor.html" title="Hibernate 3 Cache Adaptor">OSCache</a> for Hibernate 3.x.  Just cut-n-paste the code and use the provider class you create as the hibernate.cache.provider_class as shown below.</p></td></tr></table></div></div>
+<p>Unfortunately, at this time the OSCacheProvider distributed with Hibernate 2.1.x is not suited to clustering with OSCache.  A patch has been submitted to the Hibernate team but not yet applied.  Even if you do not require clustering, we recommend use of these patched versions of <a href="Hibernate 2.1 Cache Provider.html" title="Hibernate 2.1 Cache Provider">OSCacheProvider</a> and <a href="Hibernate 2.1 Cache Adapter.html" title="Hibernate 2.1 Cache Adapter">OSCache</a> for Hibernate 2.x and <a href="Hibernate 3 Cache Provider.html" title="Hibernate 3 Cache Provider">OSCacheProvider</a> and <a href="Hibernate 3 Cache Adaptor.html" title="Hibernate 3 Cache Adaptor">OSCache</a> for Hibernate 3.x.  Just cut-n-paste the code and use the provider class you create as the hibernate.cache.provider_class as shown below.</p></td></tr></table></div></div>
 
 <p>To enable OSCache in Hibernate's configuration, add the following line to hibernate.cfg.xml:</p>
 
@@ -51,6 +51,10 @@ com.mypackage.domain.Customer.capacity = 5000
 </div></div>
 
 <p>The com.mypackage.domain.Customer is Hibernate's internal cache region, which defaults to the classname, and which can be altered by setting Hibernate's configuration property <a href="http://www.hibernate.org/hib_docs/reference/html_single/#session-configuration-s5" title="Visit page outside Confluence">hibernate.cache.region_prefix</a> .</p>
+
+<h3><a name="Hibernate-SourceCode">Source Code</a></h3>
+
+<ul><li><a href="Hibernate 2.1 Cache Adapter.html" title="Hibernate 2.1 Cache Adapter">Hibernate 2.1 Cache Adapter</a></li><li><a href="Hibernate 2.1 Cache Provider.html" title="Hibernate 2.1 Cache Provider">Hibernate 2.1 Cache Provider</a></li><li><a href="Hibernate 3 Cache Adaptor.html" title="Hibernate 3 Cache Adaptor">Hibernate 3 Cache Adaptor</a></li><li><a href="Hibernate 3 Cache Provider.html" title="Hibernate 3 Cache Provider">Hibernate 3 Cache Provider</a></li></ul>
 
                     			    </td>
 		    </tr>
