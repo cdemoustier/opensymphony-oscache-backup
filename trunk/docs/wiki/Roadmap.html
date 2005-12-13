@@ -15,16 +15,16 @@
 
 <p>This page and the <a href="https://oscache.dev.java.net/servlets/ProjectMailingListList" title="Visit page outside Confluence">mailing list</a> are provided for discussion purposes about the roadmap of OSCache and discussing new features and improvements. See also the <a href="http://jira.opensymphony.com/browse/CACHE?report=com.atlassian.jira.plugin.system.project:roadmap-panel" title="Visit page outside Confluence">JIRA - Road Map</a> for more details or vote for issues in <a href="http://jira.opensymphony.com/browse/CACHE?report=com.atlassian.jira.plugin.system.project:popularissues-panel" title="Visit page outside Confluence">JIRA - Popular Issues</a> .</p>
 
-<h3><a name="Roadmap-OSCache2.2.1">OSCache 2.2.1</a></h3>
+<h3><a name="Roadmap-OSCache2.3">OSCache 2.3</a></h3>
 
-<p>A bug fix release with easy improvements which ensure backward compatibility:</p>
+<p>Improvements to CacheFilter and disk persistence :</p>
 
 <p>
     <table  width="100%" cellspacing="0" class="grid">
         <tr>
             <th colspan="4" style="text-align: left;">
                 <a href="http://jira.opensymphony.com/secure/IssueNavigator.jspa?&pid=10001&fixfor=21570&sorter/field=issuekey&sorter/order=DESC&tempMax=25&reset=true&">OpenSymphony JIRA</a>
-                <span class="smalltext">(2 issues)</span>
+                <span class="smalltext">(7 issues)</span>
             </th>
         </tr>
         <tr>
@@ -39,16 +39,72 @@
                     </tr>
                                             <tr class="rowNormal">
                                                             <td nowrap="true">
-                                            <a href="http://jira.opensymphony.com/browse/CACHE-214"><img src="http://jira.opensymphony.com/images/icons/bug.gif" alt="Bug" border="0" /></a>
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-222"><img src="http://jira.opensymphony.com/images/icons/newfeature.gif" alt="New Feature" border="0" /></a>
+                                    </td>
+                                <td nowrap="true">
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-222">CACHE-222</a>
+                                    </td>
+                                <td >
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-222">Add new JSP tag addGroups</a>
+                                    </td>
+                                <td nowrap="true">
+                                            <img src="http://jira.opensymphony.com/images/icons/status_resolved.gif" alt="Resolved" border="0" />Resolved
+                                    </td>
+                            </tr>
+                                    <tr class="rowAlternate">
+                                                            <td nowrap="true">
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-217"><img src="http://jira.opensymphony.com/images/icons/improvement.gif" alt="Improvement" border="0" /></a>
+                                    </td>
+                                <td nowrap="true">
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-217">CACHE-217</a>
+                                    </td>
+                                <td >
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-217">Avoid DiskPersistenceListener deadlocks if process has no rights to delete cache file</a>
+                                    </td>
+                                <td nowrap="true">
+                                            <img src="http://jira.opensymphony.com/images/icons/status_resolved.gif" alt="Resolved" border="0" />Resolved
+                                    </td>
+                            </tr>
+                                    <tr class="rowNormal">
+                                                            <td nowrap="true">
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-216"><img src="http://jira.opensymphony.com/images/icons/task.gif" alt="Task" border="0" /></a>
+                                    </td>
+                                <td nowrap="true">
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-216">CACHE-216</a>
+                                    </td>
+                                <td >
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-216">Review CacheFilter against Servlet 2.4 spec.</a>
+                                    </td>
+                                <td nowrap="true">
+                                            <img src="http://jira.opensymphony.com/images/icons/status_resolved.gif" alt="Resolved" border="0" />Resolved
+                                    </td>
+                            </tr>
+                                    <tr class="rowAlternate">
+                                                            <td nowrap="true">
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-214"><img src="http://jira.opensymphony.com/images/icons/improvement.gif" alt="Improvement" border="0" /></a>
                                     </td>
                                 <td nowrap="true">
                                             <a href="http://jira.opensymphony.com/browse/CACHE-214">CACHE-214</a>
                                     </td>
                                 <td >
-                                            <a href="http://jira.opensymphony.com/browse/CACHE-214">ResponseContent memory consumpition</a>
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-214">Reduce memory consumption of ResponseContent</a>
                                     </td>
                                 <td nowrap="true">
-                                            <img src="http://jira.opensymphony.com/images/icons/status_open.gif" alt="Open" border="0" />Open
+                                            <img src="http://jira.opensymphony.com/images/icons/status_resolved.gif" alt="Resolved" border="0" />Resolved
+                                    </td>
+                            </tr>
+                                    <tr class="rowNormal">
+                                                            <td nowrap="true">
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-200"><img src="http://jira.opensymphony.com/images/icons/newfeature.gif" alt="New Feature" border="0" /></a>
+                                    </td>
+                                <td nowrap="true">
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-200">CACHE-200</a>
+                                    </td>
+                                <td >
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-200">add 'getCacheEventListenerList()' to Cache class</a>
+                                    </td>
+                                <td nowrap="true">
+                                            <img src="http://jira.opensymphony.com/images/icons/status_resolved.gif" alt="Resolved" border="0" />Resolved
                                     </td>
                             </tr>
                                     <tr class="rowAlternate">
@@ -60,6 +116,20 @@
                                     </td>
                                 <td >
                                             <a href="http://jira.opensymphony.com/browse/CACHE-197">Speed up disk persistence</a>
+                                    </td>
+                                <td nowrap="true">
+                                            <img src="http://jira.opensymphony.com/images/icons/status_resolved.gif" alt="Resolved" border="0" />Resolved
+                                    </td>
+                            </tr>
+                                    <tr class="rowNormal">
+                                                            <td nowrap="true">
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-140"><img src="http://jira.opensymphony.com/images/icons/improvement.gif" alt="Improvement" border="0" /></a>
+                                    </td>
+                                <td nowrap="true">
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-140">CACHE-140</a>
+                                    </td>
+                                <td >
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-140">Option to avoid bypassing the Cache if browser has resource already</a>
                                     </td>
                                 <td nowrap="true">
                                             <img src="http://jira.opensymphony.com/images/icons/status_open.gif" alt="Open" border="0" />Open
@@ -78,7 +148,7 @@
         <tr>
             <th colspan="4" style="text-align: left;">
                 <a href="http://jira.opensymphony.com/secure/IssueNavigator.jspa?&pid=10001&fixfor=21470&sorter/field=issuekey&sorter/order=DESC&tempMax=25&reset=true&">OpenSymphony JIRA</a>
-                <span class="smalltext">(18 issues)</span>
+                <span class="smalltext">(19 issues)</span>
             </th>
         </tr>
         <tr>
@@ -93,6 +163,20 @@
                     </tr>
                                             <tr class="rowNormal">
                                                             <td nowrap="true">
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-220"><img src="http://jira.opensymphony.com/images/icons/newfeature.gif" alt="New Feature" border="0" /></a>
+                                    </td>
+                                <td nowrap="true">
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-220">CACHE-220</a>
+                                    </td>
+                                <td >
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-220">Using a weak referenced cache for overflow capability</a>
+                                    </td>
+                                <td nowrap="true">
+                                            <img src="http://jira.opensymphony.com/images/icons/status_open.gif" alt="Open" border="0" />Open
+                                    </td>
+                            </tr>
+                                    <tr class="rowAlternate">
+                                                            <td nowrap="true">
                                             <a href="http://jira.opensymphony.com/browse/CACHE-172"><img src="http://jira.opensymphony.com/images/icons/improvement.gif" alt="Improvement" border="0" /></a>
                                     </td>
                                 <td nowrap="true">
@@ -105,7 +189,7 @@
                                             <img src="http://jira.opensymphony.com/images/icons/status_open.gif" alt="Open" border="0" />Open
                                     </td>
                             </tr>
-                                    <tr class="rowAlternate">
+                                    <tr class="rowNormal">
                                                             <td nowrap="true">
                                             <a href="http://jira.opensymphony.com/browse/CACHE-158"><img src="http://jira.opensymphony.com/images/icons/improvement.gif" alt="Improvement" border="0" /></a>
                                     </td>
@@ -119,7 +203,7 @@
                                             <img src="http://jira.opensymphony.com/images/icons/status_inprogress.gif" alt="In Progress" border="0" />In Progress
                                     </td>
                             </tr>
-                                    <tr class="rowNormal">
+                                    <tr class="rowAlternate">
                                                             <td nowrap="true">
                                             <a href="http://jira.opensymphony.com/browse/CACHE-151"><img src="http://jira.opensymphony.com/images/icons/bug.gif" alt="Bug" border="0" /></a>
                                     </td>
@@ -133,7 +217,7 @@
                                             <img src="http://jira.opensymphony.com/images/icons/status_open.gif" alt="Open" border="0" />Open
                                     </td>
                             </tr>
-                                    <tr class="rowAlternate">
+                                    <tr class="rowNormal">
                                                             <td nowrap="true">
                                             <a href="http://jira.opensymphony.com/browse/CACHE-149"><img src="http://jira.opensymphony.com/images/icons/newfeature.gif" alt="New Feature" border="0" /></a>
                                     </td>
@@ -147,7 +231,7 @@
                                             <img src="http://jira.opensymphony.com/images/icons/status_open.gif" alt="Open" border="0" />Open
                                     </td>
                             </tr>
-                                    <tr class="rowNormal">
+                                    <tr class="rowAlternate">
                                                             <td nowrap="true">
                                             <a href="http://jira.opensymphony.com/browse/CACHE-145"><img src="http://jira.opensymphony.com/images/icons/improvement.gif" alt="Improvement" border="0" /></a>
                                     </td>
@@ -161,7 +245,7 @@
                                             <img src="http://jira.opensymphony.com/images/icons/status_open.gif" alt="Open" border="0" />Open
                                     </td>
                             </tr>
-                                    <tr class="rowAlternate">
+                                    <tr class="rowNormal">
                                                             <td nowrap="true">
                                             <a href="http://jira.opensymphony.com/browse/CACHE-142"><img src="http://jira.opensymphony.com/images/icons/improvement.gif" alt="Improvement" border="0" /></a>
                                     </td>
@@ -175,7 +259,7 @@
                                             <img src="http://jira.opensymphony.com/images/icons/status_open.gif" alt="Open" border="0" />Open
                                     </td>
                             </tr>
-                                    <tr class="rowNormal">
+                                    <tr class="rowAlternate">
                                                             <td nowrap="true">
                                             <a href="http://jira.opensymphony.com/browse/CACHE-136"><img src="http://jira.opensymphony.com/images/icons/task.gif" alt="Task" border="0" /></a>
                                     </td>
@@ -189,7 +273,7 @@
                                             <img src="http://jira.opensymphony.com/images/icons/status_open.gif" alt="Open" border="0" />Open
                                     </td>
                             </tr>
-                                    <tr class="rowAlternate">
+                                    <tr class="rowNormal">
                                                             <td nowrap="true">
                                             <a href="http://jira.opensymphony.com/browse/CACHE-123"><img src="http://jira.opensymphony.com/images/icons/newfeature.gif" alt="New Feature" border="0" /></a>
                                     </td>
@@ -203,7 +287,7 @@
                                             <img src="http://jira.opensymphony.com/images/icons/status_open.gif" alt="Open" border="0" />Open
                                     </td>
                             </tr>
-                                    <tr class="rowNormal">
+                                    <tr class="rowAlternate">
                                                             <td nowrap="true">
                                             <a href="http://jira.opensymphony.com/browse/CACHE-121"><img src="http://jira.opensymphony.com/images/icons/newfeature.gif" alt="New Feature" border="0" /></a>
                                     </td>
@@ -217,7 +301,7 @@
                                             <img src="http://jira.opensymphony.com/images/icons/status_open.gif" alt="Open" border="0" />Open
                                     </td>
                             </tr>
-                                    <tr class="rowAlternate">
+                                    <tr class="rowNormal">
                                                             <td nowrap="true">
                                             <a href="http://jira.opensymphony.com/browse/CACHE-117"><img src="http://jira.opensymphony.com/images/icons/improvement.gif" alt="Improvement" border="0" /></a>
                                     </td>
@@ -231,7 +315,7 @@
                                             <img src="http://jira.opensymphony.com/images/icons/status_open.gif" alt="Open" border="0" />Open
                                     </td>
                             </tr>
-                                    <tr class="rowNormal">
+                                    <tr class="rowAlternate">
                                                             <td nowrap="true">
                                             <a href="http://jira.opensymphony.com/browse/CACHE-100"><img src="http://jira.opensymphony.com/images/icons/newfeature.gif" alt="New Feature" border="0" /></a>
                                     </td>
@@ -245,7 +329,7 @@
                                             <img src="http://jira.opensymphony.com/images/icons/status_open.gif" alt="Open" border="0" />Open
                                     </td>
                             </tr>
-                                    <tr class="rowAlternate">
+                                    <tr class="rowNormal">
                                                             <td nowrap="true">
                                             <a href="http://jira.opensymphony.com/browse/CACHE-81"><img src="http://jira.opensymphony.com/images/icons/improvement.gif" alt="Improvement" border="0" /></a>
                                     </td>
@@ -259,7 +343,7 @@
                                             <img src="http://jira.opensymphony.com/images/icons/status_open.gif" alt="Open" border="0" />Open
                                     </td>
                             </tr>
-                                    <tr class="rowNormal">
+                                    <tr class="rowAlternate">
                                                             <td nowrap="true">
                                             <a href="http://jira.opensymphony.com/browse/CACHE-79"><img src="http://jira.opensymphony.com/images/icons/newfeature.gif" alt="New Feature" border="0" /></a>
                                     </td>
@@ -273,7 +357,7 @@
                                             <img src="http://jira.opensymphony.com/images/icons/status_open.gif" alt="Open" border="0" />Open
                                     </td>
                             </tr>
-                                    <tr class="rowAlternate">
+                                    <tr class="rowNormal">
                                                             <td nowrap="true">
                                             <a href="http://jira.opensymphony.com/browse/CACHE-78"><img src="http://jira.opensymphony.com/images/icons/improvement.gif" alt="Improvement" border="0" /></a>
                                     </td>
@@ -287,7 +371,7 @@
                                             <img src="http://jira.opensymphony.com/images/icons/status_open.gif" alt="Open" border="0" />Open
                                     </td>
                             </tr>
-                                    <tr class="rowNormal">
+                                    <tr class="rowAlternate">
                                                             <td nowrap="true">
                                             <a href="http://jira.opensymphony.com/browse/CACHE-67"><img src="http://jira.opensymphony.com/images/icons/improvement.gif" alt="Improvement" border="0" /></a>
                                     </td>
@@ -301,7 +385,7 @@
                                             <img src="http://jira.opensymphony.com/images/icons/status_reopened.gif" alt="Reopened" border="0" />Reopened
                                     </td>
                             </tr>
-                                    <tr class="rowAlternate">
+                                    <tr class="rowNormal">
                                                             <td nowrap="true">
                                             <a href="http://jira.opensymphony.com/browse/CACHE-49"><img src="http://jira.opensymphony.com/images/icons/newfeature.gif" alt="New Feature" border="0" /></a>
                                     </td>
@@ -315,7 +399,7 @@
                                             <img src="http://jira.opensymphony.com/images/icons/status_open.gif" alt="Open" border="0" />Open
                                     </td>
                             </tr>
-                                    <tr class="rowNormal">
+                                    <tr class="rowAlternate">
                                                             <td nowrap="true">
                                             <a href="http://jira.opensymphony.com/browse/CACHE-21"><img src="http://jira.opensymphony.com/images/icons/newfeature.gif" alt="New Feature" border="0" /></a>
                                     </td>
@@ -329,7 +413,7 @@
                                             <img src="http://jira.opensymphony.com/images/icons/status_open.gif" alt="Open" border="0" />Open
                                     </td>
                             </tr>
-                                    <tr class="rowAlternate">
+                                    <tr class="rowNormal">
                                                             <td nowrap="true">
                                             <a href="http://jira.opensymphony.com/browse/CACHE-12"><img src="http://jira.opensymphony.com/images/icons/newfeature.gif" alt="New Feature" border="0" /></a>
                                     </td>

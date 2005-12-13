@@ -43,14 +43,14 @@
 
 <h3><a name="Clustering-JavaGroupsConfiguration">JavaGroups Configuration</a></h3>
 
-<p>Just make sure you have jgroups-all.jar file in your classpath (for a webapp put it in WEB-INF/lib), and add the JavaGrops broadcasting listener to your oscache.properties file like this:</p>
+<p>Just make sure you have jgroups-all.jar file in your classpath (for a webapp put it in WEB-INF/lib), and add the JavaGroups broadcasting listener to your oscache.properties file like this:</p>
 
 <div class="preformatted"><div class="preformattedContent">
 <pre>cache.event.listeners=com.opensymphony.oscache.plugins.clustersupport.JavaGroupsBroadcastingListener
 </pre>
 </div></div>
 
-<p>In most cases, that's it! OSCache will now broadcast any cache flush events across the LAN. The jgroups-all.jar library is not included with the binary distribution due to its size, however you can obtain it either by downloading the full oscache distribution, or by visiting the JavaGroups website.</p>
+<p>In most cases, that's it! OSCache will now broadcast any cache flush events across the LAN. The jgroups-all.jar library is not included with the binary distribution due to its size, however you can obtain it either by downloading the full OSCache distribution, or by visiting the <a href="http://www.jgroups.org" title="Visit page outside Confluence">JavaGroups website</a>.</p>
 
 <p>If you want to run more than one OSCache cluster on the same LAN, you will need to use different multicast IP addresses. This allows the caches to exist in separate multicast groups and therefore not interfere with each other. The IP to use can be specified in your oscache.properties file by the cache.cluster.multicast.ip property. The default value is 231.12.21.132, however you can use any class D IP address. Class D address fall in the range 224.0.0.0 through 239.255.255.255.</p>
 

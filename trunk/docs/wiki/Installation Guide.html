@@ -22,7 +22,7 @@
 <ol>
 	<li>Extract the downloaded file to a directory of your choosing.</li>
 	<li>Put the oscache.jar file in the <tt>/WEB-INF/lib</tt> directory</li>
-	<li>Make sure <tt>commons-logging.jar</tt> is on your classpath (normally this also means putting it in <tt>/WEB-INF/lib</tt>). With Java 1.4 and higher, you can omit adding <tt>commons-collections.jar</tt>.</li>
+	<li>Make sure <tt>commons-logging.jar</tt> is on your classpath (normally this also means putting it in <tt>/WEB-INF/lib</tt>).</li>
 	<li>Put the <tt>/etc/oscache.properties</tt> file in the <tt>/WEB-INF/classes</tt> directory and edit the properties contained within it (for example if you want disk caching, configure the persistence listener and edit the <tt>cache.path</tt> property to point to where you want the cache files stored on disk). See the <a href="configuration.html" title="Configuration">Configuration Guide</a> for further details on what options are available.</li>
 	<li>Your directory structure should now look something like this:
 <div class="panel"><div class="panelContent">
@@ -50,7 +50,7 @@
 <td class="confluenceTd" valign="top" width="50%">
 
 <div class="information-block" align='center'><div class='informationMacroPadding'><table cellpadding='5' width='85%' cellspacing='0' class='infoMacro' border='0'><tr><td width='16' valign='top'><img src="/images/icons/emoticons/information.gif" width="16" height="16" align="absmiddle" alt="" border="0"></td><td><b class="strong">Logging</b><br />
-<p>OSCache uses <a href="http://jakarta.apache.org/commons/logging/" title="Visit page outside Confluence">Jakarta Commons Logging</a> for logging any messages. Please see the Commons Logging documentation for details on logging configuration.</p></td></tr></table></div></div>
+<p>OSCache uses <a href="http://jakarta.apache.org/commons/logging/" title="Visit page outside Confluence">Jakarta Commons Logging</a> for logging any messages. Please see the <a href="http://jakarta.apache.org/commons/logging/guide.html#Configuration" title="Visit page outside Confluence">Commons Logging documentation</a> for details on logging configuration.</p></td></tr></table></div></div>
 </td>
 
 <td class="confluenceTd" valign="top" width="50%">

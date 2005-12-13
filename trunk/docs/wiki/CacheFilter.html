@@ -11,7 +11,7 @@
 	    <table class="pagecontent" border="0" cellpadding="0" cellspacing="0" width="100%" bgcolor="#ffffff">
 		    <tr>
 			    <td valign="top" class="pagebody">
-				    <p><b>OSCache</b> comes with a servlet filter that enables you to transparently cache entire pages of your website, and even binary files. Caching of binary files is extremely useful when they are generated dynamically, eg PDF files or images. In addition by using the last modified header the transaction overhead and server load is reduced excellently which speed ups the server response time.</p>
+				    <p><b>OSCache</b> comes with a servlet filter that enables you to transparently cache entire pages of your website, and even binary files. Caching of binary files is extremely useful when they are generated dynamically, e.g. PDF files or images. In addition by using the last modified header the transaction overhead and server load is reduced excellently which speed ups the server response time.</p>
 
 <p>Besides bugs being fixed in the upcoming 2.2 release, major improvements have been made to the CacheFilter in many ways:</p>
 
@@ -66,30 +66,30 @@
 
 <p>The scope parameter lets you set the scope to cache content in. Valid values for the scope are <em>application</em> (default) and <em>session</em>.</p>
 
-<h4><a name="CacheFilter-Parameter%3Afragment%28NEW%21Since2.2RC%29">Parameter: fragment (NEW! Since 2.2 RC)</a></h4>
+<h4><a name="CacheFilter-Parameter%3Afragment%28NEW%21Since2.2%29">Parameter: fragment (NEW! Since 2.2)</a></h4>
 
-<p>Defines if the filter handles fragments of a page. Acceptable values are <em>auto</em> (<em>-1</em> in 2.2 RC) for auto detect, <em>no</em> (<em>0</em> in 2.2 RC) for false and <em>yes</em> (<em>1</em>  in 2.2 RC) for true. The default value is auto detect which checks the <em>javax.servlet.include.request_uri</em> request attribute. Fragments of a page shouldn't be gzipped or evaluate the last modified header.</p>
+<p>Defines if the filter handles fragments of a page. Acceptable values are <em>auto</em> for auto detect, <em>no</em> for false and <em>yes</em> for true. The default value is auto detect which checks the <em>javax.servlet.include.request_uri</em> request attribute. Fragments of a page shouldn't be gzipped or evaluate the last modified header.</p>
 
-<h4><a name="CacheFilter-Parameter%3Anocache%28NEW%21Since2.2RC%29">Parameter: nocache (NEW! Since 2.2 RC)</a></h4>
+<h4><a name="CacheFilter-Parameter%3Anocache%28NEW%21Since2.2%29">Parameter: nocache (NEW! Since 2.2)</a></h4>
 
-<p>Defines which objects shouldn't be cached. Acceptable values are <em>off</em> (default) for caching all objects and <em>sessionIdInURL</em> if the session id is contained in the URL.</p>
+<p>Defines which objects shouldn't be cached. Acceptable values are <em>off</em> (default) for caching all objects and <em>sessionIdInURL</em> for don't cache page if the session id is contained in the URL.</p>
 
-<h4><a name="CacheFilter-Parameter%3AlastModified%28NEW%21Since2.2final%29">Parameter: lastModified (NEW! Since 2.2 final)</a></h4>
+<h4><a name="CacheFilter-Parameter%3AlastModified%28NEW%21Since2.2%29">Parameter: lastModified (NEW! Since 2.2)</a></h4>
 
 <p>Defines if the last modified header will be sent in the response. Acceptable values are <em>off</em> for don't sending the header, even it is set in the filter chain, <em>on</em> for sending it if it is set in the filter chain and <em>initial</em> the last modified information will be set based on current time.</p>
 
-<h4><a name="CacheFilter-Parameter%3Aexpires%28NEW%21Since2.2final%29">Parameter: expires (NEW! Since 2.2 final)</a></h4>
+<h4><a name="CacheFilter-Parameter%3Aexpires%28NEW%21Since2.2%29">Parameter: expires (NEW! Since 2.2)</a></h4>
 
 <p>Defines if the expires header will be sent in the response. Acceptable values are <em>off</em> for don't sending the header, even it is set in the filter chain, <em>on</em> (default) for sending it if it is set in the filter chain and <em>time</em> the expires information will be intialized based on the time parameter and creation time of the content.</p>
 
 <div class="information-block" align='center'><div class='informationMacroPadding'><table cellpadding='5' width='85%' cellspacing='0' class='noteMacro' border='0'><tr><td width='16' valign='top'><img src="/images/icons/emoticons/warning.gif" width="16" height="16" align="absmiddle" alt="" border="0"></td><td><b class="strong">Value time</b><br />
 <p>The last parameter time would force the CacheFilter to send the expires header, because the value is set always. The developer must consider that some browsers evaluate the value and will use the cached content in the browsers cache, until the content is expired. Consequently a flush of the cache in the web application won't update a page in the browser cache. Hence different users may see see a different status of page.</p></td></tr></table></div></div>
 
-<h4><a name="CacheFilter-Parameter%3AICacheKeyProvider%28NEW%21Since2.2RC%29">Parameter: ICacheKeyProvider (NEW! Since 2.2 RC)</a></h4>
+<h4><a name="CacheFilter-Parameter%3AICacheKeyProvider%28NEW%21Since2.2%29">Parameter: ICacheKeyProvider (NEW! Since 2.2)</a></h4>
 
 <p>Specify a class which implements the interface <tt>ICacheKeyProvider</tt>. A developer can implement a class which provides cache keys based on the request, the servlect cache administrator and the cache.</p>
 
-<h4><a name="CacheFilter-Parameter%3AICacheGroupsProvider%28NEW%21Since2.2final%29">Parameter: ICacheGroupsProvider (NEW! Since 2.2 final)</a></h4>
+<h4><a name="CacheFilter-Parameter%3AICacheGroupsProvider%28NEW%21Since2.2%29">Parameter: ICacheGroupsProvider (NEW! Since 2.2)</a></h4>
 
 <p>Specify a class which implements the interface <tt>ICacheGroupsProvider</tt>. A developer can implement a class which provides cache groups based on the request, the servlect cache administrator and the cache.</p>
 
