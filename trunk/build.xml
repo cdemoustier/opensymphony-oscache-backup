@@ -78,7 +78,7 @@
 
     <!-- Compiles the core source code -->
     <target name="compile" depends="prepare">
-        <javac srcdir="${src.java}" destdir="${build.java}" includes="com/opensymphony/oscache/**" debug="${debug}" classpathref="cp"/>
+        <javac srcdir="${src.java}" destdir="${build.java}" includes="com/opensymphony/oscache/**" debug="${debug}" classpathref="cp" source="1.4" target="1.4"/>
     </target>
 
 
@@ -91,7 +91,6 @@
 
         <war destfile="${dist}/${name}-example.war" basedir="${src.webapp}" webxml="${src.webapp}/WEB-INF/web.xml" excludes="WEB-INF/web.xml">
             <lib file="${build}/${name}-${version}.jar"/>
-            <lib file="${lib}/commons-collections.jar"/>
             <lib file="${lib}/commons-logging.jar"/>
             <classes dir="${build}/webapp"/>
         </war>
@@ -306,7 +305,6 @@
             <fileset dir="${src}" excludes="etc/**"/>
         </copy>
         
-        <copy file="${lib}/commons-collections.jar" todir="${tmp.dir}/lib"/>
         <copy file="${lib}/commons-logging.jar" todir="${tmp.dir}/lib"/>
         <copy file="${lib}/jgroups-all.jar" todir="${tmp.dir}/lib"/>
 

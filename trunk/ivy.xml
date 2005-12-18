@@ -4,7 +4,7 @@
     <info organisation="opensymphony" module="oscache"
           revision="2.3"
           status="integration"
-          publication="20051112120000">
+          publication="20051218120000">
         <license name="Apache" url="http://www.apache.org/licenses/LICENSE-2.0.txt"/>
         <ivyauthor name="opensymphony" url="http://www.opensymphony.com/"/>
 
@@ -38,7 +38,6 @@
 
         <!-- oscache -->
         <dependency org="apache" name="commons-logging" rev="1.0.4" conf="default->*"/>
-        <dependency org="apache" name="commons-collections" rev="3.1" conf="default->*"/>
 
         <!-- jgroups -->
         <dependency org="jgroups" name="jgroups-all" rev="2.2.8" conf="jgroups->*"/>
