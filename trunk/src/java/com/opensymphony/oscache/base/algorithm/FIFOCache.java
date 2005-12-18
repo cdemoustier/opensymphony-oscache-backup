@@ -23,14 +23,13 @@ public class FIFOCache extends AbstractConcurrentReadCache {
 	/**
      * A queue containing all cache keys
      */
-    private Collection list;
+    private Collection list = new LinkedHashSet();
 
     /**
      * Constructs a FIFO Cache.
      */
     public FIFOCache() {
         super();
-        list = new LinkedHashSet();
     }
 
     /**
