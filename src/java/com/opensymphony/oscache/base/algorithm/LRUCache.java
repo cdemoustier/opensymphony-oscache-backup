@@ -4,9 +4,6 @@
  */
 package com.opensymphony.oscache.base.algorithm;
 
-import com.opensymphony.oscache.util.ClassLoaderUtil;
-
-import org.apache.commons.collections.SequencedHashMap;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -15,13 +12,11 @@ import java.util.*;
 /**
  * <p>LRU (Least Recently Used) algorithm for the cache.</p>
  *
- * <p>This class tries to provide the best possible performance by first
- * attempting to use the JDK 1.4.x <code>LinkedHashSet</code> class,
- * followed by the Jakarta commons-collections <code>SequencedHashMap</code>
- * class, and finally resorting to the <code>LinkedList</code> class if
- * neither of the above classes are available. If this class has to revert
- * to using a <code>LinkedList</code> a warning is logged since the performance
- * penalty can be severe.</p>
+ * <p>Since release 2.3 this class requires Java 1.4 
+ * to use the <code>LinkedHashSet</code>. Use prior OSCache release which
+ * require the Jakarta commons-collections <code>SequencedHashMap</code>
+ * class or the <code>LinkedList</code> class if neither of the above
+ * classes are available.</p>
  *
  * <p>No synchronization is required in this class since the
  * <code>AbstractConcurrentReadCache</code> already takes care of any
@@ -34,37 +29,13 @@ import java.util.*;
  * @author <a href="&#109;a&#105;&#108;&#116;&#111;:chris&#64;swebtec.&#99;&#111;&#109;">Chris Miller</a>
  */
 public class LRUCache extends AbstractConcurrentReadCache {
+	
     private static final Log log = LogFactory.getLog(LRUCache.class);
 
     /**
      * Cache queue containing all cache keys.
      */
     private Collection list;
-
-    /**
-     * Jakarta commons collections unfortunately doesn't provide us with an ordered
-     * hash set, so we have to use their ordered map instead.
-     */
-    private Map map;
-
-    /**
-     * A flag indicating if we are using a List for the key collection. This happens
-     * when we're running under JDK 1.3 or lower and there is no commons-collections
-     * in the classpath.
-     */
-    private boolean isList = false;
-
-    /**
-     * A flag indicating if we are using a Map for the key collection. This happens
-     * when we're running under JDK 1.3 and commons-collections is available.
-     */
-    private boolean isMap = false;
-
-    /**
-     * A flag indicating if we are using a Set for the key collection. This happens
-     * when we're running under JDK 1.4 and is the best case scenario.
-     */
-    private boolean isSet = false;
 
     /**
      * A flag indicating whether there is a removal operation in progress.
@@ -76,28 +47,7 @@ public class LRUCache extends AbstractConcurrentReadCache {
      */
     public LRUCache() {
         super();
-
-        // Decide if we're running under JRE 1.4+. If so we can use a LinkedHashSet
-        // instead of a LinkedList for a big performance boost when removing elements.
-        try {
-            ClassLoaderUtil.loadClass("java.util.LinkedHashSet", this.getClass());
-            list = new LinkedHashSet();
-            isSet = true;
-        } catch (ClassNotFoundException e) {
-            // There's no LinkedHashSet available so we'll try for the jakarta-collections
-            // SequencedHashMap instead [CACHE-47]
-            try {
-                ClassLoaderUtil.loadClass("org.apache.commons.collections.SequencedHashMap", this.getClass());
-                map = new SequencedHashMap();
-                isMap = true;
-            } catch (ClassNotFoundException e1) {
-                // OK, time to get all inefficient and resort to a LinkedList. We log this
-                // as a warning since it potentially can have a big impact.
-                log.warn("When using the LRUCache under JRE 1.3.x, commons-collections.jar should be added to your classpath to increase OSCache's performance.");
-                list = new LinkedList();
-                isList = true;
-            }
-        }
+        list = new LinkedHashSet();
     }
 
     /**
@@ -127,16 +77,9 @@ public class LRUCache extends AbstractConcurrentReadCache {
 
         // We need to synchronize here because AbstractConcurrentReadCache
         // doesn't prevent multiple threads from calling this method simultaneously.
-        if (isMap) {
-            synchronized (map) {
-                map.remove(key);
-                map.put(key, Boolean.TRUE);
-            }
-        } else {
-            synchronized (list) {
-                list.remove(key);
-                list.add(key);
-            }
+        synchronized (list) {
+            list.remove(key);
+            list.add(key);
         }
     }
 
@@ -148,16 +91,9 @@ public class LRUCache extends AbstractConcurrentReadCache {
      */
     protected void itemPut(Object key) {
         // Since this entry was just accessed, move it to the back of the list.
-        if (isMap) {
-            synchronized (map) { // A further fix for CACHE-44
-                map.remove(key);
-                map.put(key, Boolean.TRUE);
-            }
-        } else {
-            synchronized (list) { // A further fix for CACHE-44
-                list.remove(key);
-                list.add(key);
-            }
+    	synchronized (list) { // A further fix for CACHE-44
+    		list.remove(key);
+            list.add(key);
         }
     }
 
@@ -185,7 +121,7 @@ public class LRUCache extends AbstractConcurrentReadCache {
                     Thread.sleep(5);
                 } catch (InterruptedException ie) {
                 }
-            } while (isMap ? (map.size() == 0) : (list.size() == 0));
+            } while (list.size() == 0);
 
             toRemove = removeFirst();
         }
@@ -201,11 +137,7 @@ public class LRUCache extends AbstractConcurrentReadCache {
      * @param key The cache key of the item that was removed.
      */
     protected void itemRemoved(Object key) {
-        if (isMap) {
-            map.remove(key);
-        } else {
-            list.remove(key);
-        }
+        list.remove(key);
     }
 
     /**
@@ -214,18 +146,9 @@ public class LRUCache extends AbstractConcurrentReadCache {
      * @return the object that was removed
      */
     private Object removeFirst() {
-        Object toRemove;
-
-        if (isSet) {
-            Iterator it = list.iterator();
-            toRemove = it.next();
-            it.remove();
-        } else if (isMap) {
-            toRemove = ((SequencedHashMap) map).getFirstKey();
-            map.remove(toRemove);
-        } else {
-            toRemove = ((List) list).remove(0);
-        }
+        Iterator it = list.iterator();
+        Object toRemove = it.next();
+        it.remove();
 
         return toRemove;
     }
