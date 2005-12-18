@@ -19,31 +19,18 @@ import java.util.*;
  * @author        <a href="&#109;a&#105;&#108;&#116;&#111;:chris&#64;swebtec.&#99;&#111;&#109;">Chris Miller</a>
  */
 public class FIFOCache extends AbstractConcurrentReadCache {
-    /**
+
+	/**
      * A queue containing all cache keys
      */
     private Collection list;
-
-    /**
-     * A flag indicating whether we are using a List or a Set for the key collection
-     */
-    private boolean isSet = false;
 
     /**
      * Constructs a FIFO Cache.
      */
     public FIFOCache() {
         super();
-
-        // Check if we're running under JRE 1.4+. If so we can use a LinkedHashSet
-        // instead of a LinkedList for a big performance boost when removing elements.
-        try {
-            Class.forName("java.util.LinkedHashSet");
-            list = new LinkedHashSet();
-            isSet = true;
-        } catch (ClassNotFoundException e) {
-            list = new LinkedList();
-        }
+        list = new LinkedHashSet();
     }
 
     /**
@@ -86,15 +73,9 @@ public class FIFOCache extends AbstractConcurrentReadCache {
      * @return The key of whichever item was removed.
      */
     protected Object removeItem() {
-        Object toRemove;
-
-        if (isSet) {
-            Iterator it = list.iterator();
-            toRemove = it.next();
-            it.remove();
-        } else {
-            toRemove = ((List) list).remove(0);
-        }
+        Iterator it = list.iterator();
+        Object toRemove = it.next();
+        it.remove();
 
         return toRemove;
     }
