@@ -35,7 +35,7 @@ public class LRUCache extends AbstractConcurrentReadCache {
     /**
      * Cache queue containing all cache keys.
      */
-    private Collection list;
+    private Collection list = new LinkedHashSet();
 
     /**
      * A flag indicating whether there is a removal operation in progress.
@@ -47,7 +47,6 @@ public class LRUCache extends AbstractConcurrentReadCache {
      */
     public LRUCache() {
         super();
-        list = new LinkedHashSet();
     }
 
     /**
