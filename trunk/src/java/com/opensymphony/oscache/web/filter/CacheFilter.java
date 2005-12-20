@@ -72,6 +72,7 @@ public class CacheFilter implements Filter, ICacheKeyProvider, ICacheGroupsProvi
     private int cacheScope = PageContext.APPLICATION_SCOPE; // filter scope - default is APPLICATION
     private int fragment = FRAGMENT_AUTODETECT; // defines if this filter handles fragments of a page - default is auto detect
     private int time = 60 * 60; // time before cache should be refreshed - default one hour (in seconds)
+    private String cron = null; // A cron expression that determines when this cached content will expire - default is null
     private int nocache = NOCACHE_OFF; // defines special no cache option for the requests - default is off
     private long lastModified = LAST_MODIFIED_INITIAL; // defines if the last-modified-header will be sent - default is intial setting
     private long expires = EXPIRES_ON; // defines if the expires-header will be sent - default is on
@@ -126,7 +127,7 @@ public class CacheFilter implements Filter, ICacheKeyProvider, ICacheGroupsProvi
         String key = cacheKeyProvider.createCacheKey(httpRequest, admin, cache);
 
         try {
-            ResponseContent respContent = (ResponseContent) cache.getFromCache(key, time);
+            ResponseContent respContent = (ResponseContent) cache.getFromCache(key, time, cron);
 
             if (log.isInfoEnabled()) {
                 log.info("<cache>: Using cached entry for " + key);
@@ -248,6 +249,9 @@ public class CacheFilter implements Filter, ICacheKeyProvider, ICacheGroupsProvi
         } catch (Exception e) {
             log.info("Could not get init parameter 'scope', defaulting to 'application'.");
         }
+
+        // filter parameter cron
+        cron = config.getInitParameter("cron");
 
         // filter parameter fragment
         try {
