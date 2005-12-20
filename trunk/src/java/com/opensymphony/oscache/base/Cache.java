@@ -682,7 +682,7 @@ public class Cache implements Serializable {
     protected boolean isStale(CacheEntry cacheEntry, int refreshPeriod, String cronExpiry) {
         boolean result = cacheEntry.needsRefresh(refreshPeriod) || isFlushed(cacheEntry);
 
-        if ((cronExpiry != null) && (cronExpiry.length() > 0)) {
+        if ((!result) && (cronExpiry != null) && (cronExpiry.length() > 0)) {
             try {
                 FastCronParser parser = new FastCronParser(cronExpiry);
                 result = result || parser.hasMoreRecentMatch(cacheEntry.getLastUpdate());
