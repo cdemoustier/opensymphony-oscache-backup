@@ -92,7 +92,8 @@ public final class ServletCache extends Cache implements HttpSessionBindingListe
      */
     public void valueUnbound(HttpSessionBindingEvent event) {
         if (log.isInfoEnabled()) {
-            log.info("[Cache] Unbound from session " + event.getSession().getId() + " using name " + event.getName());
+        	// CACHE-229: don't access the session's id, because this can throw an IllegalStateException
+            log.info("[Cache] Unbound from session " + event.getSession() + " using name " + event.getName());
         }
 
         admin.finalizeListeners(this);
