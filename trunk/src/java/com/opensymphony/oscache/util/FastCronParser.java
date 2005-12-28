@@ -139,7 +139,7 @@ public class FastCronParser {
         // It would be nice to get rid of the Calendar class for speed, but it's a lot of work...
         // We create this
         Calendar cal = new GregorianCalendar();
-        cal.setTime(new Date(time));
+        cal.setTimeInMillis(time);
 
         int minute = cal.get(Calendar.MINUTE);
         int hour = cal.get(Calendar.HOUR_OF_DAY);
