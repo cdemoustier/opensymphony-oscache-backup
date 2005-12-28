@@ -13,6 +13,7 @@ import java.util.List;
  * @author <a href="&#109;a&#105;&#108;&#116;&#111;:chris&#64;swebtec.&#99;&#111;&#109;">Chris Miller</a>
  */
 public class StringUtil {
+	
     /**
      * Splits a string into substrings based on the supplied delimiter
      * character. Each extracted substring will be trimmed of leading
@@ -22,7 +23,7 @@ public class StringUtil {
      * @param delimiter The character that delimits the string
      * @return A string array containing the resultant substrings
      */
-    public static List split(String str, char delimiter) {
+    public static final List split(String str, char delimiter) {
         // return no groups if we have an empty string
         if ((str == null) || "".equals(str)) {
             return new ArrayList();
@@ -42,4 +43,13 @@ public class StringUtil {
 
         return parts;
     }
+    
+    /**
+     * @param s the string to be checked
+     * @return true if the string parameter contains at least one element 
+     */
+    public static final boolean hasLength(String s) {
+    	return (s != null) && (s.length() > 0);
+    }
+    
 }
