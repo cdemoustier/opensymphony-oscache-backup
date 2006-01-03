@@ -345,7 +345,7 @@ public class CacheHttpServletResponseWrapper extends HttpServletResponseWrapper 
         if (!isCommitted()) {
             super.reset();
             cachedWriter = null;
-            result = null;
+            result = new ResponseContent();
             cacheOut = null;
             fragment = false;
             status = SC_OK;
@@ -363,7 +363,7 @@ public class CacheHttpServletResponseWrapper extends HttpServletResponseWrapper 
         if (!isCommitted()) {
             super.resetBuffer();
             cachedWriter = null;
-            result = null;
+            result = new ResponseContent();
             cacheOut = null;
             fragment = false;
             // The resetBuffer method clears content in the buffer if the
