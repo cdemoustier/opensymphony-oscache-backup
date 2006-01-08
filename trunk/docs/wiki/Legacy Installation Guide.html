@@ -19,7 +19,7 @@
 	<li>Extract the downloaded file to a directory of your choosing.</li>
 	<li>Put the oscache.jar file in the <tt>/WEB-INF/lib</tt> directory</li>
 	<li>Make sure <tt>commons-logging.jar</tt> is on your classpath (normally this also means putting it in <tt>/WEB-INF/lib</tt>).</li>
-	<li>If you are using JDK 1.3.x it is optional, but strongly recommended, to add <tt>commons-collections.jar</tt> to your classpath. OSCache will use this to provide a significant speed increase. (Note that with JDK 1.4 and higher, <tt>commons-collections.jar</tt> will not be used - the 1.4 implementation is faster still).</li>
+	<li>If you are using Java 1.3 it is optional, but strongly recommended, to add <tt>commons-collections.jar</tt> to your classpath. OSCache will use this to provide a significant speed increase. (Note that with Java 1.4 and higher, <tt>commons-collections.jar</tt> will not be used - the 1.4 implementation is faster still).</li>
 	<li>Put the <tt>/etc/oscache.properties</tt> file in the <tt>/WEB-INF/classes</tt> directory and edit the properties contained within it (for example if you want disk caching, configure the persistence listener and edit the <tt>cache.path</tt> property to point to where you want the cache files stored on disk). See the <a href="configuration.html" title="Configuration">Configuration Guide</a> for further details on what options are available.</li>
 	<li>Remember to escape any \ characters in Windows paths - ie if you want cache files to go in c:\cachedir, the <tt>cache.path</tt> property should be set to c:\ \cachedir.</li>
 	<li>Put the <tt>/etc/oscache.tld</tt> file in your <tt>/WEB-INF/classes</tt> directory.</li>

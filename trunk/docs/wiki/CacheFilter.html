@@ -11,22 +11,9 @@
 	    <table class="pagecontent" border="0" cellpadding="0" cellspacing="0" width="100%" bgcolor="#ffffff">
 		    <tr>
 			    <td valign="top" class="pagebody">
-				    <p><b>OSCache</b> comes with a servlet filter that enables you to transparently cache entire pages of your website, and even binary files. Caching of binary files is extremely useful when they are generated dynamically, e.g. PDF files or images. In addition by using the last modified header the transaction overhead and server load is reduced excellently which speed ups the server response time.</p>
+				    <p><b>OSCache</b> comes with a servlet filter that enables you to transparently cache entire pages of your website, and even binary files. Caching of binary files is extremely useful when they are generated dynamically, e.g. PDF files or images.</p>
 
-<p>Besides bugs being fixed in the upcoming 2.2 release, major improvements have been made to the CacheFilter in many ways:</p>
-
-<ul>
-	<li>Default initialization of the last modified header which reduces transaction overhead and server load</li>
-	<li>Preserving more http headers, e.g. the expires header</li>
-	<li>Special handling for fragments of a page</li>
-	<li>Custom cache key generation by subclassing CacheFilter or by implementing a special interface</li>
-	<li>Custom cache groups generation by subclassing CacheFilter or by implementing a special interface</li>
-	<li>Support of GZip filters in the filter chain</li>
-	<li>Avoids session creation for application scope pages</li>
-	<li>Multiple matching cache filters won't dead-lock the response anymore</li>
-	<li>The cache won't be serve the same response twice before the client begins to cache it anymore</li>
-</ul>
-
+<p>A <a href="CacheFilter Tutorial.html" title="CacheFilter Tutorial">tutorial</a> describes how to cache entire pages of your website and what performance improvements can be done with the CacheFilter.</p>
 
 <h4><a name="CacheFilter-CacheableContent">Cacheable Content</a></h4>
 
@@ -58,38 +45,44 @@
 </div></div>
 <p>The default duration is one hour and the default scope for the cache is application scope. You can change these settings using initialization parameters. </p>
 
-<h4><a name="CacheFilter-Parameter%3Atime">Parameter: time</a></h4>
+<h4><a name="CacheFilter-Parameter%3Atime"><a name="CacheFilter-time"></a>Parameter: time</a></h4>
 
-<p>The time parameter sets the cache time (in seconds) for the content.</p>
+<p>The time parameter sets the cache time (in seconds) for the content. The default cache time is one hour.</p>
 
-<h4><a name="CacheFilter-Parameter%3Ascope">Parameter: scope</a></h4>
+<p>Specifying <em>-1</em> (indefinite expiry) as the cache time will ensure a content does not become stale until it is either explicitly flushed or the expires refresh policy causes the entry to expire.</p>
+
+<h4><a name="CacheFilter-Parameter%3Ascope"><a name="CacheFilter-scope"></a>Parameter: scope</a></h4>
 
 <p>The scope parameter lets you set the scope to cache content in. Valid values for the scope are <em>application</em> (default) and <em>session</em>.</p>
 
-<h4><a name="CacheFilter-Parameter%3Afragment%28NEW%21Since2.2%29">Parameter: fragment (NEW! Since 2.2)</a></h4>
+<h4><a name="CacheFilter-Parameter%3Acron%28Newinupcomingrelease2.3%29"><a name="CacheFilter-cron"></a>Parameter: cron (New in upcoming release 2.3)</a></h4>
+
+<p>A cron expression that determines when the page content will expire. This allows content to be expired at particular dates and/or times, rather than once a cache entry reaches a certain age. See <a href="Cron Expressions.html" title="Cron Expressions">Cron Expressions</a> to read more about this attribute. Please consider that the (default) time value is still evaluated, hence the time value should be set to indefinite expiry.</p>
+
+<h4><a name="CacheFilter-Parameter%3Afragment%28NEW%21Since2.2%29"><a name="CacheFilter-fragment"></a>Parameter: fragment (NEW! Since 2.2)</a></h4>
 
 <p>Defines if the filter handles fragments of a page. Acceptable values are <em>auto</em> for auto detect, <em>no</em> for false and <em>yes</em> for true. The default value is auto detect which checks the <em>javax.servlet.include.request_uri</em> request attribute. Fragments of a page shouldn't be gzipped or evaluate the last modified header.</p>
 
-<h4><a name="CacheFilter-Parameter%3Anocache%28NEW%21Since2.2%29">Parameter: nocache (NEW! Since 2.2)</a></h4>
+<h4><a name="CacheFilter-Parameter%3Anocache%28NEW%21Since2.2%29"><a name="CacheFilter-nocache"></a>Parameter: nocache (NEW! Since 2.2)</a></h4>
 
 <p>Defines which objects shouldn't be cached. Acceptable values are <em>off</em> (default) for caching all objects and <em>sessionIdInURL</em> for don't cache page if the session id is contained in the URL.</p>
 
-<h4><a name="CacheFilter-Parameter%3AlastModified%28NEW%21Since2.2%29">Parameter: lastModified (NEW! Since 2.2)</a></h4>
+<h4><a name="CacheFilter-Parameter%3AlastModified%28NEW%21Since2.2%29"><a name="CacheFilter-lastModified"></a>Parameter: lastModified (NEW! Since 2.2)</a></h4>
 
-<p>Defines if the last modified header will be sent in the response. Acceptable values are <em>off</em> for don't sending the header, even it is set in the filter chain, <em>on</em> for sending it if it is set in the filter chain and <em>initial</em> the last modified information will be set based on current time.</p>
+<p>Defines if the last modified header will be sent in the response. Acceptable values are <em>off</em> for don't sending the header, even it is set in the filter chain, <em>on</em> for sending it if it is set in the filter chain and <em>initial</em> (default) the last modified information will be set based on current time.</p>
 
-<h4><a name="CacheFilter-Parameter%3Aexpires%28NEW%21Since2.2%29">Parameter: expires (NEW! Since 2.2)</a></h4>
+<h4><a name="CacheFilter-Parameter%3Aexpires%28NEW%21Since2.2%29"><a name="CacheFilter-expires"></a>Parameter: expires (NEW! Since 2.2)</a></h4>
 
 <p>Defines if the expires header will be sent in the response. Acceptable values are <em>off</em> for don't sending the header, even it is set in the filter chain, <em>on</em> (default) for sending it if it is set in the filter chain and <em>time</em> the expires information will be intialized based on the time parameter and creation time of the content.</p>
 
 <div class="information-block" align='center'><div class='informationMacroPadding'><table cellpadding='5' width='85%' cellspacing='0' class='noteMacro' border='0'><tr><td width='16' valign='top'><img src="/images/icons/emoticons/warning.gif" width="16" height="16" align="absmiddle" alt="" border="0"></td><td><b class="strong">Value time</b><br />
 <p>The last parameter time would force the CacheFilter to send the expires header, because the value is set always. The developer must consider that some browsers evaluate the value and will use the cached content in the browsers cache, until the content is expired. Consequently a flush of the cache in the web application won't update a page in the browser cache. Hence different users may see see a different status of page.</p></td></tr></table></div></div>
 
-<h4><a name="CacheFilter-Parameter%3AICacheKeyProvider%28NEW%21Since2.2%29">Parameter: ICacheKeyProvider (NEW! Since 2.2)</a></h4>
+<h4><a name="CacheFilter-Parameter%3AICacheKeyProvider%28NEW%21Since2.2%29"><a name="CacheFilter-ICacheKeyProvider"></a>Parameter: ICacheKeyProvider (NEW! Since 2.2)</a></h4>
 
 <p>Specify a class which implements the interface <tt>ICacheKeyProvider</tt>. A developer can implement a class which provides cache keys based on the request, the servlect cache administrator and the cache.</p>
 
-<h4><a name="CacheFilter-Parameter%3AICacheGroupsProvider%28NEW%21Since2.2%29">Parameter: ICacheGroupsProvider (NEW! Since 2.2)</a></h4>
+<h4><a name="CacheFilter-Parameter%3AICacheGroupsProvider%28NEW%21Since2.2%29"><a name="CacheFilter-ICacheGroupsProvider"></a>Parameter: ICacheGroupsProvider (NEW! Since 2.2)</a></h4>
 
 <p>Specify a class which implements the interface <tt>ICacheGroupsProvider</tt>. A developer can implement a class which provides cache groups based on the request, the servlect cache administrator and the cache.</p>
 

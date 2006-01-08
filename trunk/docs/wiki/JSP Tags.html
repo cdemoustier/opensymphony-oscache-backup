@@ -28,7 +28,8 @@
 	<li><a href="#JSPTags-cache" title="cache on JSP Tags">cache</a> - The main caching tag</li>
 	<li><a href="#JSPTags-usecached" title="usecached on JSP Tags">usecached</a> - A nested tag to force using a cached version.</li>
 	<li><a href="#JSPTags-flush" title="flush on JSP Tags">flush</a> - To flush caches programmatically.</li>
-	<li><a href="#JSPTags-addgroup" title="addgroup on JSP Tags">addgroup</a> - This tag must be nested inside &lt;cache:cache/&gt;. It allows groups to be dynamically added to a cached block.</li>
+	<li><a href="#JSPTags-addgroup" title="addgroup on JSP Tags">addgroup</a> - It allows a single group name to be dynamically added to a cached block. This tag must be nested inside &lt;cache:cache/&gt;.</li>
+	<li><a href="#JSPTags-addgroups" title="addgroups on JSP Tags">addgroups</a> - It allows a comma-delimited list of group names to be dynamically added to a cached block. This tag must be nested inside &lt;cache:cache/&gt;.</li>
 </ul>
 
 
@@ -179,7 +180,7 @@ programmatic control of the cache.
 
 <h4><a name="JSPTags-Description%3A">Description:</a></h4>
 
-<p>    This tag must be nested inside a &lt;cache:cache/&gt; tag. It allows groups to be dynamically added to a cached block. It is useful when the group(s) a cached block should belong to are unknown until the block is actually rendered. As each group is 'discovered', this tag can be used to add the group to the block's group list.</p>
+<p>    This tag must be nested inside a &lt;cache:cache/&gt; tag. It allows a single group name to be dynamically added to a cached block. It is useful when the group a cached block should belong to are unknown until the block is actually rendered. As each group is 'discovered', this tag can be used to add the group to the block's group list.</p>
 
 <h4><a name="JSPTags-Attributes%3A">Attributes:</a></h4>
 
@@ -196,6 +197,29 @@ programmatic control of the cache.
          ... some jsp content ...
          <span class="code-tag">&lt;cache:addgroup group=<span class="code-quote">"group2"</span> /&gt;</span>
          ... some more jsp content ...
+    <span class="code-tag">&lt;/cache:cache&gt;</span></pre>
+</div></div>
+
+<h3><a name="JSPTags-%3Caddgroups%2F%3E%28Newinupcomingrelease2.3%29"><a name="JSPTags-addgroups"></a>&lt;addgroups /&gt; (New in upcoming release 2.3)</a></h3>
+
+<h4><a name="JSPTags-Description%3A">Description:</a></h4>
+
+<p>    This tag must be nested inside a &lt;cache:cache/&gt; tag. It allows a comma-delimited list of groups names to be dynamically added to a cached block with a single tag statement. As a group list is 'discovered', this tag can be used to add the groups to the block's group list.</p>
+
+<h4><a name="JSPTags-Attributes%3A">Attributes:</a></h4>
+
+<ul>
+	<li><b>groups</b> - <font color="red">req</font> - The comma-delimited list of groups names to add the enclosing cache block to.</li>
+</ul>
+
+
+<div class="code"><div class="codeHeader"><b>Example</b></div><div class="codeContent">
+<pre class="code-xml">This will add the cache block with the key 'test1' to groups 'group1' and 'group2'.
+
+    <span class="code-tag">&lt;cache:cache key=<span class="code-quote">"test1"</span>&gt;</span>
+         ... some jsp content ...
+         <span class="code-tag">&lt;cache:addgroups groups=<span class="code-quote">"group1,group2"</span> /&gt;</span>
+         ... some jsp content ...
     <span class="code-tag">&lt;/cache:cache&gt;</span></pre>
 </div></div>
 
