@@ -2,22 +2,22 @@
  * Copyright (c) 2002-2003 by OpenSymphony
  * All rights reserved.
  */
-package com.opensymphony.oscache.base;
+package com.opensymphony.oscache.core;
 
 
 /**
- * Thrown by {@link LifecycleAware} listeners that are not able to finalize
+ * Thrown by {@link LifecycleAware} listeners that are not able to initialize
  * themselves.
  *
  * @version $Revision$
  * @author <a href="&#109;a&#105;&#108;&#116;&#111;:chris&#64;swebtec.&#99;&#111;&#109;">Chris Miller</a>
  */
-public class FinalizationException extends Exception {
-    public FinalizationException() {
+public class InitializationException extends Exception {
+    public InitializationException() {
         super();
     }
 
-    public FinalizationException(String message) {
+    public InitializationException(String message) {
         super(message);
     }
 }

@@ -4,8 +4,8 @@
  */
 package com.opensymphony.oscache.web.filter;
 
-import com.opensymphony.oscache.base.CacheEntry;
-import com.opensymphony.oscache.base.EntryRefreshPolicy;
+import com.opensymphony.oscache.core.CacheEntry;
+import com.opensymphony.oscache.core.EntryRefreshPolicy;
 
 /**
  * Checks if a cache filter entry has expired.
@@ -44,8 +44,8 @@ public class ExpiresRefreshPolicy implements EntryRefreshPolicy {
 
         if ((refreshPeriod >= 0) && (currentTimeMillis >= (entry.getLastUpdate() + refreshPeriod))) {
             return true;
-        } else if (entry.getContent() instanceof ResponseContent) {
-            ResponseContent responseContent = (ResponseContent) entry.getContent();
+        } else if (entry.getValue() instanceof ResponseContent) {
+            ResponseContent responseContent = (ResponseContent) entry.getValue();
             return currentTimeMillis >= responseContent.getExpires();
         } else {
             return false;

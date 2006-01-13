@@ -4,9 +4,9 @@
  */
 package com.opensymphony.oscache.extra;
 
-import com.opensymphony.oscache.base.events.CacheMapAccessEvent;
-import com.opensymphony.oscache.base.events.CacheMapAccessEventListener;
-import com.opensymphony.oscache.base.events.CacheMapAccessEventType;
+import com.opensymphony.oscache.events.CacheMapAccessEvent;
+import com.opensymphony.oscache.events.CacheMapAccessEventListener;
+import com.opensymphony.oscache.events.CacheMapAccessEventType;
 
 /**
  * Implementation of a CacheMapAccessEventListener. It uses the events to count

@@ -4,7 +4,7 @@
  */
 package com.opensymphony.oscache.extra;
 
-import com.opensymphony.oscache.base.events.*;
+import com.opensymphony.oscache.events.*;
 
 /**
  * Implementation of a CacheEntryEventListener. It use the events to count
