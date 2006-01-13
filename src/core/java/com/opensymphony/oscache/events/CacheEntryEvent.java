@@ -15,7 +15,7 @@ import com.opensymphony.oscache.core.CacheEntry;
  * @version        $Revision$
  * @author <a href="mailto:fbeauregard@pyxis-tech.com">Francois Beauregard</a>
  */
-public final class CacheEntryEvent extends CacheEvent {
+public class CacheEntryEvent extends CacheEvent {
     /**
      * The cache where the entry resides.
      */
@@ -31,9 +31,10 @@ public final class CacheEntryEvent extends CacheEvent {
      *
      * @param map     The cache map of the cache entry
      * @param entry   The cache entry that the event applies to
+     * @param eventType 
      */
-    public CacheEntryEvent(Cache map, CacheEntry entry) {
-        this(map, entry, null);
+    public CacheEntryEvent(Cache map, CacheEntry entry, int eventType) {
+        this(map, entry, eventType, null);
     }
 
     /**
@@ -43,7 +44,7 @@ public final class CacheEntryEvent extends CacheEvent {
      * @param entry   The cache entry that the event applies to
      * @param origin  The origin of this event
      */
-    public CacheEntryEvent(Cache map, CacheEntry entry, String origin) {
+    public CacheEntryEvent(Cache map, CacheEntry entry, int eventType, String origin) {
         super(origin);
         this.map = map;
         this.entry = entry;

@@ -1,10 +1,14 @@
 package com.opensymphony.oscache.core;
 
 import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
 import com.opensymphony.oscache.algorithm.UnlimitedEvictionAlgorithm;
-import com.opensymphony.oscache.events.CacheMapAccessEventType;
+import com.opensymphony.oscache.events.CacheEntryEvent;
+import com.opensymphony.oscache.events.CacheEvent;
+import com.opensymphony.oscache.events.CacheListener;
 import com.opensymphony.oscache.util.FastCronParser;
 
 /**
@@ -16,6 +20,10 @@ public abstract class BaseCache implements Cache {
 	private EvictionAlgorithm policy;
 
 	private String name;
+
+	private final Object LISTENER_LOCK = new Object();
+
+	private List listeners;
 
 	/**
 	 * Initialises the base cache. Valid properties are:
@@ -67,7 +75,7 @@ public abstract class BaseCache implements Cache {
 	public void shutdown() {
 
 	}
-	
+
 	/**
 	 * Retrieves an object from the cache.
 	 * 
@@ -88,29 +96,32 @@ public abstract class BaseCache implements Cache {
 	 * @return the cached object, or <code>null</code> if the object could not
 	 *         be found and could not be loaded.
 	 */
-	public synchronized Object get(Object key, int refreshPeriod, String cronExpiry) {
+	public synchronized Object get(Object key, int refreshPeriod,
+			String cronExpiry) {
 		CacheEntry cacheEntry = getEntry(key);
+		Object content = null;
+		if (cacheEntry != null) {
+			content = cacheEntry.getValue();
+			// Check if this entry has expired or has not yet been added to the
+			// cache. If
+			// so, we need to decide whether to block or serve stale content
+			if (this.isStale(cacheEntry, refreshPeriod, cronExpiry)) {
+				remove(key);
+				content = null;
+			} else {
+				policy.get(key, cacheEntry);
 
-		Object content = cacheEntry.getValue();
-		CacheMapAccessEventType accessEventType = CacheMapAccessEventType.HIT;
-		// Check if this entry has expired or has not yet been added to the
-		// cache. If
-		// so, we need to decide whether to block or serve stale content
-		if (this.isStale(cacheEntry, refreshPeriod, cronExpiry)) {
-			remove(key);
-			return null;
-		} else {
-			policy.get(key, cacheEntry);
-			return content;
+			}
 		}
+		return content;
 
-		
 	}
 
 	public synchronized Object remove(Object key) {
 		CacheEntry result = removeInternal(key);
 		if (result != null) {
 			policy.remove(key, result);
+			fireEvent(result, CacheEvent.REMOVE);
 		}
 		return result;
 	}
@@ -125,9 +136,9 @@ public abstract class BaseCache implements Cache {
 	 * @return the previous object that was stored under this key, if any.
 	 */
 	public synchronized Object put(Object key, Object value) {
-
-		CacheEntry result = putInternal(new CacheEntry(key, value));
-		policy.put(key, value);
+		CacheEntry newEntry = new CacheEntry(key, value);
+		CacheEntry oldEntry = putInternal(newEntry);
+		policy.put(key, newEntry);
 
 		// Remove an entry from the cache if the eviction policy says we need to
 		Object evictionKey = policy.evict();
@@ -135,7 +146,15 @@ public abstract class BaseCache implements Cache {
 			removeInternal(evictionKey);
 		}
 
-		return result.getValue();
+	    // fire off a notification message
+	    if (oldEntry == null)
+	    {
+	      fireEvent(newEntry, CacheEvent.ADD);
+	    } else {
+	      fireEvent(newEntry, CacheEvent.UPDATE);
+	    }
+
+	    return  newEntry.getValue();
 	}
 
 	/**
@@ -148,6 +167,7 @@ public abstract class BaseCache implements Cache {
 	public synchronized CacheEntry getEntry(Object key) {
 		return getEntry(key, null, null);
 	}
+
 	/**
 	 * Get an entry from this cache or create one if it doesn't exist.
 	 * 
@@ -159,12 +179,42 @@ public abstract class BaseCache implements Cache {
 	 *            The origin of request (optional)
 	 * @return CacheEntry for the specified key.
 	 */
-	public synchronized CacheEntry getEntry(Object key, EntryRefreshPolicy policy,
-			String origin) {
+	public synchronized CacheEntry getEntry(Object key,
+			EntryRefreshPolicy policy, String origin) {
 		CacheEntry cacheEntry = getInternal(key);
 
-
 		return cacheEntry;
+	}
+
+	/**
+	 * Adds a listener that will receive notifications when cache events occur.
+	 * 
+	 * @param listener
+	 *            the listener to receive the events.
+	 */
+	public void addCacheListener(CacheListener listener) {
+		synchronized (LISTENER_LOCK) {
+			if (listeners == null)
+				listeners = new ArrayList();
+			listeners.add(listener);
+		}
+	}
+
+	/**
+	 * Removes a listener from the cache.
+	 * 
+	 * @param listener
+	 *            the listener to remove.
+	 * @return <code>true</code> if the listener was removed successfully,
+	 *         <code>false</code> if the listener could not be found.
+	 */
+	public boolean removeCacheListener(CacheListener listener) {
+		synchronized (LISTENER_LOCK) {
+			if (listeners != null)
+				return listeners.remove(listener);
+			else
+				return false;
+		}
 	}
 
 	/**
@@ -199,6 +249,32 @@ public abstract class BaseCache implements Cache {
 
 		return result;
 	}
+	
+	 /**
+	   * Fires a cache event.
+	   *
+	   * @param key       the key of the object that the event relates to.
+	   * @param value     the object that the event relates to.
+	   * @param eventType the type of event that occurred. See {@link CacheEvent}
+	   *                  for the possible event types.
+	   */
+	  protected void fireEvent(CacheEntry entry, int eventType)
+	  {
+	    synchronized (LISTENER_LOCK)
+	    {
+	      if (listeners != null)
+	      {
+	    	  CacheEntryEvent event = new CacheEntryEvent(this, entry, eventType);
+	        int i = 0;
+	        for (int size = listeners.size(); i < size; i++)
+	        {
+	          CacheListener listener = (CacheListener) listeners.get(i);
+	          listener.onChange(event);
+	        }
+	      }
+	    }
+	  }
+
 
 	/**
 	 * Retrieves the name of this cache instance.
