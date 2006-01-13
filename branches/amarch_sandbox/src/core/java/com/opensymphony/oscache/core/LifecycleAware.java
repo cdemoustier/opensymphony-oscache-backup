@@ -2,7 +2,7 @@
  * Copyright (c) 2002-2003 by OpenSymphony
  * All rights reserved.
  */
-package com.opensymphony.oscache.base;
+package com.opensymphony.oscache.core;
 
 
 /**
@@ -13,7 +13,7 @@ package com.opensymphony.oscache.base;
  *
  * @author <a href="&#109;a&#105;&#108;&#116;&#111;:chris&#64;swebtec.&#99;&#111;&#109;">Chris Miller</a>
  *
- * @see com.opensymphony.oscache.base.events.CacheEventListener
+ * @see com.opensymphony.oscache.core.events.CacheEventListener
  */
 public interface LifecycleAware {
     /**

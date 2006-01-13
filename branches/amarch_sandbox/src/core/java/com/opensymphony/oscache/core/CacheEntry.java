@@ -2,12 +2,13 @@
  * Copyright (c) 2002-2003 by OpenSymphony
  * All rights reserved.
  */
-package com.opensymphony.oscache.base;
+package com.opensymphony.oscache.core;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.util.Map;
 
 /**
  * A CacheEntry instance represents one entry in the cache. It holds the object that
@@ -20,7 +21,7 @@ import java.io.Serializable;
  * @author <a href="mailto:fbeauregard@pyxis-tech.com">Francois Beauregard</a>
  * @author <a href="mailto:oscache@andresmarch.com">Andres March</a>
  */
-public class CacheEntry implements Serializable {
+public class CacheEntry implements Map.Entry, Serializable {
     /**
 	 * 
 	 */
@@ -54,7 +55,6 @@ public class CacheEntry implements Serializable {
     private int state;
     
     public static final int STATE_VALID = 0;
-    public static final int STATE_STALE = -1;
     public static final int STATE_UPDATING = 1;
 
     /**
@@ -85,16 +85,17 @@ public class CacheEntry implements Serializable {
  */
     private long lastUpdate = NOT_YET;
 
+    
+
     /**
- * Construct a new CacheEntry using the key provided.
- *
- * @param key    The key of this CacheEntry
- */
-    public CacheEntry(String key) {
-        this(key, null);
-    }
-
-
+     * Construct a new CacheEntry using the key provided.
+     *
+     * @param key    The key of this CacheEntry
+     */
+    public CacheEntry(Object key, Object value) {
+		this(key, null, value);		
+}
+    
     /**
  * Construct a CacheEntry.
  *
@@ -102,18 +103,16 @@ public class CacheEntry implements Serializable {
  * @param policy  The object that implements the refresh policy logic. This
  * parameter is optional.
  */
-    public CacheEntry(Object key, EntryRefreshPolicy policy) {
+    public CacheEntry(Object key, EntryRefreshPolicy policy, Object value) {
         this.key = key;
 
         this.policy = policy;
         this.created = System.currentTimeMillis();
         this.state = STATE_VALID;
+        setValue(value);
     }
 
-    public CacheEntry(Object key, Object value) {
-    		this(key, null);
-    		setContent(value);
-	}
+    
 
 
 	/**
@@ -125,10 +124,11 @@ public class CacheEntry implements Serializable {
  *
  * @param value The content to store in this CacheEntry.
  */
-    public synchronized void setContent(Object value) {
+    public Object setValue(Object value) {
         content = value;
         lastUpdate = System.currentTimeMillis();
         wasFlushed = false;
+		return value;
     }
 
     /**
@@ -136,7 +136,7 @@ public class CacheEntry implements Serializable {
  *
  * @return The content of this CacheEntry.
  */
-    public Object getContent() {
+    public Object getValue() {
         return content;
     }
 
@@ -296,4 +296,5 @@ public class CacheEntry implements Serializable {
 
         state = STATE_VALID;
     }
+
 }

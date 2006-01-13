@@ -4,9 +4,9 @@
  */
 package com.opensymphony.oscache.extra;
 
-import com.opensymphony.oscache.base.events.ScopeEvent;
-import com.opensymphony.oscache.base.events.ScopeEventListener;
-import com.opensymphony.oscache.base.events.ScopeEventType;
+import com.opensymphony.oscache.events.ScopeEvent;
+import com.opensymphony.oscache.events.ScopeEventListener;
+import com.opensymphony.oscache.events.ScopeEventType;
 
 /**
  * Implementation of a ScopeEventListener that keeps track of the scope flush events.

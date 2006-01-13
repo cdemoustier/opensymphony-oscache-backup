@@ -4,7 +4,7 @@
  */
 package com.opensymphony.oscache.web;
 
-import com.opensymphony.oscache.base.EntryRefreshPolicy;
+import com.opensymphony.oscache.core.EntryRefreshPolicy;
 
 /**
  * Interface to implement an entry refresh policy.

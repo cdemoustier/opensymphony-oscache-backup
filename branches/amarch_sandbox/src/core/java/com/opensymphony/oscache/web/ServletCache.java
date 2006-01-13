@@ -12,9 +12,9 @@ import javax.servlet.http.HttpSessionBindingListener;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import com.opensymphony.oscache.base.Cache;
-import com.opensymphony.oscache.base.CacheEntry;
-import com.opensymphony.oscache.base.MemoryCache;
+import com.opensymphony.oscache.core.Cache;
+import com.opensymphony.oscache.core.CacheEntry;
+import com.opensymphony.oscache.core.MemoryCache;
 
 /**
  * A simple extension of Cache that implements a session binding listener,

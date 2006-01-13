@@ -4,11 +4,11 @@
  */
 package com.opensymphony.oscache.web;
 
-import com.opensymphony.oscache.base.*;
-import com.opensymphony.oscache.base.events.CacheEventListener;
-import com.opensymphony.oscache.base.events.ScopeEvent;
-import com.opensymphony.oscache.base.events.ScopeEventListener;
-import com.opensymphony.oscache.base.events.ScopeEventType;
+import com.opensymphony.oscache.core.*;
+import com.opensymphony.oscache.events.CacheEventListener;
+import com.opensymphony.oscache.events.ScopeEvent;
+import com.opensymphony.oscache.events.ScopeEventListener;
+import com.opensymphony.oscache.events.ScopeEventType;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
