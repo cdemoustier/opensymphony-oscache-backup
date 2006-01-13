@@ -7,6 +7,9 @@ package com.opensymphony.oscache.core;
 import java.util.Date;
 import java.util.Map;
 
+import com.opensymphony.oscache.events.CacheListener;
+
+
 /**
  * DOCUMENT ME!
  * 
@@ -14,10 +17,7 @@ import java.util.Map;
  * @version $Revision$
  */
 public interface Cache extends Map {
-	/**
-	 * An event that origininated from within another event.
-	 */
-	public static final String NESTED_EVENT = "NESTED";
+	
 
 	/**
 	 * Allows the capacity of the cache to be altered dynamically. Note that
@@ -64,5 +64,23 @@ public interface Cache extends Map {
 	 * Completely clears the cache.
 	 */
 	public abstract void clear();
+	
+	/**
+	   * Adds a listener that will receive notifications when cache events occur.
+	   * Listeners will be notified of cache events in the same order as they have
+	   * been added to the cache.
+	   *
+	   * @param listener the listener to receive the events.
+	   */
+	  void addCacheListener(CacheListener listener);
+
+	  /**
+	   * Removes a listener from the cache.
+	   *
+	   * @param listener the listener to remove.
+	   * @return <code>true</code> if the listener was removed successfully,
+	   *         <code>false</code> if the listener could not be found.
+	   */
+	  boolean removeCacheListener(CacheListener listener);
 
 }

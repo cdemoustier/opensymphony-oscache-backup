@@ -13,7 +13,7 @@ package com.opensymphony.oscache.core;
  *
  * @author <a href="&#109;a&#105;&#108;&#116;&#111;:chris&#64;swebtec.&#99;&#111;&#109;">Chris Miller</a>
  *
- * @see com.opensymphony.oscache.core.events.CacheEventListener
+ * @see com.opensymphony.oscache.core.events.CacheListener
  */
 public interface LifecycleAware {
     /**

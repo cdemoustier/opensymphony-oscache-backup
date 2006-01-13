@@ -12,7 +12,7 @@ package com.opensymphony.oscache.events;
  * @version        $Revision$
  * @author <a href="mailto:fbeauregard@pyxis-tech.com">Francois Beauregard</a>
  */
-public interface ScopeEventListener extends CacheEventListener {
+public interface ScopeEventListener extends CacheListener {
     /**
      * Event fired when a specific or all scopes are flushed.
      * Use getEventType to differentiate between the two.

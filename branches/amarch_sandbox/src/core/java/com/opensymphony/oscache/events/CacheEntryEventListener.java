@@ -14,7 +14,7 @@ package com.opensymphony.oscache.events;
  * @version        $Revision$
  * @author <a href="mailto:fbeauregard@pyxis-tech.com">Francois Beauregard</a>
  */
-public interface CacheEntryEventListener extends CacheEventListener {
+public interface CacheEntryEventListener extends CacheListener {
     /**
      * Event fired when an entry is added to the cache.
      */

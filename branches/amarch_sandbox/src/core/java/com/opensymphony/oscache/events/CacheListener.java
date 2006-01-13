@@ -12,5 +12,8 @@ import java.util.EventListener;
  * @version        $Revision$
  * @author <a href="&#109;a&#105;&#108;&#116;&#111;:chris&#64;swebtec.&#99;&#111;&#109;">Chris Miller</a>
  */
-public interface CacheEventListener extends EventListener {
+public interface CacheListener extends EventListener {
+
+	public void onChange(CacheEvent event);
+	
 }

@@ -14,51 +14,31 @@ import com.opensymphony.oscache.core.CacheEntry;
  * @version        $Revision$
  * @author <a href="mailto:fbeauregard@pyxis-tech.com">Francois Beauregard</a>
  */
-public final class CacheMapAccessEvent extends CacheEvent {
-    /**
-     * The cache entry that the event applies to.
+public class CacheMapAccessEvent extends CacheEntryEvent {
+	  /**
+     * Get an event type for a cache hit.
      */
-    private CacheEntry entry = null;
+    public static int HIT = 16;
 
     /**
-     * Type of the event.
+     * Get an event type for a cache miss.
      */
-    private CacheMapAccessEventType eventType = null;
+    public static int MISS = 32;
 
     /**
-     * Constructor.
-     * <p>
-     * @param eventType   Type of the event.
-     * @param entry       The cache entry that the event applies to.
+     * Get an event type for when the data was found in the cache but was stale.
      */
-    public CacheMapAccessEvent(CacheMapAccessEventType eventType, CacheEntry entry) {
-        this(eventType, entry, null);
-    }
+    public static int STALE_HIT = 64;
 
     /**
      * Constructor.
      * <p>
      * @param eventType   Type of the event.
      * @param entry       The cache entry that the event applies to.
-     * @param origin      The origin of the event
      */
-    public CacheMapAccessEvent(CacheMapAccessEventType eventType, CacheEntry entry, String origin) {
-        super(origin);
-        this.eventType = eventType;
-        this.entry = entry;
+    public CacheMapAccessEvent(int eventType, CacheEntry entry) {
+        super(null, entry, eventType);
     }
 
-    /**
-     * Retrieve the cache entry that the event applies to.
-     */
-    public CacheEntry getEntry() {
-        return entry;
-    }
-
-    /**
-     * Retrieve the type of the event.
-     */
-    public CacheMapAccessEventType getEventType() {
-        return eventType;
-    }
+  
 }
