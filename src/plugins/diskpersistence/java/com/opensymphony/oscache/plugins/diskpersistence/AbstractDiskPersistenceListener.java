@@ -4,9 +4,9 @@
  */
 package com.opensymphony.oscache.plugins.diskpersistence;
 
-import com.opensymphony.oscache.base.Config;
-import com.opensymphony.oscache.base.persistence.CachePersistenceException;
-import com.opensymphony.oscache.base.persistence.PersistenceListener;
+import com.opensymphony.oscache.core.Config;
+import com.opensymphony.oscache.persistence.CachePersistenceException;
+import com.opensymphony.oscache.persistence.PersistenceListener;
 import com.opensymphony.oscache.web.ServletCacheAdministrator;
 
 import org.apache.commons.logging.Log;

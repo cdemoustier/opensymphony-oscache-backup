@@ -4,7 +4,7 @@
  */
 package com.opensymphony.oscache.web.tag;
 
-import com.opensymphony.oscache.base.Cache;
+import com.opensymphony.oscache.core.Cache;
 import com.opensymphony.oscache.web.ServletCacheAdministrator;
 
 import javax.servlet.http.HttpServletRequest;

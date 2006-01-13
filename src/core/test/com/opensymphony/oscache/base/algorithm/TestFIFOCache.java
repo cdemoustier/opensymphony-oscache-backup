@@ -4,6 +4,8 @@
  */
 package com.opensymphony.oscache.base.algorithm;
 
+import com.opensymphony.oscache.algorithm.FIFOCache;
+
 import junit.framework.Test;
 import junit.framework.TestSuite;
 

@@ -4,9 +4,10 @@
  */
 package com.opensymphony.oscache.base.events;
 
-import com.opensymphony.oscache.base.Cache;
-import com.opensymphony.oscache.base.CacheEntry;
-import com.opensymphony.oscache.base.MemoryCache;
+import com.opensymphony.oscache.core.Cache;
+import com.opensymphony.oscache.core.CacheEntry;
+import com.opensymphony.oscache.core.MemoryCache;
+import com.opensymphony.oscache.events.CacheEntryEvent;
 import com.opensymphony.oscache.general.GeneralCacheAdministrator;
 
 import junit.framework.Test;

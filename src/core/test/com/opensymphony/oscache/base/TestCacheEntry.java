@@ -4,6 +4,8 @@
  */
 package com.opensymphony.oscache.base;
 
+import com.opensymphony.oscache.core.CacheEntry;
+
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
@@ -66,7 +68,7 @@ public class TestCacheEntry extends TestCase {
      */
     public void testFlush() {
         // Set the content so it shouldn't need refresh
-        entry.setContent(CONTENT);
+        entry.setValue(CONTENT);
         assertTrue(!entry.needsRefresh(NO_REFRESH_NEEDED));
 
         // Flush the entry. It should now needs refresh
@@ -95,7 +97,7 @@ public class TestCacheEntry extends TestCase {
     public void testGetLastUpdate() {
         // again. Then we ensure that the update time is between our timestamps
         long before = System.currentTimeMillis();
-        entry.setContent(CONTENT);
+        entry.setValue(CONTENT);
 
         long after = System.currentTimeMillis();
         assertBetweenOrEquals(before, entry.getLastUpdate(), after);
@@ -117,12 +119,12 @@ public class TestCacheEntry extends TestCase {
      * validate it
      */
     public void testSetGetContent() {
-        entry.setContent(CONTENT);
-        assertTrue(CONTENT.equals(entry.getContent()));
+        entry.setValue(CONTENT);
+        assertTrue(CONTENT.equals(entry.getValue()));
 
         // Ensure that nulls are allowed
-        entry.setContent(null);
-        assertNull(entry.getContent());
+        entry.setValue(null);
+        assertNull(entry.getValue());
     }
 
     /**

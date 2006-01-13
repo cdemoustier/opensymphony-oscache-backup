@@ -17,7 +17,7 @@ import javax.servlet.jsp.tagext.TryCatchFinally;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import com.opensymphony.oscache.base.Cache;
+import com.opensymphony.oscache.core.Cache;
 import com.opensymphony.oscache.util.StringUtil;
 import com.opensymphony.oscache.web.ServletCacheAdministrator;
 import com.opensymphony.oscache.web.WebEntryRefreshPolicy;

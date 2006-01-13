@@ -4,8 +4,8 @@
  */
 package com.opensymphony.oscache.plugins.clustersupport;
 
-import com.opensymphony.oscache.base.*;
-import com.opensymphony.oscache.base.events.CacheEntryEventListener;
+import com.opensymphony.oscache.core.*;
+import com.opensymphony.oscache.events.CacheEntryEventListener;
 
 import junit.framework.TestCase;
 

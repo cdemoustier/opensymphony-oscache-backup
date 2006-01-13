@@ -9,7 +9,7 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 /**
- * Test class for the com.opensymphony.oscache.base.algorithm package.
+ * Test class for the com.opensymphony.oscache.core.algorithm package.
  * It invokes all the test suites of all the other classes of the package,
  * except abstract ones because they are tested via final ones.
  *

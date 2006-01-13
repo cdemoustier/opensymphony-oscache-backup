@@ -4,10 +4,10 @@
  */
 package com.opensymphony.oscache.plugins.clustersupport;
 
-import com.opensymphony.oscache.base.Cache;
-import com.opensymphony.oscache.base.Config;
-import com.opensymphony.oscache.base.FinalizationException;
-import com.opensymphony.oscache.base.InitializationException;
+import com.opensymphony.oscache.core.Cache;
+import com.opensymphony.oscache.core.Config;
+import com.opensymphony.oscache.core.FinalizationException;
+import com.opensymphony.oscache.core.InitializationException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -59,7 +59,7 @@ public class JMSBroadcastingListener extends AbstractBroadcastingListener {
      *
      * @param cache the cache instance that this listener is attached to.
      *
-     * @throws com.opensymphony.oscache.base.InitializationException thrown when there was a
+     * @throws com.opensymphony.oscache.core.InitializationException thrown when there was a
      * problem initializing the listener. The cache administrator will log this error and
      * disable the listener.
      */
@@ -146,7 +146,7 @@ public class JMSBroadcastingListener extends AbstractBroadcastingListener {
     /**
      * Called by the cache administrator class when a cache is destroyed.
      *
-     * @throws com.opensymphony.oscache.base.FinalizationException thrown when there was a problem finalizing the
+     * @throws com.opensymphony.oscache.core.FinalizationException thrown when there was a problem finalizing the
      * listener. The cache administrator will catch and log this error.
      */
     public void finialize() throws FinalizationException {

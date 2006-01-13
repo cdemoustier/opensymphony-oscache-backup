@@ -4,8 +4,8 @@
  */
 package com.opensymphony.oscache.base.algorithm;
 
-import com.opensymphony.oscache.base.Config;
-import com.opensymphony.oscache.base.persistence.PersistenceListener;
+import com.opensymphony.oscache.core.Config;
+import com.opensymphony.oscache.persistence.PersistenceListener;
 import com.opensymphony.oscache.plugins.diskpersistence.DiskPersistenceListener;
 import com.opensymphony.oscache.plugins.diskpersistence.TestDiskPersistenceListener;
 
