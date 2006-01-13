@@ -4,12 +4,12 @@
  */
 package com.opensymphony.oscache.plugins.clustersupport;
 
-import com.opensymphony.oscache.base.Cache;
-import com.opensymphony.oscache.base.MemoryCache;
-import com.opensymphony.oscache.base.Config;
-import com.opensymphony.oscache.base.FinalizationException;
-import com.opensymphony.oscache.base.InitializationException;
-import com.opensymphony.oscache.base.events.CacheEntryEventListener;
+import com.opensymphony.oscache.core.Cache;
+import com.opensymphony.oscache.core.Config;
+import com.opensymphony.oscache.core.FinalizationException;
+import com.opensymphony.oscache.core.InitializationException;
+import com.opensymphony.oscache.core.MemoryCache;
+import com.opensymphony.oscache.events.CacheEntryEventListener;
 
 import java.util.ArrayList;
 import java.util.Iterator;

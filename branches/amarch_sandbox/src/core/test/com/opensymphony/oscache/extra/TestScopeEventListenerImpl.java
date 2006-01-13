@@ -4,8 +4,8 @@
  */
 package com.opensymphony.oscache.extra;
 
-import com.opensymphony.oscache.base.events.ScopeEvent;
-import com.opensymphony.oscache.base.events.ScopeEventType;
+import com.opensymphony.oscache.events.ScopeEvent;
+import com.opensymphony.oscache.events.ScopeEventType;
 
 import junit.framework.Test;
 import junit.framework.TestCase;

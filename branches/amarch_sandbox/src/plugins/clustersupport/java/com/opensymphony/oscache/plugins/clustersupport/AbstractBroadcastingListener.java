@@ -4,8 +4,8 @@
  */
 package com.opensymphony.oscache.plugins.clustersupport;
 
-import com.opensymphony.oscache.base.*;
-import com.opensymphony.oscache.base.events.*;
+import com.opensymphony.oscache.core.*;
+import com.opensymphony.oscache.events.*;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

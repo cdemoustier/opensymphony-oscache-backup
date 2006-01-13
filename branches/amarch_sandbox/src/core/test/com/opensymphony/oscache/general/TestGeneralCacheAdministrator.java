@@ -4,9 +4,11 @@
  */
 package com.opensymphony.oscache.general;
 
-import com.opensymphony.oscache.base.*;
-import com.opensymphony.oscache.base.events.CacheEntryEventListener;
-import com.opensymphony.oscache.base.events.CacheMapAccessEventListener;
+import com.opensymphony.oscache.base.DummyAlwayRefreshEntryPolicy;
+import com.opensymphony.oscache.base.TestAbstractCacheAdministrator;
+import com.opensymphony.oscache.core.*;
+import com.opensymphony.oscache.events.CacheEntryEventListener;
+import com.opensymphony.oscache.events.CacheMapAccessEventListener;
 import com.opensymphony.oscache.extra.CacheEntryEventListenerImpl;
 import com.opensymphony.oscache.extra.CacheMapAccessEventListenerImpl;
 

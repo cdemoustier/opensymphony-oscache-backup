@@ -13,7 +13,7 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 /**
- * Test class for the com.opensymphony.oscache.base package.
+ * Test class for the com.opensymphony.oscache.core package.
  * It invokes all the test suites of all the other classes of the package.
  *
  * $Id$

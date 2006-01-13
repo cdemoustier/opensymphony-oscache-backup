@@ -4,9 +4,9 @@
  */
 package com.opensymphony.oscache.extra;
 
-import com.opensymphony.oscache.base.CacheEntry;
-import com.opensymphony.oscache.base.events.CacheMapAccessEvent;
-import com.opensymphony.oscache.base.events.CacheMapAccessEventType;
+import com.opensymphony.oscache.core.CacheEntry;
+import com.opensymphony.oscache.events.CacheMapAccessEvent;
+import com.opensymphony.oscache.events.CacheMapAccessEventType;
 
 import junit.framework.Test;
 import junit.framework.TestCase;

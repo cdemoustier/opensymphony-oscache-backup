@@ -4,8 +4,8 @@
  */
 package com.opensymphony.oscache.plugins.diskpersistence;
 
-import com.opensymphony.oscache.base.Config;
-import com.opensymphony.oscache.base.persistence.PersistenceListener;
+import com.opensymphony.oscache.core.Config;
+import com.opensymphony.oscache.persistence.PersistenceListener;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -27,7 +27,7 @@ public class HashDiskPersistenceListener extends AbstractDiskPersistenceListener
     /**
      * Initializes the <tt>HashDiskPersistenceListener</tt>. Namely this involves only setting up the
      * message digester to hash the key values.
-     * @see com.opensymphony.oscache.base.persistence.PersistenceListener#configure(com.opensymphony.oscache.base.Config)
+     * @see com.opensymphony.oscache.core.persistence.PersistenceListener#configure(com.opensymphony.oscache.core.Config)
      */
     public PersistenceListener configure(Config config) {
         try {

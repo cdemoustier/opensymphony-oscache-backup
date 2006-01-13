@@ -10,6 +10,9 @@ import junit.framework.TestSuite;
 
 import java.util.Date;
 
+import com.opensymphony.oscache.events.ScopeEvent;
+import com.opensymphony.oscache.events.ScopeEventType;
+
 /**
  * This is the test class for the ScopeEvent class. It checks that the
  * public methods are working properly

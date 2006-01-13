@@ -4,6 +4,9 @@
  */
 package com.opensymphony.oscache.base;
 
+import com.opensymphony.oscache.core.CacheEntry;
+import com.opensymphony.oscache.core.EntryRefreshPolicy;
+
 
 /**
  * This is an dummy implementation of an EntryRefreshPolicy. It is just to

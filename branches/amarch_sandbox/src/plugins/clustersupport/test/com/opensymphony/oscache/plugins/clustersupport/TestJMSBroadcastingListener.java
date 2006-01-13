@@ -4,7 +4,7 @@
  */
 package com.opensymphony.oscache.plugins.clustersupport;
 
-import com.opensymphony.oscache.base.Config;
+import com.opensymphony.oscache.core.Config;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;

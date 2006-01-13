@@ -15,9 +15,9 @@ package com.opensymphony.oscache.plugins.diskpersistence;
  * Copyright (c) 2002-2003 by OpenSymphony
  * All rights reserved.
  */
-import com.opensymphony.oscache.base.CacheEntry;
-import com.opensymphony.oscache.base.Config;
-import com.opensymphony.oscache.base.persistence.CachePersistenceException;
+import com.opensymphony.oscache.core.CacheEntry;
+import com.opensymphony.oscache.core.Config;
+import com.opensymphony.oscache.persistence.CachePersistenceException;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
@@ -148,14 +148,14 @@ public final class TestHashDiskPersistenceListener extends TestCase {
     public void testStoreRetrieve() {
         // Create a cache entry and store it
         CacheEntry entry = new CacheEntry(KEY);
-        entry.setContent(CONTENT);
+        entry.setValue(CONTENT);
 
         try {
             listener.store(KEY, entry);
 
             // Retrieve our entry and validate the values
             CacheEntry newEntry = (CacheEntry) listener.retrieve(KEY);
-            assertTrue(entry.getContent().equals(newEntry.getContent()));
+            assertTrue(entry.getValue().equals(newEntry.getValue()));
             assertEquals(entry.getCreated(), newEntry.getCreated());
             assertTrue(entry.getKey().equals(newEntry.getKey()));
 
