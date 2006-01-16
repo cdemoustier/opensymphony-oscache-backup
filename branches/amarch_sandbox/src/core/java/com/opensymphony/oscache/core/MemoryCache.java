@@ -5,15 +5,12 @@
 package com.opensymphony.oscache.core;
 
 import java.util.Collection;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Properties;
 import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 
 /**
  * Provides an interface to the cache itself. Creating an instance of this class
@@ -34,16 +31,11 @@ public class MemoryCache extends BaseCache {
 			.getLog(MemoryCache.class);
 
 	/**
-	 * Date of last complete cache flush.
-	 */
-	private Date flushDateTime = null;
-
-	/**
 	 * The actual cache map. This is where the cached objects are held.
 	 */
 	private Map store = new HashMap();
-	
-	private int capacity; 
+
+	private int capacity;
 
 	/**
 	 * 
@@ -52,7 +44,7 @@ public class MemoryCache extends BaseCache {
 
 		// TODO Auto-generated constructor stub
 	}
-	
+
 	/**
 	 * 
 	 */
@@ -60,64 +52,6 @@ public class MemoryCache extends BaseCache {
 
 		this.capacity = capacity;
 	}
-	
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.opensymphony.oscache.core.CacheAPI#flushAll(java.util.Date)
-	 */
-	public void flushAll(Date date) {
-		flushAll(date, null);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.opensymphony.oscache.core.CacheAPI#flushAll(java.util.Date,
-	 *      java.lang.String)
-	 */
-	public void flushAll(Date date, String origin) {
-		flushDateTime = date;
-	}
-
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.opensymphony.oscache.core.CacheAPI#putInCache(java.lang.String,
-	 *      java.lang.Object)
-	 */
-	public CacheEntry put(Object key, CacheEntry cacheEntry) {
-		return put(key, cacheEntry, null);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.opensymphony.oscache.core.CacheAPI#putInCache(java.lang.String,
-	 *      java.lang.Object, com.opensymphony.oscache.core.EntryRefreshPolicy)
-	 */
-	public CacheEntry put(Object key, CacheEntry cacheEntry, EntryRefreshPolicy policy) {
-		return put(key, cacheEntry, null, null);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.opensymphony.oscache.core.CacheAPI#putInCache(java.lang.String,
-	 *      java.lang.Object, java.lang.String[],
-	 *      com.opensymphony.oscache.core.EntryRefreshPolicy, java.lang.String)
-	 */
-	public CacheEntry put(Object key, CacheEntry cacheEntry, EntryRefreshPolicy policy,
-			String origin) {
-		
-			return (CacheEntry) store.put(key, cacheEntry);
-	}
-
-	
-
-	
 
 	/**
 	 * Completely clears the cache.
@@ -125,7 +59,6 @@ public class MemoryCache extends BaseCache {
 	public void clear() {
 		store.clear();
 	}
-
 
 	/**
 	 * @return Returns the capacity.
@@ -135,14 +68,14 @@ public class MemoryCache extends BaseCache {
 	}
 
 	/**
-	 * @param capacity The capacity to set.
+	 * @param capacity
+	 *            The capacity to set.
 	 */
 	public void setCapacity(int capacity) {
 		this.capacity = capacity;
 	}
 
 	public synchronized int size() {
-		// TODO Auto-generated method stub
 		return store.size();
 	}
 
@@ -170,13 +103,6 @@ public class MemoryCache extends BaseCache {
 		return store.entrySet();
 	}
 
-	/**
-	 * This method does nothing since there is nothing left to configure.
-	 */
-	protected void init(Properties props) {
-	}
-
-
 	public synchronized boolean isEmpty() {
 		return store.isEmpty();
 	}
@@ -196,6 +122,5 @@ public class MemoryCache extends BaseCache {
 	protected CacheEntry removeInternal(Object key) {
 		return (CacheEntry) store.remove(key);
 	}
-
 
 }

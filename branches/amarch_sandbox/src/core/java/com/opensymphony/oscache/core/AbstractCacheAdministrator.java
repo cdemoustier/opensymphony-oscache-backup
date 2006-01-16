@@ -4,7 +4,9 @@
  */
 package com.opensymphony.oscache.core;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 import org.apache.commons.logging.Log;
@@ -13,7 +15,6 @@ import org.apache.commons.logging.LogFactory;
 import com.opensymphony.oscache.events.CacheEntryEventListener;
 import com.opensymphony.oscache.events.CacheListener;
 import com.opensymphony.oscache.events.CacheMapAccessEventListener;
-import com.opensymphony.oscache.events.CacheMapAccessEventType;
 import com.opensymphony.oscache.util.StringUtil;
 
 /**
@@ -109,7 +110,7 @@ public abstract class AbstractCacheAdministrator implements
 	 */
 	protected int cacheCapacity = -1;
 
-	private List regions;
+	private Map regions;
 
 	/**
 	 * Create the AbstractCacheAdministrator. This will initialize all values
@@ -135,23 +136,28 @@ public abstract class AbstractCacheAdministrator implements
 	}
 
 	public Object get(String regionName, Object key) {
-		return getCache().get(key);
+		return getCache(regionName).get(key);
+	}
+
+	private Cache getCache(String regionName) {
+		
+		return (Cache) regions.get(regionName);
 	}
 
 	public Object get(String regionName, Object key, int refreshPeriod) {
-		return getCache().get(key, refreshPeriod);
+		return getCache(regionName).get(key, refreshPeriod);
 	}
 
 	public Object get(String regionName, Object key, int refreshPeriod,
 			String cronExpiry) {
 
-		Object value = getCache().get(key, refreshPeriod, cronExpiry);
+		Object value = getCache(regionName).get(key, refreshPeriod, cronExpiry);
 
 		return value;
 	}
 
-	protected void put(Object key, Object value) {
-		getCache().put(key, value);
+	protected void put(String regionName, Object key, Object value) {
+		getCache(regionName).put(key, value);
 
 	}
 
@@ -173,12 +179,11 @@ public abstract class AbstractCacheAdministrator implements
 	 * Retrieves an array containing instances all of the {@link CacheListener}
 	 * classes that are specified in the OSCache configuration file.
 	 */
-	protected CacheListener[] initCacheListeners() {
-		CacheListener[] listeners = null;
+	protected void initCacheListeners() {		
 
 		List classes = StringUtil.split(
 				config.getProperty(CACHE_LISTENERS_KEY), ',');
-		listeners = new CacheListener[classes.size()];
+		listeners = new ArrayList();
 
 		for (int i = 0; i < classes.size(); i++) {
 			String className = (String) classes.get(i);
@@ -192,7 +197,7 @@ public abstract class AbstractCacheAdministrator implements
 									+ className
 									+ "' does not implement CacheListener. Ignoring this listener.");
 				} else {
-					listeners[i] = (CacheListener) clazz.newInstance();
+					listeners.add(clazz.newInstance());
 				}
 			} catch (ClassNotFoundException e) {
 				log.error("CacheListener class '" + className
@@ -213,8 +218,6 @@ public abstract class AbstractCacheAdministrator implements
 								e);
 			}
 		}
-
-		return listeners;
 	}
 
 	/**
@@ -233,24 +236,24 @@ public abstract class AbstractCacheAdministrator implements
 			// Grab all the specified listeners and add them to the cache's
 			// listener list. Note that listeners that implement more than
 			// one of the event interfaces will be added multiple times.
-			CacheListener[] listeners = initCacheListeners();
+			initCacheListeners();
 
-			for (int i = 0; i < listeners.length; i++) {
+			for (int i = 0; i < listeners.size(); i++) {
 				// Pass through the configuration to those listeners that
 				// require it
-				if (listeners[i] instanceof LifecycleAware) {
+				if (listeners.get(i) instanceof LifecycleAware) {
 					try {
-						((LifecycleAware) listeners[i]).initialize(cache,
+						((LifecycleAware) listeners.get(i)).initialize(cache,
 								config);
 					} catch (InitializationException e) {
 						log.error("Could not initialize listener '"
-								+ listeners[i].getClass().getName()
+								+ listeners.get(i).getClass().getName()
 								+ "'. Listener ignored.", e);
 
 						continue;
 					}
 				}
-				cache.addCacheListener(listeners[i]);
+				cache.addCacheListener((CacheListener) listeners.get(i));
 
 			}
 		}
@@ -270,17 +273,7 @@ public abstract class AbstractCacheAdministrator implements
 			return;
 		}
 
-		Object[] listeners = initCacheListeners();
-
-		for (int i = listeners.length - 2; i >= 0; i -= 2) {
-			if (listeners[i + 1] instanceof LifecycleAware) {
-				try {
-					((LifecycleAware) listeners[i + 1]).finialize();
-				} catch (FinalizationException e) {
-					log.error("Listener could not be finalized", e);
-				}
-			}
-		}
+		
 	}
 
 	/**
@@ -322,8 +315,10 @@ public abstract class AbstractCacheAdministrator implements
 	 * Grabs a cache
 	 * 
 	 * @return The cache
+	 * @throws IllegalAccessException 
 	 */
-	public Cache getCache() {
-		return (Cache) regions.get(0);
+	public Cache getCache() throws IllegalAccessException {
+		if (regions.size() != 1) throw new IllegalAccessException("More than 1 region configured.  Please use getCache(String regionName)");
+		return (Cache) regions.get("DEFAULT_REGION");
 	}
 }

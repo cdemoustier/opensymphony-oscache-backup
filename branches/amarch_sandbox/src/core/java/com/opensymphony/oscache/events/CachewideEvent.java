@@ -16,15 +16,17 @@ import java.util.Date;
  * @author <a href="&#109;a&#105;&#108;&#116;&#111;:chris&#64;swebtec.&#99;&#111;&#109;">Chris Miller</a>
  */
 public final class CachewideEvent extends CacheEvent {
-    /**
-     * The cache where the event occurred.
-     */
-    private Cache cache = null;
+    
 
     /**
      * The date/time for when the flush is scheduled
      */
     private Date date = null;
+    
+    /**
+     * Get an event type for a cache flush event.
+     */
+    public static int CACHE_FLUSHED = 2048;
 
     /**
      * Constructs a cachewide event with the specified origin.
@@ -32,24 +34,13 @@ public final class CachewideEvent extends CacheEvent {
      * @param cache   The cache map that the event occurred on.
      * @param date    The date/time that this cachewide event is scheduled for
      * (eg, the date that the cache is to be flushed).
-     * @param origin  An optional tag that can be attached to the event to
-     * specify the event's origin. This is useful to prevent events from being
-     * fired recursively in some situations, such as when an event handler
-     * causes another event to be fired.
      */
-    public CachewideEvent(Cache cache, Date date, String origin) {
-        super(origin);
+    public CachewideEvent(Cache cache, Date date) {
+       
+        super(cache, CACHE_FLUSHED);
         this.date = date;
-        this.cache = cache;
     }
-
-    /**
-     * Retrieve the cache map that the event occurred on.
-     */
-    public Cache getCache() {
-        return cache;
-    }
-
+    
     /**
      * Retrieve the date/time that the cache flush is scheduled for.
      */

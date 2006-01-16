@@ -15,12 +15,9 @@ import com.opensymphony.oscache.core.Cache;
  * @author <a href="&#109;a&#105;&#108;&#116;&#111;:chris&#64;swebtec.&#99;&#111;&#109;">Chris Miller</a>
  */
 public final class CacheGroupEvent extends CacheEvent {
-    /**
-     * The cache where the entry resides.
-     */
-    private Cache map = null;
-
-    /**
+    
+    private static final int GROUP_FLUSHED = 0;
+	/**
      * The group that the event applies to.
      */
     private String group = null;
@@ -32,24 +29,10 @@ public final class CacheGroupEvent extends CacheEvent {
      * @param group   The cache group that the event applies to.
      */
     public CacheGroupEvent(Cache map, String group) {
-        this(map, group, null);
-    }
-
-    /**
-     * Constructs a cache group event
-     *
-     * @param map     The cache map of the cache entry
-     * @param group   The cache group that the event applies to.
-     * @param origin  An optional tag that can be attached to the event to
-     * specify the event's origin. This is useful to prevent events from being
-     * fired recursively in some situations, such as when an event handler
-     * causes another event to be fired.
-     */
-    public CacheGroupEvent(Cache map, String group, String origin) {
-        super(origin);
-        this.map = map;
+        super(map, CacheGroupEvent.GROUP_FLUSHED);
         this.group = group;
     }
+
 
     /**
      * Retrieve the cache group that the event applies to.
@@ -58,12 +41,6 @@ public final class CacheGroupEvent extends CacheEvent {
         return group;
     }
 
-    /**
-     * Retrieve the cache map where the group resides.
-     */
-    public Cache getMap() {
-        return map;
-    }
 
     public String toString() {
         return "groupName=" + group;
