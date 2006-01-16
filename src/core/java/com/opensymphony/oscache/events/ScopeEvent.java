@@ -61,14 +61,7 @@ public final class ScopeEvent extends CacheEvent {
     public Date getDate() {
         return date;
     }
-
-    /**
-     * Retrieve the type of the event.
-     */
-    public ScopeEventType getEventType() {
-        return eventType;
-    }
-
+    
     /**
      * Retrieve the scope that applies to the event.
      */

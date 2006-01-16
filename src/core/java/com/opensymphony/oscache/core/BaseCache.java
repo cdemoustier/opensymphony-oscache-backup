@@ -2,13 +2,20 @@ package com.opensymphony.oscache.core;
 
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 
-import com.opensymphony.oscache.algorithm.UnlimitedEvictionAlgorithm;
 import com.opensymphony.oscache.events.CacheEntryEvent;
 import com.opensymphony.oscache.events.CacheEvent;
+import com.opensymphony.oscache.events.CacheGroupEvent;
 import com.opensymphony.oscache.events.CacheListener;
+import com.opensymphony.oscache.events.CachewideEvent;
 import com.opensymphony.oscache.util.FastCronParser;
 
 /**
@@ -17,7 +24,7 @@ import com.opensymphony.oscache.util.FastCronParser;
  */
 public abstract class BaseCache implements Cache {
 
-	private EvictionAlgorithm policy;
+	private EvictionAlgorithm algorithm;
 
 	private String name;
 
@@ -26,37 +33,11 @@ public abstract class BaseCache implements Cache {
 	private List listeners;
 
 	/**
-	 * Initialises the base cache. Valid properties are:
-	 * <ul>
-	 * <li>{@link #MIN_THREADS_PARAM} - the minimun number of threads to pool</li>
-	 * <li>{@link #MAX_THREADS_PARAM} - the maximum number of threads to pool</li>
-	 * </ul>
-	 * 
-	 * @param props
-	 *            any configuration parameters that the cache requires.
-	 * @param policy
-	 *            the eviction policy for the cache to use. If <code>null</code>
-	 *            is specified, the cache will default to using the
-	 *            {@link UnlimitedEvictionAlgorithm}.
+	 * Date of last complete cache flush.
 	 */
-	public void init(Properties props, EvictionAlgorithm policy) {
-		if (policy == null)
-			this.policy = new UnlimitedEvictionAlgorithm();
-		else {
-			this.policy = policy;
-		}
+	private Date flushDateTime = null;
 
-		init(props);
-	}
-
-	/**
-	 * Passes though the configuration parameters to a concrete implentation so
-	 * it can perform any additional configuration that might be necessary.
-	 * 
-	 * @param props
-	 *            the cache configuration parameters.
-	 */
-	protected abstract void init(Properties props);
+	private Map groupMap;
 
 	/**
 	 * Clears the entire cache. This will result in a
@@ -85,9 +66,21 @@ public abstract class BaseCache implements Cache {
 	 *         be found and could not be loaded.
 	 */
 	public synchronized Object get(Object key) {
-		return get(key, 0, null);
+		return get(key, 0);
 	}
 
+	/**
+	 * Retrieves an object from the cache.
+	 * 
+	 * @param key
+	 *            the key of the object to retrieve.
+	 * @return the cached object, or <code>null</code> if the object could not
+	 *         be found and could not be loaded.
+	 */
+	public synchronized Object get(Object key, int refreshPeriod) {
+		return get(key, 0, null);
+	}
+	
 	/**
 	 * Retrieves an object from the cache.
 	 * 
@@ -109,7 +102,7 @@ public abstract class BaseCache implements Cache {
 				remove(key);
 				content = null;
 			} else {
-				policy.get(key, cacheEntry);
+				algorithm.get(key, cacheEntry);
 
 			}
 		}
@@ -120,7 +113,7 @@ public abstract class BaseCache implements Cache {
 	public synchronized Object remove(Object key) {
 		CacheEntry result = removeInternal(key);
 		if (result != null) {
-			policy.remove(key, result);
+			algorithm.remove(key, result);
 			fireEvent(result, CacheEvent.REMOVE);
 		}
 		return result;
@@ -138,49 +131,35 @@ public abstract class BaseCache implements Cache {
 	public synchronized Object put(Object key, Object value) {
 		CacheEntry newEntry = new CacheEntry(key, value);
 		CacheEntry oldEntry = putInternal(newEntry);
-		policy.put(key, newEntry);
+		algorithm.put(key, newEntry);
 
-		// Remove an entry from the cache if the eviction policy says we need to
-		Object evictionKey = policy.evict();
+		// Remove an entry from the cache if the eviction algorithm says we need to
+		Object evictionKey = algorithm.evict();
 		if (evictionKey != null) {
-			removeInternal(evictionKey);
+			remove(evictionKey);
+		}		
+
+		addGroupMappings(newEntry);
+
+		// fire off a notification message
+		if (oldEntry == null) {
+			fireEvent(newEntry, CacheEvent.ADD);
+		} else {
+			fireEvent(newEntry, CacheEvent.UPDATE);
 		}
 
-	    // fire off a notification message
-	    if (oldEntry == null)
-	    {
-	      fireEvent(newEntry, CacheEvent.ADD);
-	    } else {
-	      fireEvent(newEntry, CacheEvent.UPDATE);
-	    }
-
-	    return  newEntry.getValue();
+		return oldEntry.getValue();
 	}
 
+
 	/**
-	 * Get an entry from this cache or create one if it doesn't exist.
+	 * Get an entry from this cache.
 	 * 
 	 * @param key
 	 *            The key of the cache entry
 	 * @return CacheEntry for the specified key.
 	 */
 	public synchronized CacheEntry getEntry(Object key) {
-		return getEntry(key, null, null);
-	}
-
-	/**
-	 * Get an entry from this cache or create one if it doesn't exist.
-	 * 
-	 * @param key
-	 *            The key of the cache entry
-	 * @param policy
-	 *            Object that implements refresh policy logic
-	 * @param origin
-	 *            The origin of request (optional)
-	 * @return CacheEntry for the specified key.
-	 */
-	public synchronized CacheEntry getEntry(Object key,
-			EntryRefreshPolicy policy, String origin) {
 		CacheEntry cacheEntry = getInternal(key);
 
 		return cacheEntry;
@@ -212,10 +191,38 @@ public abstract class BaseCache implements Cache {
 		synchronized (LISTENER_LOCK) {
 			if (listeners != null)
 				return listeners.remove(listener);
-			else
-				return false;
+			return false;
 		}
 	}
+	
+	/**
+     * Flushes all unexpired objects that belong to the supplied group. On
+     * completion this method fires a <tt>CacheEntryEvent.GROUP_FLUSHED</tt>
+     * event.
+     *
+     * @param group The group to flush
+     */
+    public void removeGroup(String group) {
+        // Flush all objects in the group
+        Set groupEntries = (Set) groupMap.get(group);
+
+        if (groupEntries != null) {
+            Iterator itr = groupEntries.iterator();
+            Object key;
+            CacheEntry entry;
+
+            while (itr.hasNext()) {
+            		key = itr.next();
+                entry = getEntry(key);
+
+                if ((entry != null) && !entry.needsRefresh(CacheEntry.INDEFINITE_EXPIRY)) {
+                    remove(key);
+                }
+            }
+        }
+        fireEvent(new CacheGroupEvent(this, group));
+        
+    }
 
 	/**
 	 * Indicates whether or not the cache entry is stale.
@@ -235,7 +242,8 @@ public abstract class BaseCache implements Cache {
 	 */
 	protected boolean isStale(CacheEntry cacheEntry, int refreshPeriod,
 			String cronExpiry) {
-		boolean result = cacheEntry.needsRefresh(refreshPeriod);
+		boolean result = cacheEntry.needsRefresh(refreshPeriod)
+				|| isFlushed(cacheEntry);
 
 		if ((cronExpiry != null) && (cronExpiry.length() > 0)) {
 			try {
@@ -249,32 +257,64 @@ public abstract class BaseCache implements Cache {
 
 		return result;
 	}
-	
-	 /**
-	   * Fires a cache event.
-	   *
-	   * @param key       the key of the object that the event relates to.
-	   * @param value     the object that the event relates to.
-	   * @param eventType the type of event that occurred. See {@link CacheEvent}
-	   *                  for the possible event types.
-	   */
-	  protected void fireEvent(CacheEntry entry, int eventType)
-	  {
-	    synchronized (LISTENER_LOCK)
-	    {
-	      if (listeners != null)
-	      {
-	    	  CacheEntryEvent event = new CacheEntryEvent(this, entry, eventType);
-	        int i = 0;
-	        for (int size = listeners.size(); i < size; i++)
-	        {
-	          CacheListener listener = (CacheListener) listeners.get(i);
-	          listener.onChange(event);
-	        }
-	      }
-	    }
-	  }
 
+	/**
+	 * Checks if the cache was flushed more recently than the CacheEntry
+	 * provided. Used to determine whether to refresh the particular CacheEntry.
+	 * 
+	 * @param cacheEntry
+	 *            The cache entry which we're seeing whether to refresh
+	 * @return Whether or not the cache has been flushed more recently than this
+	 *         cache entry was updated.
+	 */
+	public boolean isFlushed(CacheEntry cacheEntry) {
+		if (flushDateTime != null) {
+			long lastUpdate = cacheEntry.getLastUpdate();
+
+			return (flushDateTime.getTime() >= lastUpdate);
+		} else {
+			return false;
+		}
+	}
+
+	/**
+	 * Fires a cache event.
+	 * 
+	 * @param key
+	 *            the key of the object that the event relates to.
+	 * @param value
+	 *            the object that the event relates to.
+	 * @param eventType
+	 *            the type of event that occurred. See {@link CacheEvent} for
+	 *            the possible event types.
+	 */
+	protected void fireEvent(CacheEntry entry, int eventType) {
+		CacheEntryEvent event = new CacheEntryEvent(this, entry, eventType);
+		fireEvent(event);
+	}
+
+	/**
+	 * Fires a cache event.
+	 * 
+	 * @param key
+	 *            the key of the object that the event relates to.
+	 * @param value
+	 *            the object that the event relates to.
+	 * @param eventType
+	 *            the type of event that occurred. See {@link CacheEvent} for
+	 *            the possible event types.
+	 */
+	protected void fireEvent(CacheEvent event) {
+		synchronized (LISTENER_LOCK) {
+			if (listeners != null) {
+				int i = 0;
+				for (int size = listeners.size(); i < size; i++) {
+					CacheListener listener = (CacheListener) listeners.get(i);
+					listener.onChange(event);
+				}
+			}
+		}
+	}
 
 	/**
 	 * Retrieves the name of this cache instance.
@@ -339,5 +379,34 @@ public abstract class BaseCache implements Cache {
 	 * the calling method.
 	 */
 	protected abstract void clearInternal();
+
+	public void flushAll(Date date) {
+		flushDateTime = date;
+		fireEvent(new CachewideEvent(this, date));
+	}
+
+	/**
+	 * Add this entry's key to the groups specified by the entry's groups. 
+	 * 
+	 */
+	protected void addGroupMappings(CacheEntry entry) {
+		// Add this CacheEntry to the groups that it is now a member of
+		for (Iterator it = entry.getGroups().iterator(); it.hasNext();) {
+			String groupName = (String) it.next();
+	
+			if (groupMap == null) {
+				groupMap = new HashMap();
+			}
+	
+			Set group = (Set) groupMap.get(groupName);
+	
+			if (group == null) {
+				group = new HashSet();
+				groupMap.put(groupName, group);
+			}
+	
+			group.add(entry.getKey());
+		}
+	}
 
 }

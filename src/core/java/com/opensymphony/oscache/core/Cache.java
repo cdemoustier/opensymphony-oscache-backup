@@ -29,6 +29,28 @@ public interface Cache extends Map {
 	 */
 	public abstract void setCapacity(int capacity);
 
+	
+	/**
+	 * Retrieves an object from the cache.
+	 * 
+	 * @param key
+	 *            the key of the object to retrieve.
+	 * @return the cached object, or <code>null</code> if the object could not
+	 *         be found and could not be loaded.
+	 */
+	public abstract Object get(Object key, int refreshPeriod,
+			String cronExpiry);
+	
+	/**
+	 * Retrieves an object from the cache.
+	 * 
+	 * @param key
+	 *            the key of the object to retrieve.
+	 * @return the cached object, or <code>null</code> if the object could not
+	 *         be found and could not be loaded.
+	 */
+	public abstract Object get(Object key, int refreshPeriod);
+	
 	/**
 	 * Retrieve an object from the cache specifying its key.
 	 * 
@@ -48,16 +70,6 @@ public interface Cache extends Map {
 	 *            The date at which all cache entries will be flushed.
 	 */
 	public abstract void flushAll(Date date);
-
-	/**
-	 * Flush all entries in the cache on the given date/time.
-	 * 
-	 * @param date
-	 *            The date at which all cache entries will be flushed.
-	 * @param origin
-	 *            The origin of this flush request (optional)
-	 */
-	public abstract void flushAll(Date date, String origin);
 
 
 	/**

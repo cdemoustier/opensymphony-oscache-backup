@@ -8,7 +8,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * A CacheEntry instance represents one entry in the cache. It holds the object that
@@ -84,6 +86,11 @@ public class CacheEntry implements Map.Entry, Serializable {
  * The time this emtry was last updated.
  */
     private long lastUpdate = NOT_YET;
+    
+    /**
+     * The set of cache groups that this cache entry belongs to, if any.
+     */
+    private Set groups = null;
 
     
 
@@ -296,5 +303,48 @@ public class CacheEntry implements Map.Entry, Serializable {
 
         state = STATE_VALID;
     }
+
+	/**
+	 * @return Returns the content.
+	 */
+	public Object getContent() {
+		return content;
+	}
+
+	/**
+	 * @param content The content to set.
+	 */
+	public void setContent(Object content) {
+		this.content = content;
+	}
+
+	/**
+	 * @return Returns the groups.
+	 */
+	public Set getGroups() {
+		if (groups == null) groups = new HashSet();
+		return groups;
+	}
+
+	/**
+	 * @param groups The groups to set.
+	 */
+	public void setGroups(Set groups) {
+		this.groups = groups;
+	}
+
+	/**
+	 * @return Returns the policy.
+	 */
+	public EntryRefreshPolicy getPolicy() {
+		return policy;
+	}
+
+	/**
+	 * @param policy The policy to set.
+	 */
+	public void setPolicy(EntryRefreshPolicy policy) {
+		this.policy = policy;
+	}
 
 }
