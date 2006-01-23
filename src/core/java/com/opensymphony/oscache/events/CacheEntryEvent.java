@@ -16,10 +16,37 @@ import com.opensymphony.oscache.core.CacheEntry;
  * @author <a href="mailto:fbeauregard@pyxis-tech.com">Francois Beauregard</a>
  */
 public class CacheEntryEvent extends CacheEvent {
-    /**
-     * The cache where the entry resides.
+	
+	/**
+     * Get an event type for an entry added.
      */
-    private Cache map = null;
+    public static int ENTRY_ADDED = 0;
+
+    /**
+     * Get an event type for an entry updated.
+     */
+    public static int ENTRY_UPDATED = 1;
+
+    /**
+     * Get an event type for an entry flushed.
+     */
+    public static int ENTRY_FLUSHED = 2;
+
+    /**
+     * Get an event type for an entry removed.
+     */
+    public static int ENTRY_REMOVED = 4;
+
+    /**
+     * Get an event type for a group flush event.
+     */
+    public static int GROUP_FLUSHED = 8;
+
+    /**
+     * Get an event type for a pattern flush event.
+     */
+    public static int PATTERN_FLUSHED = 16;
+    
 
     /**
      * The entry that the event applies to.
@@ -34,21 +61,10 @@ public class CacheEntryEvent extends CacheEvent {
      * @param eventType 
      */
     public CacheEntryEvent(Cache map, CacheEntry entry, int eventType) {
-        this(map, entry, eventType, null);
-    }
-
-    /**
-     * Constructs a cache entry event object
-     *
-     * @param map     The cache map of the cache entry
-     * @param entry   The cache entry that the event applies to
-     * @param origin  The origin of this event
-     */
-    public CacheEntryEvent(Cache map, CacheEntry entry, int eventType, String origin) {
-        super(origin);
-        this.map = map;
+        super(map, eventType);
         this.entry = entry;
     }
+
 
     /**
      * Retrieve the cache entry that the event applies to.
@@ -57,12 +73,7 @@ public class CacheEntryEvent extends CacheEvent {
         return entry;
     }
 
-    /**
-     * Retrieve the cache map where the entry resides.
-     */
-    public Cache getMap() {
-        return map;
-    }
+    
 
     public String toString() {
         return "key=" + entry.getKey();

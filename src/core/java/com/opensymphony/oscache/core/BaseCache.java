@@ -11,6 +11,8 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
+import com.opensymphony.oscache.core.EntryRefreshPolicy;
+import com.opensymphony.oscache.core.CacheEntry;
 import com.opensymphony.oscache.events.CacheEntryEvent;
 import com.opensymphony.oscache.events.CacheEvent;
 import com.opensymphony.oscache.events.CacheGroupEvent;
@@ -66,7 +68,7 @@ public abstract class BaseCache implements Cache {
 	 *         be found and could not be loaded.
 	 */
 	public synchronized Object get(Object key) {
-		return get(key, 0);
+		return get(key, CacheEntry.INDEFINITE_EXPIRY);
 	}
 
 	/**
@@ -78,9 +80,9 @@ public abstract class BaseCache implements Cache {
 	 *         be found and could not be loaded.
 	 */
 	public synchronized Object get(Object key, int refreshPeriod) {
-		return get(key, 0, null);
+		return get(key, refreshPeriod, null);
 	}
-	
+
 	/**
 	 * Retrieves an object from the cache.
 	 * 
@@ -120,6 +122,48 @@ public abstract class BaseCache implements Cache {
 	}
 
 	/**
+	 * Put an object in the cache specifying the key to use.
+	 * 
+	 * @param key
+	 *            Key of the object in the cache.
+	 * @param content
+	 *            The object to cache.
+	 */
+	public synchronized Object put(Object key, Object content) {
+		return put(key, content, null, null);
+	}
+
+	/**
+	 * Put an object in the cache specifying the key and refresh policy to use.
+	 * 
+	 * @param key
+	 *            Key of the object in the cache.
+	 * @param content
+	 *            The object to cache.
+	 * @param policy
+	 *            Object that implements refresh policy logic
+	 */
+	public synchronized Object put(Object key, Object content,
+			EntryRefreshPolicy policy) {
+		return put(key, content, null, policy);
+	}
+
+	/**
+	 * Put in object into the cache, specifying both the key to use and the
+	 * cache groups the object belongs to.
+	 * 
+	 * @param key
+	 *            Key of the object in the cache
+	 * @param content
+	 *            The object to cache
+	 * @param groups
+	 *            The cache groups to add the object to
+	 */
+	public synchronized Object put(Object key, Object content, String[] groups) {
+		return put(key, content, groups, null);
+	}
+
+	/**
 	 * Store the supplied entry in the cache.
 	 * 
 	 * @param key
@@ -128,16 +172,18 @@ public abstract class BaseCache implements Cache {
 	 *            the object to store.
 	 * @return the previous object that was stored under this key, if any.
 	 */
-	public synchronized Object put(Object key, Object value) {
-		CacheEntry newEntry = new CacheEntry(key, value);
+	public synchronized Object put(Object key, Object value, String[] groups,
+			EntryRefreshPolicy policy) {
+		CacheEntry newEntry = new CacheEntry(key, value, groups, policy);
 		CacheEntry oldEntry = putInternal(newEntry);
 		algorithm.put(key, newEntry);
 
-		// Remove an entry from the cache if the eviction algorithm says we need to
+		// Remove an entry from the cache if the eviction algorithm says we need
+		// to
 		Object evictionKey = algorithm.evict();
 		if (evictionKey != null) {
 			remove(evictionKey);
-		}		
+		}
 
 		addGroupMappings(newEntry);
 
@@ -150,7 +196,6 @@ public abstract class BaseCache implements Cache {
 
 		return oldEntry.getValue();
 	}
-
 
 	/**
 	 * Get an entry from this cache.
@@ -194,35 +239,37 @@ public abstract class BaseCache implements Cache {
 			return false;
 		}
 	}
-	
+
 	/**
-     * Flushes all unexpired objects that belong to the supplied group. On
-     * completion this method fires a <tt>CacheEntryEvent.GROUP_FLUSHED</tt>
-     * event.
-     *
-     * @param group The group to flush
-     */
-    public void removeGroup(String group) {
-        // Flush all objects in the group
-        Set groupEntries = (Set) groupMap.get(group);
+	 * Flushes all unexpired objects that belong to the supplied group. On
+	 * completion this method fires a <tt>CacheEntryEvent.GROUP_FLUSHED</tt>
+	 * event.
+	 * 
+	 * @param group
+	 *            The group to flush
+	 */
+	public void removeGroup(String group) {
+		// Flush all objects in the group
+		Set groupEntries = (Set) groupMap.get(group);
 
-        if (groupEntries != null) {
-            Iterator itr = groupEntries.iterator();
-            Object key;
-            CacheEntry entry;
+		if (groupEntries != null) {
+			Iterator itr = groupEntries.iterator();
+			Object key;
+			CacheEntry entry;
 
-            while (itr.hasNext()) {
-            		key = itr.next();
-                entry = getEntry(key);
+			while (itr.hasNext()) {
+				key = itr.next();
+				entry = getEntry(key);
 
-                if ((entry != null) && !entry.needsRefresh(CacheEntry.INDEFINITE_EXPIRY)) {
-                    remove(key);
-                }
-            }
-        }
-        fireEvent(new CacheGroupEvent(this, group));
-        
-    }
+				if ((entry != null)
+						&& !entry.needsRefresh(CacheEntry.INDEFINITE_EXPIRY)) {
+					remove(key);
+				}
+			}
+		}
+		fireEvent(new CacheGroupEvent(this, group));
+
+	}
 
 	/**
 	 * Indicates whether or not the cache entry is stale.
@@ -381,30 +428,32 @@ public abstract class BaseCache implements Cache {
 	protected abstract void clearInternal();
 
 	public void flushAll(Date date) {
-		flushDateTime = date;
-		fireEvent(new CachewideEvent(this, date));
+		synchronized (flushDateTime) {
+			flushDateTime = date;
+			fireEvent(new CachewideEvent(this, date));
+		}
 	}
 
 	/**
-	 * Add this entry's key to the groups specified by the entry's groups. 
+	 * Add this entry's key to the groups specified by the entry's groups.
 	 * 
 	 */
 	protected void addGroupMappings(CacheEntry entry) {
 		// Add this CacheEntry to the groups that it is now a member of
 		for (Iterator it = entry.getGroups().iterator(); it.hasNext();) {
 			String groupName = (String) it.next();
-	
+
 			if (groupMap == null) {
 				groupMap = new HashMap();
 			}
-	
+
 			Set group = (Set) groupMap.get(groupName);
-	
+
 			if (group == null) {
 				group = new HashSet();
 				groupMap.put(groupName, group);
 			}
-	
+
 			group.add(entry.getKey());
 		}
 	}

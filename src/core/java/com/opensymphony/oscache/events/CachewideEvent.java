@@ -26,7 +26,7 @@ public final class CachewideEvent extends CacheEvent {
     /**
      * Get an event type for a cache flush event.
      */
-    public static int CACHE_FLUSHED = 2048;
+    public static int CACHE_FLUSHED = 0;
 
     /**
      * Constructs a cachewide event with the specified origin.
