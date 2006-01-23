@@ -6,6 +6,8 @@ package com.opensymphony.oscache.events;
 
 import java.util.Date;
 
+import com.opensymphony.oscache.core.Cache;
+
 /**
  * A <code>ScopeEvent</code> is created when an event occurs across one or all scopes.
  * This type of event is only applicable to the <code>ServletCacheAdministrator</code>.
@@ -14,15 +16,23 @@ import java.util.Date;
  * @author <a href="mailto:fbeauregard@pyxis-tech.com">Francois Beauregard</a>
  */
 public final class ScopeEvent extends CacheEvent {
+    
+	/**
+     * Specifies an event type for the all scope flushed event.
+     */
+    public static int ALL_SCOPES_FLUSHED = 0;
+
     /**
+     * Specifies an event type for the flushing of a  specific scope.
+     */
+    public static int SCOPE_FLUSHED = 1;
+	
+	
+	/**
      * Date that the event applies to.
      */
     private Date date = null;
 
-    /**
-     * Type of the event.
-     */
-    private ScopeEventType eventType = null;
 
     /**
      * Scope that applies to this event.
@@ -36,21 +46,8 @@ public final class ScopeEvent extends CacheEvent {
      * @param scope       Scope that applies to the event.
      * @param date        Date that the event applies to.
      */
-    public ScopeEvent(ScopeEventType eventType, int scope, Date date) {
-        this(eventType, scope, date, null);
-    }
-
-    /**
-     * Constructs a scope event object.
-     *
-     * @param eventType   Type of the event.
-     * @param scope       Scope that applies to the event.
-     * @param date        Date that the event applies to.
-     * @param origin      The origin of this event.
-     */
-    public ScopeEvent(ScopeEventType eventType, int scope, Date date, String origin) {
-        super(origin);
-        this.eventType = eventType;
+    public ScopeEvent(Cache cache, int eventType, int scope, Date date) {
+        super(cache, eventType);
         this.scope = scope;
         this.date = date;
     }

@@ -4,9 +4,9 @@
  */
 package com.opensymphony.oscache.extra;
 
+import com.opensymphony.oscache.events.CacheEvent;
 import com.opensymphony.oscache.events.CacheMapAccessEvent;
 import com.opensymphony.oscache.events.CacheMapAccessEventListener;
-import com.opensymphony.oscache.events.CacheMapAccessEventType;
 
 /**
  * Implementation of a CacheMapAccessEventListener. It uses the events to count
@@ -74,18 +74,18 @@ public class CacheMapAccessEventListenerImpl implements CacheMapAccessEventListe
      */
     public void accessed(CacheMapAccessEvent event) {
         // Retrieve the event type and update the counters
-        CacheMapAccessEventType type = event.getEventType();
+        int type = event.getEventType();
 
         // Handles a hit event
-        if (type == CacheMapAccessEventType.HIT) {
+        if (type == CacheMapAccessEvent.HIT) {
             hitCount++;
         }
         // Handles a stale hit event
-        else if (type == CacheMapAccessEventType.STALE_HIT) {
+        else if (type == CacheMapAccessEvent.STALE_HIT) {
             staleHitCount++;
         }
         // Handles a miss event
-        else if (type == CacheMapAccessEventType.MISS) {
+        else if (type == CacheMapAccessEvent.MISS) {
             missCount++;
         } else {
             // Unknown event!
@@ -108,4 +108,9 @@ public class CacheMapAccessEventListenerImpl implements CacheMapAccessEventListe
     public String toString() {
         return ("Hit count = " + hitCount + ", stale hit count = " + staleHitCount + " and miss count = " + missCount);
     }
+
+	public void onChange(CacheEvent event) {
+		// TODO Auto-generated method stub
+		
+	}
 }

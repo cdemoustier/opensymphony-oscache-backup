@@ -135,31 +135,11 @@ public abstract class AbstractCacheAdministrator implements
 		}
 	}
 
-	public Object get(String regionName, Object key) {
-		return getCache(regionName).get(key);
-	}
-
 	private Cache getCache(String regionName) {
 		
 		return (Cache) regions.get(regionName);
 	}
 
-	public Object get(String regionName, Object key, int refreshPeriod) {
-		return getCache(regionName).get(key, refreshPeriod);
-	}
-
-	public Object get(String regionName, Object key, int refreshPeriod,
-			String cronExpiry) {
-
-		Object value = getCache(regionName).get(key, refreshPeriod, cronExpiry);
-
-		return value;
-	}
-
-	protected void put(String regionName, Object key, Object value) {
-		getCache(regionName).put(key, value);
-
-	}
 
 	/**
 	 * Sets the algorithm to use for the cache.

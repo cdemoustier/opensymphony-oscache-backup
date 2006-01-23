@@ -192,4 +192,9 @@ public class CacheEntryEventListenerImpl implements CacheEntryEventListener {
     public String toString() {
         return ("Added " + entryAddedCount + ", Updated " + entryUpdatedCount + ", Flushed " + entryFlushedCount + ", Removed " + entryRemovedCount + ", Groups Flushed " + groupFlushedCount + ", Patterns Flushed " + patternFlushedCount + ", Cache Flushed " + cacheFlushedCount);
     }
+
+	public void onChange(CacheEvent event) {
+		// TODO Auto-generated method stub
+		
+	}
 }

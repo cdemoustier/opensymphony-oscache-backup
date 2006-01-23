@@ -18,17 +18,17 @@ public class CacheMapAccessEvent extends CacheEntryEvent {
 	  /**
      * Get an event type for a cache hit.
      */
-    public static int HIT = 16;
+    public static int HIT = 0;
 
     /**
      * Get an event type for a cache miss.
      */
-    public static int MISS = 32;
+    public static int MISS = 1;
 
     /**
      * Get an event type for when the data was found in the cache but was stale.
      */
-    public static int STALE_HIT = 64;
+    public static int STALE_HIT = 2;
 
     /**
      * Constructor.
