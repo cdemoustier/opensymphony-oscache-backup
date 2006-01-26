@@ -2,7 +2,12 @@
  * Copyright (c) 2002-2003 by OpenSymphony
  * All rights reserved.
  */
-package com.opensymphony.oscache.base.algorithm;
+package com.opensymphony.oscache.core.algorithm;
+
+import com.opensymphony.oscache.algorithm.LRUEvictionAlgorithm;
+import com.opensymphony.oscache.core.Cache;
+import com.opensymphony.oscache.core.EvictionAlgorithm;
+import com.opensymphony.oscache.core.MemoryCache;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
@@ -21,7 +26,8 @@ public final class TestLRUCache extends TestQueueCache {
     /**
      * LRU Cache object
      */
-    private static LRUCache cache = null;
+    private static Cache cache = null;
+	private EvictionAlgorithm algorithm;
 
     /**
      * Constructor
@@ -46,8 +52,17 @@ public final class TestLRUCache extends TestQueueCache {
      * <p>
      * @return  A cache instance
      */
-    public AbstractConcurrentReadCache getCache() {
+    public Cache getCache() {
         return cache;
+    }
+    
+    /**
+     * Abstract method used by the TestAbstractCache class
+     * <p>
+     * @return  A cache instance
+     */
+    public EvictionAlgorithm getAlgorithm() {
+        return algorithm;
     }
 
     /**
@@ -57,8 +72,9 @@ public final class TestLRUCache extends TestQueueCache {
     public void setUp() {
         // Create a cache instance on first invocation
         if (cache == null) {
-            cache = new LRUCache();
-            assertNotNull(cache);
+        	cache = new MemoryCache();
+        algorithm = new LRUEvictionAlgorithm();
+        	cache.setEvictionAlgorithm(algorithm);
         }
     }
 
@@ -67,14 +83,14 @@ public final class TestLRUCache extends TestQueueCache {
      */
     public void testRemoveItem() {
         // Add 3 elements
-        cache.itemPut(KEY);
-        cache.itemPut(KEY + 1);
-        cache.itemPut(KEY + 2);
+    	algorithm.put(KEY, KEY);
+    	algorithm.put(KEY + 1, KEY);
+    	algorithm.put(KEY + 2, KEY);
 
         // Get the last element
-        cache.itemRetrieved(KEY);
+    	algorithm.get(KEY, KEY);
 
         // The least recently used item is key + 1
-        assertTrue((KEY + 1).equals(cache.removeItem()));
+        assertTrue((KEY + 1).equals(algorithm.evict()));
     }
 }

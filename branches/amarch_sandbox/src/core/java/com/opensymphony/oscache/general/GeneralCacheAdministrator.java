@@ -98,114 +98,15 @@ public class GeneralCacheAdministrator extends AbstractCacheAdministrator {
         createCache();
     }
 
-    /**
-     * Remove an object from the cache
-     *
-     * @param key             The key entered by the user.
-     */
-    public void removeEntry(String key) {
-        getCache().removeEntry(key);
-    }
-
-    /**
-     * Get an object from the cache
-     *
-     * @param key             The key entered by the user.
-     * @return   The object from cache
-     * @throws NeedsRefreshException when no cache entry could be found with the
-     * supplied key, or when an entry was found but is considered out of date. If
-     * the cache entry is a new entry that is currently being constructed this method
-     * will block until the new entry becomes available. Similarly, it will block if
-     * a stale entry is currently being rebuilt by another thread and cache blocking is
-     * enabled (<code>cache.blocking=true</code>).
-     */
-    public Object getFromCache(String key)  {
-        return getCache().get(key);
-    }
-
-    /**
-     * Get an object from the cache
-     *
-     * @param key             The key entered by the user.
-     * @param refreshPeriod   How long the object can stay in cache in seconds. To
-     * allow the entry to stay in the cache indefinitely, supply a value of
-     * {@link CacheEntry#INDEFINITE_EXPIRY}
-     * @return   The object from cache
-     * @throws NeedsRefreshException when no cache entry could be found with the
-     * supplied key, or when an entry was found but is considered out of date. If
-     * the cache entry is a new entry that is currently being constructed this method
-     * will block until the new entry becomes available. Similarly, it will block if
-     * a stale entry is currently being rebuilt by another thread and cache blocking is
-     * enabled (<code>cache.blocking=true</code>).
-     */
-    public Object getFromCache(String key, int refreshPeriod) {
-        return getCache().get(key, refreshPeriod);
-    }
-
-    /**
-     * Get an object from the cache
-     *
-     * @param key             The key entered by the user.
-     * @param refreshPeriod   How long the object can stay in cache in seconds. To
-     * allow the entry to stay in the cache indefinitely, supply a value of
-     * {@link CacheEntry#INDEFINITE_EXPIRY}
-     * @param cronExpression  A cron expression that the age of the cache entry
-     * will be compared to. If the entry is older than the most recent match for the
-     * cron expression, the entry will be considered stale.
-     * @return   The object from cache
-     * @throws NeedsRefreshException when no cache entry could be found with the
-     * supplied key, or when an entry was found but is considered out of date. If
-     * the cache entry is a new entry that is currently being constructed this method
-     * will block until the new entry becomes available. Similarly, it will block if
-     * a stale entry is currently being rebuilt by another thread and cache blocking is
-     * enabled (<code>cache.blocking=true</code>).
-     */
-    public Object getFromCache(String key, int refreshPeriod, String cronExpression) {
-        return getCache().get(key, refreshPeriod, cronExpression);
-    }
-
-    /**
-     * Cancels a pending cache update. This should only be called by a thread
-     * that received a {@link NeedsRefreshException} and was unable to generate
-     * some new cache content.
-     *
-     * @param key The cache entry key to cancel the update of.
-     */
-    public void cancelUpdate(String key) {
-        getCache().cancelUpdate(key);
-    }
 
     /**
      * Shuts down the cache administrator.
      */
     public void destroy() {
-        finalizeListeners(applicationCache);
+//        finalizeListeners(applicationCache);
     }
 
-    // METHODS THAT DELEGATES TO THE CACHE ---------------------
-
-    /**
-     * Flush the entire cache immediately.
-     */
-    public void flushAll() {
-        getCache().flushAll(new Date());
-    }
-
-    /**
-     * Flush the entire cache at the given date.
-     *
-     * @param date The time to flush
-     */
-    public void flushAll(Date date) {
-        getCache().flushAll(date);
-    }
-
-    /**
-     * Flushes a single cache entry.
-     */
-    public void flushEntry(String key) {
-        getCache().flushEntry(key);
-    }
+    
 
     /**
      * Sets the cache capacity (number of items). If the cache contains
@@ -213,9 +114,9 @@ public class GeneralCacheAdministrator extends AbstractCacheAdministrator {
      * to bring the cache back down to the new size.
      *
      * @param capacity The new capacity of the cache
+     * @throws IllegalAccessException 
      */
-    public void setCacheCapacity(int capacity) {
-        super.setCacheCapacity(capacity);
+    public void setCacheCapacity(int capacity)  {
         getCache().setCapacity(capacity);
     }
 
@@ -225,8 +126,11 @@ public class GeneralCacheAdministrator extends AbstractCacheAdministrator {
     private void createCache() {
         log.info("Creating new cache");
 
-        applicationCache = new MemoryCache(cacheCapacity);
+        Cache applicationCache = new MemoryCache(cacheCapacity);
 
         configureStandardListeners(applicationCache);
+        addCache(DEFAULT_REGION, applicationCache);
     }
+
+	
 }

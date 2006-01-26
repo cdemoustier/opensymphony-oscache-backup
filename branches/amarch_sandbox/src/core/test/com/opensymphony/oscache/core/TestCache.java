@@ -1,0 +1,132 @@
+/*
+ * Copyright (c) 2002-2003 by OpenSymphony
+ * All rights reserved.
+ */
+package com.opensymphony.oscache.core;
+
+import com.opensymphony.oscache.core.Cache;
+import com.opensymphony.oscache.core.CacheEntry;
+import com.opensymphony.oscache.general.GeneralCacheAdministrator;
+
+import junit.framework.Test;
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
+
+/**
+ * Test the public methods of the Cache class
+ * 
+ * $Id$
+ * 
+ * @version $Revision$
+ * @author <a href="mailto:abergevin@pyxis-tech.com">Alain Bergevin</a>
+ */
+public class TestCache extends TestCase {
+	// Static variables required thru all the tests
+	private static Cache map = null;
+
+	private final String CONTENT = "Content for the cache test";
+
+	// Constants needed thru all the tests
+	private final String ENTRY_KEY = "Test cache key";
+
+	private final int NO_REFRESH_NEEDED = CacheEntry.INDEFINITE_EXPIRY;
+
+	private final int REFRESH_NEEDED = 0;
+
+	/**
+	 * Class constructor.
+	 * <p>
+	 * 
+	 * @param str
+	 *            The test name (required by JUnit)
+	 */
+	public TestCache(String str) {
+		super(str);
+	}
+
+	/**
+	 * This method is invoked before each testXXXX methods of the class. It set
+	 * ups the variables required for each tests.
+	 */
+	public void setUp() {
+		// At first invocation, create a new Cache
+		if (map == null) {
+			GeneralCacheAdministrator admin = new GeneralCacheAdministrator();
+			map = admin.getCache();
+			assertNotNull(map);
+		}
+	}
+
+	/**
+	 * This methods returns the name of this test class to JUnit
+	 * <p>
+	 * 
+	 * @return The name of this class
+	 */
+	public static Test suite() {
+		return new TestSuite(TestCache.class);
+	}
+
+	/**
+	 * Verify that we can put item in the cache and that they are correctly
+	 * retrieved
+	 */
+	public void testPutGetFromCache() {
+		// We put content in the cache and get it back with and without refresh
+		map.put(ENTRY_KEY, CONTENT);
+		getBackContent(map, CONTENT, NO_REFRESH_NEEDED, false);
+		getBackContent(map, CONTENT, REFRESH_NEEDED, true);
+
+		// Test with invalid values
+
+		assertNull(map.get("", NO_REFRESH_NEEDED));
+
+		assertNull(map.get(null, NO_REFRESH_NEEDED));
+
+	}
+
+	/**
+	 * Verify that we can put item in the cache and that they are correctly
+	 * retrieved
+	 */
+	public void testPutGetFromCacheWithPolicy() {
+		// We put content in the cache and get it back
+		map.put(ENTRY_KEY + "policy", CONTENT,
+				new DummyAlwayRefreshEntryPolicy());
+
+		CacheEntry entry = map.getEntry(ENTRY_KEY + "policy");
+		if (!entry.needsRefresh(0))
+			fail("Should have got a refresh.");
+	}
+
+	protected void tearDown() throws Exception {
+		if (map != null) {
+			map.clear();
+		}
+	}
+
+	/**
+	 * Retrieve the content in the cache
+	 * <p>
+	 * 
+	 * @param map
+	 *            The Cache in which the data is stored
+	 * @param content
+	 *            The content expected to be retrieved
+	 * @param refresh
+	 *            Time interval to determine if the cache object needs refresh
+	 * @param exceptionExpected
+	 *            Specify if a NeedsRefreshException is expected
+	 */
+	private void getBackContent(Cache map, Object content, int refresh,
+			boolean nullExpected) {
+		Object entry = map.get(ENTRY_KEY, refresh);
+
+		if (nullExpected && entry != null) {
+			fail("NeedsRefreshException should have been thrown!");
+		} else if (!nullExpected) {
+			assertEquals(content, entry);
+		}
+
+	}
+}

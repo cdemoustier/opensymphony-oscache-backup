@@ -2,7 +2,7 @@
  * Copyright (c) 2002-2003 by OpenSymphony
  * All rights reserved.
  */
-package com.opensymphony.oscache.base.events;
+package com.opensymphony.oscache.core.events;
 
 import com.opensymphony.oscache.core.Cache;
 import com.opensymphony.oscache.core.CacheEntry;

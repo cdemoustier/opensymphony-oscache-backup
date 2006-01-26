@@ -2,26 +2,25 @@
  * Copyright (c) 2002-2003 by OpenSymphony
  * All rights reserved.
  */
-package com.opensymphony.oscache.base.algorithm;
+package com.opensymphony.oscache.core.events;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 /**
- * Test class for the com.opensymphony.oscache.core.algorithm package.
- * It invokes all the test suites of all the other classes of the package,
- * except abstract ones because they are tested via final ones.
+ * Test class for the com.opensymphony.oscache.core.events package.
+ * It invokes all the test suites of all the other classes of the package.
  *
  * $Id$
  * @version        $Revision$
  * @author <a href="mailto:abergevin@pyxis-tech.com">Alain Bergevin</a>
  */
-public final class TestCompleteAlgorithm extends TestCase {
+public final class TestCompleteEvents extends TestCase {
     /**
-     * Constructor for the oscache project main test program
+     * Constructor for the oscache module main test program
      */
-    public TestCompleteAlgorithm(String str) {
+    public TestCompleteEvents(String str) {
         super(str);
     }
 
@@ -35,7 +34,7 @@ public final class TestCompleteAlgorithm extends TestCase {
         junit.swingui.TestRunner testRunner = new junit.swingui.TestRunner();
         testRunner.setLoading(false);
 
-        String[] args2 = {TestCompleteAlgorithm.class.getName()};
+        String[] args2 = {TestCompleteEvents.class.getName()};
         testRunner.start(args2);
     }
 
@@ -46,10 +45,10 @@ public final class TestCompleteAlgorithm extends TestCase {
      */
     public static Test suite() {
         // Add all the tests suite of all the project classes
-        TestSuite suite = new TestSuite("Test all base algorithm cache modules");
-        suite.addTest(TestFIFOCache.suite());
-        suite.addTest(TestLRUCache.suite());
-        suite.addTest(TestUnlimitedCache.suite());
+        TestSuite suite = new TestSuite("Test all base cache modules");
+        suite.addTest(TestCacheEntryEvent.suite());
+        suite.addTest(TestCacheMapAccessEvent.suite());
+        suite.addTest(TestScopeEvent.suite());
 
         return suite;
     }

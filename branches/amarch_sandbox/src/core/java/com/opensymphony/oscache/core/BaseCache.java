@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
+import com.opensymphony.oscache.algorithm.LRUEvictionAlgorithm;
 import com.opensymphony.oscache.core.EntryRefreshPolicy;
 import com.opensymphony.oscache.core.CacheEntry;
 import com.opensymphony.oscache.events.CacheEntryEvent;
@@ -26,7 +27,7 @@ import com.opensymphony.oscache.util.FastCronParser;
  */
 public abstract class BaseCache implements Cache {
 
-	private EvictionAlgorithm algorithm;
+	private EvictionAlgorithm algorithm = new LRUEvictionAlgorithm();
 
 	private String name;
 
@@ -97,16 +98,10 @@ public abstract class BaseCache implements Cache {
 		Object content = null;
 		if (cacheEntry != null) {
 			content = cacheEntry.getValue();
-			// Check if this entry has expired or has not yet been added to the
-			// cache. If
-			// so, we need to decide whether to block or serve stale content
 			if (this.isStale(cacheEntry, refreshPeriod, cronExpiry)) {
-				remove(key);
 				content = null;
-			} else {
-				algorithm.get(key, cacheEntry);
-
 			}
+			algorithm.get(key, cacheEntry);
 		}
 		return content;
 
@@ -190,9 +185,9 @@ public abstract class BaseCache implements Cache {
 		// fire off a notification message
 		if (oldEntry == null) {
 			fireEvent(newEntry, CacheEvent.ADD);
-		} else {
-			fireEvent(newEntry, CacheEvent.UPDATE);
+			return null;
 		}
+		fireEvent(newEntry, CacheEvent.UPDATE);
 
 		return oldEntry.getValue();
 	}
@@ -206,7 +201,9 @@ public abstract class BaseCache implements Cache {
 	 */
 	public synchronized CacheEntry getEntry(Object key) {
 		CacheEntry cacheEntry = getInternal(key);
-
+		if (cacheEntry != null) {
+			algorithm.get(key, cacheEntry);
+		}
 		return cacheEntry;
 	}
 
@@ -248,7 +245,7 @@ public abstract class BaseCache implements Cache {
 	 * @param group
 	 *            The group to flush
 	 */
-	public void removeGroup(String group) {
+	public void flushGroup(String group) {
 		// Flush all objects in the group
 		Set groupEntries = (Set) groupMap.get(group);
 
@@ -380,8 +377,9 @@ public abstract class BaseCache implements Cache {
 		this.name = name;
 	}
 
-	public void setEvictionPolicy(EvictionAlgorithm policy, Properties props)
+	public void setEvictionAlgorithm(EvictionAlgorithm algorithm)
 			throws IllegalStateException {
+		this.algorithm = algorithm;
 	}
 
 	/**

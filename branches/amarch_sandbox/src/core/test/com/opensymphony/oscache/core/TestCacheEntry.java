@@ -2,7 +2,7 @@
  * Copyright (c) 2002-2003 by OpenSymphony
  * All rights reserved.
  */
-package com.opensymphony.oscache.base;
+package com.opensymphony.oscache.core;
 
 import com.opensymphony.oscache.core.CacheEntry;
 
@@ -49,7 +49,7 @@ public class TestCacheEntry extends TestCase {
             // in one of the tests
             beforeCreation = System.currentTimeMillis();
 
-            entry = new CacheEntry(ENTRY_KEY);
+            entry = new CacheEntry(ENTRY_KEY,CONTENT);
             afterCreation = System.currentTimeMillis();
         }
     }

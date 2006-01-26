@@ -2,7 +2,7 @@
  * Copyright (c) 2002-2003 by OpenSymphony
  * All rights reserved.
  */
-package com.opensymphony.oscache.base.algorithm;
+package com.opensymphony.oscache.core.algorithm;
 
 import com.opensymphony.oscache.core.Config;
 import com.opensymphony.oscache.persistence.PersistenceListener;

@@ -2,7 +2,7 @@
  * Copyright (c) 2002-2003 by OpenSymphony
  * All rights reserved.
  */
-package com.opensymphony.oscache.base.algorithm;
+package com.opensymphony.oscache.core.algorithm;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
