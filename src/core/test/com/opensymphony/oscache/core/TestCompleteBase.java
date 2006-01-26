@@ -2,25 +2,29 @@
  * Copyright (c) 2002-2003 by OpenSymphony
  * All rights reserved.
  */
-package com.opensymphony.oscache.base.events;
+package com.opensymphony.oscache.core;
+
+import com.opensymphony.oscache.core.algorithm.TestCompleteAlgorithm;
+import com.opensymphony.oscache.core.events.TestCompleteEvents;
+import com.opensymphony.oscache.util.TestFastCronParser;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 /**
- * Test class for the com.opensymphony.oscache.core.events package.
+ * Test class for the com.opensymphony.oscache.core package.
  * It invokes all the test suites of all the other classes of the package.
  *
  * $Id$
  * @version        $Revision$
  * @author <a href="mailto:abergevin@pyxis-tech.com">Alain Bergevin</a>
  */
-public final class TestCompleteEvents extends TestCase {
+public final class TestCompleteBase extends TestCase {
     /**
-     * Constructor for the oscache module main test program
+     * Constructor for the osCache project main test program
      */
-    public TestCompleteEvents(String str) {
+    public TestCompleteBase(String str) {
         super(str);
     }
 
@@ -34,7 +38,7 @@ public final class TestCompleteEvents extends TestCase {
         junit.swingui.TestRunner testRunner = new junit.swingui.TestRunner();
         testRunner.setLoading(false);
 
-        String[] args2 = {TestCompleteEvents.class.getName()};
+        String[] args2 = {TestCompleteBase.class.getName()};
         testRunner.start(args2);
     }
 
@@ -46,9 +50,12 @@ public final class TestCompleteEvents extends TestCase {
     public static Test suite() {
         // Add all the tests suite of all the project classes
         TestSuite suite = new TestSuite("Test all base cache modules");
-        suite.addTest(TestCacheEntryEvent.suite());
-        suite.addTest(TestCacheMapAccessEvent.suite());
-        suite.addTest(TestScopeEvent.suite());
+        suite.addTest(TestFastCronParser.suite());
+        suite.addTest(TestCacheEntry.suite());
+        suite.addTest(TestCache.suite());
+        suite.addTest(TestConcurrency.suite());
+        suite.addTest(TestCompleteAlgorithm.suite());
+        suite.addTest(TestCompleteEvents.suite());
 
         return suite;
     }

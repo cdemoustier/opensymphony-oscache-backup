@@ -5,6 +5,7 @@
 package com.opensymphony.oscache.core;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -36,6 +37,8 @@ import com.opensymphony.oscache.util.StringUtil;
  */
 public abstract class AbstractCacheAdministrator implements
 		java.io.Serializable {
+	public static final String DEFAULT_REGION = "DEFAULT_REGION";
+
 	private static transient final Log log = LogFactory
 			.getLog(AbstractCacheAdministrator.class);
 
@@ -110,7 +113,7 @@ public abstract class AbstractCacheAdministrator implements
 	 */
 	protected int cacheCapacity = -1;
 
-	private Map regions;
+	private Map regions = new HashMap();
 
 	/**
 	 * Create the AbstractCacheAdministrator. This will initialize all values
@@ -297,8 +300,13 @@ public abstract class AbstractCacheAdministrator implements
 	 * @return The cache
 	 * @throws IllegalAccessException 
 	 */
-	public Cache getCache() throws IllegalAccessException {
-		if (regions.size() != 1) throw new IllegalAccessException("More than 1 region configured.  Please use getCache(String regionName)");
-		return (Cache) regions.get("DEFAULT_REGION");
+	public Cache getCache() throws RuntimeException {
+		if (regions.size() != 1) throw new RuntimeException("More than 1 region configured.  Please use getCache(String regionName)");
+		return (Cache) regions.get(DEFAULT_REGION);
+	}
+	
+	public void addCache(String region, Cache cache) {
+		regions.put(region, cache);
+		
 	}
 }

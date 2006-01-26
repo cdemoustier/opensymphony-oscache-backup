@@ -111,6 +111,7 @@ public class CacheEntry implements Map.Entry, Serializable {
 	public CacheEntry(Object key, Object value, EntryRefreshPolicy policy) {
 		this(key, value, null, policy);
 	}
+
 	/**
 	 * Construct a CacheEntry.
 	 * 
@@ -120,15 +121,15 @@ public class CacheEntry implements Map.Entry, Serializable {
 	 *            The object that implements the refresh policy logic. This
 	 *            parameter is optional.
 	 */
-	public CacheEntry(Object key, Object value,  String[] groups) {
+	public CacheEntry(Object key, Object value, String[] groups) {
 		this(key, value, groups, null);
 	}
-	
 
 	public CacheEntry(Object key, Object value, String[] groups,
 			EntryRefreshPolicy policy) {
 		this.key = key;
-		this.groups = new HashSet(Arrays.asList(groups));
+		if (groups != null && groups.length > 0)
+			this.groups = new HashSet(Arrays.asList(groups));
 		this.policy = policy;
 		this.created = System.currentTimeMillis();
 		this.state = STATE_VALID;
