@@ -99,7 +99,7 @@ public abstract class AbstractCacheAdministrator implements
 	 * Holds a list of all the registered listeners. listeners are specified
 	 * using the {@link #CACHE_LISTENERS_KEY} configuration key.
 	 */
-	private List listeners;
+	protected List listeners;
 
 	/**
 	 * The algorithm class being used, as specified by the
@@ -113,7 +113,7 @@ public abstract class AbstractCacheAdministrator implements
 	 */
 	protected int cacheCapacity = -1;
 
-	private Map regions = new HashMap();
+	protected Map regions = new HashMap();
 
 	/**
 	 * Create the AbstractCacheAdministrator. This will initialize all values
@@ -138,8 +138,7 @@ public abstract class AbstractCacheAdministrator implements
 		}
 	}
 
-	private Cache getCache(String regionName) {
-		
+	public Cache getCache(String regionName) {		
 		return (Cache) regions.get(regionName);
 	}
 
@@ -148,7 +147,7 @@ public abstract class AbstractCacheAdministrator implements
 	 * Sets the algorithm to use for the cache.
 	 * 
 	 * @see com.opensymphony.oscache.core.algorithm.LRUCache
-	 * @see com.opensymphony.oscache.core.algorithm.FIFOCache
+	 * @see com.opensymphony.oscache.core.algorithm.FIFOEvictionAlgorithm
 	 * @see com.opensymphony.oscache.core.algorithm.UnlimitedCache
 	 * @param newAlgorithmClass
 	 *            The class to use (eg.

@@ -42,6 +42,8 @@ public abstract class BaseCache implements Cache {
 
 	private Map groupMap;
 
+	private int capacity;
+
 	/**
 	 * Clears the entire cache. This will result in a
 	 * {@link CacheEvent#CLEAR_EVENT} being fired even if the cache already
@@ -101,7 +103,6 @@ public abstract class BaseCache implements Cache {
 			if (this.isStale(cacheEntry, refreshPeriod, cronExpiry)) {
 				content = null;
 			}
-			algorithm.get(key, cacheEntry);
 		}
 		return content;
 
@@ -110,7 +111,7 @@ public abstract class BaseCache implements Cache {
 	public synchronized Object remove(Object key) {
 		CacheEntry result = removeInternal(key);
 		if (result != null) {
-			algorithm.remove(key, result);
+			algorithm.evaluateRemove(key);
 			fireEvent(result, CacheEvent.REMOVE);
 		}
 		return result;
@@ -171,11 +172,10 @@ public abstract class BaseCache implements Cache {
 			EntryRefreshPolicy policy) {
 		CacheEntry newEntry = new CacheEntry(key, value, groups, policy);
 		CacheEntry oldEntry = putInternal(newEntry);
-		algorithm.put(key, newEntry);
+		Object evictionKey = algorithm.evaluatePut(key);
 
 		// Remove an entry from the cache if the eviction algorithm says we need
 		// to
-		Object evictionKey = algorithm.evict();
 		if (evictionKey != null) {
 			remove(evictionKey);
 		}
@@ -202,7 +202,7 @@ public abstract class BaseCache implements Cache {
 	public synchronized CacheEntry getEntry(Object key) {
 		CacheEntry cacheEntry = getInternal(key);
 		if (cacheEntry != null) {
-			algorithm.get(key, cacheEntry);
+			algorithm.evaluateGet(key);
 		}
 		return cacheEntry;
 	}
@@ -454,6 +454,10 @@ public abstract class BaseCache implements Cache {
 
 			group.add(entry.getKey());
 		}
+	}
+
+	public int getCapacity() {
+		return capacity;
 	}
 
 }

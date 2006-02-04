@@ -140,4 +140,6 @@ public interface Cache extends Map {
 	
 	public void setEvictionAlgorithm(EvictionAlgorithm algorithm);
 
+	public abstract int getCapacity();
+
 }

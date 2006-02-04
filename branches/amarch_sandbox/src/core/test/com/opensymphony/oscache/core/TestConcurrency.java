@@ -30,7 +30,7 @@ public class TestConcurrency extends TestCase {
 			.getLog(GeneralCacheAdministrator.class); // TestConcurrency.class
 
 	// Static variables required thru all the tests
-	private static GeneralCacheAdministrator admin = null;
+	private static Cache admin = null;
 
 	// Constants needed in the tests
 	private final String KEY = "key";
@@ -64,9 +64,7 @@ public class TestConcurrency extends TestCase {
 			Properties config = new Properties();
 			config.setProperty(AbstractCacheAdministrator.CACHE_CAPACITY_KEY,
 					"70");
-			config.setProperty(AbstractCacheAdministrator.CACHE_BLOCKING_KEY,
-					"false");
-			admin = new GeneralCacheAdministrator();
+			admin = new MemoryCache();
 			assertNotNull(admin);
 		}
 	}
@@ -520,7 +518,7 @@ public void run() {
 
 			try {
 				// Get from the cache
-				admin.getFromCache(KEY, refreshPeriod);
+				admin.get(KEY, refreshPeriod);
 			
 				admin.put(KEY, VALUE);
 			} catch (Exception e) {
@@ -530,7 +528,7 @@ public void run() {
 
 			// Flush occasionally
 			if ((i % (UNIQUE_KEYS + 1)) == 0) {
-				admin.getCache().flushEntry(key);
+				admin.remove(key);
 			}
 		}
 
