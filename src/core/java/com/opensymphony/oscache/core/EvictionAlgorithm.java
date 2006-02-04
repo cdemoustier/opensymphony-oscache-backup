@@ -18,10 +18,10 @@ public interface EvictionAlgorithm  {
    * of this method may want to use this information to update its
    * eviction data.
    *
-   * @param key   the key of the object that was put in the cache.
-   * @param value the value of the object that was put in the cache.
+   * @param entry   the entry of the object that was put in the cache.
+   * @return entry evicted due to the put action
    */
-  void put(Object key, Object value);
+  Object evaluatePut(Object key);
 
   /**
    * Called whenever an object was retrieved from the cache. The
@@ -31,7 +31,7 @@ public interface EvictionAlgorithm  {
    * @param key   the key of the object that was retrieved from the cache.
    * @param value the value of the object that was retrieved from the cache.
    */
-  void get(Object key, Object value);
+  void evaluateGet(Object key);
 
   /**
    * Called whenever an object is removed from the cache. The
@@ -41,7 +41,7 @@ public interface EvictionAlgorithm  {
    * @param key   the key of the object that was removed from the cache.
    * @param value the value of the object that was removed from the cache.
    */
-  void remove(Object key, Object value);
+  void evaluateRemove(Object key);
 
   /**
    * Causes the eviction policy to evict a cache entry if required.

@@ -4,6 +4,10 @@
  */
 package com.opensymphony.oscache.core.algorithm;
 
+import com.opensymphony.oscache.core.BaseCache;
+import com.opensymphony.oscache.core.Cache;
+import com.opensymphony.oscache.core.EvictionAlgorithm;
+
 import junit.framework.TestCase;
 
 /**
@@ -48,24 +52,16 @@ public abstract class TestAbstractCache extends TestCase {
      * Test the capacity setting
      */
     public void testGetSetMaxEntries() {
-        getCache().set(MAX_ENTRIES);
-        assertEquals(MAX_ENTRIES, getCache().getMaxEntries());
+    	getAlgorithm().setCapacity(MAX_ENTRIES);
+        assertEquals(MAX_ENTRIES, getAlgorithm().getCapacity());
 
         // Specify an invalid capacity
         try {
-            getCache().setMaxEntries(INVALID_MAX_ENTRIES);
+        	getAlgorithm().setCapacity(INVALID_MAX_ENTRIES);
             fail("Cache capacity set with an invalid argument");
         } catch (Exception e) {
             // This is what we expect
         }
-    }
-
-    /**
-     * Test the setting of the memory cache
-     */
-    public void testGetSetMemoryCache() {
-        getCache().setMemoryCaching(true);
-        assertTrue(getCache().isMemoryCaching());
     }
 
     /**
@@ -88,14 +84,7 @@ public abstract class TestAbstractCache extends TestCase {
      */
     public abstract void testRemoveItem();
 
-    /**
-     * Test the PersistenceListener setter. Since the persistance listener is
-     * an interface, just call the setter with null
-     */
-    public void testSetPersistenceListener() {
-        getCache().setPersistenceListener(null);
-    }
 
     // Abstract method that returns an instance of an admin
-    protected abstract AbstractConcurrentReadCache getCache();
+    protected abstract EvictionAlgorithm getAlgorithm();
 }

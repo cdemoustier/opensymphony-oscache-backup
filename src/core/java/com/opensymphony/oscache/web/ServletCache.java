@@ -45,7 +45,7 @@ public final class ServletCache extends MemoryCache implements HttpSessionBindin
  * @param scope The scope of all entries in this hashmap
  */
     public ServletCache(ServletCacheAdministrator admin, int scope) {
-        super(admin.isMemoryCaching(), admin.isUnlimitedDiskCache(), admin.isOverflowPersistence());
+        super();
         setScope(scope);
         this.admin = admin;
     }
@@ -59,7 +59,7 @@ public final class ServletCache extends MemoryCache implements HttpSessionBindin
  * @param scope The cache scope
  */
     public ServletCache(ServletCacheAdministrator admin, String algorithmClass, int limit, int scope) {
-        super(admin.isMemoryCaching(), admin.isUnlimitedDiskCache(), admin.isOverflowPersistence(), admin.isBlocking(), limit);
+        super(limit);
         setScope(scope);
         this.admin = admin;
     }

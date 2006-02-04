@@ -4,23 +4,30 @@
  */
 package com.opensymphony.oscache.web;
 
-import com.opensymphony.oscache.core.*;
-import com.opensymphony.oscache.events.CacheListener;
-import com.opensymphony.oscache.events.ScopeEvent;
-import com.opensymphony.oscache.events.ScopeEventListener;
-import com.opensymphony.oscache.events.ScopeEventType;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import java.io.Serializable;
-
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Set;
+import java.util.TreeMap;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.PageContext;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+import com.opensymphony.oscache.core.AbstractCacheAdministrator;
+import com.opensymphony.oscache.core.Cache;
+import com.opensymphony.oscache.core.CacheEntry;
+import com.opensymphony.oscache.core.EntryRefreshPolicy;
+import com.opensymphony.oscache.events.CacheListener;
+import com.opensymphony.oscache.events.ScopeEvent;
+import com.opensymphony.oscache.events.ScopeEventListener;
 
 /**
  * A ServletCacheAdministrator creates, flushes and administers the cache.
@@ -288,7 +295,7 @@ public class ServletCacheAdministrator extends AbstractCacheAdministrator implem
     */
     public String getCacheKey() {
         if (cacheKey == null) {
-            cacheKey = getProperty(CACHE_KEY_KEY);
+            cacheKey = config.getProperty(CACHE_KEY_KEY);
 
             if (cacheKey == null) {
                 cacheKey = DEFAULT_CACHE_KEY;
@@ -312,7 +319,7 @@ public class ServletCacheAdministrator extends AbstractCacheAdministrator implem
         synchronized (flushTimes) {
             if (date != null) {
                 // Trigger a SCOPE_FLUSHED event
-                dispatchScopeEvent(ScopeEventType.SCOPE_FLUSHED, scope, date, null);
+                dispatchScopeEvent(ScopeEvent.SCOPE_FLUSHED, scope, date, null);
                 flushTimes.put(new Integer(scope), date);
             } else {
                 logError("setFlushTime called with a null date.");
@@ -385,23 +392,9 @@ public class ServletCacheAdministrator extends AbstractCacheAdministrator implem
     * @param listener  The object that listens to events.
     */
     public void addScopeEventListener(ScopeEventListener listener) {
-        listenerList.add(ScopeEventListener.class, listener);
+        listeners.add(listener);
     }
 
-    /**
-    * Cancels a pending cache update. This should only be called by a thread
-    * that received a {@link NeedsRefreshException} and was unable to generate
-    * some new cache content.
-    *
-    * @param scope The cache scope
-    * @param request The servlet request
-    * @param key The cache entry key to cancel the update of.
-    */
-    public void cancelUpdate(int scope, HttpServletRequest request, String key) {
-        Cache cache = getCache(request, scope);
-        key = this.generateEntryKey(key, request, scope);
-        cache.cancelUpdate(key);
-    }
 
     /**
     * Flush all scopes at a particular time
@@ -417,7 +410,7 @@ public class ServletCacheAdministrator extends AbstractCacheAdministrator implem
         }
 
         // Trigger a flushAll event
-        dispatchScopeEvent(ScopeEventType.ALL_SCOPES_FLUSHED, -1, date, null);
+        dispatchScopeEvent(ScopeEvent.ALL_SCOPES_FLUSHED, -1, date, null);
     }
 
     /**
@@ -635,7 +628,6 @@ public class ServletCacheAdministrator extends AbstractCacheAdministrator implem
     * @param capacity The new capacity
     */
     public void setCacheCapacity(int scope, HttpServletRequest request, int capacity) {
-        setCacheCapacity(capacity);
         getCache(request, scope).setCapacity(capacity);
     }
 
@@ -645,7 +637,7 @@ public class ServletCacheAdministrator extends AbstractCacheAdministrator implem
     * @param listener  The object that currently listens to events.
     */
     public void removeScopeEventListener(ScopeEventListener listener) {
-        listenerList.remove(ScopeEventListener.class, listener);
+        listeners.remove(listener);
     }
 
     /**
@@ -700,13 +692,13 @@ public class ServletCacheAdministrator extends AbstractCacheAdministrator implem
 
         newCache = (ServletCache) configureStandardListeners(newCache);
 
-        if (config.getProperty(CACHE_ENTRY_EVENT_LISTENERS_KEY) != null) {
+        if (config.getProperty(CACHE_LISTENERS_KEY) != null) {
             // Add any event listeners that have been specified in the configuration
-            CacheListener[] listeners = initCacheListeners();
+            initCacheListeners();
 
-            for (int i = 0; i < listeners.length; i++) {
-                if (listeners[i] instanceof ScopeEventListener) {
-                    newCache.addCacheEventListener(listeners[i], ScopeEventListener.class);
+            for (int i = 0; i < listeners.size(); i++) {
+            	if (listeners.get(i) instanceof ScopeEventListener) {
+                    newCache.addCacheListener((CacheListener)listeners.get(i));
                 }
             }
         }
@@ -722,18 +714,16 @@ public class ServletCacheAdministrator extends AbstractCacheAdministrator implem
     * @param date        Date of flushing
     * @param origin      The origin of the event
     */
-    private void dispatchScopeEvent(ScopeEventType eventType, int scope, Date date, String origin) {
+    private void dispatchScopeEvent(int eventType, int scope, Date date, String origin) {
         // Create the event
-        ScopeEvent event = new ScopeEvent(eventType, scope, date, origin);
+        ScopeEvent event = new ScopeEvent(null, eventType, scope, date);
 
-        // Guaranteed to return a non-null array
-        Object[] listeners = listenerList.getListenerList();
 
         // Process the listeners last to first, notifying
         // those that are interested in this event
-        for (int i = listeners.length - 2; i >= 0; i -= 2) {
-            if (listeners[i] == ScopeEventListener.class) {
-                ((ScopeEventListener) listeners[i + 1]).scopeFlushed(event);
+        for (int i = listeners.size() - 2; i >= 0; i -= 2) {
+            if (listeners.get(i) == ScopeEventListener.class) {
+                ((ScopeEventListener) listeners.get(i + 1)).scopeFlushed(event);
             }
         }
     }
@@ -743,7 +733,7 @@ public class ServletCacheAdministrator extends AbstractCacheAdministrator implem
     *  generation for hosting multiple sites
     */
     private void initHostDomainInKey() {
-        String propStr = getProperty(CACHE_USE_HOST_DOMAIN_KEY);
+        String propStr = config.getProperty(CACHE_USE_HOST_DOMAIN_KEY);
 
         useHostDomainInKey = "true".equalsIgnoreCase(propStr);
     }

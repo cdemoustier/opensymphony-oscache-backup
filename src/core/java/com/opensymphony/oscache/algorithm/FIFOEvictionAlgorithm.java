@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2002-2003 by OpenSymphony
+ * All rights reserved.
+ */
 package com.opensymphony.oscache.algorithm;
 
 import java.util.Iterator;
@@ -8,11 +12,10 @@ import java.util.Set;
 import com.opensymphony.oscache.core.EvictionAlgorithm;
 
 /**
- * An {@link EvictionAlgorithm} that evicts cache entries based on a least
- * recently used (LRU) algorithm.
+ * FIFO (First In First Out) based queue algorithm for the cache.
+ * 
  */
-public class LRUEvictionAlgorithm implements EvictionAlgorithm {
-
+public class FIFOEvictionAlgorithm implements EvictionAlgorithm {
 	/**
 	 * A configuration parameter that specifies the maximum size of the cache
 	 * before elements start getting evicted.
@@ -40,7 +43,7 @@ public class LRUEvictionAlgorithm implements EvictionAlgorithm {
 			try {
 				maxSize = Integer.parseInt(sizeStr);
 			} catch (NumberFormatException e) {
-				// log.warn("The '" + SIZE_PARAM + "' parameter for the LRU
+				// log.warn("The '" + SIZE_PARAM + "' parameter for the FIFO
 				// eviciton policy is not a valid integer. Defaulting to " +
 				// DEFAULT_SIZE);
 			}
@@ -48,43 +51,35 @@ public class LRUEvictionAlgorithm implements EvictionAlgorithm {
 	}
 
 	/**
-	 * Called when an object is put in the cache. This causes the LRU algorithm
-	 * to update its internal data structure.
+	 * An object was retrieved from the cache. This implementation does noting
+	 * since this event has no impact on the FIFO algorithm.
+	 * 
+	 * @param key
+	 *            The cache key of the item that was retrieved.
+	 */
+	public void evaluateGet(Object key) {
+	}
+
+	/**
+	 * An object was put in the cache. This implementation just adds the key to
+	 * the end of the list if it doesn't exist in the list already.
+	 * 
+	 * @param key
+	 *            The cache key of the item that was put.
 	 */
 	public Object evaluatePut(Object key) {
-		// Move the key to the back of the set
-		elements.remove(key);
-		elements.add(key);
+		if (!elements.contains(key)) {
+			elements.add(key);
+		}
 		return evict();
 	}
 
 	/**
-	 * Called when an object is retrieved from the cache. This causes the LRU
-	 * algorithm to update its internal data structure.
-	 */
-	public void evaluateGet(Object key) {
-		// Move the key to the back of the set
-		elements.remove(key);
-		elements.add(key);
-	}
-
-	/**
-	 * Called when an object is removed from the cache. This causes the LRU
-	 * algorithm to update its internal data structure.
+	 * An item needs to be removed from the cache. The FIFO implementation
+	 * removes the first element in the list (ie, the item that has been in the
+	 * cache for the longest time).
 	 * 
-	 * @param key
-	 * @param value
-	 */
-	public void evaluateRemove(Object key) {
-		elements.remove(key);
-	}
-
-	/**
-	 * Evict a cache entry if the cache has grown too large. The entry to be
-	 * evicted will be the one that was used least-recently.
-	 * 
-	 * @return the object that was evicted, or <code>null</code> if the cache
-	 *         has not yet reached the specified maximum size.
+	 * @return The key of whichever item was removed.
 	 */
 	public Object evict() {
 		Object toEvict = null;
@@ -96,5 +91,15 @@ public class LRUEvictionAlgorithm implements EvictionAlgorithm {
 			it.remove();
 		}
 		return toEvict;
+	}
+
+	/**
+	 * Remove specified key since that object has been removed from the cache.
+	 * 
+	 * @param key
+	 *            The cache key of the item that was removed.
+	 */
+	public void evaluateRemove(Object key) {
+		elements.remove(key);
 	}
 }

@@ -4,9 +4,9 @@
  */
 package com.opensymphony.oscache.extra;
 
+import com.opensymphony.oscache.events.CacheEvent;
 import com.opensymphony.oscache.events.ScopeEvent;
 import com.opensymphony.oscache.events.ScopeEventListener;
-import com.opensymphony.oscache.events.ScopeEventType;
 
 /**
  * Implementation of a ScopeEventListener that keeps track of the scope flush events.
@@ -113,14 +113,14 @@ public class ScopeEventListenerImpl implements ScopeEventListener {
      */
     public void scopeFlushed(ScopeEvent event) {
         // Get the event type and process it
-        ScopeEventType eventType = event.getEventType();
+        int eventType = event.getEventType();
 
-        if (eventType == ScopeEventType.ALL_SCOPES_FLUSHED) {
+        if (eventType == ScopeEvent.ALL_SCOPES_FLUSHED) {
             // All 4 scopes were flushed, increment the counters
             for (int count = 1; count <= NB_SCOPES; count++) {
                 scopeFlushCount[count]++;
             }
-        } else if (eventType == ScopeEventType.SCOPE_FLUSHED) {
+        } else if (eventType == ScopeEvent.SCOPE_FLUSHED) {
             // Get back the scope from the event and increment the flush count
             scopeFlushCount[event.getScope()]++;
         } else {
@@ -144,4 +144,9 @@ public class ScopeEventListenerImpl implements ScopeEventListener {
 
         return returnString.toString();
     }
+
+	public void onChange(CacheEvent event) {
+		// TODO Auto-generated method stub
+		
+	}
 }
