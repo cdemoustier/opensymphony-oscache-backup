@@ -5,6 +5,7 @@
 package com.opensymphony.oscache.web.filter;
 
 import com.opensymphony.oscache.base.Cache;
+import com.opensymphony.oscache.base.EntryRefreshPolicy;
 import com.opensymphony.oscache.base.NeedsRefreshException;
 import com.opensymphony.oscache.web.ServletCacheAdministrator;
 
@@ -61,7 +62,7 @@ public class CacheFilter implements Filter, ICacheKeyProvider, ICacheGroupsProvi
     private final static String REQUEST_FILTERED = "__oscache_filtered";
 
     // the policy for the expires header
-    private ExpiresRefreshPolicy expiresRefreshPolicy;
+    private EntryRefreshPolicy expiresRefreshPolicy;
     
     // the logger
     private final Log log = LogFactory.getLog(this.getClass());
@@ -216,6 +217,11 @@ public class CacheFilter implements Filter, ICacheKeyProvider, ICacheGroupsProvi
      * A developer can implement a method which provides cache groups based on the request, 
      * the servlect cache administrator and cache.</li>
      *
+     * <li><b>EntryRefreshPolicy</b> - Class implementing the interface <code>EntryRefreshPolicy</code>.
+     * A developer can implement a class which provides a different custom cache invalidation policy for a specific cache entry.
+     * If not specified, the default policy is timed entry expiry as specified with the <b>time</b> parameter described above. 
+     * </li>
+     *
      * @param filterConfig The filter configuration
      */
     public void init(FilterConfig filterConfig) {
@@ -312,52 +318,49 @@ public class CacheFilter implements Filter, ICacheKeyProvider, ICacheGroupsProvi
         }
 
         // filter parameter ICacheKeyProvider
-        try {
-            String className = config.getInitParameter("ICacheKeyProvider");
-            
-            try {
-                Class clazz = Class.forName(className);
-
-                if (!ICacheKeyProvider.class.isAssignableFrom(clazz)) {
-                    log.error("Specified class '" + className + "' does not implement ICacheKeyProvider. Ignoring this provider.");
-                } else {
-                    cacheKeyProvider = (ICacheKeyProvider) clazz.newInstance();
-                }
-            } catch (ClassNotFoundException e) {
-                log.error("Class '" + className + "' not found. Ignoring this cache key provider.", e);
-            } catch (InstantiationException e) {
-                log.error("Class '" + className + "' could not be instantiated because it is not a concrete class. Ignoring this cache key provider.", e);
-            } catch (IllegalAccessException e) {
-                log.error("Class '" + className + "' could not be instantiated because it is not public. Ignoring this cache key provider.", e);
-            }
-        } catch (Exception e) {
-            log.info("Could not get init parameter 'ICacheKeyProvider', defaulting to " + this.getClass().getName() + ".");
+        ICacheKeyProvider cacheKeyProvider = (ICacheKeyProvider)instantiateFromInitParam("ICacheKeyProvider", ICacheKeyProvider.class, this.getClass().getName());
+        if (cacheKeyProvider != null) {
+            this.cacheKeyProvider = cacheKeyProvider;
         }
 
         // filter parameter ICacheGroupsProvider
-        try {
-            String className = config.getInitParameter("ICacheGroupsProvider");
-            
-            try {
-                Class clazz = Class.forName(className);
-
-                if (!ICacheGroupsProvider.class.isAssignableFrom(clazz)) {
-                    log.error("Specified class '" + className + "' does not implement ICacheGroupsProvider. Ignoring this provider.");
-                } else {
-                    cacheGroupsProvider = (ICacheGroupsProvider) clazz.newInstance();
-                }
-            } catch (ClassNotFoundException e) {
-                log.error("Class '" + className + "' not found. Ignoring this cache key provider.", e);
-            } catch (InstantiationException e) {
-                log.error("Class '" + className + "' could not be instantiated because it is not a concrete class. Ignoring this cache groups provider.", e);
-            } catch (IllegalAccessException e) {
-                log.error("Class '" + className + "' could not be instantiated because it is not public. Ignoring this cache groups provider.", e);
-            }
-        } catch (Exception e) {
-            log.info("Could not get init parameter 'ICacheGroupsProvider', defaulting to " + this.getClass().getName() + ".");
+        ICacheGroupsProvider cacheGroupsProvider = (ICacheGroupsProvider)instantiateFromInitParam("ICacheGroupsProvider", ICacheGroupsProvider.class, this.getClass().getName());
+        if (cacheGroupsProvider != null) {
+            this.cacheGroupsProvider = cacheGroupsProvider;
+        }
+        
+        // filter parameter EntryRefreshPolicy
+        EntryRefreshPolicy expiresRefreshPolicy = (EntryRefreshPolicy)instantiateFromInitParam("EntryRefreshPolicy", EntryRefreshPolicy.class, this.expiresRefreshPolicy.getClass().getName());
+        if (expiresRefreshPolicy != null) {
+            this.expiresRefreshPolicy = expiresRefreshPolicy;
         }
     }
 
+    private Object instantiateFromInitParam(String classInitParam, Class interfaceClass, String defaultClassName) {
+		String className = config.getInitParameter(classInitParam);
+		if (className == null) {
+			log.info("Could not get init parameter '" + classInitParam + "', defaulting to " + defaultClassName + ".");
+			return null;
+		} else {
+			try {
+				Class clazz = Class.forName(className);
+				if (!interfaceClass.isAssignableFrom(clazz)) {
+					log.error("Specified class '" + className + "' does not implement" + interfaceClass.getName() + ". Using default " + defaultClassName + ".");
+					return null;
+				} else {
+					return clazz.newInstance();
+				}
+			} catch (ClassNotFoundException e) {
+				log.error("Class '" + className + "' not found. Defaulting to " + defaultClassName + ".", e);
+			} catch (InstantiationException e) {
+				log.error("Class '" + className + "' could not be instantiated because it is not a concrete class. Using default class " + defaultClassName + ".", e);
+			} catch (IllegalAccessException e) {
+				log.error("Class '"+ className+ "' could not be instantiated because it is not public. Using default class " + defaultClassName + ".", e);
+			}
+			return null;
+		}
+	}
+    
     /**
      * @see com.opensymphony.oscache.web.filter.ICacheKeyProvider#createCacheKey(javax.servlet.http.HttpServletRequest, ServletCacheAdministrator, Cache)
      */
