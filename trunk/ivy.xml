@@ -21,6 +21,7 @@
         <conf name="build" visibility="private"/>
         <conf name="default" description="Default configuration"/>
         <conf name="jgroups" description="JGroups integration"/>
+        <!-- <conf name="hibernate" description="Cache for Hibernate"/> -->
     </configurations>
 
     <publications>
@@ -41,5 +42,11 @@
 
         <!-- jgroups -->
         <dependency org="jgroups" name="jgroups-all" rev="2.2.8" conf="jgroups->*"/>
+        
+        <!-- hibernate dependencies -->
+        <!-- 
+        <dependency org="hibernate" name="hibernate" rev="2.1.8" conf="hibernate->*" transitive="false"/>
+        <dependency org="hibernate" name="hibernate" rev="3.0.5" conf="hibernate->*" transitive="false"/>
+        -->
     </dependencies>
 </ivy-module>
