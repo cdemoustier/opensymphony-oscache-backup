@@ -14,17 +14,17 @@
 				    <p>This guide only covers the configuration of OSCache by using the oscache.properties file. To see how to install OSCache and where to place the oscache.properties file, see the <a href="Installation Guide.html" title="Installation Guide">Installation Guide</a>.<br/>
 The following properties are able to be set in the oscache.properties file:</p>
 
-<h4><a name="Configuration-cache.memory">cache.memory</a></h4>
+<h4><a name="Configuration-cache.memory"></a>cache.memory</h4>
 
 <p>Valid values are true or false, with true being the default value. If you want to disable memory caching, just comment out or remove this line.</p>
 
 <p>Note: disabling memory AND disk caching is possible but fairly stupid <img class="emoticon" src="./icons/emoticons/wink.gif" height="20" width="20" align="absmiddle" alt="" border="0"/></p>
 
-<h4><a name="Configuration-cache.capacity">cache.capacity</a></h4>
+<h4><a name="Configuration-cache.capacity"></a>cache.capacity</h4>
 
 <p>The maximum number of items that a cache will hold. By default the capacity is unlimited - the cache will never remove any items. Negative values will also be treated as meaning unlimited capacity.</p>
 
-<h4><a name="Configuration-cache.algorithm">cache.algorithm</a></h4>
+<h4><a name="Configuration-cache.algorithm"></a>cache.algorithm</h4>
 
 <p>The default cache algorithm to use. Note that in order to use an algorithm the cache size must also be specified. If the cache size is not specified, the cache algorithm will be Unlimited cache regardless of the value of this property. If you specify a size but not an algorithm, the cache algorithm used will be com.opensymphony.oscache.base.algorithm.LRUCache.</p>
 
@@ -37,27 +37,27 @@ The following properties are able to be set in the oscache.properties file:</p>
 </ul>
 
 
-<h4><a name="Configuration-cache.blocking">cache.blocking</a></h4>
+<h4><a name="Configuration-cache.blocking"></a>cache.blocking</h4>
 
 <p>When a request is made for a stale cache entry, it is possible that another thread is already in the process of rebuilding that entry. This setting specifies how OSCache handles the subsequent 'non-building' threads. The default behaviour (cache.blocking=false) is to serve the old content to subsequent threads until the cache entry has been updated. This provides the best performance (at the cost of serving slightly stale data). When blocking is enabled, threads will instead block until the new cache entry is ready to be served. Once the new entry is put in the cache the blocked threads will be restarted and given the new entry.</p>
 
 <p>Note that even if blocking is disabled, when there is no stale data available to be served threads will block until the data is added to the cache by the thread that is responsible for building the data.</p>
 
-<h4><a name="Configuration-cache.unlimited.disk">cache.unlimited.disk</a></h4>
+<h4><a name="Configuration-cache.unlimited.disk"></a>cache.unlimited.disk</h4>
 
 <p>Indicates whether the disk cache should be treated as unlimited or not. The default value is false. In this case, the disk cache capacity will be equal to the memory cache capacity set by cache.capacity.</p>
 
-<h4><a name="Configuration-cache.persistence.class">cache.persistence.class</a></h4>
+<h4><a name="Configuration-cache.persistence.class"></a>cache.persistence.class</h4>
 
 <p>Specifies the class to use for persisting cache entries. This class must implement the PersistenceListener interface. OSCache comes with an implementation that provides filesystem based persistence. Set this property to com.opensymphony.oscache.plugins.diskpersistence.HashDiskPersistenceListener to enable this implementation. By specifying your own class here you should be able to persist cache data using say JDBC or LDAP. NOTE: This class hashes the toString() of the object being cached to produce the file name of the entry. If you prefer readable file names, the parent DiskPersistenceListener can still be used but it will have issues with illegal filesystem characters or long names.</p>
-<div class="information-block" align='center'><div class='informationMacroPadding'><table cellpadding='5' width='85%' cellspacing='0' class='noteMacro' border='0'><tr><td width='16' valign='top'><img src="/images/icons/emoticons/warning.gif" width="16" height="16" align="absmiddle" alt="" border="0"></td><td><b class="strong">Note</b><br />
-<p>The HashDiskPersistenceListener and DiskPersistenceListener classes require <b>cache.path</b> to be set in order to know where to persist the files to disk.</p></td></tr></table></div></div>
+<table cellpadding='5' width='85%' cellspacing='8px' class='noteMacro' border="0" align='center'><colgroup><col width='24'><col></colgroup><tr><td valign='top'><img src="/images/icons/emoticons/warning.gif" width="16" height="16" align="absmiddle" alt="" border="0"></td><td><b class="strong">Note</b><br />
+<p>The HashDiskPersistenceListener and DiskPersistenceListener classes require <b>cache.path</b> to be set in order to know where to persist the files to disk.</p></td></tr></table>
 
-<h4><a name="Configuration-cache.path">cache.path</a></h4>
+<h4><a name="Configuration-cache.path"></a>cache.path</h4>
 
 <p>This specifies the directory on disk where caches will be stored. The directory will be created if it doesn't already exist, but remember that OSCache must have permission to write to this location.</p>
-<div class="information-block" align='center'><div class='informationMacroPadding'><table cellpadding='5' width='85%' cellspacing='0' class='noteMacro' border='0'><tr><td width='16' valign='top'><img src="/images/icons/emoticons/warning.gif" width="16" height="16" align="absmiddle" alt="" border="0"></td><td><b class="strong">Note</b><br />
-<p>    For Windows machines, the backslash character '\' needs to be escaped. ie in Windows:</p></td></tr></table></div></div>
+<table cellpadding='5' width='85%' cellspacing='8px' class='noteMacro' border="0" align='center'><colgroup><col width='24'><col></colgroup><tr><td valign='top'><img src="/images/icons/emoticons/warning.gif" width="16" height="16" align="absmiddle" alt="" border="0"></td><td><b class="strong">Note</b><br />
+<p>    For Windows machines, the backslash character '\' needs to be escaped. ie in Windows:</p></td></tr></table>
 <div class="preformatted"><div class="preformattedContent">
 <pre>    cache.path=c:\\myapp\\cache
     or *ix:
@@ -65,11 +65,11 @@ The following properties are able to be set in the oscache.properties file:</p>
 </pre>
 </div></div>
 
-<h4><a name="Configuration-cache.persistence.overflow.only%28NEW%21Since2.1%29">cache.persistence.overflow.only  (NEW! Since 2.1)</a></h4>
+<h4><a name="Configuration-cache.persistence.overflow.only%28NEW%21Since2.1%29"></a>cache.persistence.overflow.only  (NEW! Since 2.1)</h4>
 
 <p>Indicates whether the persistence should only happen once the memory cache capacity has been reached. The default value is false for backwards compatibility but the recommended value is true when the memory cache is enabled. This property drastically changes the behavior of the cache in that the persisted cache will now be different then what is in memory.</p>
 
-<h4><a name="Configuration-cache.event.listeners">cache.event.listeners</a></h4>
+<h4><a name="Configuration-cache.event.listeners"></a>cache.event.listeners</h4>
 
 <p>This takes a comma-delimited list of fully-qualified class names. Each class in the list must implement one (or more) of the following interfaces:</p>
 
@@ -91,24 +91,24 @@ The following properties are able to be set in the oscache.properties file:</p>
 <p>It is also of course quite straightforward to write your own event listener. See the <a href="http://www.opensymphony.com/oscache/api" title="Visit page outside Confluence">JavaDoc API</a> for further details.</p>
 
 
-<h4><a name="Configuration-cache.key">cache.key</a></h4>
+<h4><a name="Configuration-cache.key"></a>cache.key</h4>
 
 <p>This is the key that will be used by the ServletCacheAdministrator (and hence the custom tags) to store the cache object in the application and session scope. The default value when this property is not specified is "__oscache_cache". If you want to access this default value in your code, it is available as com.opensymphony.oscache.base.Const.DEFAULT_CACHE_KEY.</p>
 
-<h4><a name="Configuration-cache.use.host.domain.in.key">cache.use.host.domain.in.key</a></h4>
+<h4><a name="Configuration-cache.use.host.domain.in.key"></a>cache.use.host.domain.in.key</h4>
 
 <p>If your server is configured with multiple hosts, you may wish to add host name information to automatically generated cache keys. If so, set this property to true. The default value is false.</p>
 
 
-<h3><a name="Configuration-AdditionalProperties">Additional Properties</a></h3>
+<h3><a name="Configuration-AdditionalProperties"></a>Additional Properties</h3>
 
 <p>In additon to the above basic options, any other properties that are specified in this file will still be loaded and can be made available to your event handlers. For example, the JavaGroupsBroadcastingListener supports the following additional properties:</p>
 
-<h4><a name="Configuration-cache.cluster.multicast.ip">cache.cluster.multicast.ip</a></h4>
+<h4><a name="Configuration-cache.cluster.multicast.ip"></a>cache.cluster.multicast.ip</h4>
 
 <p>The multicast IP to use for this cache cluster. Defaults to 231.12.21.132.</p>
 
-<h4><a name="Configuration-cache.cluster.properties">cache.cluster.properties</a></h4>
+<h4><a name="Configuration-cache.cluster.properties"></a>cache.cluster.properties</h4>
 
 <p>Specifies additional configuration options for the clustering. The default setting is</p>
 <div class="preformatted"><div class="preformattedContent">

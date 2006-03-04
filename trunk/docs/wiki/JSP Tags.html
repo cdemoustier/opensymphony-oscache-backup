@@ -15,12 +15,12 @@
 
 <p>For instructions on installing OSCache in a web application, see the <a href="Installation Guide.html" title="Installation Guide">Installation Guide</a>. You just have to add the following line declaring the OSCache custom tag library for use on the jsp page:</p>
 
-<div class="information-block" align='center'><div class='informationMacroPadding'><table cellpadding='5' width='85%' cellspacing='0' class='tipMacro' border='0'><tr><td width='16' valign='top'><img src="/images/icons/emoticons/check.gif" width="16" height="16" align="absmiddle" alt="" border="0"></td><td><b class="strong">Taglib URI</b><br />
+<table cellpadding='5' width='85%' cellspacing='8px' class='tipMacro' border="0" align='center'><colgroup><col width='24'><col></colgroup><tr><td valign='top'><img src="/images/icons/emoticons/check.gif" width="16" height="16" align="absmiddle" alt="" border="0"></td><td><b class="strong">Taglib URI</b><br />
 <p><tt>&lt;%@ taglib uri="http://www.opensymphony.com/oscache" prefix="oscache" %&gt;</tt></p>
 
-<p>In OSCache releases before 2.1.1 you have to change the URI to <tt>/oscache</tt>, see <a href="http://jira.opensymphony.com/browse/CACHE-61" title="Visit page outside Confluence">CACHE-61</a>.</p></td></tr></table></div></div>
+<p>In OSCache releases before 2.1.1 you have to change the URI to <tt>/oscache</tt>, see <a href="http://jira.opensymphony.com/browse/CACHE-61" title="Visit page outside Confluence">CACHE-61</a>.</p></td></tr></table>
 
-<h3><a name="JSPTags-Summary">Summary</a></h3>
+<h3><a name="JSPTags-Summary"></a>Summary</h3>
 
 <p>The tags are:</p>
 
@@ -33,7 +33,7 @@
 </ul>
 
 
-<div class="information-block" align='center'><div class='informationMacroPadding'><table cellpadding='5' width='85%' cellspacing='0' class='infoMacro' border='0'><tr><td width='16' valign='top'><img src="/images/icons/emoticons/information.gif" width="16" height="16" align="absmiddle" alt="" border="0"></td><td><b class="strong">Tag Legend</b><br />
+<table cellpadding='5' width='85%' cellspacing='8px' class='infoMacro' border="0" align='center'><colgroup><col width='24'><col></colgroup><tr><td valign='top'><img src="/images/icons/emoticons/information.gif" width="16" height="16" align="absmiddle" alt="" border="0"></td><td><b class="strong">Tag Legend</b><br />
 <ul>
 	<li>For all listed attributes,  <font color="red">req</font> means it that attribute is required and any value in <b>[ ]</b> is a default value. All attributes can accept runtime expressions.</li>
 </ul>
@@ -48,12 +48,12 @@
 	</ul>
 	</li>
 </ul>
-</td></tr></table></div></div>
+</td></tr></table>
 
 
-<h3><a name="JSPTags-%3Ccache%3E%3C%2Fcache%3E"><a name="JSPTags-cache"></a>&lt;cache&gt;&lt;/cache&gt;</a></h3>
+<h3><a name="JSPTags-%3Ccache%3E%3C%2Fcache%3E"></a><a name="JSPTags-cache"></a>&lt;cache&gt;&lt;/cache&gt;</h3>
 
-<h4><a name="JSPTags-Description%3A">Description:</a></h4>
+<h4><a name="JSPTags-Description%3A"></a>Description:</h4>
 
 <p>    This is the main tag of OSCache. The body of the tag will be cached according to the attributes specified. The first time a cache is used the body content is executed and cached.</p>
 
@@ -68,7 +68,7 @@
 
 <p>    If the cached body content is stale, the tag will execute the body again and recache the new body content. Otherwise it will serve the cached content and the body will be skipped (resulting in a large speed increase).</p>
 
-<h4><a name="JSPTags-Attributes%3A">Attributes:</a></h4>
+<h4><a name="JSPTags-Attributes%3A"></a>Attributes:</h4>
 
 <ul>
 	<li><b>key</b> - [The request URI + query string] - The cache key, any string. This should be unique for the given scope since duplicate keys will map to the same cache entry. The default value uses an escaped version of the URI and query string of the current page.<br/>
@@ -124,11 +124,11 @@ with any other content associated with that group) to be exipired and then rebui
 </ul>
 
 
-<h3><a name="JSPTags-%3Cusecached%2F%3E"><a name="JSPTags-usecached"></a>&lt;usecached /&gt;</a></h3>
-<h4><a name="JSPTags-Description%3A">Description:</a></h4>
+<h3><a name="JSPTags-%3Cusecached%2F%3E"></a><a name="JSPTags-usecached"></a>&lt;usecached /&gt;</h3>
+<h4><a name="JSPTags-Description%3A"></a>Description:</h4>
 <p>This tag is nested within a &lt;cache&gt; tag and tells its parent whether or not to use the cached version.</p>
 
-<h4><a name="JSPTags-Attributes%3A">Attributes:</a></h4>
+<h4><a name="JSPTags-Attributes%3A"></a>Attributes:</h4>
 <ul>
 	<li><b>use</b> - [true] - A boolean that tells the tag whether or not to use the cached version. (true = use cached version). This is useful for<br/>
 programmatic control of the cache.
@@ -146,12 +146,12 @@ programmatic control of the cache.
 </ul>
 
 
-<h3><a name="JSPTags-%3Cflush%2F%3E"><a name="JSPTags-flush"></a>&lt;flush /&gt;</a></h3>
+<h3><a name="JSPTags-%3Cflush%2F%3E"></a><a name="JSPTags-flush"></a>&lt;flush /&gt;</h3>
 
-<h4><a name="JSPTags-Description%3A">Description:</a></h4>
+<h4><a name="JSPTags-Description%3A"></a>Description:</h4>
 <p>    This tag is used to flush caches at runtime. It is especially useful because it can be coded into the administration section of your site so that admins can decide when to flush the caches.</p>
 
-<h4><a name="JSPTags-Attributes%3A">Attributes:</a></h4>
+<h4><a name="JSPTags-Attributes%3A"></a>Attributes:</h4>
 
 <ul>
 	<li><b>scope</b> - [all] - This decides what scope will be flushed. Valid values are "application", "session" and null. A null scope will flush all caches, regardless of their scope.</li>
@@ -176,13 +176,13 @@ programmatic control of the cache.
     <span class="code-tag">&lt;cache:flush scope=<span class="code-quote">"application"</span> group=<span class="code-quote">"currencyData"</span> /&gt;</span></pre>
 </div></div>
 
-<h3><a name="JSPTags-%3Caddgroup%2F%3E"><a name="JSPTags-addgroup"></a>&lt;addgroup /&gt;</a></h3>
+<h3><a name="JSPTags-%3Caddgroup%2F%3E"></a><a name="JSPTags-addgroup"></a>&lt;addgroup /&gt;</h3>
 
-<h4><a name="JSPTags-Description%3A">Description:</a></h4>
+<h4><a name="JSPTags-Description%3A"></a>Description:</h4>
 
 <p>    This tag must be nested inside a &lt;cache:cache/&gt; tag. It allows a single group name to be dynamically added to a cached block. It is useful when the group a cached block should belong to are unknown until the block is actually rendered. As each group is 'discovered', this tag can be used to add the group to the block's group list.</p>
 
-<h4><a name="JSPTags-Attributes%3A">Attributes:</a></h4>
+<h4><a name="JSPTags-Attributes%3A"></a>Attributes:</h4>
 
 <ul>
 	<li><b>group</b> - <font color="red">req</font> - The name of the group to add the enclosing cache block to.</li>
@@ -200,13 +200,13 @@ programmatic control of the cache.
     <span class="code-tag">&lt;/cache:cache&gt;</span></pre>
 </div></div>
 
-<h3><a name="JSPTags-%3Caddgroups%2F%3E%28Newinupcomingrelease2.3%29"><a name="JSPTags-addgroups"></a>&lt;addgroups /&gt; (New in upcoming release 2.3)</a></h3>
+<h3><a name="JSPTags-%3Caddgroups%2F%3E%28New%5C%21Since2.3%29"></a><a name="JSPTags-addgroups"></a>&lt;addgroups /&gt; (New&#33; Since 2.3)</h3>
 
-<h4><a name="JSPTags-Description%3A">Description:</a></h4>
+<h4><a name="JSPTags-Description%3A"></a>Description:</h4>
 
 <p>    This tag must be nested inside a &lt;cache:cache/&gt; tag. It allows a comma-delimited list of groups names to be dynamically added to a cached block with a single tag statement. As a group list is 'discovered', this tag can be used to add the groups to the block's group list.</p>
 
-<h4><a name="JSPTags-Attributes%3A">Attributes:</a></h4>
+<h4><a name="JSPTags-Attributes%3A"></a>Attributes:</h4>
 
 <ul>
 	<li><b>groups</b> - <font color="red">req</font> - The comma-delimited list of groups names to add the enclosing cache block to.</li>

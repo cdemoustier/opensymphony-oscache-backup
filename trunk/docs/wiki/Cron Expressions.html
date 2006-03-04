@@ -15,21 +15,21 @@
 
 <p><b>OSCache 2.0</b> now gives you the ability to expire content at specific dates and/or times based on a cron expression.</p>
 
-<h3><a name="CronExpressions-WhatisaCronExpression%3F">What is a Cron Expression?</a></h3>
+<h3><a name="CronExpressions-WhatisaCronExpression%3F"></a>What is a Cron Expression?</h3>
 
 <p>Many of you are probably already familiar with the unix cron program. For those that aren't, cron is a daemon process that allows users to execute commands or scripts automatically at user-configurable dates and times. The important part as far as OSCache is concerned is the cron expression syntax that allows users to dictate when commands should be executed - you can now use the same syntax to expire content in OSCache! A cron expression is a simple text string that specifies particular dates and/or times that are matched against.</p>
 
-<h3><a name="CronExpressions-HowDoesOSCacheMatchAgainstanExpression%3F">How Does OSCache Match Against an Expression?</a></h3>
+<h3><a name="CronExpressions-HowDoesOSCacheMatchAgainstanExpression%3F"></a>How Does OSCache Match Against an Expression?</h3>
 
 <p><b>OSCache</b> uses cron expressions in a manner that might seem 'backwards' to what you might initially expect. When using a cron expression to test if a cache entry is stale, OSCache finds the date and time (prior to the current time) that most recently matches the supplied expression. This date/time is used as the expiry time - entries that were placed in the cache prior to this expiry time are considered stale and result in a NeedsRefreshException being thrown.</p>
 
 <p>As an example, suppose you specify a cron expiry that matches every hour, on the hour ("0 * * * *"). If the current time is 10:42pm, then any content that was placed in the cache prior to 10:00pm would be considered stale.</p>
 
-<h3><a name="CronExpressions-WhatistheDifferenceBetweentheRefreshPeriodandaCronExpression%3F">What is the Difference Between the Refresh Period and a Cron Expression?</a></h3>
+<h3><a name="CronExpressions-WhatistheDifferenceBetweentheRefreshPeriodandaCronExpression%3F"></a>What is the Difference Between the Refresh Period and a Cron Expression?</h3>
 
 <p>The difference between the refresh period and a cron expression is that the refresh period specifies the maximum allowable age of a cache entry, whilst a cron expression specifies specific expiry times, regardless of how old an entry is. Eg imagine caching an object at 10:29am. With a refresh period of 30 minutes that entry would expire at 10:59am. With a cron expression of "0,30 * * * *" that entry would expire at 10:30am.</p>
 
-<h3><a name="CronExpressions-TheCronExpressionSyntax">The Cron Expression Syntax</a></h3>
+<h3><a name="CronExpressions-TheCronExpressionSyntax"></a>The Cron Expression Syntax</h3>
 
 <p>A cron expression consists of the following 5 fields:</p>
 
@@ -66,7 +66,7 @@ Eg "*/10 * * * *" matches minutes 0,10,20,30,40 and 50.
 
 <p>To have a look at further examples of both valid and invalid syntax, it is suggested you take a look at the JUnit test cases in the com.opensymphony.oscache.util.TestFastCronParser class. This class is located under the src/core/test directory. For examples of how to specify cron expiry times using the taglibs, see the <a href="JSP Tags.html" title="JSP Tags">Tag Reference</a> and the cronTest.jsp file in the example web application.</p>
 
-<h3><a name="CronExpressions-Notes">Notes</a></h3>
+<h3><a name="CronExpressions-Notes"></a>Notes</h3>
 
 <ul>
 	<li>You can specify both a cron expression and a refresh interval at the same time if you like. This is useful in cases where you always want to expire content at midnight, but you also never want it to be more than 6 hours old.</li>
