@@ -9,9 +9,8 @@ full list of features, see:
 REQUIREMENTS
 ------------
 OSCache can be used as a standalone caching solution for any Java application.
-OSCache's tag library requires a Servlet 2.2 / JSP 1.2 compliant container.
-The caching filter for dynamic binary content, like PDFs or images, requires a
-Servlet 2.3 compliant container.
+OSCache's tag library and the caching filter for dynamic binary content, like
+PDFs or images, require a Servlet 2.3 / JSP 1.2 compliant container.
 
 
 INSTALLATION AND DOCUMENTATION
