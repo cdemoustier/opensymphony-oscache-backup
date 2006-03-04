@@ -17,7 +17,7 @@
 
 <p>Configuring OSCache to cluster is very simple. Follow either the JMS or the JavaGroups instructions below depending on which protocol you want to use.</p>
 
-<h3><a name="Clustering-JMSConfiguration">JMS Configuration</a></h3>
+<h3><a name="Clustering-JMSConfiguration"></a>JMS Configuration</h3>
 
 <p>Configure your JMS server. OSCache requires that a JMS ConnectionFactory and a Topic are available via JNDI. See your JMS server's documentation for details.</p>
 
@@ -28,7 +28,7 @@
 </pre>
 </div></div>
 
-<p>(Note that this listener requires JMS 1.1 or higher, however legacy support for 1.0.x is also provided. If your JMS server only supports JMS 1.0.x then use JMS10BroadcastingListener instead of JMSBroadcastingListener. The rest of this documentation applies equally to both the 1.1 and 1.0 listeners.)</p>
+<p>(Note that this listener requires JMS 1.1 or higher, however legacy support for 1.0.x is also provided. If your JMS server only supports JMS 1.0.x then use <tt>JMS10BroadcastingListener</tt> instead of <tt>JMSBroadcastingListener</tt>. The rest of this documentation applies equally to both the 1.1 and 1.0 listeners.)</p>
 
 <p>The JMS listener supports the following configuration parameters:</p>
 
@@ -41,7 +41,7 @@
 
 <p>If you are running OSCache from a standalone application or are not running in an environment where new InitialContext() will find your JNDI InitialContextFactory or provider URL, you will have to specify them either in a jndi.properties file or as system properties. See the InitalContext documentation for details.</p>
 
-<h3><a name="Clustering-JavaGroupsConfiguration">JavaGroups Configuration</a></h3>
+<h3><a name="Clustering-JavaGroupsConfiguration"></a>JavaGroups Configuration</h3>
 
 <p>Just make sure you have jgroups-all.jar file in your classpath (for a webapp put it in WEB-INF/lib), and add the JavaGroups broadcasting listener to your oscache.properties file like this:</p>
 

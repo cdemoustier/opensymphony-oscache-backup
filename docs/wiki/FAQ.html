@@ -37,7 +37,7 @@
 
 
 
-<h4><a name="FAQ-WhatcanIuseOSCacheforexactly%3F"><a name="FAQ-uses"></a>What can I use OSCache for exactly?</a></h4>
+<h4><a name="FAQ-WhatcanIuseOSCacheforexactly%3F"></a><a name="FAQ-uses"></a>What can I use OSCache for exactly?</h4>
 
 <p>OSCache can be used on three different levels:</p>
 
@@ -50,21 +50,21 @@
 
 <p>All three approaches can be mixed and matched within the same application.</p>
 
-<h4><a name="FAQ-Whereisthedatacached%3F"><a name="FAQ-data"></a>Where is the data cached?</a></h4>
+<h4><a name="FAQ-Whereisthedatacached%3F"></a><a name="FAQ-data"></a>Where is the data cached?</h4>
 
 <p>Out of the box, OSCache is capable of caching data in memory (so it is very fast), and/or to disk (so your cache can be persistent across server restarts). Support is also provided for managing a cluster of caches across multiple servers.</p>
 
 <p>In addition to these capabilities, it is possible to plug in custom persistence code and custom event handlers, so you could easily extend OSCache to persist cached objects to say a database or an LDAP directory.</p>
 
-<h4><a name="FAQ-CanOSCachecacheJavaobjectsratherthanportionsofJSPpages%3FImeanifIcreateaProductobject%2CcanIcacheitanduseitlatersothatIdon%27thavetofetchdataagain%3F"><a name="FAQ-objects"></a>Can OSCache cache Java objects rather than portions of JSP pages? I mean if I create a Product object, can I cache it and use it later so that I don't have to fetch data again?</a></h4>
+<h4><a name="FAQ-CanOSCachecacheJavaobjectsratherthanportionsofJSPpages%3FImeanifIcreateaProductobject%2CcanIcacheitanduseitlatersothatIdon%27thavetofetchdataagain%3F"></a><a name="FAQ-objects"></a>Can OSCache cache Java objects rather than portions of JSP pages? I mean if I create a Product object, can I cache it and use it later so that I don't have to fetch data again?</h4>
 
 <p>Yes, however to do this you will need to write code that talks to the OSCache API directly. The taglibs are currently only designed to cache rendered JSP content. This should hopefully not be too big a limitation since any creation or manipulation of java objects should generally be performed in beans or MVC action classes rather than JSP scriptlets anyway.</p>
 
-<h4><a name="FAQ-WhatotherfeaturesdoesOSCachehave%3F"><a name="FAQ-features"></a>What other features does OSCache have?</a></h4>
+<h4><a name="FAQ-WhatotherfeaturesdoesOSCachehave%3F"></a><a name="FAQ-features"></a>What other features does OSCache have?</h4>
 
 <p>There is a full list of features in the <a href="Feature List.html" title="Feature List">Feature List</a> documentation.</p>
 
-<h4><a name="FAQ-CanyougivemesomeexamplesofhowtheOSCachetagsareused%3F"><a name="FAQ-tags"></a>Can you give me some examples of how the OSCache tags are used?</a></h4>
+<h4><a name="FAQ-CanyougivemesomeexamplesofhowtheOSCachetagsareused%3F"></a><a name="FAQ-tags"></a>Can you give me some examples of how the OSCache tags are used?</h4>
 <div class="code"><div class="codeHeader"><b>Example 1</b></div><div class="codeContent">
 <pre class="code-xml"><span class="code-tag">&lt;cache:cache time=<span class="code-quote">"600"</span>&gt;</span>
         <span class="code-tag">&lt;%= myBean.getTitle() %&gt;</span>
@@ -99,29 +99,29 @@
 
 <p>See the <a href="JSP Tags.html" title="JSP Tags">Tag Reference</a> and the example web application for further taglib examples.</p>
 
-<h4><a name="FAQ-CanOSCachetagsbenested%3F"><a name="FAQ-nesting"></a>Can OSCache tags be nested?</a></h4>
+<h4><a name="FAQ-CanOSCachetagsbenested%3F"></a><a name="FAQ-nesting"></a>Can OSCache tags be nested?</h4>
 
 <p>You can't currently nest &lt;cache&gt; tags within one another - not that you'd probably want to. It is because of the cache object being placed in the page scope for use by programmers within the tag.</p>
 
 <p>We're not sure if anyone actually uses this so we might remove it to allow for tag nesting (presumably across includes or something).</p>
 
-<h4><a name="FAQ-Whatcontroldoyouhaveoverthecachesize%3FIcanimaginethesizeoftheinmemorycachegettingverybig.Isitpossibletosetamaxcachesizeandthenremovetheleastrecentlyusedentriesfromthecache%3F"><a name="FAQ-size"></a>What control do you have over the cache size? I can imagine the size of the in-memory cache getting very big. Is it possible to set a max cache size and then remove the least-recently-used entries from the cache?</a></h4>
+<h4><a name="FAQ-Whatcontroldoyouhaveoverthecachesize%3FIcanimaginethesizeoftheinmemorycachegettingverybig.Isitpossibletosetamaxcachesizeandthenremovetheleastrecentlyusedentriesfromthecache%3F"></a><a name="FAQ-size"></a>What control do you have over the cache size? I can imagine the size of the in-memory cache getting very big. Is it possible to set a max cache size and then remove the least-recently-used entries from the cache?</h4>
 
 <p>You can limit the memory cache by the number of objects that are cached. When an object is added to the cache and the limit is exceeded, another object will be removed from the cache to make room.</p>
 
 <p>Currently the disk cache can either be set to unlimited, or tied to the same size as the memory cache (ie, objects will be removed from the disk cache at the same time as they are removed from the memory cache. Depending on the useage patterns of your cache, restarting your application could mean that the disk cache might continue to grow). We understand that this is not ideal and there is room for improvement here. Stay tuned!</p>
 
-<h4><a name="FAQ-HowdoesOSCachedecidewhichobjecttoremove%3FWhatcachingalgorithmdoesOSCacheuse%3F"><a name="FAQ-algorithm"></a>How does OSCache decide which object to remove? What caching algorithm does OSCache use?</a></h4>
+<h4><a name="FAQ-HowdoesOSCachedecidewhichobjecttoremove%3FWhatcachingalgorithmdoesOSCacheuse%3F"></a><a name="FAQ-algorithm"></a>How does OSCache decide which object to remove? What caching algorithm does OSCache use?</h4>
 
 <p>The caching algorithm is configurable. OSCache currently ships with 3 different algorithms - LRU (Least Recently Used), FIFO (First In First Out), and Unlimited. Should one of those not prove suitable, it is also possible to specify a custom algorithm class.</p>
 
-<h4><a name="FAQ-HowdoesOSCache%27sclusteringwork%3F"><a name="FAQ-clustering"></a>How does OSCache's clustering work?</a></h4>
+<h4><a name="FAQ-HowdoesOSCache%27sclusteringwork%3F"></a><a name="FAQ-clustering"></a>How does OSCache's clustering work?</h4>
 
 <p>The clustering is implemented as a listener that catches 'flush' events. These events are then broadcast across the network (using either the JavaGroups library or JMS) so that other nodes in the cluster can flush the relevant object(s) from their local cache. Note that for performance reasons, when objects are added to a cache they are not broadcast to other nodes. This means that each node in the cluster maintains their own relatively indedependent cache, yet still remains fresh.</p>
 
 <p>If this mechanism does not suit your requirements, you can always code up a different solution by writing a custom event handler.</p>
 
-<h4><a name="FAQ-WhathappensifIneedtoexpiredatainthecache%3F"><a name="FAQ-expire"></a>What happens if I need to expire data in the cache?</a></h4>
+<h4><a name="FAQ-WhathappensifIneedtoexpiredatainthecache%3F"></a><a name="FAQ-expire"></a>What happens if I need to expire data in the cache?</h4>
 
 <p>Cache entries can be flushed explicitly in several ways:</p>
 
@@ -135,7 +135,7 @@
 <p>In addition, cached data can be expired at retrieval time by specifying a maximum age for the data, or by indicating what dates and/or times the data should expire. See the time, duration and cron attributes of the &lt;cache&gt; tag for more information.</p>
 
 
-<h4><a name="FAQ-Canyoutellmemoreaboutgroupingcacheentries%3FHowmightthisbeused%3F"><a name="FAQ-groups"></a>Can you tell me more about grouping cache entries? How might this be used?</a></h4>
+<h4><a name="FAQ-Canyoutellmemoreaboutgroupingcacheentries%3FHowmightthisbeused%3F"></a><a name="FAQ-groups"></a>Can you tell me more about grouping cache entries? How might this be used?</h4>
 
 <p>This is a powerful feature that makes it easy to manage your cache content. Suppose you are rendering a website and the pages that you are caching depend on various factors. Perhaps they use various shared templates, some database content, and maybe some of them depend on an external data feed. By creating a cache group for each of these factors, each cached page can be placed into the group(s) that the page is dependent on. Then when say an external datafeed is updated it is trivial to flush all pages that depend on that datafeed.</p>
 
@@ -157,11 +157,11 @@
     ...</pre>
 </div></div>
 
-<h4><a name="FAQ-Idon%27twanttousethetaglibs%2CIwanttoaccessOSCachedirectlyfromwithinmyapplication.WheredoIstart%3F"><a name="FAQ-API"></a>I don't want to use the taglibs, I want to access OSCache directly from within my application. Where do I start?</a></h4>
+<h4><a name="FAQ-Idon%27twanttousethetaglibs%2CIwanttoaccessOSCachedirectlyfromwithinmyapplication.WheredoIstart%3F"></a><a name="FAQ-API"></a>I don't want to use the taglibs, I want to access OSCache directly from within my application. Where do I start?</h4>
 
 <p>We'd suggest the best place to start would be to look at the GeneralCacheAdministrator class. It provides a simple wrapper for a single cache instance and should give you all the basic functionality you need. If you want to work with multiple caches or manipulate your cache beyond what GeneralCacheAdministrator provides, consider either writing your own administrator class using GeneralCacheAdministrator as a starting point, or just create and use the Cache class directly. See the Javadocs for more information.</p>
 
-<h4><a name="FAQ-WhereelsecanIgoforhelpifIcan%27tfindananswertomyquestionhere%3F"><a name="FAQ-help"></a>Where else can I go for help if I can't find an answer to my question here?</a></h4>
+<h4><a name="FAQ-WhereelsecanIgoforhelpifIcan%27tfindananswertomyquestionhere%3F"></a><a name="FAQ-help"></a>Where else can I go for help if I can't find an answer to my question here?</h4>
 
 <p>The best place to try is on the OSCache <a href="https://oscache.dev.java.net/servlets/ProjectMailingListList" title="Visit page outside Confluence">mailing list</a>. It reaches a wide audience and is your best chance of getting a fast response. Remember to search the archives first to see if your question has already been answered.</p>
 
