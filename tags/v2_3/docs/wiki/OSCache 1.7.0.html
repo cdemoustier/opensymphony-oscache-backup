@@ -1,0 +1,56 @@
+<html>
+    <head>
+        <title>OSCache - 
+        OSCache 1.7.0
+         </title>
+	    <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body>
+	    <table class="pagecontent" border="0" cellpadding="0" cellspacing="0" width="100%" bgcolor="#ffffff">
+		    <tr>
+			    <td valign="top" class="pagebody">
+				    <h3><a name="OSCache1.7.0-ReleaseNotes"></a>Release Notes</h3>
+
+<p>(26th September 2001 - by Francois Beauregard, fbeauregard@pyxis-tech.com, and<br/>
+Alain Bergevin, abergevin@pyxis-tech.com, of Pyxis Technologies Inc.)</p>
+
+<p>This version include some refactoring, corrections and new features.<br/>
+Here are the highlights:</p>
+
+<ul>
+	<li>CacheAdministrator has been split in 3. We have now AbstractCacheAdministrator, and ServletCacheAdministrator and GeneralCacheAdministrator extends it</li>
+	<li>Packages have been adjusted. We now have oscache.base, oscache.general and oscache.Servlet.<br/>
+      Adjustement must be made to the oscache.tld</li>
+	<li>ServletCacheHashMap has been created in order to reflect specific needs for Servlets. It extends CacheHashMap</li>
+	<li>Support for multiple cache tag in a single page, without supplying a key. Nested cache tag are not yet supported (you need to manage keys in that case).</li>
+	<li>OSCache can now cache any objects (not only JSP content) using GeneralCacheAdministrator</li>
+	<li>GenerateKey now support suffixes (used to deal with multiple cache tags)</li>
+	<li>A complete JUnit test suite has been created for osCache, including a JSP and a Servlet</li>
+	<li>Added the required libraries for the test unit. The JUnit JAR has been upgraded to version 3.7</li>
+	<li>Required libraries are now HHTPUnit, Tidy, JUnit 3.7 and JUnitPerf</li>
+	<li>The cBuffer variable used for keyGeneration has been moved locally to GenerateKey since it was a threading issue</li>
+	<li>The build file has been modified to include test running</li>
+	<li>The flushAll method is now abstract since CacheAbstractAdministrator can't know all valid scopes</li>
+	<li>Removed the retry logic for disk cache read and write (not used anymore)</li>
+	<li>Fixed an issue with the needsRefresh method which returned an invalid value when invoked first by returning true and then invoked having to return false. Both case returned true.</li>
+	<li>The doStartTag method in CacheTag has been modified to prevent returning null when cache content is missing (cache file deleted)</li>
+	<li>The doAfterBody method in CacheTag has been modified in order to prevent hitting the cache twice in some situation</li>
+	<li>The useBody method in CacheTag has been renamed to setUseBody in order to reflect its usage</li>
+	<li>LoadProperties interface added to CacheProperties</li>
+	<li>Added a NeedsRefreshException</li>
+	<li>Retrofited the changed made by Kesav Kumar in order to retrieve the sessionId correctly</li>
+	<li>Added code toughness to avoid working with invalid parameters in public methods</li>
+	<li>Magic numbers and strings are now declared as constants</li>
+	<li>Many methods are now declared as final or protected</li>
+	<li>Imports are now more accurate, no more *</li>
+	<li>Comments and some headers modified to reflect JavaDoc standard</li>
+</ul>
+
+
+                    			    </td>
+		    </tr>
+	    </table>
+    </body>
+</html>
