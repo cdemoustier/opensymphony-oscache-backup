@@ -37,6 +37,7 @@ public class CacheHttpServletResponseWrapper extends HttpServletResponseWrapper 
     private int status = SC_OK;
     private long expires = CacheFilter.EXPIRES_ON;
     private long lastModified = CacheFilter.LAST_MODIFIED_INITIAL;
+    private long cacheControl = -60;
 
     /**
      * Constructor
@@ -44,7 +45,7 @@ public class CacheHttpServletResponseWrapper extends HttpServletResponseWrapper 
      * @param response The servlet response
      */
     public CacheHttpServletResponseWrapper(HttpServletResponse response) {
-        this(response, false, Long.MAX_VALUE, CacheFilter.EXPIRES_ON, CacheFilter.LAST_MODIFIED_INITIAL);
+        this(response, false, Long.MAX_VALUE, CacheFilter.EXPIRES_ON, CacheFilter.LAST_MODIFIED_INITIAL, -60);
     }
 
     /**
@@ -55,26 +56,40 @@ public class CacheHttpServletResponseWrapper extends HttpServletResponseWrapper 
      * @param time the refresh time in millis
      * @param lastModified defines if last modified header will be send, @see CacheFilter
      * @param expires defines if expires header will be send, @see CacheFilter
+     * @param cacheControl defines if cache control header will be send, @see CacheFilter
      */
-    public CacheHttpServletResponseWrapper(HttpServletResponse response, boolean fragment, long time, long lastModified, long expires) {
+    public CacheHttpServletResponseWrapper(HttpServletResponse response, boolean fragment, long time, long lastModified, long expires, long cacheControl) {
         super(response);
         result = new ResponseContent();
         this.fragment = fragment;
         this.expires = expires;
         this.lastModified = lastModified;
+        this.cacheControl = cacheControl;
         
         // only set inital values for last modified and expires, when a complete page is cached
         if (!fragment) {
             // setting a default last modified value based on object creation and remove the millis
             if (lastModified == CacheFilter.LAST_MODIFIED_INITIAL) {
-                long current = System.currentTimeMillis() / 1000;
-                result.setLastModified(current * 1000);
+                long current = System.currentTimeMillis();
+    			current = current - (current % 1000);
+                result.setLastModified(current);
                 super.setDateHeader(CacheFilter.HEADER_LAST_MODIFIED, result.getLastModified());
             }
             // setting the expires value
             if (expires == CacheFilter.EXPIRES_TIME) {
                 result.setExpires(result.getLastModified() + time);
                 super.setDateHeader(CacheFilter.HEADER_EXPIRES, result.getExpires());
+            }
+            // setting the cache control with max-age 
+            if (cacheControl == CacheFilter.MAX_AGE_TIME) {
+            	// set the count down
+                long maxAge = System.currentTimeMillis();
+                maxAge = maxAge - (maxAge % 1000) + time;
+                result.setMaxAge(maxAge);
+                super.addHeader(CacheFilter.HEADER_CACHE_CONTROL, "max-age=" + time / 1000);
+            } else if (cacheControl != CacheFilter.MAX_AGE_NO_INIT) {
+                result.setMaxAge(cacheControl);
+                super.addHeader(CacheFilter.HEADER_CACHE_CONTROL, "max-age=" + (-cacheControl));
             }
         }
     }
@@ -129,7 +144,7 @@ public class CacheHttpServletResponseWrapper extends HttpServletResponseWrapper 
             if (!fragment) {
                 result.setExpires(value);
             } // TODO should we return now by fragments to avoid putting the header to the response?
-        } 
+        }
 
         super.setDateHeader(name, value);
     }
@@ -351,6 +366,7 @@ public class CacheHttpServletResponseWrapper extends HttpServletResponseWrapper 
             status = SC_OK;
             expires = CacheFilter.EXPIRES_ON;
             lastModified = CacheFilter.LAST_MODIFIED_INITIAL;
+            cacheControl = -60;
         } else {
             throw new IllegalStateException("Can't reset CacheHttpServletResponseWrapper, because it's already committed!");
         }

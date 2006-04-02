@@ -28,6 +28,7 @@ public class ResponseContent implements Serializable {
     private byte[] content = null;
     private long expires = Long.MAX_VALUE;
     private long lastModified = -1;
+    private long maxAge = -60;
 
     public String getContentType() {
         return contentType;
@@ -66,7 +67,7 @@ public class ResponseContent implements Serializable {
     }
 
     /**
-     * @return the expires date and time in miliseconds when the content is stale
+     * @return the expires date and time in miliseconds when the content will be stale
      */
     public long getExpires() {
         return expires;
@@ -79,6 +80,24 @@ public class ResponseContent implements Serializable {
     public void setExpires(long value) {
         expires = value;
     }
+
+	/**
+	 * Returns the max age of the content in miliseconds. If expires header and cache control are
+	 * enabled both, both will be equal. 
+	 * @return the max age of the content in miliseconds, if -1 max-age is disabled
+	 */
+	public long getMaxAge() {
+		return maxAge;
+	}
+
+	/**
+	 * Sets the max age date and time in miliseconds. If the parameter is -1, the max-age parameter
+	 * won't be set by default in the Cache-Control header.
+	 * @param value sets the intial
+	 */
+	public void setMaxAge(long value) {
+		maxAge = value;
+	}
 
     /**
      * Get an output stream. This is used by the {@link SplitServletOutputStream}
@@ -152,6 +171,20 @@ public class ResponseContent implements Serializable {
                 if (expires != Long.MAX_VALUE) {
                     httpResponse.setDateHeader(CacheFilter.HEADER_EXPIRES, expires);
                 }
+                
+                // add the cache-control header for max-age
+                if (maxAge == CacheFilter.MAX_AGE_NO_INIT || maxAge == CacheFilter.MAX_AGE_TIME) {
+                	// do nothing
+                } else if (maxAge > 0) { // set max-age based on life time
+                	long currentMaxAge = maxAge / 1000 - System.currentTimeMillis() / 1000;
+                	if (currentMaxAge < 0) {
+                		currentMaxAge = 0;
+                	}
+                	httpResponse.addHeader(CacheFilter.HEADER_CACHE_CONTROL, "max-age=" + currentMaxAge);
+                } else {
+                	httpResponse.addHeader(CacheFilter.HEADER_CACHE_CONTROL, "max-age=" + (-maxAge));
+                }
+                
             }
         }
 
@@ -200,4 +233,5 @@ public class ResponseContent implements Serializable {
     public boolean isContentGZiped() {
         return "gzip".equals(contentEncoding);
     }
+
 }
