@@ -36,7 +36,7 @@ public class CacheFilter implements Filter, ICacheKeyProvider, ICacheGroupsProvi
     public static final String HEADER_CONTENT_ENCODING = "Content-Encoding";
     public static final String HEADER_EXPIRES = "Expires";
     public static final String HEADER_IF_MODIFIED_SINCE = "If-Modified-Since";
-    public static final String HEADER_CACHE_CONTROL = "Cache-control";
+    public static final String HEADER_CACHE_CONTROL = "Cache-Control";
     public static final String HEADER_ACCEPT_ENCODING = "Accept-Encoding";
 
     // Fragment parameter
@@ -57,6 +57,10 @@ public class CacheFilter implements Filter, ICacheKeyProvider, ICacheGroupsProvi
     public static final long EXPIRES_OFF = 0;
     public static final long EXPIRES_ON = 1;
     public static final long EXPIRES_TIME = -1;
+    
+    // Cache Control
+    public static final long MAX_AGE_NO_INIT = Long.MIN_VALUE;
+    public static final long MAX_AGE_TIME = Long.MAX_VALUE;
 
     // request attribute to avoid reentrance
     private final static String REQUEST_FILTERED = "__oscache_filtered";
@@ -77,6 +81,7 @@ public class CacheFilter implements Filter, ICacheKeyProvider, ICacheGroupsProvi
     private int nocache = NOCACHE_OFF; // defines special no cache option for the requests - default is off
     private long lastModified = LAST_MODIFIED_INITIAL; // defines if the last-modified-header will be sent - default is intial setting
     private long expires = EXPIRES_ON; // defines if the expires-header will be sent - default is on
+    private long cacheControlMaxAge = -60; // defines which max-age in Cache-Control to be set - default is 60 seconds for max-age
     private ICacheKeyProvider cacheKeyProvider = this; // the provider of the cache key - default is the CacheFilter itselfs
     private ICacheGroupsProvider cacheGroupsProvider = this; // the provider of the cache groups - default is the CacheFilter itselfs
 
@@ -159,7 +164,7 @@ public class CacheFilter implements Filter, ICacheKeyProvider, ICacheGroupsProvi
                     log.info("<cache>: New cache entry, cache stale or cache scope flushed for " + key);
                 }
 
-                CacheHttpServletResponseWrapper cacheResponse = new CacheHttpServletResponseWrapper((HttpServletResponse) response, fragmentRequest, time * 1000L, lastModified, expires);
+                CacheHttpServletResponseWrapper cacheResponse = new CacheHttpServletResponseWrapper((HttpServletResponse) response, fragmentRequest, time * 1000L, lastModified, expires, cacheControlMaxAge);
                 chain.doFilter(request, cacheResponse);
                 cacheResponse.flushBuffer();
 
@@ -208,6 +213,11 @@ public class CacheFilter implements Filter, ICacheKeyProvider, ICacheGroupsProvi
      * <code>off</code> for don't sending the header, even it is set in the filter chain, 
      * <code>on</code> (default) for sending it if it is set in the filter chain and 
      * <code>time</code> the expires information will be intialized based on the time parameter and creation time of the content.</li>
+     * 
+     * <li><b>max-age</b> - defines the cache control response header max-age. Acceptable values are
+     * <code>no init</code> for don't initializing the max-age cache control, 
+     * <code>time</code> the max-age information will be based on the time parameter and creation time of the content (expiration timestamp minus current timestamp), and</li>
+     * <code>[positive integer]</code> value constant in seconds to be set in every response, the default value is 60.</li>
      * 
      * <li><b>ICacheKeyProvider</b> - Class implementing the interface <code>ICacheKeyProvider</code>.
      * A developer can implement a method which provides cache keys based on the request, 
@@ -315,6 +325,28 @@ public class CacheFilter implements Filter, ICacheKeyProvider, ICacheGroupsProvi
             } 
         } catch (Exception e) {
             log.info("Could not get init parameter 'expires', defaulting to 'on'.");
+        }
+
+        // filter parameter Cache-Control
+        try {
+            String cacheControlMaxAgeString = config.getInitParameter("max-age");
+            
+            if (cacheControlMaxAgeString.equals("no init")) {
+            	cacheControlMaxAge = MAX_AGE_NO_INIT;
+            } else if (cacheControlMaxAgeString.equals("time")) {
+            	cacheControlMaxAge = MAX_AGE_TIME;
+            } else {
+            	cacheControlMaxAge = Long.parseLong(cacheControlMaxAgeString);
+            	if (cacheControlMaxAge >= 0) {
+            		// declare the cache control as a constant
+            		cacheControlMaxAge = - cacheControlMaxAge;
+            	} else {
+                    log.warn("Init parameter 'max-age' must be at least a positive integer, defaulting to 'time'. ");
+                	cacheControlMaxAge = 60;
+            	}
+            }
+        } catch (Exception e) {
+            log.info("Could not get init parameter 'max-age', defaulting to 'time'.");
         }
 
         // filter parameter ICacheKeyProvider
