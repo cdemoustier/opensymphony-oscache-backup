@@ -105,7 +105,7 @@ public class TestCache extends TestCase {
 			admin.putInCache(key, cacheValue);
 		}
         
-		Assert.assertEquals("expected cache to be at its full capacity", cacheCapacity , cache.getNbEntries());
+		Assert.assertEquals("expected cache to be at its full capacity", cacheCapacity , cache.getSize());
 		Assert.assertTrue("expected cache overflows to have cleaned UpdateState instances. got [" + cache.getNbUpdateState() + "] updates while max is [" + cacheCapacity + "]", cache.getNbUpdateState() <= cacheCapacity);
     }
 
@@ -143,7 +143,7 @@ public class TestCache extends TestCase {
 			}
 		}
         
-		Assert.assertEquals("expected cache to be at its full capacity", cacheCapacity , cache.getNbEntries());
+		Assert.assertEquals("expected cache to be at its full capacity", cacheCapacity , cache.getSize());
 		Assert.assertTrue("expected cache overflows to have cleaned UpdateState instances. Nb states is:" + cache.getNbUpdateState() + " expected max="+ cacheCapacity, cache.getNbUpdateState() <= cacheCapacity);
     }
 

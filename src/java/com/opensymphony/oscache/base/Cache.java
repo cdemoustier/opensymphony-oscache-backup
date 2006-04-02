@@ -142,6 +142,13 @@ public class Cache implements Serializable {
 
         this.blocking = blocking;
     }
+    
+    /**
+     * @return the maximum number of items to cache can hold.
+     */
+    public int getCapacity() {
+    	return cacheMap.getMaxEntries();
+    }
 
     /**
      * Allows the capacity of the cache to be altered dynamically. Note that
@@ -942,6 +949,15 @@ public class Cache implements Serializable {
             dispatchCacheEntryEvent(CacheEntryEventType.ENTRY_FLUSHED, event);
         }
     }
+    
+    /**
+     * @return the total number of cache entries held in this cache. 
+     */
+	public int getSize() {
+		synchronized(cacheMap) {
+			return cacheMap.size();
+		}
+	}
 
     /**
      * Test support only: return the number of EntryUpdateState instances within the updateStates map. 
@@ -954,7 +970,8 @@ public class Cache implements Serializable {
     
     
     /**
-     * Test support only: return the number of entries currently in the cache map 
+     * Test support only: return the number of entries currently in the cache map
+     * @deprecated use getSize() 
      */
 	public int getNbEntries() {
 		synchronized(cacheMap) {
