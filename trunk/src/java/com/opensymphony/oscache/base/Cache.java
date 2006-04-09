@@ -170,9 +170,11 @@ public class Cache implements Serializable {
      */
     public boolean isFlushed(CacheEntry cacheEntry) {
         if (flushDateTime != null) {
-            long lastUpdate = cacheEntry.getLastUpdate();
+            final long lastUpdate = cacheEntry.getLastUpdate();
+            final long flushTime = flushDateTime.getTime();
 
-            return (flushDateTime.getTime() >= lastUpdate);
+            // CACHE-241: check flushDateTime with current time also
+            return (flushTime <= System.currentTimeMillis()) && (flushTime >= lastUpdate);
         } else {
             return false;
         }

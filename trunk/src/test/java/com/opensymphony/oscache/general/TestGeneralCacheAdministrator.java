@@ -4,6 +4,8 @@
  */
 package com.opensymphony.oscache.general;
 
+import java.util.Date;
+
 import com.opensymphony.oscache.base.*;
 import com.opensymphony.oscache.base.events.CacheEntryEventListener;
 import com.opensymphony.oscache.base.events.CacheMapAccessEventListener;
@@ -235,6 +237,31 @@ public class TestGeneralCacheAdministrator extends TestAbstractCacheAdministrato
             admin.getCache().removeCacheEventListener(cacheMapAccessEventListener, CacheMapAccessEventListener.class);
         }
     }
+
+
+    /**
+     * Bug CACHE-241
+     */
+	public void testFlushDateTomorrow() {
+		GeneralCacheAdministrator cacheAdmin = new GeneralCacheAdministrator(null);
+		
+		cacheAdmin.putInCache("key1", "key1value");
+		
+		try {
+			assertNotNull(cacheAdmin.getFromCache("key1"));
+		} catch (NeedsRefreshException e1) {
+			fail("Previous cache key1 doesn't exsits in GCA for the test!");
+		}
+		
+		cacheAdmin.flushAll(new Date(System.currentTimeMillis() + 5000)); // flush in 5 sec.
+		try {
+			cacheAdmin.getFromCache("key1"); 
+		} catch (NeedsRefreshException e) {
+			cacheAdmin.cancelUpdate("key1");
+			fail("NRE is thrown, but key will expire in 5s."); // it fails here
+		}
+	}
+
 
     /**
      * Utility method that tries to get an item from the cache and verify
