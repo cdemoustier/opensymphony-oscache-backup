@@ -104,28 +104,29 @@ public class LRUCache extends AbstractConcurrentReadCache {
      * @return The key of whichever item was removed.
      */
     protected Object removeItem() {
+        Object toRemove = null;
+
         removeInProgress = true;
-
-        Object toRemove;
-
         try {
-            toRemove = removeFirst();
-        } catch (Exception e) {
-            // List is empty.
-            // this is theorically possible if we have more than the size concurrent
-            // thread in getItem. Remove completed but add not done yet.
-            // We simply wait for add to complete.
-            do {
+        	while (toRemove == null) {
                 try {
-                    Thread.sleep(5);
-                } catch (InterruptedException ie) {
+                    toRemove = removeFirst();
+                } catch (Exception e) {
+                    // List is empty.
+                    // this is theorically possible if we have more than the size concurrent
+                    // thread in getItem. Remove completed but add not done yet.
+                    // We simply wait for add to complete.
+                    do {
+                        try {
+                            Thread.sleep(5);
+                        } catch (InterruptedException ie) {
+                        }
+                    } while (list.isEmpty());
                 }
-            } while (list.size() == 0);
-
-            toRemove = removeFirst();
+        	}
+        } finally {
+            removeInProgress = false;
         }
-
-        removeInProgress = false;
 
         return toRemove;
     }
@@ -145,9 +146,13 @@ public class LRUCache extends AbstractConcurrentReadCache {
      * @return the object that was removed
      */
     private Object removeFirst() {
-        Iterator it = list.iterator();
-        Object toRemove = it.next();
-        it.remove();
+    	Object toRemove = null;
+    	
+    	synchronized (list) { // A further fix for CACHE-44 and CACHE-246
+        	Iterator it = list.iterator();
+        	toRemove = it.next();
+        	it.remove();
+    	}
 
         return toRemove;
     }
