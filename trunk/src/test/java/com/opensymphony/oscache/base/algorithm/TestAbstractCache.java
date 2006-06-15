@@ -4,6 +4,15 @@
  */
 package com.opensymphony.oscache.base.algorithm;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+
+import com.opensymphony.oscache.base.CacheEntry;
+import com.opensymphony.oscache.base.Config;
+import com.opensymphony.oscache.base.persistence.CachePersistenceException;
+import com.opensymphony.oscache.base.persistence.PersistenceListener;
+
 import junit.framework.TestCase;
 
 /**
@@ -98,4 +107,121 @@ public abstract class TestAbstractCache extends TestCase {
 
     // Abstract method that returns an instance of an admin
     protected abstract AbstractConcurrentReadCache getCache();
+
+    /**
+     * Test that groups are correctly updated on puts and removes
+     * See CACHE-188 and maybe CACHE-244
+     */
+    public void testGroups() {
+      String KEY = "testkey";
+      String KEY2 = "testkey2";
+      String GROUP_NAME = "group1";
+      CacheEntry entry = new CacheEntry(KEY, null);
+      entry.setContent("testvalue");
+      entry.setGroups(new String[] {GROUP_NAME});
+      getCache().put(KEY, entry);
+
+      Map m = getCache().getGroupsForReading();
+      assertNotNull("group must exist", m.get(GROUP_NAME));
+      try {
+        Set group = (Set)m.get(GROUP_NAME);
+        assertEquals(1, group.size());
+        Object keyFromGroup = group.iterator().next();
+        assertEquals(KEY, keyFromGroup);
+      } catch (ClassCastException e) {
+        fail("group should have been a java.util.Set but is a " +
+            m.get(GROUP_NAME).getClass().getName());
+      }
+
+      assertNotNull(getCache().remove(KEY));
+
+      m = getCache().getGroupsForReading();
+      assertNull("group should have been deleted (see CACHE-188)", m.get(GROUP_NAME));
+      getCache().clear();
+
+      // Test if persistence options are correctly considered for groups
+      try {
+        PersistenceListener listener = new MockPersistenceListener();
+        getCache().setPersistenceListener(listener);
+        getCache().setOverflowPersistence(false);
+        getCache().put(KEY, entry);
+        assertTrue(listener.isStored(KEY));
+        Set group = listener.retrieveGroup(GROUP_NAME);
+        assertNotNull(group);
+        assertTrue(group.contains(KEY));
+
+        getCache().remove(KEY);
+        assertFalse(listener.isStored(KEY));
+        getCache().clear();
+
+        // test overflow persistence
+        getCache().setOverflowPersistence(true);
+        getCache().setMaxEntries(1);
+        getCache().put(KEY, entry);
+        assertFalse(listener.isStored(KEY));
+        // is it correct that the group is persisted, even when we use overflow only?
+        // assertFalse(listener.isGroupStored(GROUP_NAME));
+
+        CacheEntry entry2 = new CacheEntry(KEY2);
+        entry2.setContent("testvalue");
+        entry2.setGroups(new String[] {GROUP_NAME});
+        getCache().put(KEY2, entry2);
+        // oldest must have been persisted to disk:
+        assertTrue(listener.isStored(KEY));
+        assertFalse(listener.isStored(KEY2));
+        assertNotNull(getCache().get(KEY2));
+      } catch (CachePersistenceException e) {
+        e.printStackTrace();
+        fail("Excpetion was thrown");
+      }
+      
+    }
+
+
+    private static class MockPersistenceListener implements PersistenceListener {
+      
+      private Map entries = new HashMap();
+      private Map groups = new HashMap();
+
+      public void clear() throws CachePersistenceException {
+        entries.clear();
+        groups.clear();
+      }
+
+      public PersistenceListener configure(Config config) {
+        return this;
+      }
+
+      public boolean isGroupStored(String groupName) throws CachePersistenceException {
+        return groups.containsKey(groupName);
+      }
+
+      public boolean isStored(String key) throws CachePersistenceException {
+        return entries.containsKey(key);
+      }
+
+      public void remove(String key) throws CachePersistenceException {
+        entries.remove(key);
+      }
+
+      public void removeGroup(String groupName) throws CachePersistenceException {
+        groups.remove(groupName);
+      }
+
+      public Object retrieve(String key) throws CachePersistenceException {
+        return entries.get(key);
+      }
+
+      public Set retrieveGroup(String groupName) throws CachePersistenceException {
+        return (Set)groups.get(groupName);
+      }
+
+      public void store(String key, Object obj) throws CachePersistenceException {
+        entries.put(key, obj);
+      }
+
+      public void storeGroup(String groupName, Set group) throws CachePersistenceException {
+        groups.put(groupName, group);
+      }
+    }
 }
