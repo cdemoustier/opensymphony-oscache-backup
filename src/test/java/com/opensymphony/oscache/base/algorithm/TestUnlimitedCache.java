@@ -81,4 +81,12 @@ public final class TestUnlimitedCache extends TestQueueCache {
         cache.itemPut(KEY);
         assertNull(cache.removeItem());
     }
+    
+    /**
+     * Test that groups are correctly updated on puts and removes
+     */
+    public void testGroups() {
+    	// test not possible, because can't reduce cache max entries for this test	
+    }
+
 }
