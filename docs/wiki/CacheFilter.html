@@ -56,7 +56,7 @@ Note that the filter will only cache content that has a status of 200 (HttpServl
 
 <p>The scope parameter lets you set the scope to cache content in. Valid values for the scope are <em>application</em> (default) and <em>session</em>.</p>
 
-<h4><a name="CacheFilter-Parameter%3Acron%28Newinupcomingrelease2.3%29"></a><a name="CacheFilter-cron"></a>Parameter: cron (New in upcoming release 2.3)</h4>
+<h4><a name="CacheFilter-Parameter%3Acron%28NEW%5C%21Since2.3%29"></a><a name="CacheFilter-cron"></a>Parameter: cron (NEW&#33; Since 2.3)</h4>
 
 <p>A cron expression that determines when the page content will expire. This allows content to be expired at particular dates and/or times, rather than once a cache entry reaches a certain age. See <a href="Cron Expressions.html" title="Cron Expressions">Cron Expressions</a> to read more about this attribute. Please consider that the (default) time value is still evaluated, hence the time value should be set to indefinite expiry.</p>
 
@@ -71,6 +71,10 @@ Note that the filter will only cache content that has a status of 200 (HttpServl
 <h4><a name="CacheFilter-Parameter%3AlastModified%28NEW%5C%21Since2.2%29"></a><a name="CacheFilter-lastModified"></a>Parameter: lastModified (NEW&#33; Since 2.2)</h4>
 
 <p>Defines if the last modified header will be sent in the response. Acceptable values are <em>off</em> for don't sending the header, even it is set in the filter chain, <em>on</em> for sending it if it is set in the filter chain and <em>initial</em> (default) the last modified information will be set based on current time.</p>
+
+<h4><a name="CacheFilter-Parameter%3Amaxage%28NEW%5C%21Since2.3.1%29"></a><a name="CacheFilter-maxage"></a>Parameter: max-age (NEW&#33; Since 2.3.1)</h4>
+
+<p>Specifies the maximum amount of time in seconds that the cache content will be considered new in the browser's cache. The browser will retrieve the content from it's own cache for the amount of time without requesting the web server again. The default max-age time is 60 seconds. Combined with the <a href="#CacheFilter-lastModified" title="lastModified on CacheFilter">last modified header</a> the transaction overhead and server load is reduced excellently which speed ups the server response time. Further parameters are <em>no init</em> for don't initializing the max-age cache control and <em>time</em> to set max-age based on the time parameter and creation time of the content (expiration timestamp minus current timestamp) by each request.</p>
 
 <h4><a name="CacheFilter-Parameter%3Aexpires%28NEW%5C%21Since2.2%29"></a><a name="CacheFilter-expires"></a>Parameter: expires (NEW&#33; Since 2.2)</h4>
 

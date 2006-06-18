@@ -15,28 +15,24 @@
 
 <p><b>OSCache</b> comes with a servlet filter that enables you to transparently cache entire pages of your website, and even binary files. Caching of binary files is extremely useful when they are generated dynamically, e.g. PDF files or images. In addition by using the last modified header the transaction overhead and server load is reduced excellently which speed ups the server response time.</p>
 
-<p>How to configure OSCache to cache entire servlet responses is described in the <a href="CacheFilter.html" title="CacheFilter">configuration page of the CacheFilter</a>.</p>
+<p>How to configure OSCache to cache entire servlet responses is described in the <a href="CacheFilter.html" title="CacheFilter">configuration page of the CacheFilter</a>. This short tutorial should demonstrate how to make your web site more responsive, and save load on your server. Using the CacheFilter the user will appreciate a faster loading site and will visit it more often.</p>
 
-<p>Besides bugs being fixed in the 2.2 release, major improvements have been made to the CacheFilter in many ways:</p>
+<h3><a name="CacheFilterTutorial-Improvements"></a>Improvements</h3>
+
+<p>Major improvements have been made to the CacheFilter in the releases 2.2 and 2.3:</p>
 
 <ul>
 	<li>Default initialization of the last modified header which reduces transaction overhead and server load</li>
+	<li>CRON expressions to expire content at specific dates and/or times</li>
 	<li>Preserving more http headers, e.g. the expires header</li>
 	<li>Special handling for fragments of a page</li>
 	<li>Custom cache key generation by subclassing CacheFilter or by implementing a special interface</li>
 	<li>Custom cache groups generation by subclassing CacheFilter or by implementing a special interface</li>
 	<li>Support of GZip filters in the filter chain</li>
 	<li>Avoids session creation for application scope pages</li>
+	<li>Reduced memory consumption</li>
 	<li>Multiple matching cache filters won't dead-lock the response anymore</li>
 	<li>The cache won't be serve the same response twice before the client begins to cache it anymore</li>
-</ul>
-
-
-<p>The upcoming 2.3 release will include further improvements to the CacheFilter:</p>
-
-<ul>
-	<li>CRON expressions to expire content at specific dates and/or times</li>
-	<li>Reduced memory consumption</li>
 </ul>
 
 
