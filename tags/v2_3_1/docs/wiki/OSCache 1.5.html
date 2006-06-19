@@ -1,0 +1,34 @@
+<html>
+    <head>
+        <title>OSCache - 
+        OSCache 1.5
+         </title>
+	    <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body>
+	    <table class="pagecontent" border="0" cellpadding="0" cellspacing="0" width="100%" bgcolor="#ffffff">
+		    <tr>
+			    <td valign="top" class="pagebody">
+				    <h3><a name="OSCache1.5-ReleaseNotes"></a>Release Notes</h3>
+
+<p>(6th August, 2001 - by Todd Gochenour, tgochenour@peregrine.com)</p>
+
+<ul>
+	<li>Added boolean "cache.memory" attribute to oscache.properties to eliminate memory consumption and rely strictly on disk storage.</li>
+	<li>Added three interfaces "CacheLog", "CacheProperties", and "CacheContents" to allow plugable implementations for these functions. The CacheContents interface allows the pages to be cached using a database.</li>
+	<li>Added "Language" attribute to CacheTag and FlushTag to distinguish a page that supports I18N generation. The ISO-639 language code is used when the scope of the page is "Application". The code defines a subdirectory under the "application" directory of file caching.</li>
+	<li>Modified the CacheAdministrator.generateKey() function to append the request's QueryString to the URI when automatically generating keys. The QueryString is encoded using the MD5 digest base64 algorithms.</li>
+	<li>Added attribute "encoding" to a CacheTag so that the file IO does proper conversion when reading and writing the cache files. (per suggestion of Pedro Gomez)</li>
+	<li>Added retries when SecurityException is thrown. Java has no built in exclusive file locking implementations. The file is written to a lock file and then renamed as an atomic operation so that multiple processes on the same box can reliable access cache data.</li>
+	<li>Added "pattern" attribute to FlushTag which invokes a CacheHashMap.flushPattern() function to scan for and flush all keys that contain the value of the pattern. (per suggestion of Todd Rudrick)</li>
+	<li>Added support for a CacheTag time value of zero which turns off caching for that tag. (per suggestion of Pedro Gomez)</li>
+</ul>
+
+
+                    			    </td>
+		    </tr>
+	    </table>
+    </body>
+</html>

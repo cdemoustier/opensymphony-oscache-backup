@@ -1,0 +1,41 @@
+<html>
+    <head>
+        <title>OSCache - 
+        OSCache 2.0.2
+         </title>
+	    <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body>
+	    <table class="pagecontent" border="0" cellpadding="0" cellspacing="0" width="100%" bgcolor="#ffffff">
+		    <tr>
+			    <td valign="top" class="pagebody">
+				    <h3><a name="OSCache2.0.2-ReleaseNotes"></a>Release Notes</h3>
+
+<p>(22nd January 2004 - by Mathias Bogaert)</p>
+
+<h4><a name="OSCache2.0.2-Improvements%3A"></a>Improvements:</h4>
+
+<ul>
+	<li>Website documentation updates.</li>
+	<li>Added OSCache in the Wild.</li>
+</ul>
+
+
+<h4><a name="OSCache2.0.2-BugFixes%3A"></a>Bug Fixes:</h4>
+
+<ul>
+	<li><a href="http://jira.opensymphony.com/browse/CACHE-63" title="Visit page outside Confluence">CACHE-63 </a> NullPointerException in GeneralCacheAdministrator#destroy().</li>
+	<li><a href="http://jira.opensymphony.com/browse/CACHE-44" title="Visit page outside Confluence">CACHE-44 </a> Multi threading issues with LRU Cache.</li>
+	<li><a href="http://jira.opensymphony.com/browse/CACHE-66" title="Visit page outside Confluence">CACHE-66 </a> DiskPersistenceListener is not Serializable.</li>
+	<li>GeneralCacheAdministrator now creates the cache from within the constructor. This prevents possible threading issues if the cache is not initialized during application startup.</li>
+</ul>
+
+
+
+                    			    </td>
+		    </tr>
+	    </table>
+    </body>
+</html>
