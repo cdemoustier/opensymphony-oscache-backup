@@ -113,7 +113,6 @@ public abstract class TestAbstractCache extends TestCase {
      * See CACHE-188 and maybe CACHE-244
      */
     public void testGroups() {
-    	/* TODO uncomment for 2.3.2 and for fixing issues CACHE-188 and maybe CACHE-244
       String KEY = "testkey";
       String KEY2 = "testkey2";
       String GROUP_NAME = "group1";
@@ -175,7 +174,6 @@ public abstract class TestAbstractCache extends TestCase {
         e.printStackTrace();
         fail("Excpetion was thrown");
       }
-      */
     }
 
 

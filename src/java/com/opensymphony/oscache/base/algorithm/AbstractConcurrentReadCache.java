@@ -232,7 +232,7 @@ public abstract class AbstractConcurrentReadCache extends AbstractMap implements
     /**
      * Persistence listener.
      */
-    protected PersistenceListener persistenceListener = null;
+    protected transient PersistenceListener persistenceListener = null;
 
     /**
      * Use memory cache or not.
@@ -375,7 +375,7 @@ public abstract class AbstractConcurrentReadCache extends AbstractMap implements
         if (groupEntries == null) {
             // Not in the map, try the persistence layer
             groupEntries = persistRetrieveGroup(groupName);
-        } 
+        }
 
         return groupEntries;
     }
@@ -390,7 +390,7 @@ public abstract class AbstractConcurrentReadCache extends AbstractMap implements
             synchronized (this) { // because remove() isn't synchronized
 
                 while (size() > maxEntries) {
-                    remove(removeItem(), false);
+                    remove(removeItem(), false, false);
                 }
             }
         } else {
@@ -892,7 +892,18 @@ public abstract class AbstractConcurrentReadCache extends AbstractMap implements
      */
     /** OpenSymphony BEGIN */
     public Object remove(Object key) {
-        return remove(key, true);
+        return remove(key, true, false);
+    }
+
+    /**
+     * Like <code>remove(Object)</code>, but ensures that the entry will be removed from the persistent store, too,
+     * even if overflowPersistence or unlimitedDiskcache are true.
+     *
+     * @param key
+     * @return
+     */
+    public Object removeForce(Object key) {
+      return remove(key, true, true);
     }
 
     /**
@@ -940,21 +951,21 @@ public abstract class AbstractConcurrentReadCache extends AbstractMap implements
                     };
         }
     }
-    
+
     /**
      * Get ref to group.
      * CACHE-127 Synchronized copying of the group entry set since
-     * the new HashSet(Collection c) constructor uses the iterator.  
-     * This may slow things down but it is better than a 
+     * the new HashSet(Collection c) constructor uses the iterator.
+     * This may slow things down but it is better than a
      * ConcurrentModificationException.  We might have to revisit the
      * code if performance is too adversely impacted.
      **/
     protected synchronized final Set getGroupForReading(String groupName) {
-    	Set group = (Set) getGroupsForReading().get(groupName);
+        Set group = (Set) getGroupsForReading().get(groupName);
         if (group == null) return null;
         return new HashSet(group);
     }
-    
+
     /**
      * Get ref to groups.
      * The reference and the cells it
@@ -1374,16 +1385,38 @@ public abstract class AbstractConcurrentReadCache extends AbstractMap implements
                 return null;
             } else if ((key == e.key) || ((e.hash == hash) && key.equals(e.key))) {
                 Object oldValue = e.value;
+                if (persistenceListener != null && (oldValue == NULL)) {
+                  oldValue = persistRetrieve(key);
+                }
+
                 e.value = null;
                 count--;
 
                 /** OpenSymphony BEGIN */
                 if (!unlimitedDiskCache && !overflowPersistence) {
                     persistRemove(e.key);
+                    // If we have a CacheEntry, update the groups
+                    if (oldValue instanceof CacheEntry) {
+                      CacheEntry oldEntry = (CacheEntry)oldValue;
+                      removeGroupMappings(oldEntry.getKey(),
+                          oldEntry.getGroups(), true);
+                }
+                } else {
+                  // only remove from memory groups
+                  if (oldValue instanceof CacheEntry) {
+                    CacheEntry oldEntry = (CacheEntry)oldValue;
+                    removeGroupMappings(oldEntry.getKey(),
+                        oldEntry.getGroups(), false);
+                  }
                 }
 
                 if (overflowPersistence && ((size() + 1) >= maxEntries)) {
                     persistStore(key, oldValue);
+                    // add key to persistent groups but NOT to the memory groups
+                    if (oldValue instanceof CacheEntry) {
+                      CacheEntry oldEntry = (CacheEntry)oldValue;
+                      addGroupMappings(oldEntry.getKey(), oldEntry.getGroups(), true, false);
+                    }
                 }
 
                 if (invokeAlgorithm) {
@@ -1467,14 +1500,16 @@ public abstract class AbstractConcurrentReadCache extends AbstractMap implements
      * @param newGroups the set of groups we want to add this cache entry to.
      * @param persist A flag to indicate whether the keys should be added to
      * the persistent cache layer.
+     * @param memory A flag to indicate whether the key should be added to
+     * the memory groups (important for overflow-to-disk)
      */
-    private void addGroupMappings(String key, Set newGroups, boolean persist) {
+    private void addGroupMappings(String key, Set newGroups, boolean persist, boolean memory) {
         // Add this CacheEntry to the groups that it is now a member of
         for (Iterator it = newGroups.iterator(); it.hasNext();) {
             String groupName = (String) it.next();
 
             // Update the in-memory groups
-            if (memoryCaching) {
+            if (memoryCaching && memory) {
                 if (groups == null) {
                     groups = new HashMap();
                 }
@@ -1560,7 +1595,7 @@ public abstract class AbstractConcurrentReadCache extends AbstractMap implements
 
                     // Remove an item if the cache is full
                     if (size() >= maxEntries) {
-                        remove(removeItem(), false);
+                        remove(removeItem(), false, false);
                     }
 
                     if (first == tab[index]) {
@@ -1661,7 +1696,7 @@ public abstract class AbstractConcurrentReadCache extends AbstractMap implements
         }
     }
 
-    private synchronized Object remove(Object key, boolean invokeAlgorithm)
+    private synchronized Object remove(Object key, boolean invokeAlgorithm, boolean forcePersist)
     /* Previous code
     public Object remove(Object key) */
 
@@ -1712,6 +1747,9 @@ public abstract class AbstractConcurrentReadCache extends AbstractMap implements
                     tab = table;
 
                     Object oldValue = e.value;
+                    if (persistenceListener != null && (oldValue == NULL)) {
+                      oldValue = persistRetrieve(key);
+                    }
 
                     // re-find under synch if wrong list
                     if ((first != tab[index]) || (oldValue == null)) {
@@ -1727,12 +1765,30 @@ public abstract class AbstractConcurrentReadCache extends AbstractMap implements
                     count--;
 
                     /** OpenSymphony BEGIN */
-                    if (!unlimitedDiskCache && !overflowPersistence) {
+                    if (forcePersist || (!unlimitedDiskCache && !overflowPersistence)) {
                         persistRemove(e.key);
+                        // If we have a CacheEntry, update the group lookups
+                        if (oldValue instanceof CacheEntry) {
+                          CacheEntry oldEntry = (CacheEntry)oldValue;
+                            removeGroupMappings(oldEntry.getKey(),
+                                oldEntry.getGroups(), true);
+                    }
+                    } else {
+                      // only remove from memory groups
+                      if (oldValue instanceof CacheEntry) {
+                        CacheEntry oldEntry = (CacheEntry)oldValue;
+                        removeGroupMappings(oldEntry.getKey(),
+                            oldEntry.getGroups(), false);
+                      }
                     }
 
-                    if (overflowPersistence && ((size() + 1) >= maxEntries)) {
+                    if (!forcePersist && overflowPersistence && ((size() + 1) >= maxEntries)) {
                         persistStore(key, oldValue);
+                        // add key to persistent groups but NOT to the memory groups
+                        if (oldValue instanceof CacheEntry) {
+                          CacheEntry oldEntry = (CacheEntry)oldValue;
+                          addGroupMappings(oldEntry.getKey(), oldEntry.getGroups(), true, false);
+                        }
                     }
 
                     if (invokeAlgorithm) {
@@ -1759,7 +1815,7 @@ public abstract class AbstractConcurrentReadCache extends AbstractMap implements
 
     /**
      * Remove this CacheEntry from the groups it no longer belongs to.
-     *  We have to treat the memory and disk group mappings seperately so they remain
+     * We have to treat the memory and disk group mappings separately so they remain
      * valid for their corresponding memory/disk caches. (eg if mem is limited
      * to 100 entries and disk is unlimited, the group mappings will be
      * different).
@@ -1771,6 +1827,10 @@ public abstract class AbstractConcurrentReadCache extends AbstractMap implements
      * from the persistent cache layer.
      */
     private void removeGroupMappings(String key, Set oldGroups, boolean persist) {
+        if (oldGroups == null) {
+          return;
+        }
+
         for (Iterator it = oldGroups.iterator(); it.hasNext();) {
             String groupName = (String) it.next();
 
@@ -1877,7 +1937,7 @@ public abstract class AbstractConcurrentReadCache extends AbstractMap implements
                 }
             }
 
-            addGroupMappings(newValue.getKey(), addToGroups, persist);
+            addGroupMappings(newValue.getKey(), addToGroups, persist, true);
         }
     }
 

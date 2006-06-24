@@ -2,9 +2,9 @@
 <?xml-stylesheet type="text/xsl" href="http://www.jayasoft.fr/org/ivyrep/ivy-doc.xsl"?>
 <ivy-module version="1.0">
     <info organisation="opensymphony" module="oscache"
-          revision="2.3.1"
+          revision="2.3.2"
           status="integration"
-          publication="20060617120000">
+          publication="20060620120000">
         <license name="Apache" url="http://www.apache.org/licenses/LICENSE-2.0.txt"/>
         <ivyauthor name="opensymphony" url="http://www.opensymphony.com/"/>
 
