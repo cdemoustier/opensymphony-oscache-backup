@@ -55,7 +55,8 @@ The following properties are able to be set in the oscache.properties file:</p>
 
 <h4><a name="Configuration-cache.path"></a>cache.path</h4>
 
-<p>This specifies the directory on disk where caches will be stored. The directory will be created if it doesn't already exist, but remember that OSCache must have permission to write to this location.</p>
+<p>This specifies the directory on disk where the caches will be stored. The directory will be created if it doesn't already exist, but remember that OSCache must have permission to write to this location. Avoid sharing the same cache path between different caches, because OSCache has not been designed to handle this.</p>
+
 <table cellpadding='5' width='85%' cellspacing='8px' class='noteMacro' border="0" align='center'><colgroup><col width='24'><col></colgroup><tr><td valign='top'><img src="/images/icons/emoticons/warning.gif" width="16" height="16" align="absmiddle" alt="" border="0"></td><td><b class="strong">Note</b><br />
 <p>    For Windows machines, the backslash character '\' needs to be escaped. ie in Windows:</p></td></tr></table>
 <div class="preformatted"><div class="preformattedContent">
@@ -88,7 +89,7 @@ The following properties are able to be set in the oscache.properties file:</p>
 </ul>
 
 
-<p>It is also of course quite straightforward to write your own event listener. See the <a href="http://www.opensymphony.com/oscache/api" title="Visit page outside Confluence">JavaDoc API</a> for further details.</p>
+<p>It is also of course quite straightforward to write your own event listener. See the <a href="http://www.opensymphony.com/oscache/api" title="Visit page outside Confluence">JavaDoc API</a> for further details and <a href="Statistics.html" title="Statistics">Statistics</a> for an example.</p>
 
 
 <h4><a name="Configuration-cache.key"></a>cache.key</h4>
