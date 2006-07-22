@@ -1,0 +1,68 @@
+<html>
+    <head>
+        <title>OSCache - 
+        Legacy Installation Guide
+         </title>
+	    <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body>
+	    <table class="pagecontent" border="0" cellpadding="0" cellspacing="0" width="100%" bgcolor="#ffffff">
+		    <tr>
+			    <td valign="top" class="pagebody">
+				    <p>This legacy installation guide shows you how to configure OSCache with Java 1.3 or in a Servlet 2.2 container (included in J2EE 1.2). The latest release may require at least Java 1.4 and/or a Servlet 2.3 container, hence you have to check the <a href="Change Log.html" title="Change Log">release notes</a> and download a release which fits to your enviroment.</p>
+
+<h4><a name="LegacyInstallationGuide-ExtractionSteps"></a>Extraction Steps</h4>
+
+<ol>
+	<li>Extract the downloaded file to a directory of your choosing.</li>
+	<li>Put the oscache.jar file in the <tt>/WEB-INF/lib</tt> directory</li>
+	<li>Make sure <tt>commons-logging.jar</tt> is on your classpath (normally this also means putting it in <tt>/WEB-INF/lib</tt>).</li>
+	<li>If you are using Java 1.3 it is optional, but strongly recommended, to add <tt>commons-collections.jar</tt> to your classpath. OSCache will use this to provide a significant speed increase. (Note that with Java 1.4 and higher, <tt>commons-collections.jar</tt> will not be used - the 1.4 implementation is faster still).</li>
+	<li>Put the <tt>/etc/oscache.properties</tt> file in the <tt>/WEB-INF/classes</tt> directory and edit the properties contained within it (for example if you want disk caching, configure the persistence listener and edit the <tt>cache.path</tt> property to point to where you want the cache files stored on disk). See the <a href="configuration.html" title="Configuration">Configuration Guide</a> for further details on what options are available.</li>
+	<li>Remember to escape any \ characters in Windows paths - ie if you want cache files to go in c:\cachedir, the <tt>cache.path</tt> property should be set to c:\ \cachedir.</li>
+	<li>Put the <tt>/etc/oscache.tld</tt> file in your <tt>/WEB-INF/classes</tt> directory.</li>
+	<li>Your directory structure should now look something like this:
+<div class="panel"><div class="panelContent">
+<p>    $WEB_APPLICATION/WEB-INF/lib/oscache.jar<br/>
+    $WEB_APPLICATION/WEB-INF/classes/oscache.properties<br/>
+    $WEB_APPLICATION/WEB-INF/classes/oscache.tld</p>
+</div></div></li>
+</ol>
+
+
+<h4><a name="LegacyInstallationGuide-InstallationSteps"></a>Installation Steps</h4>
+
+<ol>
+	<li>Add the following to your web.xml file
+<div class="code"><div class="codeContent">
+<pre class="code-xml"><span class="code-tag">&lt;taglib&gt;</span>
+    <span class="code-tag">&lt;taglib-uri&gt;</span>oscache<span class="code-tag">&lt;/taglib-uri&gt;</span>
+    <span class="code-tag">&lt;taglib-location&gt;</span>/WEB-INF/classes/oscache.tld<span class="code-tag">&lt;/taglib-location&gt;</span>
+<span class="code-tag">&lt;/taglib&gt;</span></pre>
+</div></div></li>
+	<li>Now add the appropriate <a href="JSP Tags.html" title="JSP Tags">tags</a> to your JSP files and you're done.</li>
+	<li>It should work properly. <a href="mailto:users@oscache.dev.java.net" title="Send mail to Tell us on the mailing list">Tell us on the mailing list</a> if it doesn't work in your container.</li>
+</ol>
+
+
+<table cellpadding='5' width='85%' cellspacing='8px' class='infoMacro' border="0" align='center'><colgroup><col width='24'><col></colgroup><tr><td valign='top'><img src="/images/icons/emoticons/information.gif" width="16" height="16" align="absmiddle" alt="" border="0"></td><td><b class="strong">Logging</b><br />
+<p>OSCache uses <a href="http://jakarta.apache.org/commons/logging/" title="Visit page outside Confluence">Jakarta Commons Logging</a> for logging any messages. Please see the Commons Logging documentation for details on logging configuration.</p></td></tr></table>
+
+<table cellpadding='5' width='85%' cellspacing='8px' class='tipMacro' border="0" align='center'><colgroup><col width='24'><col></colgroup><tr><td valign='top'><img src="/images/icons/emoticons/check.gif" width="16" height="16" align="absmiddle" alt="" border="0"></td><td><b class="strong">Debugging</b><br />
+<p>Note that OSCache has been compiled with debugging information enabled so you should be able to use your favourite debugger to step through the source if need be.</p></td></tr></table>
+
+<table cellpadding='5' width='85%' cellspacing='8px' class='tipMacro' border="0" align='center'><colgroup><col width='24'><col></colgroup><tr><td valign='top'><img src="/images/icons/emoticons/check.gif" width="16" height="16" align="absmiddle" alt="" border="0"></td><td><b class="strong">Servlet 2.3</b><br />
+<p>You can omit putting the <tt>/etc/oscache.tld</tt> file in your <tt>/WEB-INF/classes</tt> directory and omit declaring OSCache in the <tt>WEB-INF/web.xml</tt>. You just have to add the following line declaring the OSCache custom tag library for use on the jsp page:</p>
+
+<p><tt>&lt;%@ taglib uri="http://www.opensymphony.com/oscache" prefix="oscache" %&gt;</tt></p>
+
+
+<p><em>Note: In OSCache releases before 2.1.1 you have to change the URI to <tt>/oscache</tt>, see <a href="http://jira.opensymphony.com/browse/CACHE-61" title="Visit page outside Confluence">CACHE-61</a>.</em></p></td></tr></table>
+
+                    			    </td>
+		    </tr>
+	    </table>
+    </body>
+</html>

@@ -1,0 +1,32 @@
+<html>
+    <head>
+        <title>OSCache - 
+        OSCache 1.6.1
+         </title>
+	    <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body>
+	    <table class="pagecontent" border="0" cellpadding="0" cellspacing="0" width="100%" bgcolor="#ffffff">
+		    <tr>
+			    <td valign="top" class="pagebody">
+				    <h3><a name="OSCache1.6.1-ReleaseNotes"></a>Release Notes</h3>
+
+<p>(16th September, 2001 - by Todd Gochenour, tgochenour@peregrine.com)</p>
+
+<ul>
+	<li>Removed attribute "encoding" in all areas, since Object serialization stores strings in UTF-8 format, encoding is no longer necessary.</li>
+	<li>Added Synchronization to getCacheEntry() to insure multiple threads do not access HashMap and get erroneous results.</li>
+	<li>Implemented property cache.useHostDomainInKey (true/false) to prepend URL request server name to cache key when cache used by multiple servers. The "cache.domainname" property found in oscache.properties (not used in code) was removed.</li>
+	<li>Corrected file caching logic so that multiple processes can share cache information (file locking). Missing still is the ability to signal processes that a cache needs to be flushed when using Memory Caching along with File Caching.</li>
+	<li>Unit testing revealed some minor configuration bugs which were corrected.</li>
+</ul>
+
+
+
+                    			    </td>
+		    </tr>
+	    </table>
+    </body>
+</html>
