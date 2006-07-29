@@ -91,9 +91,11 @@
 <span class="code-tag">&lt;/filter-mapping&gt;</span></pre>
 </div></div>
 
-<h4><a name="CacheFilterTutorial-Example3"></a>Example 3</h4>
+<h3><a name="CacheFilterTutorial-Usingthefilter"></a>Using the filter</h3>
 
-<p>A simple example how to use the <a href="CacheFilter.html#CacheFilter-ICacheKeyProvider" title="ICacheKeyProvider on CacheFilter">ICacheKeyProvider</a> parameter of the CacheFilter. The cache key in constructed with the two request parameters <em>pageid</em> and <em>pagination</em>.</p>
+<h4><a name="CacheFilterTutorial-Example1%3AICacheKeyProvider"></a>Example 1: ICacheKeyProvider</h4>
+
+<p>A simple example how to use the <a href="CacheFilter.html#CacheFilter-ICacheKeyProvider" title="ICacheKeyProvider on CacheFilter">ICacheKeyProvider</a> parameter of the CacheFilter. The cache key in constructed with the http request URI and with two request parameters <em>pageid</em> and <em>pagination</em>.</p>
 
 <div class="code"><div class="codeContent">
 <pre class="code-java"><span class="code-keyword">import</span> javax.servlet.http.HttpServletRequest;
@@ -102,26 +104,73 @@
 <span class="code-keyword">import</span> com.opensymphony.oscache.web.ServletCacheAdministrator;
 <span class="code-keyword">import</span> com.opensymphony.oscache.web.filter.ICacheKeyProvider;
 
-<span class="code-keyword">public</span> class InsideCacheKeyProvider <span class="code-keyword">implements</span> ICacheKeyProvider {
+<span class="code-keyword">public</span> class ExampleCacheKeyProvider <span class="code-keyword">implements</span> ICacheKeyProvider {
 
     <span class="code-keyword">public</span> <span class="code-object">String</span> createCacheKey(HttpServletRequest httpRequest, ServletCacheAdministrator scAdmin, Cache cache) {
 
         <span class="code-comment">// buffer <span class="code-keyword">for</span> the cache key
 </span>        <span class="code-object">StringBuffer</span> buffer = <span class="code-keyword">new</span> <span class="code-object">StringBuffer</span>(100);
         
-        <span class="code-comment">// part 1 of the key: the page id
+        <span class="code-comment">// part 1 of the key: the request uri
+</span>        buffer.append(httpRequest.getRequestURI());
+        
+        <span class="code-comment">// separation
+</span>        buffer.append('_');
+
+        <span class="code-comment">// part 2 of the key: the page id
 </span>        buffer.append(httpRequest.getParameter(<span class="code-quote">"pageid"</span>));
         
         <span class="code-comment">// separation
 </span>        buffer.append('_');
         
-        <span class="code-comment">// part 2 of the key: the pagination
+        <span class="code-comment">// part 3 of the key: the pagination
 </span>        buffer.append(httpRequest.getParameter(<span class="code-quote">"pagination"</span>));
         
         <span class="code-keyword">return</span> buffer.toString();
     }
 
 }</pre>
+</div></div>
+
+<p>You can use session attributes values for the cache key also, if request parameters aren't available or e.g. security settings have to be add to the cache key.</p>
+
+<h4><a name="CacheFilterTutorial-Example2%3AFlush"></a>Example 2: Flush</h4>
+
+<p>The flush example shows how to flush a CacheFilter with scope <em>application</em> based on group names. In this example the http servlet request of the user is required to get the cache object.</p>
+
+<div class="code"><div class="codeContent">
+<pre class="code-java"><span class="code-keyword">import</span> com.opensymphony.oscache.base.Cache;
+<span class="code-keyword">import</span> com.opensymphony.oscache.web.ServletCacheAdministrator;
+
+<span class="code-keyword">import</span> java.util.Collection;
+<span class="code-keyword">import</span> java.util.Iterator;
+
+<span class="code-keyword">import</span> javax.servlet.http.HttpServletRequest;
+<span class="code-keyword">import</span> javax.servlet.jsp.PageContext;
+
+<span class="code-keyword">public</span> class OSCacheAdmin {
+    
+    /**
+     * flush the CacheFilter according to dependent group
+     *
+     * @param request the HttpServletRequest of the user
+     * @param groupNames a string collection of group names
+     */
+    <span class="code-keyword">public</span> <span class="code-keyword">static</span> void flushCacheGroup(HttpServletRequest request, Collection groupNames) {
+    	Cache cache = ServletCacheAdministrator.getInstance(request.getSession().getServletContext()).getCache(request, PageContext.APPLICATION_SCOPE); 
+        Iterator groups = groupNames.iterator();
+        <span class="code-keyword">while</span> (groups.hasNext()) {
+            <span class="code-object">String</span> group = (<span class="code-object">String</span>) groups.next();
+            cache.flushGroup(group);
+        }
+    }
+}</pre>
+</div></div>
+
+<p>If you're CacheFilter is running with scope <em>session</em>, you have to get the cache as follows:</p>
+
+<div class="code"><div class="codeContent">
+<pre class="code-java">Cache cache = ServletCacheAdministrator.getInstance(request.getSession(<span class="code-keyword">true</span>).getServletContext()).getCache(request, PageContext.SESSION_SCOPE);</pre>
 </div></div>
 
                     			    </td>

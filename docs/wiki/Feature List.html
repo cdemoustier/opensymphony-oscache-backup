@@ -73,6 +73,8 @@
 
 <ul>
 	<li>A Servlet 2.3 Filter allows for caching of entire pages and generated binary files (like dynamically created images or PDF files).</li>
+	<li>Caching of binary files is extremely useful when they are generated dynamically and the average creation time is long.</li>
+	<li>The <a href="CacheFilter.html" title="CacheFilter">CacheFilter</a> is using the last modified header to reduce excellently the transaction overhead and server load which speed ups the server response time.</li>
 </ul>
 
 
