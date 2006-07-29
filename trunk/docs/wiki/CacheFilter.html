@@ -42,9 +42,11 @@ Note that the filter will only cache content that has a status of 200 (HttpServl
     <span class="code-tag">&lt;url-pattern&gt;</span>*.jsp<span class="code-tag">&lt;/url-pattern&gt;</span>
 <span class="code-tag">&lt;/filter-mapping&gt;</span></pre>
 </div></div>
-<p>Obviously you will want to set the URL pattern to match only the content you want to cache; this example will cache all JSP pages for 10 minutes in session scope.</p>
+<p>Obviously you will want to set the URL pattern to match only the content you want to cache; this example will cache all JSP pages for 10 minutes in session scope. The default duration is one hour and the default scope for the cache is application scope. </p>
 
-<p>The default duration is one hour and the default scope for the cache is application scope. You can change these special CacheFilter settings using the following initialization parameters.</p>
+<p>If the <a href="#CacheFilter-ICacheKeyProvider" title="ICacheKeyProvider on CacheFilter">ICacheKeyProvider</a> parameter isn't set, the CacheFilter will use the HTTP request URI and the QueryString to create the cache key. </p>
+
+<p>You can change the CacheFilter settings using the following initialization parameters.</p>
 
 <h4><a name="CacheFilter-Parameter%3Atime"></a><a name="CacheFilter-time"></a>Parameter: time</h4>
 
