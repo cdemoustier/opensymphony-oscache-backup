@@ -1,8 +1,11 @@
 /*
- * Copyright (c) 2002-2003 by OpenSymphony
+ * Copyright (c) 2002-2006 by OpenSymphony
  * All rights reserved.
  */
 package com.opensymphony.oscache.base.algorithm;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 
 /**
@@ -14,6 +17,9 @@ package com.opensymphony.oscache.base.algorithm;
  * @author <a href="mailto:abergevin@pyxis-tech.com">Alain Bergevin</a>
  */
 public final class UnlimitedCache extends AbstractConcurrentReadCache {
+	
+    private final Log log = LogFactory.getLog(this.getClass());
+
     /**
      * Creates an unlimited cache by calling the super class's constructor
      * with an <code>UNLIMITED</code> maximum number of entries.
@@ -29,6 +35,7 @@ public final class UnlimitedCache extends AbstractConcurrentReadCache {
      * <code>UnlimitedCache</code>.
      */
     public void setMaxEntries(int maxEntries) {
+    	log.warn("Cache max entries can't be set in " + this.getClass().getName() + ", ignoring value " + maxEntries + ".");
     }
 
     /**
