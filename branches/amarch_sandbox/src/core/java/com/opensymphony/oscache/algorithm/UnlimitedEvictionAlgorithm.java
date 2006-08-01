@@ -2,7 +2,6 @@ package com.opensymphony.oscache.algorithm;
 
 import java.util.Properties;
 
-import com.opensymphony.oscache.core.CacheEntry;
 import com.opensymphony.oscache.core.EvictionAlgorithm;
 
 /**
@@ -48,5 +47,15 @@ public class UnlimitedEvictionAlgorithm implements EvictionAlgorithm {
 	 */
 	public Object evict() {
 		return null;
+	}
+
+	public void setCapacity(int max_entries) {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	
+	public int getCapacity() {
+		return -1;
 	}
 }

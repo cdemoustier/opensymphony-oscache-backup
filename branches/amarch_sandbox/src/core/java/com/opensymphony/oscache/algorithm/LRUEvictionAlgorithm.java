@@ -97,4 +97,12 @@ public class LRUEvictionAlgorithm implements EvictionAlgorithm {
 		}
 		return toEvict;
 	}
+
+	public void setCapacity(int max_entries) {
+		this.maxSize = max_entries;
+	}
+	
+	public int getCapacity() {
+		return this.maxSize;
+	}
 }

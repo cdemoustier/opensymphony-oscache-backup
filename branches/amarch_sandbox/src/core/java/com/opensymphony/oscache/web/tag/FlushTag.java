@@ -55,10 +55,6 @@ public class FlushTag extends TagSupport {
      */
     String key = null;
 
-    /**
-     * if pattern value is specified, all keys that contain the pattern are flushed.
-     */
-    String pattern = null;
     String scope = null;
     int cacheScope = -1;
 
@@ -96,14 +92,6 @@ public class FlushTag extends TagSupport {
         this.language = value;
     }
 
-    /**
-     *  The key pattern to be flushed.
-     * If specified, all entries that contain the pattern will be flushed.
-     *  @param value The key of the specific entry to flush.
-     */
-    public void setPattern(String value) {
-        this.pattern = value;
-    }
 
     /**
      * Set the scope of this flush.
@@ -139,14 +127,6 @@ public class FlushTag extends TagSupport {
             } else {
                 throw new JspTagException("A cache group was specified for flushing, but the scope wasn't supplied or was invalid");
             }
-        } else if (pattern != null) // We're flushing keys which contain the pattern
-         {
-            if (cacheScope >= 0) {
-                Cache cache = admin.getCache((HttpServletRequest) pageContext.getRequest(), cacheScope);
-                cache.flushPattern(pattern);
-            } else {
-                throw new JspTagException("A pattern was specified for flushing, but the scope wasn't supplied or was invalid");
-            }
         } else if (key == null) // we're flushing a whole scope
          {
             if (cacheScope >= 0) {
@@ -160,7 +140,7 @@ public class FlushTag extends TagSupport {
                 String actualKey = admin.generateEntryKey(key, (HttpServletRequest) pageContext.getRequest(), cacheScope, language);
 
                 Cache cache = admin.getCache((HttpServletRequest) pageContext.getRequest(), cacheScope);
-                cache.flushEntry(actualKey);
+                cache.remove(actualKey);
             } else {
                 throw new JspTagException("A cache key was specified for flushing, but the scope wasn't supplied or was invalid");
             }
