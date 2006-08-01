@@ -359,7 +359,7 @@ public class CacheTag extends BodyTagSupport implements TryCatchFinally {
                     } else {
                         String[] groupArray = new String[groups.size()];
                         groups.toArray(groupArray);
-                        cache.putInCache(actualKey, body, groupArray, policy, null);
+                        cache.put(actualKey, body, groupArray, policy);
                     }
                 }
             }
@@ -410,9 +410,6 @@ public class CacheTag extends BodyTagSupport implements TryCatchFinally {
     }
 
     public void doFinally() {
-        if (cancelUpdateRequired && (actualKey != null)) {
-            cache.cancelUpdate(actualKey);
-        }
 
         // reset all states, CACHE-144
         groups = null;

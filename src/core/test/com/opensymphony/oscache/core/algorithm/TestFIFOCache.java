@@ -9,6 +9,7 @@ import junit.framework.TestSuite;
 
 import com.opensymphony.oscache.algorithm.FIFOEvictionAlgorithm;
 import com.opensymphony.oscache.core.Cache;
+import com.opensymphony.oscache.core.EvictionAlgorithm;
 import com.opensymphony.oscache.core.MemoryCache;
 
 /**
@@ -24,7 +25,7 @@ public final class TestFIFOCache extends TestQueueCache {
 	/**
 	 * FIFO Cache object
 	 */
-	private static FIFOEvictionAlgorithm cache = null;
+	private static FIFOEvictionAlgorithm algorithm = null;
 
 	/**
 	 * Constructor
@@ -53,8 +54,8 @@ public final class TestFIFOCache extends TestQueueCache {
 	 * 
 	 * @return A cache instance
 	 */
-	public Cache getCache() {
-		return cache;
+	public EvictionAlgorithm getAlgorithm() {
+		return algorithm;
 	}
 
 	/**
@@ -63,11 +64,9 @@ public final class TestFIFOCache extends TestQueueCache {
 	 */
 	public void setUp() {
 		// Create a cache instance on first invocation
-		if (cache == null) {
-			FIFOEvictionAlgorithm alg = new FIFOEvictionAlgorithm();
-			cache = new MemoryCache();
-			cache.setEvictionAlgorithm(alg);
-			assertNotNull(cache);
+		if (algorithm == null) {
+			algorithm = new FIFOEvictionAlgorithm();
+			assertNotNull(algorithm);
 		}
 	}
 
@@ -78,8 +77,8 @@ public final class TestFIFOCache extends TestQueueCache {
 		// Add 2 elements in the cache and ensure that the one to remove is the
 		// first
 		// inserted
-		cache.itemPut(KEY);
-		cache.itemPut(KEY + 1);
-		assertTrue(KEY.equals(cache.removeItem()));
+		algorithm.evaluatePut(KEY);
+		algorithm.evaluatePut(KEY + 1);
+		assertTrue(KEY.equals(algorithm.evict()));
 	}
 }

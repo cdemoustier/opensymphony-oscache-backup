@@ -17,80 +17,73 @@ import junit.framework.TestSuite;
  * expected when entries are removed. All the other tests related to the LRU
  * algorithm are in the TestNonQueueCache class, since those tests are shared
  * with the TestUnlimitedCache class.
- *
+ * 
  * $Id$
- * @version        $Revision$
+ * 
+ * @version $Revision$
  * @author <a href="mailto:abergevin@pyxis-tech.com">Alain Bergevin</a>
  */
 public final class TestLRUCache extends TestQueueCache {
-    /**
-     * LRU Cache object
-     */
-    private static Cache cache = null;
+	/**
+	 * LRU Cache object
+	 */
 	private EvictionAlgorithm algorithm;
 
-    /**
-     * Constructor
-     * <p>
-     * @param str The test name (required by JUnit)
-     */
-    public TestLRUCache(String str) {
-        super(str);
-    }
+	/**
+	 * Constructor
+	 * <p>
+	 * 
+	 * @param str
+	 *            The test name (required by JUnit)
+	 */
+	public TestLRUCache(String str) {
+		super(str);
+	}
 
-    /**
-     * This methods returns the name of this test class to JUnit
-     * <p>
-     * @return The test for this class
-     */
-    public static Test suite() {
-        return new TestSuite(TestLRUCache.class);
-    }
+	/**
+	 * This methods returns the name of this test class to JUnit
+	 * <p>
+	 * 
+	 * @return The test for this class
+	 */
+	public static Test suite() {
+		return new TestSuite(TestLRUCache.class);
+	}
 
-    /**
-     * Abstract method used by the TestAbstractCache class
-     * <p>
-     * @return  A cache instance
-     */
-    public Cache getCache() {
-        return cache;
-    }
-    
-    /**
-     * Abstract method used by the TestAbstractCache class
-     * <p>
-     * @return  A cache instance
-     */
-    public EvictionAlgorithm getAlgorithm() {
-        return algorithm;
-    }
+	/**
+	 * Abstract method used by the TestAbstractCache class
+	 * <p>
+	 * 
+	 * @return A cache instance
+	 */
+	public EvictionAlgorithm getAlgorithm() {
+		return algorithm;
+	}
 
-    /**
-     * This method is invoked before each testXXXX methods of the
-     * class. It set ups the variables required for each tests.
-     */
-    public void setUp() {
-        // Create a cache instance on first invocation
-        if (cache == null) {
-        	cache = new MemoryCache();
-        algorithm = new LRUEvictionAlgorithm();
-        	cache.setEvictionAlgorithm(algorithm);
-        }
-    }
+	/**
+	 * This method is invoked before each testXXXX methods of the class. It set
+	 * ups the variables required for each tests.
+	 */
+	public void setUp() {
+		// Create a cache instance on first invocation
+		if (algorithm == null) {
+			algorithm = new LRUEvictionAlgorithm();
+		}
+	}
 
-    /**
-     * Test the cache algorithm
-     */
-    public void testRemoveItem() {
-        // Add 3 elements
-    	algorithm.put(KEY, KEY);
-    	algorithm.put(KEY + 1, KEY);
-    	algorithm.put(KEY + 2, KEY);
+	/**
+	 * Test the cache algorithm
+	 */
+	public void testRemoveItem() {
+		// Add 3 elements
+		algorithm.evaluatePut(KEY);
+		algorithm.evaluatePut(KEY + 1);
+		algorithm.evaluatePut(KEY + 2);
 
-        // Get the last element
-    	algorithm.get(KEY, KEY);
+		// Get the last element
+		algorithm.evaluateGet(KEY);
 
-        // The least recently used item is key + 1
-        assertTrue((KEY + 1).equals(algorithm.evict()));
-    }
+		// The least recently used item is key + 1
+		assertTrue((KEY + 1).equals(algorithm.evict()));
+	}
 }

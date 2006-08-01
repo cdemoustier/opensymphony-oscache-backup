@@ -102,4 +102,13 @@ public class FIFOEvictionAlgorithm implements EvictionAlgorithm {
 	public void evaluateRemove(Object key) {
 		elements.remove(key);
 	}
+
+	public void setCapacity(int max_entries) {
+		this.maxSize = max_entries;
+		
+	}
+
+	public int getCapacity() {
+		return this.maxSize;
+	}
 }

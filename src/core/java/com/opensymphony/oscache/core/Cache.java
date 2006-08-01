@@ -19,7 +19,7 @@ public interface Cache extends Map {
 
 	/**
 	 * Allows the capacity of the cache to be altered dynamically. Note that
-	 * some cache implementations may choose to ignore this setting (eg the
+	 * some eviction algorithms may choose to ignore this setting (eg the
 	 * {@link UnlimitedCache} ignores this call).
 	 * 
 	 * @param capacity

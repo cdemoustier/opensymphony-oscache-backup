@@ -85,6 +85,5 @@ public abstract class TestAbstractCache extends TestCase {
     public abstract void testRemoveItem();
 
 
-    // Abstract method that returns an instance of an admin
     protected abstract EvictionAlgorithm getAlgorithm();
 }
