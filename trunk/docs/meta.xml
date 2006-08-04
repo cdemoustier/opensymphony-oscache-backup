@@ -3,6 +3,7 @@
    <jiraId>10001</jiraId>
    <jiraName>CACHE</jiraName>
    <confluenceName>CACHE</confluenceName>
+   <svn>true</svn>
 
     <forums>
         <usersId>4</usersId>
