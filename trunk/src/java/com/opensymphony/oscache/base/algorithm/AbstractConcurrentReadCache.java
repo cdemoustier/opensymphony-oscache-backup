@@ -1593,9 +1593,12 @@ public abstract class AbstractConcurrentReadCache extends AbstractMap implements
                                                                     else recordModification(newEntry);
                                                                     return null; */
 
+                    Object oldValue = null;
+
                     // Remove an item if the cache is full
                     if (size() >= maxEntries) {
-                        remove(removeItem(), false, false);
+                        // part of fix CACHE-255: method should return old value
+                        oldValue = remove(removeItem(), false, false);
                     }
 
                     if (first == tab[index]) {
@@ -1626,8 +1629,8 @@ public abstract class AbstractConcurrentReadCache extends AbstractMap implements
                         } else {
                             recordModification(newEntry);
                         }
-
-                        return newEntry;
+                        
+                        return oldValue;
 
                         /** OpenSymphony END  */
                     } else {
@@ -1769,30 +1772,36 @@ public abstract class AbstractConcurrentReadCache extends AbstractMap implements
                         persistRemove(e.key);
                         // If we have a CacheEntry, update the group lookups
                         if (oldValue instanceof CacheEntry) {
-                          CacheEntry oldEntry = (CacheEntry)oldValue;
+                          CacheEntry oldEntry = (CacheEntry) oldValue;
                             removeGroupMappings(oldEntry.getKey(),
                                 oldEntry.getGroups(), true);
-                    }
+                        }
                     } else {
-                      // only remove from memory groups
-                      if (oldValue instanceof CacheEntry) {
-                        CacheEntry oldEntry = (CacheEntry)oldValue;
-                        removeGroupMappings(oldEntry.getKey(),
-                            oldEntry.getGroups(), false);
-                      }
+						// only remove from memory groups
+						if (oldValue instanceof CacheEntry) {
+							CacheEntry oldEntry = (CacheEntry) oldValue;
+							removeGroupMappings(oldEntry.getKey(), oldEntry
+									.getGroups(), false);
+						}
                     }
 
                     if (!forcePersist && overflowPersistence && ((size() + 1) >= maxEntries)) {
                         persistStore(key, oldValue);
                         // add key to persistent groups but NOT to the memory groups
                         if (oldValue instanceof CacheEntry) {
-                          CacheEntry oldEntry = (CacheEntry)oldValue;
-                          addGroupMappings(oldEntry.getKey(), oldEntry.getGroups(), true, false);
+                        	CacheEntry oldEntry = (CacheEntry) oldValue;
+                        	addGroupMappings(oldEntry.getKey(), oldEntry.getGroups(), true, false);
                         }
                     }
 
                     if (invokeAlgorithm) {
                         itemRemoved(key);
+                    }
+
+                    // introduced to fix bug CACHE-255 
+                    if (oldValue instanceof CacheEntry) {
+                    	CacheEntry oldEntry = (CacheEntry) oldValue;
+                    	oldValue = oldEntry.getContent();
                     }
 
                     /** OpenSymphony END */

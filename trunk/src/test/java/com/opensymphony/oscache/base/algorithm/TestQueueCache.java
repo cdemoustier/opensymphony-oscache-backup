@@ -191,6 +191,30 @@ public abstract class TestQueueCache extends TestAbstractCache {
 
         getCache().clear();
     }
+  
+    /**
+     * Test if bug CACHE-255 disappeared.
+     */
+    public void testBugCache255() {
+        if (!getCache().isMemoryCaching()) {
+            return; // nothing to test since memory won't be used.
+        }
+        if (getCache() instanceof UnlimitedCache) {
+            return; // nothing to test since memory will never overflow.
+        }
+
+        // fill up the cache
+        for (int count = 0; count < MAX_ENTRIES; count++) {
+            getCache().put(KEY + count, CONTENT + count);
+        }
+
+        // get the old value
+        Object oldValue = getCache().put(KEY + MAX_ENTRIES, CONTENT + MAX_ENTRIES);
+
+        assertEquals("Evicted object content should be the same", CONTENT + "0", oldValue);
+
+        getCache().clear();
+    }
 
     /**
      * Test the remove from cache
