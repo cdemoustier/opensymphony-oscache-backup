@@ -1504,6 +1504,10 @@ public abstract class AbstractConcurrentReadCache extends AbstractMap implements
      * the memory groups (important for overflow-to-disk)
      */
     private void addGroupMappings(String key, Set newGroups, boolean persist, boolean memory) {
+        if (newGroups == null) {
+            return;
+        }
+        
         // Add this CacheEntry to the groups that it is now a member of
         for (Iterator it = newGroups.iterator(); it.hasNext();) {
             String groupName = (String) it.next();
