@@ -155,7 +155,7 @@ public abstract class AbstractConcurrentReadCache extends AbstractMap implements
      * The default initial number of table slots for this table (32).
      * Used when not otherwise specified in constructor.
      **/
-    public static int DEFAULT_INITIAL_CAPACITY = 32;
+    public static final int DEFAULT_INITIAL_CAPACITY = 32;
 
     /**
      * The minimum capacity.
@@ -181,7 +181,8 @@ public abstract class AbstractConcurrentReadCache extends AbstractMap implements
 
     //OpenSymphony BEGIN (pretty long!)
     protected static final String NULL = "_nul!~";
-    protected static Log log = LogFactory.getLog(AbstractConcurrentReadCache.class);
+    
+    private static final Log log = LogFactory.getLog(AbstractConcurrentReadCache.class);
 
     /*
       The basic strategy is an optimistic-style scheme based on

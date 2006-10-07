@@ -17,12 +17,12 @@ public final class ScopeEventType {
     /**
      * Specifies an event type for the all scope flushed event.
      */
-    public static ScopeEventType ALL_SCOPES_FLUSHED = new ScopeEventType();
+    public static final ScopeEventType ALL_SCOPES_FLUSHED = new ScopeEventType();
 
     /**
      * Specifies an event type for the flushing of a  specific scope.
      */
-    public static ScopeEventType SCOPE_FLUSHED = new ScopeEventType();
+    public static final ScopeEventType SCOPE_FLUSHED = new ScopeEventType();
 
     /**
      * Private constructor to ensure that no object of that type are

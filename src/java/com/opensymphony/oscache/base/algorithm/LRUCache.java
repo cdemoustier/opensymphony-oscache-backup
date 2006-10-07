@@ -30,7 +30,7 @@ import java.util.*;
  */
 public class LRUCache extends AbstractConcurrentReadCache {
 	
-    private static final Log log = LogFactory.getLog(LRUCache.class);
+    //private static final Log log = LogFactory.getLog(LRUCache.class);
 
     /**
      * Cache queue containing all cache keys.
