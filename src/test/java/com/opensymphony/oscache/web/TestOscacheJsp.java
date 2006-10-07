@@ -29,8 +29,8 @@ public final class TestOscacheJsp extends TestCase {
     private final String FIRST_PAGE = "oscacheTest.jsp?";
     private final String FORCE_CACHE_USE = "forcecacheuse=yes&";
     private final String FORCE_REFRESH = "refresh=true";
-    private final String PAGE_SCOPE = "scope=page&";
-    private final String REQUEST_SCOPE = "scope=request&";
+    //private final String PAGE_SCOPE = "scope=page&";
+    //private final String REQUEST_SCOPE = "scope=request&";
     private final String SECOND_PAGE = "oscacheTestMultipleTagNoKey.jsp?";
     private final String SESSION_SCOPE = "scope=session&";
     private final int CACHE_TAG_EXPIRATION = 2000;
@@ -141,7 +141,7 @@ public final class TestOscacheJsp extends TestCase {
     private void compileJSP(String URL) {
         try {
             // Invoke the JSP
-            WebResponse resp = wc.getResponse(URL);
+            wc.getResponse(URL);
         } catch (Exception ex) {
             ex.printStackTrace();
             fail("Exception raised!!");

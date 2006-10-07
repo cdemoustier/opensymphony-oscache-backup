@@ -18,11 +18,11 @@ import junit.framework.TestCase;
  */
 public abstract class TestAbstractCacheAdministrator extends TestCase {
     // Constants used in the tests
-    private final String CACHE_PATH_PROP = "cache.path";
-    private final String CONTENT = "Content for the abstract cache admin test";
-    private final String ENTRY_KEY = "Test Abstract Admin Key";
+    //private final String CACHE_PATH_PROP = "cache.path";
+    //private final String CONTENT = "Content for the abstract cache admin test";
+    //private final String ENTRY_KEY = "Test Abstract Admin Key";
     private final String INVALID_PROP_NAME = "INVALID_PROP_NAME";
-    private final String TEST_LOG = "test log";
+    //private final String TEST_LOG = "test log";
 
     /**
      * Constructor for the this test class.

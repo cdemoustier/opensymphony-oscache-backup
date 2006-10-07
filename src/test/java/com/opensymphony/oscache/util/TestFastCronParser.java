@@ -183,7 +183,6 @@ public class TestFastCronParser extends TestCase {
         calendar.setTime(date);
 
         long baseTime = calendar.getTimeInMillis();
-        FastCronParser parser = null;
 
         long time = 0;
 
