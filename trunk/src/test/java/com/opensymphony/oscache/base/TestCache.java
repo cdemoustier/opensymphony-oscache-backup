@@ -180,7 +180,7 @@ public class TestCache extends TestCase {
         int cacheCapacity = 100;
 		int maxAddedCacheEntries = cacheCapacity*10;
         String baseCacheKey= "baseKey";
-        String cacheValue ="same_value";
+        //String cacheValue ="same_value";
         
 		admin.setCacheCapacity(cacheCapacity);
     	

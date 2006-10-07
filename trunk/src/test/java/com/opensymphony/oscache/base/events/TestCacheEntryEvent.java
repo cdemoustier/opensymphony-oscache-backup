@@ -25,7 +25,7 @@ public final class TestCacheEntryEvent extends TestCase {
      * Constants required for the test
      */
     private final String KEY = "Test cache entry event key";
-    private final int SCOPE = 3;
+    //private final int SCOPE = 3;
 
     /**
      * Constructor
