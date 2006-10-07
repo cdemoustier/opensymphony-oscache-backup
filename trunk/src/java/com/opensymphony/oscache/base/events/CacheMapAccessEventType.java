@@ -16,17 +16,17 @@ public final class CacheMapAccessEventType {
     /**
      * Get an event type for a cache hit.
      */
-    public static CacheMapAccessEventType HIT = new CacheMapAccessEventType();
+    public static final CacheMapAccessEventType HIT = new CacheMapAccessEventType();
 
     /**
      * Get an event type for a cache miss.
      */
-    public static CacheMapAccessEventType MISS = new CacheMapAccessEventType();
+    public static final CacheMapAccessEventType MISS = new CacheMapAccessEventType();
 
     /**
      * Get an event type for when the data was found in the cache but was stale.
      */
-    public static CacheMapAccessEventType STALE_HIT = new CacheMapAccessEventType();
+    public static final CacheMapAccessEventType STALE_HIT = new CacheMapAccessEventType();
 
     /**
      * Private constructor to ensure that no object of this type are

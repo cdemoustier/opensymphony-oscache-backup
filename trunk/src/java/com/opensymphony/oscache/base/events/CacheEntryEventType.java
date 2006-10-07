@@ -18,32 +18,32 @@ public final class CacheEntryEventType {
     /**
      * Get an event type for an entry added.
      */
-    public static CacheEntryEventType ENTRY_ADDED = new CacheEntryEventType();
+    public static final CacheEntryEventType ENTRY_ADDED = new CacheEntryEventType();
 
     /**
      * Get an event type for an entry updated.
      */
-    public static CacheEntryEventType ENTRY_UPDATED = new CacheEntryEventType();
+    public static final CacheEntryEventType ENTRY_UPDATED = new CacheEntryEventType();
 
     /**
      * Get an event type for an entry flushed.
      */
-    public static CacheEntryEventType ENTRY_FLUSHED = new CacheEntryEventType();
+    public static final CacheEntryEventType ENTRY_FLUSHED = new CacheEntryEventType();
 
     /**
      * Get an event type for an entry removed.
      */
-    public static CacheEntryEventType ENTRY_REMOVED = new CacheEntryEventType();
+    public static final CacheEntryEventType ENTRY_REMOVED = new CacheEntryEventType();
 
     /**
      * Get an event type for a group flush event.
      */
-    public static CacheEntryEventType GROUP_FLUSHED = new CacheEntryEventType();
+    public static final CacheEntryEventType GROUP_FLUSHED = new CacheEntryEventType();
 
     /**
      * Get an event type for a pattern flush event.
      */
-    public static CacheEntryEventType PATTERN_FLUSHED = new CacheEntryEventType();
+    public static final CacheEntryEventType PATTERN_FLUSHED = new CacheEntryEventType();
 
     /**
      * Private constructor to ensure that no object of that type are
