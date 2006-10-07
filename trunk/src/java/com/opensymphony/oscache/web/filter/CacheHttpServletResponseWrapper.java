@@ -81,15 +81,15 @@ public class CacheHttpServletResponseWrapper extends HttpServletResponseWrapper 
                 super.setDateHeader(CacheFilter.HEADER_EXPIRES, result.getExpires());
             }
             // setting the cache control with max-age 
-            if (cacheControl == CacheFilter.MAX_AGE_TIME) {
+            if (this.cacheControl == CacheFilter.MAX_AGE_TIME) {
             	// set the count down
                 long maxAge = System.currentTimeMillis();
                 maxAge = maxAge - (maxAge % 1000) + time;
                 result.setMaxAge(maxAge);
                 super.addHeader(CacheFilter.HEADER_CACHE_CONTROL, "max-age=" + time / 1000);
-            } else if (cacheControl != CacheFilter.MAX_AGE_NO_INIT) {
-                result.setMaxAge(cacheControl);
-                super.addHeader(CacheFilter.HEADER_CACHE_CONTROL, "max-age=" + (-cacheControl));
+            } else if (this.cacheControl != CacheFilter.MAX_AGE_NO_INIT) {
+                result.setMaxAge(this.cacheControl);
+                super.addHeader(CacheFilter.HEADER_CACHE_CONTROL, "max-age=" + (-this.cacheControl));
             }
         }
     }
