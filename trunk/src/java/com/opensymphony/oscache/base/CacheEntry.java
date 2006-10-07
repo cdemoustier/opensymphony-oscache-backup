@@ -178,7 +178,7 @@ public class CacheEntry implements Serializable {
      *
      * @param groups A collection containing all the group names
      */
-    public void setGroups(Collection groups) {
+    public synchronized void setGroups(Collection groups) {
         if (groups != null) {
             this.groups = new HashSet(groups);
         } else {
