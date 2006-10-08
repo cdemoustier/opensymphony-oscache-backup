@@ -599,7 +599,11 @@ public class ServletCacheAdministrator extends AbstractCacheAdministrator implem
     }
 
     /**
-    * Put an object in the cache
+    * Put an object in the cache. This should only be called by a thread
+    * that received a {@link NeedsRefreshException}. Using session scope
+    * the thread has to insure that the session wasn't invalidated in
+    * the meantime. CacheTag and CacheFilter guarantee that the same
+    * cache is used in cancelUpdate and getFromCache.
     *
     * @param scope The cache scope
     * @param request The servlet request
@@ -611,7 +615,11 @@ public class ServletCacheAdministrator extends AbstractCacheAdministrator implem
     }
 
     /**
-    * Put an object in the cache
+    * Put an object in the cache. This should only be called by a thread
+    * that received a {@link NeedsRefreshException}. Using session scope
+    * the thread has to insure that the session wasn't invalidated in
+    * the meantime. CacheTag and CacheFilter guarantee that the same
+    * cache is used in cancelUpdate and getFromCache.
     *
     * @param scope The cache scope
     * @param request The servlet request
