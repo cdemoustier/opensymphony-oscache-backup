@@ -382,6 +382,7 @@ public class Cache implements Serializable {
      * does not exist or is not currently being updated.
      *
      * @param key The key for the cache entry in question.
+     * @throws IllegalStateException if the cache entry isn't in the state UPDATE_IN_PROGRESS
      */
     public void cancelUpdate(String key) {
         EntryUpdateState state;
