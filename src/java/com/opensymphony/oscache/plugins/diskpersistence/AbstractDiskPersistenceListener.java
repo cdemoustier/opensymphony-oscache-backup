@@ -416,7 +416,7 @@ public abstract class AbstractDiskPersistenceListener implements PersistenceList
 
         // Build a fully qualified file name for this group
         path.append(GROUP_DIRECTORY).append('/');
-        path.append(group).append('.').append(CACHE_EXTENSION);
+        path.append(getCacheFileName(group)).append('.').append(CACHE_EXTENSION);
 
         return new File(root, path.toString());
     }
