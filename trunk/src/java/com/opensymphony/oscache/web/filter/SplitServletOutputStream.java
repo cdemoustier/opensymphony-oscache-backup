@@ -70,4 +70,25 @@ public class SplitServletOutputStream extends ServletOutputStream {
         captureStream.write(b, off, len);
         passThroughStream.write(b, off, len);
     }
+
+    /** 
+     * Flushes both the output streams.
+     * @throws IOException
+     */    
+    public void flush() throws IOException {
+        super.flush();
+        captureStream.flush(); //why not?
+        passThroughStream.flush();
+    }    
+
+    /**
+     * Closes both the output streams.
+     * @throws IOException 
+     */    
+    public void close() throws IOException {
+        super.close();
+        captureStream.close();
+        passThroughStream.close();
+    }    
+
 }
