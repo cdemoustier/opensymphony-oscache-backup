@@ -4,9 +4,6 @@
  */
 package com.opensymphony.oscache.base.algorithm;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import java.util.*;
 
 /**
@@ -30,8 +27,6 @@ import java.util.*;
  */
 public class LRUCache extends AbstractConcurrentReadCache {
 	
-    //private static final Log log = LogFactory.getLog(LRUCache.class);
-
     /**
      * Cache queue containing all cache keys.
      */
