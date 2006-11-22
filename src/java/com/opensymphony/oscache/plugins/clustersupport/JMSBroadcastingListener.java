@@ -15,6 +15,7 @@ import org.apache.commons.logging.LogFactory;
 import javax.jms.*;
 
 import javax.naming.InitialContext;
+import javax.naming.NamingException;
 
 /**
  * A JMS based clustering implementation. This implementation is independent of the
@@ -23,6 +24,7 @@ import javax.naming.InitialContext;
  * @author <a href="mailto:motoras@linuxmail.org">Romulus Pasca</a>
  */
 public class JMSBroadcastingListener extends AbstractBroadcastingListener {
+    
     private final static Log log = LogFactory.getLog(JMSBroadcastingListener.class);
 
     /**
@@ -79,7 +81,7 @@ public class JMSBroadcastingListener extends AbstractBroadcastingListener {
         try {
             // Make sure you have specified the necessary JNDI properties (usually in
             // a jndi.properties resource file, or as system properties)
-            InitialContext jndi = new InitialContext();
+            InitialContext jndi = getInitialContext();
 
             // Look up a JMS connection factory
             ConnectionFactory connectionFactory = (ConnectionFactory) jndi.lookup(topicFactory);
@@ -177,4 +179,13 @@ public class JMSBroadcastingListener extends AbstractBroadcastingListener {
             log.error("Cannot send notification " + message, e);
         }
     }
+    
+    /**
+     * @return creates a context for performing naming operations.
+     * @throws NamingException if a naming exception is encountered
+     */
+    protected InitialContext getInitialContext() throws NamingException {
+        return new InitialContext();
+    }
+
 }
