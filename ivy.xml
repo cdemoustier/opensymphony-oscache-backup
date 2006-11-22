@@ -38,7 +38,7 @@
         <dependency org="junitperf" name="junitperf" rev="1.8" conf="build->*"/>
 
         <!-- oscache -->
-        <dependency org="apache" name="commons-logging" rev="1.0.4" conf="default->*"/>
+        <dependency org="apache" name="commons-logging" rev="1.1" conf="default->*"/>
 
         <!-- jgroups -->
         <dependency org="jgroups" name="jgroups-all" rev="2.2.8" conf="jgroups->*"/>
