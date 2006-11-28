@@ -31,7 +31,7 @@ public class TestAbstractCacheAdministrator extends TestCase {
    
 
     public void testGetAndPut() {
-    		Cache cache = new MemoryCache();
+    		Cache cache = new MemoryCache(5);
     		cache.setEvictionAlgorithm(new LRUEvictionAlgorithm()	);
     		Object value = cache.get(ENTRY_KEY);
     		assertNull(value);
@@ -52,22 +52,7 @@ public class TestAbstractCacheAdministrator extends TestCase {
     public void testGetCachePath() {
     }
 
-    /**
-     * Validate that the properties retrieved by the admin are the same as the one
-     * specified in the property file. Do not test cache path or memory cache
-     * since it changes with the tests
-     */
-    public void testGetProperty() {
-        // Check if all the default properties are OK
-//        assertNull(getAdmin().getProperty(INVALID_PROP_NAME));
-//        assertNull(getAdmin().getProperty(""));
-//
-//        try {
-//            assertNull(getAdmin().getProperty(null));
-//            fail("NullPointerException expected (property Key null).");
-//        } catch (Exception e) {
-//        }
-    }
+
 
     /**
      * We cannot test this method because the value depends on the property
@@ -81,25 +66,11 @@ public class TestAbstractCacheAdministrator extends TestCase {
     public void testIsMemoryCaching() {
     }
 
-    /**
-     * Perform a call to the log method. Unfornately, there is no way to check
-     * if the logging is done correctly, we only invoke it
-     */
-    public void testLog() {
-        // Invoke the log
-        // The other log method is not tested since it calls the same as we do
-        //TODO
-
-        /*getAdmin().log(TEST_LOG, System.out);
-        getAdmin().log("", System.out);
-        getAdmin().log(null, System.out);
-        getAdmin().log(TEST_LOG, null);
-          */
-    }
+  
 
     // Abstract method that returns an instance of an admin
-    protected AbstractCacheAdministrator getAdmin() {
-    		return new AbstractCacheAdministrator() {
+    protected Cache getAdmin() {
+    		return new MemoryCache() {
     		};
     }
 }

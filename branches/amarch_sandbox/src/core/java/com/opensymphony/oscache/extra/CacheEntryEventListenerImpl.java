@@ -5,10 +5,11 @@
 package com.opensymphony.oscache.extra;
 
 import com.opensymphony.oscache.events.*;
+import com.opensymphony.oscache.web.CacheContextListener;
 
 /**
- * Implementation of a CacheEntryEventListener. It use the events to count
- * the operations performed on the cache.
+ * Implementation of a CacheEntryEventListener. It use the events to count the
+ * operations performed on the cache.
  * <p>
  * We are not using any synchronized so that this does not become a bottleneck.
  * The consequence is that on retrieving values, the operations that are

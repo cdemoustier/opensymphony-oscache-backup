@@ -35,7 +35,7 @@ public class MemoryCache extends BaseCache {
 	 */
 	private Map store = new HashMap();
 
-	private int capacity;
+	private int capacity = 1000;
 
 	/**
 	 * 

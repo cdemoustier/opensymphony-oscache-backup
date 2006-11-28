@@ -41,14 +41,6 @@ public interface CacheEntryEventListener extends CacheListener {
     void cacheGroupFlushed(CacheGroupEvent event);
 
     /**
-     * Event fired when a key pattern is flushed from the cache.
-     * Note that this event will <em>not</em> be fired if the pattern
-     * is <code>null</code> or an empty string, instead the flush
-     * request will silently be ignored.
-     */
-    void cachePatternFlushed(CachePatternEvent event);
-
-    /**
      * An event that is fired when an entire cache gets flushed.
      */
     void cacheFlushed(CachewideEvent event);

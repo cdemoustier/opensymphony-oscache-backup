@@ -16,7 +16,7 @@ import com.opensymphony.oscache.core.Cache;
  */
 public final class CacheGroupEvent extends CacheEvent {
     
-    private static final int GROUP_FLUSHED = 0;
+    public static final int GROUP_FLUSHED = 0;
 	/**
      * The group that the event applies to.
      */

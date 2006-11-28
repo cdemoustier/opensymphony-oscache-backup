@@ -4,6 +4,7 @@
  */
 package com.opensymphony.oscache.events;
 
+import com.opensymphony.oscache.core.Cache;
 import com.opensymphony.oscache.core.CacheEntry;
 
 /**
@@ -36,8 +37,8 @@ public class CacheMapAccessEvent extends CacheEntryEvent {
      * @param eventType   Type of the event.
      * @param entry       The cache entry that the event applies to.
      */
-    public CacheMapAccessEvent(int eventType, CacheEntry entry) {
-        super(null, entry, eventType);
+    public CacheMapAccessEvent(Cache source, CacheEntry entry, int eventType ) {
+        super(source, entry, eventType);
     }
 
   

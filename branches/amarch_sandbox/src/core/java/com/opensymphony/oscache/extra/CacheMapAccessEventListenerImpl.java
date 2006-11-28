@@ -68,12 +68,23 @@ public class CacheMapAccessEventListenerImpl implements CacheMapAccessEventListe
     }
 
     /**
-     * This method handles an event each time the cache is accessed
-     *
-     * @param event The event triggered when the cache was accessed
+     * Resets all of the totals to zero
      */
-    public void accessed(CacheMapAccessEvent event) {
-        // Retrieve the event type and update the counters
+    public void reset() {
+        hitCount = 0;
+        staleHitCount = 0;
+        missCount = 0;
+    }
+
+    /**
+     * Return the counters in a string form
+     */
+    public String toString() {
+        return ("Hit count = " + hitCount + ", stale hit count = " + staleHitCount + " and miss count = " + missCount);
+    }
+
+	public void onChange(CacheEvent event) {
+//		 Retrieve the event type and update the counters
         int type = event.getEventType();
 
         // Handles a hit event
@@ -91,26 +102,6 @@ public class CacheMapAccessEventListenerImpl implements CacheMapAccessEventListe
             // Unknown event!
             throw new IllegalArgumentException("Unknown Cache Map Access event received");
         }
-    }
-
-    /**
-     * Resets all of the totals to zero
-     */
-    public void reset() {
-        hitCount = 0;
-        staleHitCount = 0;
-        missCount = 0;
-    }
-
-    /**
-     * Return the counters in a string form
-     */
-    public String toString() {
-        return ("Hit count = " + hitCount + ", stale hit count = " + staleHitCount + " and miss count = " + missCount);
-    }
-
-	public void onChange(CacheEvent event) {
-		// TODO Auto-generated method stub
 		
 	}
 }

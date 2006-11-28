@@ -7,6 +7,11 @@ package com.opensymphony.oscache.core.algorithm;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
+import com.opensymphony.oscache.algorithm.UnlimitedEvictionAlgorithm;
+import com.opensymphony.oscache.core.BaseCache;
+import com.opensymphony.oscache.core.EvictionAlgorithm;
+import com.opensymphony.oscache.core.MemoryCache;
+
 /**
  * Test class for the Unlimited cache algorithm. Most of the tests are done
  * in the TestNonQueueCache class, so only algorithm specific tests are done
@@ -21,7 +26,7 @@ public final class TestUnlimitedCache extends TestQueueCache {
     /**
      * Unlimited Cache object
      */
-    private static UnlimitedCache cache = null;
+    private static MemoryCache cache = null;
 
     /**
      * Constructor
@@ -46,7 +51,7 @@ public final class TestUnlimitedCache extends TestQueueCache {
      * <p>
      * @return  A cache instance
      */
-    public AbstractConcurrentReadCache getCache() {
+    public BaseCache getCache() {
         return cache;
     }
 
@@ -57,7 +62,8 @@ public final class TestUnlimitedCache extends TestQueueCache {
     public void setUp() {
         // Create a cache instance on first invocation
         if (cache == null) {
-            cache = new UnlimitedCache();
+            cache = new MemoryCache();
+            cache.setEvictionAlgorithm(new UnlimitedEvictionAlgorithm());
             assertNotNull(cache);
         }
     }
@@ -68,9 +74,9 @@ public final class TestUnlimitedCache extends TestQueueCache {
      */
     public void testGetSetMaxEntries() {
         // Check that the max entries cannot be changed
-        int entryCount = getCache().getMaxEntries();
-        getCache().setMaxEntries(entryCount - 1);
-        assertEquals(entryCount, getCache().getMaxEntries());
+        int entryCount = getCache().getCapacity();
+        getCache().setCapacity(entryCount - 1);
+        assertEquals(entryCount, getCache().getCapacity());
     }
 
     /**
@@ -78,7 +84,13 @@ public final class TestUnlimitedCache extends TestQueueCache {
      */
     public void testRemoveItem() {
         // Add an item, and ensure that it is not removable
-        cache.itemPut(KEY);
-        assertNull(cache.removeItem());
+    	getAlgorithm().evaluatePut(KEY);
+        assertNull(getAlgorithm().evict());
     }
+
+	@Override
+	protected EvictionAlgorithm getAlgorithm() {
+		// TODO Auto-generated method stub
+		return cache.getEvictionAlgorithm();
+	}
 }

@@ -13,9 +13,5 @@ package com.opensymphony.oscache.events;
  * @author <a href="mailto:fbeauregard@pyxis-tech.com">Francois Beauregard</a>
  */
 public interface CacheMapAccessEventListener extends CacheListener {
-    /**
-     * Event fired when an entry is accessed.
-     * Use getEventType to differentiate between access events.
-     */
-    public void accessed(CacheMapAccessEvent event);
+    
 }
