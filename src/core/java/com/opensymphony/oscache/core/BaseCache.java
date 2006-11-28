@@ -8,14 +8,9 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 import java.util.Set;
 
-import sun.tools.tree.ThisExpression;
-
 import com.opensymphony.oscache.algorithm.LRUEvictionAlgorithm;
-import com.opensymphony.oscache.core.EntryRefreshPolicy;
-import com.opensymphony.oscache.core.CacheEntry;
 import com.opensymphony.oscache.events.CacheEntryEvent;
 import com.opensymphony.oscache.events.CacheEvent;
 import com.opensymphony.oscache.events.CacheGroupEvent;
@@ -23,7 +18,6 @@ import com.opensymphony.oscache.events.CacheListener;
 import com.opensymphony.oscache.events.CacheMapAccessEvent;
 import com.opensymphony.oscache.events.CachewideEvent;
 import com.opensymphony.oscache.util.FastCronParser;
-import com.opensymphony.oscache.web.filter.ExpiresRefreshPolicy;
 
 /**
  * A base class that provides most of the core caching functionality for a
