@@ -23,326 +23,313 @@ import com.opensymphony.oscache.extra.CacheMapAccessEventListenerImpl;
  * Test all the public methods of the GeneralCacheAdministrator class. Since
  * this class extends the TestAbstractCacheAdministrator class, the
  * AbstractCacheAdministrator is tested when invoking this class.
- *
- * $Id$
- * @version        $Revision$
+ * 
+ * $Id: TestGeneralCacheAdministrator.java 350 2006-01-26 06:48:46 +0000 (Thu,
+ * 26 Jan 2006) dres $
+ * 
+ * @version $Revision$
  * @author <a href="mailto:abergevin@pyxis-tech.com">Alain Bergevin</a>
  */
-public class TestGeneralCacheAdministrator extends TestAbstractCacheAdministrator {
-    // Constants used thru all the tests
-    private static final String KEY = "Test General Cache Admin Key";
-    private static final int NO_REFRESH_NEEDED = CacheEntry.INDEFINITE_EXPIRY;
-    private static final int REFRESH_NEEDED = 0;
-    private static final String CONTENT = "Content for the general cache admin test";
-    private static final String WILL_NOT_FLUSH_PATTERN = "This key won't flush";
-    private static final String GROUP1 = "group1";
-    private static final String GROUP2 = "group2";
-    private static final String GROUP3 = "group3";
+public class TestGeneralCacheAdministrator extends
+		TestAbstractCacheAdministrator {
+	// Constants used thru all the tests
+	private static final String KEY = "Test General Cache Admin Key";
 
-    // Constants for listener counters
-    private static final int NB_CACHE_HITS = 7;
-    private static final int NB_CACHE_STALE_HITS = 7;
-    private static final int NB_CACHE_MISSED = 1;
-    private static final int NB_ADD = 7;
-    private static final int NB_UPDATED = 2;
-    private static final int NB_FLUSH = 3;
-    private static final int NB_REMOVED = 0;
-    private static final int NB_GROUP_FLUSH = 2;
-    private static final int NB_PATTERN_FLUSH = 1;
+	private static final int NO_REFRESH_NEEDED = CacheEntry.INDEFINITE_EXPIRY;
 
-    // Static instance of a cache administrator
-    static GeneralCacheAdministrator admin = null;
+	private static final int REFRESH_NEEDED = 0;
 
-    // Declare the listeners
-    private CacheEntryEventListenerImpl cacheEntryEventListener = null;
-    private CacheMapAccessEventListenerImpl cacheMapAccessEventListener = null;
+	private static final String CONTENT = "Content for the general cache admin test";
 
-    /**
-     * Class constructor
-     * <p>
-     * @param str Test name (required by JUnit)
-     */
-    public TestGeneralCacheAdministrator(String str) {
-        super(str);
-    }
+	private static final String GROUP1 = "group1";
 
-    /**
-     * Test suite required to test this project
-     * <p>
-     * @return  suite   The test suite
-     */
-    public static Test suite() {
-        return new TestSuite(TestGeneralCacheAdministrator.class);
-    }
+	private static final String GROUP2 = "group2";
 
-    /**
-     * Abstract method used by the TestAbstractCacheAdministrator class
-     * <p>
-     * @return  An administrator instance
-     */
-    public AbstractCacheAdministrator getAdmin() {
-        return admin;
-    }
+	private static final String GROUP3 = "group3";
 
-    /**
-     * This method is invoked before each testXXXX methods of the
-     * class. It set ups the variables required for each tests.
-     */
-    public void setUp() {
-        // At first invocation, create a administrator
-        admin = new GeneralCacheAdministrator();
-        assertNotNull(admin);
-        cacheEntryEventListener = new CacheEntryEventListenerImpl();
-        cacheMapAccessEventListener = new CacheMapAccessEventListenerImpl();
+	// Constants for listener counters
+	private static final int NB_CACHE_HITS = 7;
 
-        // Register the listeners on the cache map
-        admin.getCache().addCacheEventListener(cacheEntryEventListener, CacheEntryEventListener.class);
-        admin.getCache().addCacheEventListener(cacheMapAccessEventListener, CacheMapAccessEventListener.class);
-    }
+	private static final int NB_CACHE_STALE_HITS = 7;
 
-    /**
-     * Validate the CacheEntryEventListener's data
-     */
-    public void testCacheEntryEventListenerCounters() {
-        populate();
-        assertEquals(NB_ADD, cacheEntryEventListener.getEntryAddedCount());
-        assertEquals(NB_REMOVED, cacheEntryEventListener.getEntryRemovedCount());
-        assertEquals(NB_UPDATED, cacheEntryEventListener.getEntryUpdatedCount());
-        assertEquals(NB_GROUP_FLUSH, cacheEntryEventListener.getGroupFlushedCount());
-        assertEquals(NB_PATTERN_FLUSH, cacheEntryEventListener.getPatternFlushedCount());
-        assertEquals(NB_FLUSH, cacheEntryEventListener.getEntryFlushedCount());
-    }
+	private static final int NB_CACHE_MISSED = 1;
 
-    /**
-     * Validate the CacheEntryEventListener's data
-     */
-    public void testCacheMapAccessEventListenerCounters() {
-        populate();
+	private static final int NB_ADD = 7;
 
-        int missCount = cacheMapAccessEventListener.getMissCount();
+	private static final int NB_UPDATED = 2;
 
-        if (NB_CACHE_MISSED != missCount) {
-            fail("We expected " + NB_CACHE_MISSED + " misses but got " + missCount + "." + " This is probably due to existing disk cache, delete it and re-run" + " the test");
-        }
+	private static final int NB_FLUSH = 4;
 
-        assertEquals(NB_CACHE_HITS, cacheMapAccessEventListener.getHitCount());
-        assertEquals(NB_CACHE_STALE_HITS, cacheMapAccessEventListener.getStaleHitCount());
-    }
+	private static final int NB_REMOVED = 0;
 
-    /**
-     * Ensure that item may be flushed by key pattern
-     */
-    public void testFlushPattern() {
-        // Put some content in cache
-        admin.putInCache(KEY, CONTENT);
+	private static final int NB_GROUP_FLUSH = 2;
 
-        // Call flush pattern with parameters that must NOT flush our object
-        admin.flushPattern(WILL_NOT_FLUSH_PATTERN);
-        admin.flushPattern("");
-        admin.flushPattern(null);
+	private static final int NB_PATTERN_FLUSH = 1;
 
-        // Ensure that our object is not gone
-        assertNotNull(checkObj(KEY, NO_REFRESH_NEEDED, false));
+	// Static instance of a cache administrator
+	private Cache admin = null;
 
-        // This time we flush it for real
-        admin.flushPattern(KEY.substring(1, 2));
-        assertNotNull(checkObj(KEY, NO_REFRESH_NEEDED, true));
-    }
+	// Declare the listeners
+	private CacheEntryEventListenerImpl cacheEntryEventListener = null;
 
-    /**
-     * Ensure that the cache groupings work correctly
-     */
-    public void testGroups() {
-        // Flush a non-existent group - should be OK and will still fire a GROUP_FLUSHED event
-        admin.flushGroup(GROUP1);
+	private CacheMapAccessEventListenerImpl cacheMapAccessEventListener = null;
 
-        // Add some items to various group combinations
-        admin.putInCache("1", "item 1"); // No groups
-        admin.putInCache("2", "item 2", new String[] {GROUP1}); // Just group 1
-        admin.putInCache("3", "item 3", new String[] {GROUP2}); // Just group 2
-        admin.putInCache("4", "item 4", new String[] {GROUP1, GROUP2}); // groups 1 & 2
-        admin.putInCache("5", "item 5", new String[] {GROUP1, GROUP2, GROUP3}); // groups 1,2 & 3
+	/**
+	 * Class constructor
+	 * <p>
+	 * 
+	 * @param str
+	 *            Test name (required by JUnit)
+	 */
+	public TestGeneralCacheAdministrator() {
+	}
 
-        admin.flushGroup(GROUP3); // This should flush item 5 only
-        assertNotNull(checkObj("5", NO_REFRESH_NEEDED, true));
-        assertNotNull(checkObj("4", NO_REFRESH_NEEDED, false));
+	/**
+	 * Test suite required to test this project
+	 * <p>
+	 * 
+	 * @return suite The test suite
+	 */
+	public static Test suite() {
+		return new TestSuite(TestGeneralCacheAdministrator.class);
+	}
 
-        admin.flushGroup(GROUP2); // This should flush items 3 and 4
-        assertNotNull(checkObj("1", NO_REFRESH_NEEDED, false));
-        assertNotNull(checkObj("2", NO_REFRESH_NEEDED, false));
-        assertNotNull(checkObj("3", NO_REFRESH_NEEDED, true));
-        assertNotNull(checkObj("4", NO_REFRESH_NEEDED, true));
+	/**
+	 * Abstract method used by the TestAbstractCacheAdministrator class
+	 * <p>
+	 * 
+	 * @return An administrator instance
+	 */
+	public Cache getAdmin() {
+		return admin;
+	}
 
-        admin.flushGroup(GROUP1); // Flushes item 2
-        assertNotNull(checkObj("1", NO_REFRESH_NEEDED, false));
-        assertNotNull(checkObj("2", NO_REFRESH_NEEDED, true));
+	/**
+	 * This method is invoked before each testXXXX methods of the class. It set
+	 * ups the variables required for each tests.
+	 * 
+	 * @throws IOException
+	 * @throws FileNotFoundException
+	 */
+	public void setUp() throws FileNotFoundException, IOException {
+		// At first invocation, create a administrator
+		Properties props = new Properties();
+		props.load(new FileInputStream(
+				"src/core/test/oscacheMemoryOnly.properties"));
+		admin = new GeneralCacheAdministrator(props).getCache();
+		assertNotNull(admin);
+		cacheEntryEventListener = new CacheEntryEventListenerImpl();
+		cacheMapAccessEventListener = new CacheMapAccessEventListenerImpl();
 
-        // Test if regrouping a cache entry works
-        admin.putInCache("A", "ABC", new String[] {"A"});
-        admin.putInCache("A", "ABC", new String[] {"A", "B"});
-        admin.putInCache("B", "DEF", new String[] {"B"});
-        admin.flushGroup("B");
-        assertNotNull(checkObj("A", NO_REFRESH_NEEDED, true));
-    }
+		// Register the listeners on the cache map
+		admin.addCacheListener(cacheEntryEventListener);
+		admin.addCacheListener(cacheMapAccessEventListener);
+	}
 
-    /**
-     * Test the main cache functionalities, which are storing and retrieving objects
-     * from it
-     */
-    public void testPutInCacheAndGetFromCache() {
-        // Put some item in cache and get it back right away. It should not need
-        // to be refreshed
-        admin.putInCache(KEY, CONTENT);
+	/**
+	 * Validate the CacheEntryEventListener's data
+	 */
+	public void testCacheEntryEventListenerCounters() {
+		populate();
+		assertEquals(NB_ADD, cacheEntryEventListener.getEntryAddedCount());
+		assertEquals(NB_REMOVED, cacheEntryEventListener.getEntryRemovedCount());
+		assertEquals(NB_UPDATED, cacheEntryEventListener.getEntryUpdatedCount());
+		assertEquals(NB_GROUP_FLUSH, cacheEntryEventListener
+				.getGroupFlushedCount());
+		assertEquals(NB_FLUSH, cacheEntryEventListener.getEntryFlushedCount());
+	}
 
-        String cacheContent = (String) checkObj(KEY, NO_REFRESH_NEEDED, false);
-        assertTrue(CONTENT.equals(cacheContent));
+	/**
+	 * Validate the CacheEntryEventListener's data
+	 */
+	public void testCacheMapAccessEventListenerCounters() {
+		populate();
 
-        // Get the item back again and expect a refresh
-        cacheContent = (String) checkObj(KEY, REFRESH_NEEDED, true);
-        assertTrue(CONTENT.equals(cacheContent));
+		int missCount = cacheMapAccessEventListener.getMissCount();
 
-        // Call the put in cache with invalid values
-        invalidPutInCacheArgument(null, null);
-        admin.putInCache(KEY, null); // This will still update the cache - cached items can be null
+		if (NB_CACHE_MISSED != missCount) {
+			fail("We expected "
+					+ NB_CACHE_MISSED
+					+ " misses but got "
+					+ missCount
+					+ "."
+					+ " This is probably due to existing disk cache, delete it and re-run"
+					+ " the test");
+		}
 
-        // Call the getFromCache with invalid values
-        invalidGetFromCacheArgument(null, 0);
+		assertEquals(NB_CACHE_HITS, cacheMapAccessEventListener.getHitCount());
+		assertEquals(NB_CACHE_STALE_HITS, cacheMapAccessEventListener
+				.getStaleHitCount());
+	}
 
-        // Try to retrieve the values
-        assertNull(checkObj(KEY, NO_REFRESH_NEEDED, false));
+	/**
+	 * Ensure that the cache groupings work correctly
+	 */
+	public void testGroups() {
+		// Flush a non-existent group - should be OK and will still fire a
+		// GROUP_FLUSHED event
+		admin.flushGroup(GROUP1);
 
-        // Try to retrieve an item that is not in the cache
-        Object obj = checkObj("Not in cache", NO_REFRESH_NEEDED, true);
-        assertNull(obj);
-    }
+		// Add some items to various group combinations
+		admin.put("1", "item 1"); // No groups
+		admin.put("2", "item 2", new String[] { GROUP1 }); // Just group 1
+		admin.put("3", "item 3", new String[] { GROUP2 }); // Just group 2
+		admin.put("4", "item 4", new String[] { GROUP1, GROUP2 }); // groups 1
+		// & 2
+		admin.put("5", "item 5", new String[] { GROUP1, GROUP2, GROUP3 }); // groups
+		// 1,2
+		// & 3
 
-    /**
-     * Test the main cache functionalities, which are storing and retrieving objects
-     * from it
-     */
-    public void testPutInCacheAndGetFromCacheWithPolicy() {
-        String key = "policy";
+		admin.flushGroup(GROUP3); // This should flush item 5 only
+		assertNotNull(checkObj("5", NO_REFRESH_NEEDED, true));
+		assertNotNull(checkObj("4", NO_REFRESH_NEEDED, false));
 
-        // We put content in the cache and get it back
-        admin.putInCache(key, CONTENT, new DummyAlwayRefreshEntryPolicy());
+		admin.flushGroup(GROUP2); // This should flush items 3 and 4
+		assertNotNull(checkObj("1", NO_REFRESH_NEEDED, false));
+		assertNotNull(checkObj("2", NO_REFRESH_NEEDED, false));
+		assertNotNull(checkObj("3", NO_REFRESH_NEEDED, true));
+		assertNotNull(checkObj("4", NO_REFRESH_NEEDED, true));
 
-        // Should get a refresh
-        try {
-            admin.getFromCache(key, -1);
-            fail("Should have got a refresh.");
-        } catch (NeedsRefreshException nre) {
-            admin.cancelUpdate(key);
-        }
-    }
+		admin.flushGroup(GROUP1); // Flushes item 2
+		assertNotNull(checkObj("1", NO_REFRESH_NEEDED, false));
+		assertNotNull(checkObj("2", NO_REFRESH_NEEDED, true));
 
-    protected void tearDown() throws Exception {
-        if (admin != null) {
-            admin.getCache().removeCacheEventListener(cacheEntryEventListener, CacheEntryEventListener.class);
-            admin.getCache().removeCacheEventListener(cacheMapAccessEventListener, CacheMapAccessEventListener.class);
-        }
-    }
+		// Test if regrouping a cache entry works
+		admin.put("A", "ABC", new String[] { "A" });
+		admin.put("A", "ABC", new String[] { "A", "B" });
+		admin.put("B", "DEF", new String[] { "B" });
+		admin.flushGroup("B");
+		assertNotNull(checkObj("A", NO_REFRESH_NEEDED, true));
+	}
 
-    /**
-     * Utility method that tries to get an item from the cache and verify
-     * if all goes as expected
-     * <p>
-     * @param key       The item key
-     * @param refresh   The timestamp specifiying if the item needs refresh
-     * @param exceptionExpected Specify if we expect a NeedsRefreshException
-     */
-    private Object checkObj(String key, int refresh, boolean exceptionExpected) {
-        // Cache content
-        Object content = null;
+	/**
+	 * Test the main cache functionalities, which are storing and retrieving
+	 * objects from it
+	 */
+	public void testputAndGetFromCache() {
+		// Put some item in cache and get it back right away. It should not need
+		// to be refreshed
+		admin.put(KEY, CONTENT);
 
-        try {
-            // try to find an object
-            content = admin.getFromCache(key, refresh);
+		String cacheContent = (String) checkObj(KEY, NO_REFRESH_NEEDED, false);
+		assertTrue(CONTENT.equals(cacheContent));
 
-            if (exceptionExpected) {
-                fail("Expected NeedsRefreshException!");
-            }
-        } catch (NeedsRefreshException nre) {
-            admin.cancelUpdate(key);
+		// Get the item back again and expect a refresh
+		cacheContent = (String) checkObj(KEY, REFRESH_NEEDED, true);
+		assertTrue(CONTENT.equals(cacheContent));
 
-            if (!exceptionExpected) {
-                fail("Did not expected NeedsRefreshException!");
-            }
+		admin.put(KEY, null); // This will still update the cache - cached
+		// items can be null
 
-            // Return the cache content from the exception
-            content = nre.getCacheContent();
-        }
+		// Call the get with invalid values
+		invalidGetArgument(null, 0);
 
-        return content;
-    }
+		// Try to retrieve the values
+		assertNull(checkObj(KEY, NO_REFRESH_NEEDED, false));
 
-    /**
-     * Method that try to retrieve data from the cache but specify wrong arguments
-     * <p>
-     * @param key         The cache item key
-     * @param refresh     The timestamp specifiying if the item needs refresh
-     */
-    private void invalidGetFromCacheArgument(String key, int refresh) {
-        try {
-            // Try to get the data from the cache
-            admin.getFromCache(key, refresh);
-            fail("getFromCache did NOT throw an IllegalArgumentException");
-        } catch (IllegalArgumentException ipe) {
-            // This is what we expect
-        } catch (NeedsRefreshException nre) {
-            admin.cancelUpdate(key);
+		// Try to retrieve an item that is not in the cache
+		Object obj = checkObj("Not in cache", NO_REFRESH_NEEDED, true);
+		assertNull(obj);
+	}
 
-            // Ignore this one
-        }
-    }
+	/**
+	 * Test the main cache functionalities, which are storing and retrieving
+	 * objects from it
+	 */
+	public void testputAndGetFromCacheWithPolicy() {
+		String key = "policy";
 
-    /**
-     * Method that try to insert data in the cache but specify wrong arguments
-     * <p>
-     * @param key         The cache item key
-     * @param content     The content of the cache item
-     */
-    private void invalidPutInCacheArgument(String key, Object content) {
-        try {
-            // Try to put this data in the cache
-            admin.putInCache(key, content);
-            fail("putInCache did NOT throw an IllegalArgumentException");
-        } catch (IllegalArgumentException ipe) {
-            // This is what we expect
-        }
-    }
+		// We put content in the cache and get it back
+		admin.put(key, CONTENT, new DummyAlwayRefreshEntryPolicy());
 
-    private void populate() {
-        for (int i = 0; i < 7; i++) {
-            String[] groups = ((i & 1) == 0) ? new String[] {GROUP1, GROUP2} : new String[] {
-                GROUP3
-            };
-            admin.putInCache(KEY + i, CONTENT + i, groups);
-        }
+		CacheEntry entry = admin.getEntry(key);
 
-        //register one miss.
-        checkObj("Not in cache", NO_REFRESH_NEEDED, true);
+		assertTrue("Should have got a refresh.", entry.needsRefresh(-1));
 
-        //register 7 hits
-        for (int i = 0; i < 7; i++) {
-            try {
-                admin.getFromCache(KEY + i, NO_REFRESH_NEEDED);
-            } catch (NeedsRefreshException e) {
-                admin.cancelUpdate(KEY + i);
-            }
-        }
+	}
 
-        for (int i = 0; i < 7; i++) {
-            try {
-                admin.getFromCache(KEY + i, 0);
-            } catch (NeedsRefreshException e) {
-                admin.cancelUpdate(KEY + i);
-            }
-        }
+	protected void tearDown() throws Exception {
+		if (admin != null) {
+			admin.removeCacheListener(cacheEntryEventListener);
+			admin.removeCacheListener(cacheMapAccessEventListener);
+		}
+	}
 
-        admin.putInCache(KEY + 1, CONTENT);
-        admin.putInCache(KEY + 2, CONTENT);
-        admin.flushPattern("blahblah");
-        admin.flushGroup(GROUP1);
-        admin.flushGroup(GROUP2);
-    }
+	/**
+	 * Utility method that tries to get an item from the cache and verify if all
+	 * goes as expected
+	 * <p>
+	 * 
+	 * @param key
+	 *            The item key
+	 * @param refresh
+	 *            The timestamp specifiying if the item needs refresh
+	 * @param exceptionExpected
+	 *            Specify if we expect a NeedsRefreshException
+	 */
+	private Object checkObj(String key, int refresh, boolean exceptionExpected) {
+		// Cache entry
+		CacheEntry entry = null;
+
+		// try to find an object
+		entry = admin.getEntry(key);
+
+		if (entry != null) {
+			if ((entry.needsRefresh(refresh) && !exceptionExpected)
+					|| (exceptionExpected && !entry.needsRefresh(refresh))) {
+				fail("Expected NeedsRefreshException!");
+			}
+
+			return entry.getContent();
+		}
+		return null;
+
+	}
+
+	/**
+	 * Method that try to retrieve data from the cache but specify wrong
+	 * arguments
+	 * <p>
+	 * 
+	 * @param key
+	 *            The cache item key
+	 * @param refresh
+	 *            The timestamp specifiying if the item needs refresh
+	 */
+	private void invalidGetArgument(String key, int refresh) {
+		CacheEntry entry = admin.getEntry(key);
+
+		if (entry != null && !entry.needsRefresh(refresh)) {
+			fail("Expected NeedsRefreshException!");
+		}
+	}
+
+	private void populate() {
+		for (int i = 0; i < 7; i++) {
+			String[] groups = ((i & 1) == 0) ? new String[] { GROUP1, GROUP2 }
+					: new String[] { GROUP3 };
+			admin.put(KEY + i, CONTENT + i, groups);
+		}
+
+		// register one miss.
+		checkObj("Not in cache", NO_REFRESH_NEEDED, true);
+
+		// register 7 hits
+		for (int i = 0; i < 7; i++) {
+
+			admin.get(KEY + i, NO_REFRESH_NEEDED);
+
+		}
+
+		for (int i = 0; i < 7; i++) {
+
+			admin.get(KEY + i, 0);
+
+		}
+
+		admin.put(KEY + 1, CONTENT);
+		admin.put(KEY + 2, CONTENT);
+		admin.flushGroup(GROUP1);
+		admin.flushGroup(GROUP2);
+	}
 }
