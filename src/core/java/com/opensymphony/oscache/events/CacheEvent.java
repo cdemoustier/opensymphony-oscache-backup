@@ -15,10 +15,7 @@ import com.opensymphony.oscache.core.Cache;
  * </ul>
  */
 public class CacheEvent extends EventObject {
-  public static final int ADD = 0;
-  public static final int UPDATE = 1;
-  public static final int REMOVE = 2;
-  public static final int CLEAR = 4;
+  
   public static final int LOAD_FAILED = 8;
   private Cache cache;
   private int eventType;
@@ -61,39 +58,12 @@ public class CacheEvent extends EventObject {
     return (Cache) getSource();
   }
 
-  public boolean isAddEvent() {
-    return eventType == ADD;
-  }
-
-  public boolean isUpdateEvent() {
-    return eventType == UPDATE;
-  }
-
-  public boolean isRemoveEvent() {
-    return eventType == REMOVE;
-  }
-
-  public boolean isClearEvent() {
-    return eventType == CLEAR;
-  }
-
   public boolean isLoadFailedEvent() {
     return eventType == LOAD_FAILED;
   }
 
   public String getEventTypeString() {
     switch (eventType) {
-      case ADD:
-        return "ADD";
-
-      case UPDATE:
-        return "UPDATE";
-
-      case REMOVE:
-        return "REMOVE";
-
-      case CLEAR:
-        return "CLEAR";
 
       case LOAD_FAILED:
         return "LOAD FAILED";

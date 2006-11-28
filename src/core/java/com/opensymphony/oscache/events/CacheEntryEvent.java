@@ -20,32 +20,27 @@ public class CacheEntryEvent extends CacheEvent {
 	/**
      * Get an event type for an entry added.
      */
-    public static int ENTRY_ADDED = 0;
+    public static final int ENTRY_ADDED = 0;
 
     /**
      * Get an event type for an entry updated.
      */
-    public static int ENTRY_UPDATED = 1;
+    public static final int ENTRY_UPDATED = 1;
 
     /**
      * Get an event type for an entry flushed.
      */
-    public static int ENTRY_FLUSHED = 2;
+    public static final int ENTRY_FLUSHED = 2;
 
     /**
      * Get an event type for an entry removed.
      */
-    public static int ENTRY_REMOVED = 4;
+    public static final int ENTRY_REMOVED = 4;
 
     /**
      * Get an event type for a group flush event.
      */
-    public static int GROUP_FLUSHED = 8;
-
-    /**
-     * Get an event type for a pattern flush event.
-     */
-    public static int PATTERN_FLUSHED = 16;
+    public static final int GROUP_FLUSHED = 8;
     
 
     /**

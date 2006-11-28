@@ -4,14 +4,20 @@
  */
 package com.opensymphony.oscache.general;
 
-import com.opensymphony.oscache.core.*;
-import com.opensymphony.oscache.events.CacheEntryEventListener;
-import com.opensymphony.oscache.events.CacheMapAccessEventListener;
-import com.opensymphony.oscache.extra.CacheEntryEventListenerImpl;
-import com.opensymphony.oscache.extra.CacheMapAccessEventListenerImpl;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.Properties;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
+
+import com.opensymphony.oscache.core.Cache;
+import com.opensymphony.oscache.core.CacheEntry;
+import com.opensymphony.oscache.core.DummyAlwayRefreshEntryPolicy;
+import com.opensymphony.oscache.core.TestAbstractCacheAdministrator;
+import com.opensymphony.oscache.extra.CacheEntryEventListenerImpl;
+import com.opensymphony.oscache.extra.CacheMapAccessEventListenerImpl;
 
 /**
  * Test all the public methods of the GeneralCacheAdministrator class. Since

@@ -11,6 +11,8 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
+import sun.tools.tree.ThisExpression;
+
 import com.opensymphony.oscache.algorithm.LRUEvictionAlgorithm;
 import com.opensymphony.oscache.core.EntryRefreshPolicy;
 import com.opensymphony.oscache.core.CacheEntry;
@@ -18,8 +20,10 @@ import com.opensymphony.oscache.events.CacheEntryEvent;
 import com.opensymphony.oscache.events.CacheEvent;
 import com.opensymphony.oscache.events.CacheGroupEvent;
 import com.opensymphony.oscache.events.CacheListener;
+import com.opensymphony.oscache.events.CacheMapAccessEvent;
 import com.opensymphony.oscache.events.CachewideEvent;
 import com.opensymphony.oscache.util.FastCronParser;
+import com.opensymphony.oscache.web.filter.ExpiresRefreshPolicy;
 
 /**
  * A base class that provides most of the core caching functionality for a
@@ -40,7 +44,7 @@ public abstract class BaseCache implements Cache {
 	 */
 	private Date flushDateTime = null;
 
-	private Map groupMap;
+	private Map groupMap = new HashMap();
 
 	private int capacity;
 
@@ -99,9 +103,8 @@ public abstract class BaseCache implements Cache {
 		CacheEntry cacheEntry = getEntry(key);
 		Object content = null;
 		if (cacheEntry != null) {
-			content = cacheEntry.getValue();
-			if (this.isStale(cacheEntry, refreshPeriod, cronExpiry)) {
-				content = null;
+			if (!this.isStale(cacheEntry, refreshPeriod, cronExpiry)) {
+				content = cacheEntry.getValue();
 			}
 		}
 		return content;
@@ -112,7 +115,7 @@ public abstract class BaseCache implements Cache {
 		CacheEntry result = removeInternal(key);
 		if (result != null) {
 			algorithm.evaluateRemove(key);
-			fireEvent(result, CacheEvent.REMOVE);
+			fireEntryEvent(result, CacheEntryEvent.ENTRY_REMOVED);
 		}
 		return result;
 	}
@@ -184,10 +187,10 @@ public abstract class BaseCache implements Cache {
 
 		// fire off a notification message
 		if (oldEntry == null) {
-			fireEvent(newEntry, CacheEvent.ADD);
+			fireEntryEvent(newEntry, CacheEntryEvent.ENTRY_ADDED);
 			return null;
 		}
-		fireEvent(newEntry, CacheEvent.UPDATE);
+		fireEntryEvent(newEntry, CacheEntryEvent.ENTRY_UPDATED);
 
 		return oldEntry.getValue();
 	}
@@ -203,6 +206,11 @@ public abstract class BaseCache implements Cache {
 		CacheEntry cacheEntry = getInternal(key);
 		if (cacheEntry != null) {
 			algorithm.evaluateGet(key);
+			fireEvent(new CacheMapAccessEvent(this, cacheEntry,
+					CacheMapAccessEvent.HIT));
+		} else {
+			fireEvent(new CacheMapAccessEvent(this, cacheEntry,
+					CacheMapAccessEvent.MISS));
 		}
 		return cacheEntry;
 	}
@@ -245,7 +253,7 @@ public abstract class BaseCache implements Cache {
 	 * @param group
 	 *            The group to flush
 	 */
-	public void flushGroup(String group) {
+	public synchronized void flushGroup(String group) {
 		// Flush all objects in the group
 		Set groupEntries = (Set) groupMap.get(group);
 
@@ -257,13 +265,16 @@ public abstract class BaseCache implements Cache {
 			while (itr.hasNext()) {
 				key = itr.next();
 				entry = getEntry(key);
-
-				if ((entry != null)
+				if (entry != null
 						&& !entry.needsRefresh(CacheEntry.INDEFINITE_EXPIRY)) {
-					remove(key);
+					entry.flush();
+					fireEntryEvent(entry, CacheEntryEvent.ENTRY_FLUSHED);
 				}
 			}
 		}
+
+		groupMap.remove(group);
+
 		fireEvent(new CacheGroupEvent(this, group));
 
 	}
@@ -332,7 +343,7 @@ public abstract class BaseCache implements Cache {
 	 *            the type of event that occurred. See {@link CacheEvent} for
 	 *            the possible event types.
 	 */
-	protected void fireEvent(CacheEntry entry, int eventType) {
+	protected void fireEntryEvent(CacheEntry entry, int eventType) {
 		CacheEntryEvent event = new CacheEntryEvent(this, entry, eventType);
 		fireEvent(event);
 	}
@@ -382,6 +393,10 @@ public abstract class BaseCache implements Cache {
 		this.algorithm = algorithm;
 	}
 
+	public EvictionAlgorithm getEvictionAlgorithm() {
+		return this.algorithm;
+	}
+
 	/**
 	 * Retrieves the cache entry from the underlying datastore. <p/> The
 	 * implementation of this method does not need to be synchronized; the
@@ -428,6 +443,7 @@ public abstract class BaseCache implements Cache {
 	public void flushAll(Date date) {
 		synchronized (flushDateTime) {
 			flushDateTime = date;
+			clearInternal();
 			fireEvent(new CachewideEvent(this, date));
 		}
 	}
