@@ -59,9 +59,16 @@ public class ServletCacheAdministrator extends AbstractCacheAdministrator implem
     public final static String APPLICATION_SCOPE_NAME = "application";
 
     /**
-    * The key under which the CacheAdministrator will be stored in the ServletContext
+    * The suffix added to the cache key used to store a 
+    * ServletCacheAdministrator will be stored in the ServletContext
     */
-    private final static String CACHE_ADMINISTRATOR_KEY = "__oscache_admin";
+    private final static String CACHE_ADMINISTRATOR_KEY_SUFFIX = "_admin";
+
+    /**
+    * The key under which an array of all ServletCacheAdministrator objects 
+    * will be stored in the ServletContext
+    */
+    private final static String CACHE_ADMINISTRATORS_KEY = "__oscache_admins";
 
     /**
     * Key used to store the current scope in the configuration. This is a hack
@@ -150,6 +157,22 @@ public class ServletCacheAdministrator extends AbstractCacheAdministrator implem
     }
 
     /**
+     * Obtain an instance of the CacheAdministrator for the specified key
+     *
+     * @param context The ServletContext that this CacheAdministrator is a Singleton under
+     * @param key the cachekey or admincachekey for the CacheAdministrator wanted
+     * @return Returns the CacheAdministrator instance for this context, or null if no
+     * CacheAdministrator exists with the key supplied
+     */
+     public static ServletCacheAdministrator getInstanceFromKey(ServletContext context, String key) {
+    	 // Note we do not bother to check if the key is null because it mustn't.
+         if (!key.endsWith(CACHE_ADMINISTRATOR_KEY_SUFFIX)) {
+        	 key = key + CACHE_ADMINISTRATOR_KEY_SUFFIX;
+         }
+         return (ServletCacheAdministrator) context.getAttribute(key);
+     }
+
+    /**
     * Obtain an instance of the CacheAdministrator
     *
     * @param context The ServletContext that this CacheAdministrator is a Singleton under
@@ -159,18 +182,33 @@ public class ServletCacheAdministrator extends AbstractCacheAdministrator implem
     * are loaded from the oscache.properties file in the classpath.
     * @return Returns the CacheAdministrator instance for this context
     */
-    public synchronized static ServletCacheAdministrator getInstance(ServletContext context, Properties p) {
+    public synchronized static ServletCacheAdministrator getInstance(ServletContext context, Properties p)
+    {
+    	String adminKey = null; 
+    	if (p!= null) {
+    		adminKey = p.getProperty(CACHE_KEY_KEY);
+    	}
+    	if (adminKey == null) {
+    		adminKey = DEFAULT_CACHE_KEY;
+    	}
+		adminKey += CACHE_ADMINISTRATOR_KEY_SUFFIX;
 
-        ServletCacheAdministrator admin = (ServletCacheAdministrator) context.getAttribute(CACHE_ADMINISTRATOR_KEY);
+        ServletCacheAdministrator admin = (ServletCacheAdministrator) context.getAttribute(adminKey);
 
         // First time we need to create the administrator and store it in the
         // servlet context
         if (admin == null) {
             admin = new ServletCacheAdministrator(context, p);
-            context.setAttribute(CACHE_ADMINISTRATOR_KEY, admin);
+            Map admins = (Map) context.getAttribute(CACHE_ADMINISTRATORS_KEY);
+            if (admins == null) {
+            	admins = new HashMap();
+            }
+            admins.put(adminKey, admin);
+            context.setAttribute(CACHE_ADMINISTRATORS_KEY, admins);
+            context.setAttribute(adminKey, admin);
 
             if (log.isInfoEnabled()) {
-                log.info("Created new instance of ServletCacheAdministrator");
+                log.info("Created new instance of ServletCacheAdministrator with key "+adminKey);
             }
 
             admin.getAppScopeCache(context);
@@ -184,31 +222,41 @@ public class ServletCacheAdministrator extends AbstractCacheAdministrator implem
     }
 
     /**
-    * Shuts down the cache administrator. This should usually only be called
-    * when the controlling application shuts down.
+    * Shuts down all servlet cache administrators. This should usually only 
+    * be called when the controlling application shuts down.
     */
-    public static void destroyInstance(ServletContext context) {
+    public static void destroyInstance(ServletContext context)
+    {
         ServletCacheAdministrator admin;
-        admin = (ServletCacheAdministrator) context.getAttribute(CACHE_ADMINISTRATOR_KEY);
-
-        if (admin != null) {
-            // Finalize the application scope cache
-            Cache cache = (Cache) context.getAttribute(admin.getCacheKey());
-
-            if (cache != null) {
-                admin.finalizeListeners(cache);
-                context.removeAttribute(admin.getCacheKey());
-                context.removeAttribute(CACHE_ADMINISTRATOR_KEY);
-                cache = null;
-
-                if (log.isInfoEnabled()) {
-                    log.info("Shut down the ServletCacheAdministrator");
-                }
-            }
-
-            admin = null;
+        Map admins = (Map) context.getAttribute(CACHE_ADMINISTRATORS_KEY);
+        if (admins != null)
+        {
+        	Set keys = admins.keySet();
+        	Iterator it = keys.iterator();
+        	while (it.hasNext())
+        	{
+        		String adminKey = (String) it.next();
+        		admin = (ServletCacheAdministrator) admins.get( adminKey );
+        		if (admin != null)
+        		{
+                    // Finalize the application scope cache
+                    Cache cache = (Cache) context.getAttribute(admin.getCacheKey());
+                    if (cache != null) {
+                    	admin.finalizeListeners(cache);
+                        context.removeAttribute(admin.getCacheKey());
+                        context.removeAttribute(adminKey);
+                        cache = null;
+                        if (log.isInfoEnabled()) {
+                            log.info("Shut down the ServletCacheAdministrator "+adminKey);
+                        }
+                    }
+                    admin = null;
+        		}
+        	}
+        	context.removeAttribute(CACHE_ADMINISTRATORS_KEY);
         }
     }
+
 
     /**
     * Grabs the cache for the specified scope

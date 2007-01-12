@@ -5,6 +5,7 @@
 package com.opensymphony.oscache.web.filter;
 
 import com.opensymphony.oscache.base.Cache;
+import com.opensymphony.oscache.base.Config;
 import com.opensymphony.oscache.base.EntryRefreshPolicy;
 import com.opensymphony.oscache.base.NeedsRefreshException;
 import com.opensymphony.oscache.web.ServletCacheAdministrator;
@@ -13,6 +14,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
@@ -63,7 +66,8 @@ public class CacheFilter implements Filter, ICacheKeyProvider, ICacheGroupsProvi
     public static final long MAX_AGE_TIME = Long.MAX_VALUE;
 
     // request attribute to avoid reentrance
-    private final static String REQUEST_FILTERED = "__oscache_filtered";
+    private final static String REQUEST_FILTERED = "__oscache_filtered__";
+    private String requestFiltered;
 
     // the policy for the expires header
     private EntryRefreshPolicy expiresRefreshPolicy;
@@ -114,7 +118,7 @@ public class CacheFilter implements Filter, ICacheKeyProvider, ICacheGroupsProvi
             chain.doFilter(request, response);
             return;
         }
-        request.setAttribute(REQUEST_FILTERED, Boolean.TRUE);
+        request.setAttribute(requestFiltered, Boolean.TRUE);
 
         HttpServletRequest httpRequest = (HttpServletRequest) request;
 
@@ -190,6 +194,9 @@ public class CacheFilter implements Filter, ICacheKeyProvider, ICacheGroupsProvi
      * The supported initialization parameters are:
      * <ul>
      * 
+     * <li><b>propertiesFile</b> - the properties file that contains the OSCache configuration
+     * options to be used by the Cache that this Filter should use.</li>
+     * 
      * <li><b>time</b> - the default time (in seconds) to cache content for. The default
      * value is 3600 seconds (one hour).</li>
      * 
@@ -235,9 +242,35 @@ public class CacheFilter implements Filter, ICacheKeyProvider, ICacheGroupsProvi
      * @param filterConfig The filter configuration
      */
     public void init(FilterConfig filterConfig) {
-        //Get whatever settings we want...
+        log.info("Initializing OSCache CacheFilter.");
+
+        // Get whatever settings we want...
         config = filterConfig;
-        admin = ServletCacheAdministrator.getInstance(config.getServletContext());
+
+        // setting the request filter to avoid reentrance with the same filter
+        requestFiltered = REQUEST_FILTERED + config.getFilterName();
+        log.info("Request filter attribute is " + requestFiltered);
+
+    	// filter Properties file
+        Properties props = null;
+        try {
+            String propertiesfile = config.getInitParameter("propertiesfile");
+            
+            if (propertiesfile != null && propertiesfile.length() > 0)
+            {
+            	props = loadProps(propertiesfile);
+            }
+        } catch (Exception e) {
+            log.info("Could not get init parameter 'propertiesfile', using default.");
+        }
+    	if (props != null)
+    	{
+    		admin = ServletCacheAdministrator.getInstance(filterConfig.getServletContext(), props);
+    	}
+    	else
+    	{
+            admin = ServletCacheAdministrator.getInstance(config.getServletContext());
+    	}
 
         // filter parameter time
         try {
@@ -437,7 +470,7 @@ public class CacheFilter implements Filter, ICacheKeyProvider, ICacheGroupsProvi
      * @return true if it is the first execution
      */
     protected boolean isFilteredBefore(ServletRequest request) {
-        return request.getAttribute(REQUEST_FILTERED) != null;
+        return request.getAttribute(requestFiltered) != null;
     }
 
     /**
@@ -495,4 +528,33 @@ public class CacheFilter implements Filter, ICacheKeyProvider, ICacheGroupsProvi
         return  (acceptEncoding != null) && (acceptEncoding.indexOf("gzip") != -1);
     }
 
+    /**
+     * Load the specified properties file from the classpath. 
+     * If the file cannot be found or loaded, an error
+     * will be logged and no properties will be set.
+     */
+    private Properties loadProps(String filename) {
+        if (log.isDebugEnabled()) {
+            log.debug("Getting Properties file "+filename);
+        }
+
+        Properties properties = new Properties();
+        InputStream in = null;
+
+        try {
+            in = Config.class.getResourceAsStream(filename);
+            properties.load(in);
+            log.info("Properties " + properties);
+        } catch (Exception e) {
+            log.error("Error reading " + filename, e);
+            log.error("Ensure the " + filename + " file is readable and in your classpath.");
+        } finally {
+            try {
+                in.close();
+            } catch (Exception e) {
+                // Ignore errors that occur while closing file
+            }
+        }
+        return properties;
+    }
 }
