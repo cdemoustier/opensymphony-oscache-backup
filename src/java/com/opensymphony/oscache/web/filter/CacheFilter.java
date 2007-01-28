@@ -194,7 +194,7 @@ public class CacheFilter implements Filter, ICacheKeyProvider, ICacheGroupsProvi
      * The supported initialization parameters are:
      * <ul>
      * 
-     * <li><b>propertiesFile</b> - the properties file that contains the OSCache configuration
+     * <li><b>oscache-properties-file</b> - the properties file that contains the OSCache configuration
      * options to be used by the Cache that this Filter should use.</li>
      * 
      * <li><b>time</b> - the default time (in seconds) to cache content for. The default
@@ -254,18 +254,18 @@ public class CacheFilter implements Filter, ICacheKeyProvider, ICacheGroupsProvi
     	// filter Properties file
         Properties props = null;
         try {
-            String propertiesfile = config.getInitParameter("propertiesfile");
+            String propertiesfile = config.getInitParameter("oscache-properties-file");
             
             if (propertiesfile != null && propertiesfile.length() > 0)
             {
             	props = loadProps(propertiesfile);
             }
         } catch (Exception e) {
-            log.info("Could not get init parameter 'propertiesfile', using default.");
+            log.info("Could not get init parameter 'oscache-properties-file', using default.");
         }
     	if (props != null)
     	{
-    		admin = ServletCacheAdministrator.getInstance(filterConfig.getServletContext(), props);
+    		admin = ServletCacheAdministrator.getInstance(config.getServletContext(), props);
     	}
     	else
     	{
