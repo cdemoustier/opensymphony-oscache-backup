@@ -4,103 +4,112 @@
  */
 package com.opensymphony.oscache.extra;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import com.opensymphony.oscache.base.Cache;
-import com.opensymphony.oscache.base.events.*;
+import com.opensymphony.oscache.base.events.CacheEntryEvent;
+import com.opensymphony.oscache.base.events.CacheEntryEventListener;
+import com.opensymphony.oscache.base.events.CacheGroupEvent;
+import com.opensymphony.oscache.base.events.CacheMapAccessEvent;
+import com.opensymphony.oscache.base.events.CacheMapAccessEventListener;
+import com.opensymphony.oscache.base.events.CacheMapAccessEventType;
+import com.opensymphony.oscache.base.events.CachePatternEvent;
+import com.opensymphony.oscache.base.events.CachewideEvent;
+import com.opensymphony.oscache.base.events.ScopeEvent;
+import com.opensymphony.oscache.base.events.ScopeEventListener;
+import com.opensymphony.oscache.extra.ScopeEventListenerImpl;
 
 /**
  * A simple implementation of a statistic reporter which uses the
- * CacheMapAccessEventListener, CacheEntryEventListener and ScopeEventListener.
- * It uses the events to count the cache hit and misses and of course the
- * flushes.
+ * event listeners. It uses the events to count the cache hit and
+ * misses and of course the flushes.
  * <p>
  * We are not using any synchronized so that this does not become a bottleneck.
  * The consequence is that on retrieving values, the operations that are
  * currently being done won't be counted.
  */
-public class StatisticListenerImpl implements CacheMapAccessEventListener, CacheEntryEventListener, ScopeEventListener {
-
-    private static transient final Log log = LogFactory.getLog(StatisticListenerImpl.class);
+public class StatisticListenerImpl implements CacheMapAccessEventListener,
+        CacheEntryEventListener, ScopeEventListener {
 
     /**
-     * Hit counter
+     * Hit counter.
      */
-    private int hitCount = 0;
+    private static int hitCount = 0;
 
     /**
-     * Miss counter
+     * Miss counter.
      */
-    private int missCount = 0;
+    private static int missCount = 0;
 
     /**
-     * Stale hit counter
+     * Stale hit counter.
      */
-    private int staleHitCount = 0;
+    private static int staleHitCount = 0;
 
     /**
-     * Hit counter sum
+     * Hit counter sum.
      */
-    private int hitCountSum = 0;
+    private static int hitCountSum = 0;
 
     /**
-     * Miss counter sum
+     * Miss counter sum.
      */
-    private int missCountSum = 0;
+    private static int missCountSum = 0;
 
     /**
-     * Stale hit counter
+     * Stale hit counter.
      */
-    private int staleHitCountSum = 0;
+    private static int staleHitCountSum = 0;
 
     /**
-     * Flush hit counter
+     * Flush hit counter.
      */
-    private int flushCount = 0;
+    private static int flushCount = 0;
+    
+    /**
+     * Miss counter sum.
+     */
+    private static int entriesAdded = 0;
 
     /**
-     * Constructor, empty for us
+     * Stale hit counter.
+     */
+    private static int entriesRemoved = 0;
+
+    /**
+     * Flush hit counter.
+     */
+    private static int entriesUpdated = 0;
+
+    /**
+     * Constructor, empty for us.
      */
     public StatisticListenerImpl() {
-        log.info("Creation of StatisticListenerImpl");
+
     }
 
     /**
-     * This method handles an event each time the cache is accessed
+     * This method handles an event each time the cache is accessed.
      * 
-     * @param event The event triggered when the cache was accessed
+     * @param event
+     *            The event triggered when the cache was accessed
      * @see com.opensymphony.oscache.base.events.CacheMapAccessEventListener#accessed(CacheMapAccessEvent)
      */
     public void accessed(CacheMapAccessEvent event) {
-        String result = "N/A";
-
         // Retrieve the event type and update the counters
         CacheMapAccessEventType type = event.getEventType();
 
         // Handles a hit event
         if (type == CacheMapAccessEventType.HIT) {
             hitCount++;
-            result = "HIT";
-        }
-        // Handles a stale hit event
-        else if (type == CacheMapAccessEventType.STALE_HIT) {
+        } else if (type == CacheMapAccessEventType.STALE_HIT) { // Handles a
+                                                                // stale hit
+                                                                // event
             staleHitCount++;
-            result = "STALE HIT";
-        }
-        // Handles a miss event
-        else if (type == CacheMapAccessEventType.MISS) {
+        } else if (type == CacheMapAccessEventType.MISS) { // Handles a miss
+                                                            // event
             missCount++;
-            result = "MISS";
-        }
-
-        if (log.isDebugEnabled()) {
-            log.debug("ACCESS : " + result + ": " + event.getCacheEntryKey());
-            log.debug("STATISTIC : Hit = " + hitCount + ", stale hit ="
-                    + staleHitCount + ", miss = " + missCount);
         }
     }
-    
+
     /**
      * Logs the flush of the cache.
      * 
@@ -112,13 +121,6 @@ public class StatisticListenerImpl implements CacheMapAccessEventListener, Cache
         hitCountSum += hitCount;
         staleHitCountSum += staleHitCount;
         missCountSum += missCount;
-
-        if (log.isInfoEnabled()) {
-            log.info("FLUSH : " + info);
-            log.info("STATISTIC SUM : " + "Hit = " + hitCountSum
-                    + ", stale hit = " + staleHitCountSum + ", miss = "
-                    + missCountSum + ", flush = " + flushCount);
-        }
 
         hitCount = 0;
         staleHitCount = 0;
@@ -142,7 +144,7 @@ public class StatisticListenerImpl implements CacheMapAccessEventListener, Cache
      * @see com.opensymphony.oscache.base.events.CacheEntryEventListener#cacheEntryAdded(CacheEntryEvent)
      */
     public void cacheEntryAdded(CacheEntryEvent event) {
-        // do nothing
+        entriesAdded++;
     }
 
     /**
@@ -165,7 +167,7 @@ public class StatisticListenerImpl implements CacheMapAccessEventListener, Cache
      * @see com.opensymphony.oscache.base.events.CacheEntryEventListener#cacheEntryRemoved(CacheEntryEvent)
      */
     public void cacheEntryRemoved(CacheEntryEvent event) {
-        // do nothing
+        entriesRemoved++;
     }
 
     /**
@@ -175,7 +177,7 @@ public class StatisticListenerImpl implements CacheMapAccessEventListener, Cache
      * @see com.opensymphony.oscache.base.events.CacheEntryEventListener#cacheEntryUpdated(CacheEntryEvent)
      */
     public void cacheEntryUpdated(CacheEntryEvent event) {
-        // do nothing
+        entriesUpdated++;
     }
 
     /**
@@ -209,14 +211,85 @@ public class StatisticListenerImpl implements CacheMapAccessEventListener, Cache
     }
 
     /**
-     * Return the counters in a string form
-     *
+     * Return the counters in a string form.
+     * 
      * @return String
      */
     public String toString() {
         return "StatisticListenerImpl: Hit = " + hitCount + " / " + hitCountSum
                 + ", stale hit = " + staleHitCount + " / " + staleHitCountSum
-                + ", miss = " + missCount + " / " + missCountSum
-                + ", flush = " + flushCount;
+                + ", miss = " + missCount + " / " + missCountSum + ", flush = "
+                + flushCount + ", entries (added, removed, updates) = " 
+                + entriesAdded + ", " + entriesRemoved + ", " + entriesUpdated;
+    }
+
+    /**
+     * @return Returns the entriesAdded.
+     */
+    public int getEntriesAdded() {
+        return entriesAdded;
+    }
+
+    /**
+     * @return Returns the entriesRemoved.
+     */
+    public int getEntriesRemoved() {
+        return entriesRemoved;
+    }
+
+    /**
+     * @return Returns the entriesUpdated.
+     */
+    public int getEntriesUpdated() {
+        return entriesUpdated;
+    }
+
+    /**
+     * @return Returns the flushCount.
+     */
+    public int getFlushCount() {
+        return flushCount;
+    }
+
+    /**
+     * @return Returns the hitCount.
+     */
+    public int getHitCount() {
+        return hitCount;
+    }
+
+    /**
+     * @return Returns the hitCountSum.
+     */
+    public int getHitCountSum() {
+        return hitCountSum;
+    }
+
+    /**
+     * @return Returns the missCount.
+     */
+    public int getMissCount() {
+        return missCount;
+    }
+
+    /**
+     * @return Returns the missCountSum.
+     */
+    public int getMissCountSum() {
+        return missCountSum;
+    }
+
+    /**
+     * @return Returns the staleHitCount.
+     */
+    public int getStaleHitCount() {
+        return staleHitCount;
+    }
+
+    /**
+     * @return Returns the staleHitCountSum.
+     */
+    public int getStaleHitCountSum() {
+        return staleHitCountSum;
     }
 }
