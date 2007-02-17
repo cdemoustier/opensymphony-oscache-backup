@@ -7,6 +7,7 @@ package com.opensymphony.oscache.plugins.diskpersistence;
 import com.opensymphony.oscache.base.Config;
 import com.opensymphony.oscache.base.persistence.PersistenceListener;
 
+import java.io.File;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
@@ -20,6 +21,9 @@ import java.security.NoSuchAlgorithmException;
  * @author <a href="mailto:jparrott@soe.sony.com">Jason Parrott</a>
  */
 public class HashDiskPersistenceListener extends AbstractDiskPersistenceListener {
+    
+    private static final int DIR_LEVELS = 3;
+    
     public final static String HASH_ALGORITHM_KEY = "cache.persistence.disk.hash.algorithm";
     public final static String DEFAULT_HASH_ALGORITHM = "MD5";
     protected MessageDigest md = null;
@@ -60,9 +64,16 @@ public class HashDiskPersistenceListener extends AbstractDiskPersistenceListener
             throw new IllegalArgumentException("Invalid key '" + key + "' specified to getCacheFile.");
         }
 
-        byte[] digest = md.digest(key.getBytes());
+        String hexDigest = byteArrayToHexString(md.digest(key.getBytes()));
 
-        return byteArrayToHexString(digest).toCharArray();
+        // CACHE-249: Performance improvement for large disk persistence usage
+        StringBuffer filename = new StringBuffer(hexDigest.length() + 2 * DIR_LEVELS);
+        for (int i=0; i < DIR_LEVELS; i++) {
+            filename.append(hexDigest.charAt(i)).append(File.separator);
+        }
+        filename.append(hexDigest);
+
+        return filename.toString().toCharArray();
     }
 
     /**
