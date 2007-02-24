@@ -333,7 +333,7 @@ public class TestConcurrency extends TestCase {
 
             // OK, those threads should now repeatidely be blocked waiting for the new cache
             // entry to appear. Wait for all of them to terminate
-            int maxWaitingSeconds = 100;
+            long maxWaitingSeconds = 100;
             int maxWaitForEachThread = 5;
             long waitStartTime = System.currentTimeMillis();
 
