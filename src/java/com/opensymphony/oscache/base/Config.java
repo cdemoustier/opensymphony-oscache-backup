@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2003 by OpenSymphony
+ * Copyright (c) 2002-2007 by OpenSymphony
  * All rights reserved.
  */
 package com.opensymphony.oscache.base;
@@ -59,7 +59,7 @@ public class Config implements java.io.Serializable {
         }
 
         if (p == null) {
-            this.properties = loadProperties(PROPERTIES_FILENAME, "default configuration");
+            this.properties = loadProperties(PROPERTIES_FILENAME, "the default configuration");
         } else {
             this.properties = p;
         }
