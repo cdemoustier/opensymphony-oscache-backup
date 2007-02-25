@@ -109,11 +109,11 @@ public class CacheFilter implements Filter, ICacheKeyProvider, ICacheGroupsProvi
      */
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws ServletException, IOException {
         if (log.isInfoEnabled()) {
-            log.info("<cache>: filter in scope " + cacheScope);
+            log.info("OSCache: filter in scope " + cacheScope);
         }
 
         // avoid reentrance (CACHE-128) and check if request is cacheable
-        if (isFilteredBefore(request) || !isCacheable(request)) {
+        if (isFilteredBefore(request) || !isCacheableInternal(request)) {
             chain.doFilter(request, response);
             return;
         }
@@ -139,7 +139,7 @@ public class CacheFilter implements Filter, ICacheKeyProvider, ICacheGroupsProvi
             ResponseContent respContent = (ResponseContent) cache.getFromCache(key, time, cron);
 
             if (log.isInfoEnabled()) {
-                log.info("<cache>: Using cached entry for " + key);
+                log.info("OSCache: Using cached entry for " + key);
             }
 
             boolean acceptsGZip = false;
@@ -164,7 +164,7 @@ public class CacheFilter implements Filter, ICacheKeyProvider, ICacheGroupsProvi
 
             try {
                 if (log.isInfoEnabled()) {
-                    log.info("<cache>: New cache entry, cache stale or cache scope flushed for " + key);
+                    log.info("OSCache: New cache entry, cache stale or cache scope flushed for " + key);
                 }
 
                 CacheHttpServletResponseWrapper cacheResponse = new CacheHttpServletResponseWrapper((HttpServletResponse) response, fragmentRequest, time * 1000L, lastModified, expires, cacheControlMaxAge);
@@ -172,7 +172,7 @@ public class CacheFilter implements Filter, ICacheKeyProvider, ICacheGroupsProvi
                 cacheResponse.flushBuffer();
 
                 // Only cache if the response is cacheable
-                if (isCacheable(cacheResponse)) {
+                if (isCacheableInternal(cacheResponse)) {
                     // get the cache groups of the content
                     String[] groups = cacheGroupsProvider.createCacheGroups(httpRequest, admin, cache);
                     // Store as the cache content the result of the response
@@ -241,10 +241,10 @@ public class CacheFilter implements Filter, ICacheKeyProvider, ICacheGroupsProvi
      * @param filterConfig The filter configuration
      */
     public void init(FilterConfig filterConfig) {
-        log.info("Initializing OSCache CacheFilter.");
-
         // Get whatever settings we want...
         config = filterConfig;
+
+        log.info("OSCache: Initializing OSCache CacheFilter with filter name " + config.getFilterName());
 
         // setting the request filter to avoid reentrance with the same filter
         requestFiltered = REQUEST_FILTERED + config.getFilterName();
@@ -256,10 +256,10 @@ public class CacheFilter implements Filter, ICacheKeyProvider, ICacheGroupsProvi
             String propertiesfile = config.getInitParameter("oscache-properties-file");
             
             if (propertiesfile != null && propertiesfile.length() > 0) {
-            	props = Config.loadProperties(propertiesfile, "CacheFilter with name '" + config.getFilterName()+ "'");
+            	props = Config.loadProperties(propertiesfile, "CacheFilter with filter name '" + config.getFilterName()+ "'");
             }
         } catch (Exception e) {
-            log.info("Could not get init parameter 'oscache-properties-file', using default.");
+            log.info("OSCache: Could not get init parameter 'oscache-properties-file', using default.");
         }
         admin = ServletCacheAdministrator.getInstance(config.getServletContext(), props);
 
@@ -267,7 +267,7 @@ public class CacheFilter implements Filter, ICacheKeyProvider, ICacheGroupsProvi
         try {
             time = Integer.parseInt(config.getInitParameter("time"));
         } catch (Exception e) {
-            log.info("Could not get init parameter 'time', defaulting to one hour.");
+            log.info("OSCache: Could not get init parameter 'time', defaulting to one hour.");
         }
         
         // setting the refresh period for this cache filter
@@ -287,7 +287,7 @@ public class CacheFilter implements Filter, ICacheKeyProvider, ICacheGroupsProvi
                 cacheScope = PageContext.PAGE_SCOPE;
             }
         } catch (Exception e) {
-            log.info("Could not get init parameter 'scope', defaulting to 'application'.");
+            log.info("OSCache: Could not get init parameter 'scope', defaulting to 'application'.");
         }
 
         // filter parameter cron
@@ -305,7 +305,7 @@ public class CacheFilter implements Filter, ICacheKeyProvider, ICacheGroupsProvi
                 fragment = FRAGMENT_AUTODETECT;
             }
         } catch (Exception e) {
-            log.info("Could not get init parameter 'fragment', defaulting to 'auto detect'.");
+            log.info("OSCache: Could not get init parameter 'fragment', defaulting to 'auto detect'.");
         }
         
         // filter parameter nocache
@@ -318,7 +318,7 @@ public class CacheFilter implements Filter, ICacheKeyProvider, ICacheGroupsProvi
                 nocache = NOCACHE_SESSION_ID_IN_URL;
             } 
         } catch (Exception e) {
-            log.info("Could not get init parameter 'nocache', defaulting to 'off'.");
+            log.info("OSCache: Could not get init parameter 'nocache', defaulting to 'off'.");
         }
 
         // filter parameter last modified
@@ -333,7 +333,7 @@ public class CacheFilter implements Filter, ICacheKeyProvider, ICacheGroupsProvi
                 lastModified = LAST_MODIFIED_INITIAL;
             } 
         } catch (Exception e) {
-            log.info("Could not get init parameter 'lastModified', defaulting to 'initial'.");
+            log.info("OSCache: Could not get init parameter 'lastModified', defaulting to 'initial'.");
         }
         
         // filter parameter expires
@@ -348,7 +348,7 @@ public class CacheFilter implements Filter, ICacheKeyProvider, ICacheGroupsProvi
                 expires = EXPIRES_TIME;
             } 
         } catch (Exception e) {
-            log.info("Could not get init parameter 'expires', defaulting to 'on'.");
+            log.info("OSCache: Could not get init parameter 'expires', defaulting to 'on'.");
         }
 
         // filter parameter Cache-Control
@@ -365,12 +365,12 @@ public class CacheFilter implements Filter, ICacheKeyProvider, ICacheGroupsProvi
             		// declare the cache control as a constant
             		cacheControlMaxAge = - cacheControlMaxAge;
             	} else {
-                    log.warn("Init parameter 'max-age' must be at least a positive integer, defaulting to 'time'. ");
+                    log.warn("OSCache: Init parameter 'max-age' must be at least a positive integer, defaulting to 'time'. ");
                 	cacheControlMaxAge = 60;
             	}
             }
         } catch (Exception e) {
-            log.info("Could not get init parameter 'max-age', defaulting to 'time'.");
+            log.info("OSCache: Could not get init parameter 'max-age', defaulting to 'time'.");
         }
 
         // filter parameter ICacheKeyProvider
@@ -395,29 +395,30 @@ public class CacheFilter implements Filter, ICacheKeyProvider, ICacheGroupsProvi
     private Object instantiateFromInitParam(String classInitParam, Class interfaceClass, String defaultClassName) {
 		String className = config.getInitParameter(classInitParam);
 		if (className == null) {
-			log.info("Could not get init parameter '" + classInitParam + "', defaulting to " + defaultClassName + ".");
+			log.info("OSCache: Could not get init parameter '" + classInitParam + "', defaulting to " + defaultClassName + ".");
 			return null;
 		} else {
 			try {
 				Class clazz = Class.forName(className);
 				if (!interfaceClass.isAssignableFrom(clazz)) {
-					log.error("Specified class '" + className + "' does not implement" + interfaceClass.getName() + ". Using default " + defaultClassName + ".");
+					log.error("OSCache: Specified class '" + className + "' does not implement" + interfaceClass.getName() + ". Using default " + defaultClassName + ".");
 					return null;
 				} else {
 					return clazz.newInstance();
 				}
 			} catch (ClassNotFoundException e) {
-				log.error("Class '" + className + "' not found. Defaulting to " + defaultClassName + ".", e);
+				log.error("OSCache: Class '" + className + "' not found. Defaulting to " + defaultClassName + ".", e);
 			} catch (InstantiationException e) {
-				log.error("Class '" + className + "' could not be instantiated because it is not a concrete class. Using default class " + defaultClassName + ".", e);
+				log.error("OSCache: Class '" + className + "' could not be instantiated because it is not a concrete class. Using default class " + defaultClassName + ".", e);
 			} catch (IllegalAccessException e) {
-				log.error("Class '"+ className+ "' could not be instantiated because it is not public. Using default class " + defaultClassName + ".", e);
+				log.error("OSCache: Class '"+ className+ "' could not be instantiated because it is not public. Using default class " + defaultClassName + ".", e);
 			}
 			return null;
 		}
 	}
     
     /**
+     * {@link ICacheKeyProvider}
      * @see com.opensymphony.oscache.web.filter.ICacheKeyProvider#createCacheKey(javax.servlet.http.HttpServletRequest, ServletCacheAdministrator, Cache)
      */
     public String createCacheKey(HttpServletRequest httpRequest, ServletCacheAdministrator scAdmin, Cache cache) {
@@ -425,6 +426,7 @@ public class CacheFilter implements Filter, ICacheKeyProvider, ICacheGroupsProvi
     }
 
     /**
+     * {@link ICacheGroupsProvider}
      * @see com.opensymphony.oscache.web.filter.ICacheGroupsProvider#createCacheGroups(javax.servlet.http.HttpServletRequest, ServletCacheAdministrator, Cache)
      */
     public String[] createCacheGroups(HttpServletRequest httpRequest, ServletCacheAdministrator scAdmin, Cache cache) {
@@ -443,7 +445,7 @@ public class CacheFilter implements Filter, ICacheKeyProvider, ICacheGroupsProvi
      * @param request the to be handled request
      * @return true if the request is a fragment in a page
      */
-    protected boolean isFragment(HttpServletRequest request) {
+    public boolean isFragment(HttpServletRequest request) {
         if (fragment == FRAGMENT_AUTODETECT) {
             return request.getAttribute("javax.servlet.include.request_uri") != null;
         } else {
@@ -460,8 +462,24 @@ public class CacheFilter implements Filter, ICacheKeyProvider, ICacheGroupsProvi
      * @param request checks if the request was filtered before.
      * @return true if it is the first execution
      */
-    protected boolean isFilteredBefore(ServletRequest request) {
+    public boolean isFilteredBefore(ServletRequest request) {
         return request.getAttribute(requestFiltered) != null;
+    }
+
+    /*
+     * isCacheableInternal gurarantees that the log information is correct.
+     * 
+     * @param request The servlet request
+     * @return Returns a boolean indicating if the request can be cached or not.
+     */
+    private final boolean isCacheableInternal(ServletRequest request) {
+        final boolean cacheable = isCacheable(request);
+
+        if (log.isDebugEnabled()) {
+            log.debug("OSCache: the request " + ((cacheable) ? "is" : "is not") + " cachable.");
+        }
+        
+        return cacheable;
     }
 
     /**
@@ -471,41 +489,46 @@ public class CacheFilter implements Filter, ICacheKeyProvider, ICacheGroupsProvi
      * @param request The servlet request
      * @return Returns a boolean indicating if the request can be cached or not.
      */
-    protected boolean isCacheable(ServletRequest request) {
-        // TODO implement CACHE-137 and CACHE-141 here
-        boolean cachable = request instanceof HttpServletRequest;
+    public boolean isCacheable(ServletRequest request) {
+        boolean cacheable = request instanceof HttpServletRequest;
 
-        if (cachable) {
+        if (cacheable) {
             HttpServletRequest requestHttp = (HttpServletRequest) request;
             if (nocache == NOCACHE_SESSION_ID_IN_URL) { // don't cache requests if session id is in the URL
-                cachable = !requestHttp.isRequestedSessionIdFromURL();
+                cacheable = !requestHttp.isRequestedSessionIdFromURL();
             }
         }
 
-        if (log.isDebugEnabled()) {
-            log.debug("<cache>: the request " + ((cachable) ? "is" : "is not") + " cachable.");
-        }
-        
-        return cachable;
+        return cacheable;
     }
     
+    /*
+     * isCacheableInternal gurarantees that the log information is correct.
+     * 
+     * @param cacheResponse the HTTP servlet response
+     * @return Returns a boolean indicating if the response can be cached or not.
+     */
+    private final boolean isCacheableInternal(CacheHttpServletResponseWrapper cacheResponse) {
+        final boolean cacheable = isCacheable(cacheResponse);
+
+        if (log.isDebugEnabled()) {
+            log.debug("OSCache: the response " + ((cacheable) ? "is" : "is not") + " cachable.");
+        }
+        
+        return cacheable;
+    }
+
     /**
      * isCacheable is a method allowing subclass to decide if a response is
      * cachable or not.
      * 
-     * @param cacheResponse The HTTP servlet response
+     * @param cacheResponse the HTTP servlet response
      * @return Returns a boolean indicating if the response can be cached or not.
      */
-    protected boolean isCacheable(CacheHttpServletResponseWrapper cacheResponse) {
-        // TODO implement CACHE-137 and CACHE-141 here
+    public boolean isCacheable(CacheHttpServletResponseWrapper cacheResponse) {
+        // TODO implement CACHE-137 here
         // Only cache if the response was 200
-        boolean cachable = cacheResponse.getStatus() == HttpServletResponse.SC_OK;
-
-        if (log.isDebugEnabled()) {
-            log.debug("<cache>: the response " + ((cachable) ? "is" : "is not") + " cachable.");
-        }
-        
-        return cachable;
+        return cacheResponse.getStatus() == HttpServletResponse.SC_OK;
     }
 
     /**
@@ -514,7 +537,7 @@ public class CacheFilter implements Filter, ICacheKeyProvider, ICacheGroupsProvi
      * @param request the http request
      * @return true if client browser supports GZIP
      */
-    protected boolean acceptsGZipEncoding(HttpServletRequest request) {
+    public boolean acceptsGZipEncoding(HttpServletRequest request) {
         String acceptEncoding = request.getHeader(HEADER_ACCEPT_ENCODING);
         return  (acceptEncoding != null) && (acceptEncoding.indexOf("gzip") != -1);
     }
