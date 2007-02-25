@@ -256,21 +256,13 @@ public class CacheFilter implements Filter, ICacheKeyProvider, ICacheGroupsProvi
         try {
             String propertiesfile = config.getInitParameter("oscache-properties-file");
             
-            if (propertiesfile != null && propertiesfile.length() > 0)
-            {
-            	props = loadProps(propertiesfile);
+            if (propertiesfile != null && propertiesfile.length() > 0) {
+            	props = Config.loadProperties(propertiesfile, "CacheFilter with name '" + config.getFilterName()+ "'");
             }
         } catch (Exception e) {
             log.info("Could not get init parameter 'oscache-properties-file', using default.");
         }
-    	if (props != null)
-    	{
-    		admin = ServletCacheAdministrator.getInstance(config.getServletContext(), props);
-    	}
-    	else
-    	{
-            admin = ServletCacheAdministrator.getInstance(config.getServletContext());
-    	}
+        admin = ServletCacheAdministrator.getInstance(config.getServletContext(), props);
 
         // filter parameter time
         try {
@@ -528,33 +520,4 @@ public class CacheFilter implements Filter, ICacheKeyProvider, ICacheGroupsProvi
         return  (acceptEncoding != null) && (acceptEncoding.indexOf("gzip") != -1);
     }
 
-    /**
-     * Load the specified properties file from the classpath. 
-     * If the file cannot be found or loaded, an error
-     * will be logged and no properties will be set.
-     */
-    private Properties loadProps(String filename) {
-        if (log.isDebugEnabled()) {
-            log.debug("Getting Properties file "+filename);
-        }
-
-        Properties properties = new Properties();
-        InputStream in = null;
-
-        try {
-            in = Config.class.getResourceAsStream(filename);
-            properties.load(in);
-            log.info("Properties " + properties);
-        } catch (Exception e) {
-            log.error("Error reading " + filename, e);
-            log.error("Ensure the " + filename + " file is readable and in your classpath.");
-        } finally {
-            try {
-                in.close();
-            } catch (Exception e) {
-                // Ignore errors that occur while closing file
-            }
-        }
-        return properties;
-    }
 }
