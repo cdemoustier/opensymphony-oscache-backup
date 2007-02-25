@@ -7,7 +7,9 @@ package com.opensymphony.oscache.base;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 
 import java.util.Properties;
 
@@ -20,6 +22,7 @@ import java.util.Properties;
  * @version  $Revision$
  */
 public class Config implements java.io.Serializable {
+    
     private static final transient Log log = LogFactory.getLog(Config.class);
 
     /**
@@ -55,7 +58,7 @@ public class Config implements java.io.Serializable {
      */
     public Config(Properties p) {
         if (log.isDebugEnabled()) {
-            log.debug("Config() called");
+            log.debug("OSCache: Config called");
         }
 
         if (p == null) {
@@ -84,8 +87,7 @@ public class Config implements java.io.Serializable {
             return null;
         }
 
-        String value = properties.getProperty(key);
-        return value;
+        return properties.getProperty(key);
     }
 
     /**
@@ -127,6 +129,36 @@ public class Config implements java.io.Serializable {
     }
     
     /**
+     * Load the properties from the specified URL.
+     * @param URL a non null value of the URL to the properties
+     * @param info additional logger information if the properties can't be read
+     * @return the loaded properties specified by the URL
+     */
+    public static Properties loadProperties(URL url, String info) {
+        log.info("OSCache: Getting properties from URL " + url + " for " + info);
+
+        Properties properties = new Properties();
+        InputStream in = null;
+
+        try {
+            in = url.openStream();
+            properties.load(in);
+            log.info("OSCache: Properties read " + properties);
+        } catch (Exception e) {
+            log.error("OSCache: Error reading from " + url, e);
+            log.error("OSCache: Ensure the properties information in " + url+ " is readable and in your classpath.");
+        } finally {
+            try {
+                in.close();
+            } catch (IOException e) {
+                log.warn("OSCache: IOException while closing InputStream: " + e.getMessage());
+            }
+        }
+        
+        return properties;
+    }
+
+    /**
      * Load the specified properties file from the classpath. If the file
      * cannot be found or loaded, an error will be logged and no
      * properties will be set.
@@ -135,27 +167,21 @@ public class Config implements java.io.Serializable {
      * @return the loaded properties specified by the filename
      */
     public static Properties loadProperties(String filename, String info) {
-        log.info("OSCache: Getting properties file " + filename + " for " + info);
-
-        Properties properties = new Properties();
-        InputStream in = null;
-
-        try {
-            in = Config.class.getResourceAsStream(filename);
-            properties.load(in);
-            log.info("OSCache: Properties read " + properties);
-        } catch (Exception e) {
-            log.error("OSCache: Error reading filename " + filename, e);
-            log.error("OSCache: Ensure the " + filename + " file is readable and in your classpath.");
-        } finally {
-            try {
-                in.close();
-            } catch (Exception e) {
-                // Ignore errors that occur while closing file
+        URL url = null;
+        
+        ClassLoader threadContextClassLoader = Thread.currentThread().getContextClassLoader();
+        if (threadContextClassLoader != null) {
+            url = threadContextClassLoader.getResource(filename);
+        }
+        if (url == null) {
+            url = Config.class.getResource(filename);
+            if (url == null) {
+                log.warn("OSCache: No properties file found in the classpath by filename " + filename);
+                return new Properties();
             }
         }
         
-        return properties;
+        return loadProperties(url, info);
     }
-    
+
 }
