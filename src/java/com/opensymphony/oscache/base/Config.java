@@ -59,7 +59,7 @@ public class Config implements java.io.Serializable {
         }
 
         if (p == null) {
-            loadProps();
+            this.properties = loadProperties(PROPERTIES_FILENAME, "default configuration");
         } else {
             this.properties = p;
         }
@@ -125,28 +125,28 @@ public class Config implements java.io.Serializable {
 
         properties.put(key, value);
     }
-
+    
     /**
-     * Load the properties file (<code>oscache.properties</code>)
-     * from the classpath. If the file cannot be found or loaded, an error
-     * will be logged and no properties will be set.
+     * Load the specified properties file from the classpath. If the file
+     * cannot be found or loaded, an error will be logged and no
+     * properties will be set.
+     * @param filename the properties file with path
+     * @param info additional logger information if file can't be read
+     * @return the loaded properties specified by the filename
      */
-    private void loadProps() {
-        if (log.isDebugEnabled()) {
-            log.debug("Getting Config");
-        }
+    public static Properties loadProperties(String filename, String info) {
+        log.info("OSCache: Getting properties file " + filename + " for " + info);
 
-        properties = new Properties();
-
+        Properties properties = new Properties();
         InputStream in = null;
 
         try {
-            in = Config.class.getResourceAsStream(PROPERTIES_FILENAME);
+            in = Config.class.getResourceAsStream(filename);
             properties.load(in);
-            log.info("Properties " + properties);
+            log.info("OSCache: Properties read " + properties);
         } catch (Exception e) {
-            log.error("Error reading " + PROPERTIES_FILENAME + " in CacheAdministrator.loadProps() " + e);
-            log.error("Ensure the " + PROPERTIES_FILENAME + " file is readable and in your classpath.");
+            log.error("OSCache: Error reading filename " + filename, e);
+            log.error("OSCache: Ensure the " + filename + " file is readable and in your classpath.");
         } finally {
             try {
                 in.close();
@@ -154,5 +154,8 @@ public class Config implements java.io.Serializable {
                 // Ignore errors that occur while closing file
             }
         }
+        
+        return properties;
     }
+    
 }
