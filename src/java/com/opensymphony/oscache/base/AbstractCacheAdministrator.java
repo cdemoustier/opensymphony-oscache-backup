@@ -246,10 +246,8 @@ public abstract class AbstractCacheAdministrator implements java.io.Serializable
      * classes that are specified in the OSCache configuration file.
      */
     protected CacheEventListener[] getCacheEventListeners() {
-        CacheEventListener[] listeners = null;
-
         List classes = StringUtil.split(config.getProperty(CACHE_ENTRY_EVENT_LISTENERS_KEY), ',');
-        listeners = new CacheEventListener[classes.size()];
+        CacheEventListener[] listeners = new CacheEventListener[classes.size()];
 
         for (int i = 0; i < classes.size(); i++) {
             String className = (String) classes.get(i);
