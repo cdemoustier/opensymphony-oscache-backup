@@ -58,6 +58,7 @@ public class ExpiresRefreshPolicy implements EntryRefreshPolicy {
 
     /**
      * @return the refreshPeriod in seconds
+     * @since 2.4
      */
     public long getRefreshPeriod() {
         return refreshPeriod / 1000;
@@ -65,6 +66,7 @@ public class ExpiresRefreshPolicy implements EntryRefreshPolicy {
 
     /**
      * @param refreshPeriod the refresh period in seconds
+     * @since 2.4
      */
     public void setRefreshPeriod(long refreshPeriod) {
         this.refreshPeriod = refreshPeriod * 1000L;

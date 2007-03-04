@@ -133,6 +133,7 @@ public class Config implements java.io.Serializable {
      * @param URL a non null value of the URL to the properties
      * @param info additional logger information if the properties can't be read
      * @return the loaded properties specified by the URL
+     * @since 2.4
      */
     public static Properties loadProperties(URL url, String info) {
         log.info("OSCache: Getting properties from URL " + url + " for " + info);
@@ -165,6 +166,7 @@ public class Config implements java.io.Serializable {
      * @param filename the properties file with path
      * @param info additional logger information if file can't be read
      * @return the loaded properties specified by the filename
+     * @since 2.4
      */
     public static Properties loadProperties(String filename, String info) {
         URL url = null;
