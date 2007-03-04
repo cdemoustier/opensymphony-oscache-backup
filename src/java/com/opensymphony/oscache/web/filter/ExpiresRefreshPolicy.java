@@ -13,7 +13,7 @@ import com.opensymphony.oscache.base.NeedsRefreshException;
  * This is useful when expires header are used in the response.
  *
  * @version $Revision$
- * @author <a href="mailto:ltorunski@t-online.de">Lars Torunski</a>
+ * @author <a href="mailto:ltorunski [ AT ] t-online.de">Lars Torunski</a>
  */
 public class ExpiresRefreshPolicy implements EntryRefreshPolicy {
     
@@ -54,6 +54,20 @@ public class ExpiresRefreshPolicy implements EntryRefreshPolicy {
             return false;
         }
         
+    }
+
+    /**
+     * @return the refreshPeriod in seconds
+     */
+    public long getRefreshPeriod() {
+        return refreshPeriod / 1000;
+    }
+
+    /**
+     * @param refreshPeriod the refresh period in seconds
+     */
+    public void setRefreshPeriod(long refreshPeriod) {
+        this.refreshPeriod = refreshPeriod * 1000L;
     }
     
 }
