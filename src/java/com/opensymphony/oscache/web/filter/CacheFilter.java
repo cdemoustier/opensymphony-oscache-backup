@@ -492,6 +492,7 @@ public class CacheFilter implements Filter, ICacheKeyProvider, ICacheGroupsProvi
     
     /**
      * @return the max-age of the cache control
+     * @since 2.4
      */
     public long getCacheControlMaxAge() {
         if ((cacheControlMaxAge == MAX_AGE_NO_INIT) || (cacheControlMaxAge == MAX_AGE_TIME)) {
@@ -507,6 +508,7 @@ public class CacheFilter implements Filter, ICacheKeyProvider, ICacheGroupsProvi
      * <code>[positive integer]</code> value constant in seconds to be set in every response, the default value is 60.
      * 
      * @param cacheControlMaxAge the cacheControlMaxAge to set
+     * @since 2.4
      */
     public void setCacheControlMaxAge(long cacheControlMaxAge) {
         if ((cacheControlMaxAge == MAX_AGE_NO_INIT) || (cacheControlMaxAge == MAX_AGE_TIME)) {
@@ -523,6 +525,7 @@ public class CacheFilter implements Filter, ICacheKeyProvider, ICacheGroupsProvi
 
     /**
      * @return the cacheGroupsProvider
+     * @since 2.4
      */
     public ICacheGroupsProvider getCacheGroupsProvider() {
         return cacheGroupsProvider;
@@ -534,6 +537,7 @@ public class CacheFilter implements Filter, ICacheKeyProvider, ICacheGroupsProvi
      * the servlect cache administrator and cache. The parameter has to be not <code>null</code>.
      *
      * @param cacheGroupsProvider the cacheGroupsProvider to set
+     * @since 2.4
      */
     public void setCacheGroupsProvider(ICacheGroupsProvider cacheGroupsProvider) {
         if (cacheGroupsProvider == null) throw new IllegalArgumentException("The ICacheGroupsProvider is null.");
@@ -542,6 +546,7 @@ public class CacheFilter implements Filter, ICacheKeyProvider, ICacheGroupsProvi
 
     /**
      * @return the cacheKeyProvider
+     * @since 2.4
      */
     public ICacheKeyProvider getCacheKeyProvider() {
         return cacheKeyProvider;
@@ -553,6 +558,7 @@ public class CacheFilter implements Filter, ICacheKeyProvider, ICacheGroupsProvi
      * the servlect cache administrator and cache. The parameter has to be not <code>null</code>.
      * 
      * @param cacheKeyProvider the cacheKeyProvider to set
+     * @since 2.4
      */
     public void setCacheKeyProvider(ICacheKeyProvider cacheKeyProvider) {
         if (cacheKeyProvider == null) throw new IllegalArgumentException("The ICacheKeyProvider is null.");
@@ -562,6 +568,7 @@ public class CacheFilter implements Filter, ICacheKeyProvider, ICacheGroupsProvi
     /**
      * Returns PageContext.APPLICATION_SCOPE or PageContext.SESSION_SCOPE.
      * @return the cache scope
+     * @since 2.4
      */
     public int getCacheScope() {
         return cacheScope;
@@ -572,6 +579,7 @@ public class CacheFilter implements Filter, ICacheKeyProvider, ICacheGroupsProvi
      * are <code>PageContext.APPLICATION_SCOPE</code> (default) and <code>PageContext.SESSION_SCOPE</code>.
      * 
      * @param cacheScope the cacheScope to set
+     * @since 2.4
      */
     public void setCacheScope(int cacheScope) {
         if ((cacheScope != PageContext.APPLICATION_SCOPE) && (cacheScope != PageContext.SESSION_SCOPE))
@@ -581,6 +589,7 @@ public class CacheFilter implements Filter, ICacheKeyProvider, ICacheGroupsProvi
 
     /**
      * @return the cron
+     * @since 2.4
      */
     public String getCron() {
         return cron;
@@ -592,6 +601,7 @@ public class CacheFilter implements Filter, ICacheKeyProvider, ICacheGroupsProvi
      * a cache entry reaches a certain age.
      * 
      * @param cron the cron to set
+     * @since 2.4
      */
     public void setCron(String cron) {
         this.cron = cron;
@@ -599,6 +609,7 @@ public class CacheFilter implements Filter, ICacheKeyProvider, ICacheGroupsProvi
 
     /**
      * @return the expires header
+     * @since 2.4
      */
     public long getExpires() {
         return expires;
@@ -611,6 +622,7 @@ public class CacheFilter implements Filter, ICacheKeyProvider, ICacheGroupsProvi
      * <code>EXPIRES_TIME</code> the expires information will be intialized based on the time parameter and creation time of the content.
      * 
      * @param expires the expires to set
+     * @since 2.4
      */
     public void setExpires(long expires) {
         if ((expires < EXPIRES_TIME) || (expires > EXPIRES_ON)) throw new IllegalArgumentException("Expires value out of range.");
@@ -619,6 +631,7 @@ public class CacheFilter implements Filter, ICacheKeyProvider, ICacheGroupsProvi
 
     /**
      * @return the expiresRefreshPolicy
+     * @since 2.4
      */
     public EntryRefreshPolicy getExpiresRefreshPolicy() {
         return expiresRefreshPolicy;
@@ -630,6 +643,7 @@ public class CacheFilter implements Filter, ICacheKeyProvider, ICacheGroupsProvi
      * If not specified, the default policy is timed entry expiry as specified with the <b>time</b> parameter described above. 
      *
      * @param expiresRefreshPolicy the expiresRefreshPolicy to set
+     * @since 2.4
      */
     public void setExpiresRefreshPolicy(EntryRefreshPolicy expiresRefreshPolicy) {
         if (expiresRefreshPolicy == null) throw new IllegalArgumentException("The EntryRefreshPolicy is null.");
@@ -638,6 +652,7 @@ public class CacheFilter implements Filter, ICacheKeyProvider, ICacheGroupsProvi
 
     /**
      * @return the fragment
+     * @since 2.4
      */
     public int getFragment() {
         return fragment;
@@ -648,6 +663,7 @@ public class CacheFilter implements Filter, ICacheKeyProvider, ICacheGroupsProvi
      * are <code>FRAGMENT_AUTODETECT</code> (default) for auto detect, <code>FRAGMENT_NO</code> and <code>FRAGMENT_YES</code>.
      * 
      * @param fragment the fragment to set
+     * @since 2.4
      */
     public void setFragment(int fragment) {
         if ((fragment < FRAGMENT_AUTODETECT) || (fragment > FRAGMENT_YES)) throw new IllegalArgumentException("Fragment value out of range.");
@@ -656,6 +672,7 @@ public class CacheFilter implements Filter, ICacheKeyProvider, ICacheGroupsProvi
 
     /**
      * @return the lastModified
+     * @since 2.4
      */
     public long getLastModified() {
         return lastModified;
@@ -668,6 +685,7 @@ public class CacheFilter implements Filter, ICacheKeyProvider, ICacheGroupsProvi
      * <code>LAST_MODIFIED_INITIAL</code> (default) the last modified information will be set based on the current time and changes are allowed.
      * 
      * @param lastModified the lastModified to set
+     * @since 2.4
      */
     public void setLastModified(long lastModified) {
         if ((lastModified < LAST_MODIFIED_INITIAL) || (lastModified > LAST_MODIFIED_ON)) throw new IllegalArgumentException("LastModified value out of range.");
@@ -676,6 +694,7 @@ public class CacheFilter implements Filter, ICacheKeyProvider, ICacheGroupsProvi
 
     /**
      * @return the nocache
+     * @since 2.4
      */
     public int getNocache() {
         return nocache;
@@ -687,6 +706,7 @@ public class CacheFilter implements Filter, ICacheKeyProvider, ICacheGroupsProvi
      * contained in the URL.
      * 
      * @param nocache the nocache to set
+     * @since 2.4
      */
     public void setNocache(int nocache) {
         if ((nocache < NOCACHE_OFF) || (nocache > NOCACHE_SESSION_ID_IN_URL)) throw new IllegalArgumentException("Nocache value out of range.");
@@ -695,6 +715,7 @@ public class CacheFilter implements Filter, ICacheKeyProvider, ICacheGroupsProvi
 
     /**
      * @return the time
+     * @since 2.4
      */
     public int getTime() {
         return time;
@@ -707,6 +728,7 @@ public class CacheFilter implements Filter, ICacheKeyProvider, ICacheGroupsProvi
      * flushed or the expires refresh policy causes the entry to expire.
      * 
      * @param time the time to set
+     * @since 2.4
      */
     public void setTime(int time) {
         this.time = time;
