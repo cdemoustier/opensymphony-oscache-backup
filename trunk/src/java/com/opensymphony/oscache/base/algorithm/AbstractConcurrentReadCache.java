@@ -888,8 +888,6 @@ public abstract class AbstractConcurrentReadCache extends AbstractMap implements
      * @param   key   the key that needs to be removed.
      * @return  the value to which the key had been mapped in this table,
      *          or <code>null</code> if the key did not have a mapping.
-     * @exception  NullPointerException  if the key is
-     *               <code>null</code>.
      */
     /** OpenSymphony BEGIN */
     public Object remove(Object key) {
@@ -900,8 +898,9 @@ public abstract class AbstractConcurrentReadCache extends AbstractMap implements
      * Like <code>remove(Object)</code>, but ensures that the entry will be removed from the persistent store, too,
      * even if overflowPersistence or unlimitedDiskcache are true.
      *
-     * @param key
-     * @return
+     * @param   key   the key that needs to be removed.
+     * @return  the value to which the key had been mapped in this table,
+     *          or <code>null</code> if the key did not have a mapping.
      */
     public Object removeForce(Object key) {
       return remove(key, true, true);

@@ -130,7 +130,7 @@ public class Config implements java.io.Serializable {
     
     /**
      * Load the properties from the specified URL.
-     * @param URL a non null value of the URL to the properties
+     * @param url a non null value of the URL to the properties
      * @param info additional logger information if the properties can't be read
      * @return the loaded properties specified by the URL
      * @since 2.4
