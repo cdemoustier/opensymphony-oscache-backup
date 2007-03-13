@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2003 by OpenSymphony
+ * Copyright (c) 2002-2007 by OpenSymphony
  * All rights reserved.
  */
 package com.opensymphony.oscache.plugins.diskpersistence;
@@ -100,7 +100,6 @@ public class HashDiskPersistenceListener extends AbstractDiskPersistenceListener
             out.append(PSEUDO[(int) ch]); // convert the nibble to a String Character
             ch = (byte) (in[i] & 0x0F); // Strip off low nibble 
             out.append(PSEUDO[(int) ch]); // convert the nibble to a String Character
-            i++;
         }
 
         return out.toString();
