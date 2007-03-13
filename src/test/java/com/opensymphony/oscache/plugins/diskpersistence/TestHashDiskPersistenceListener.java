@@ -1,20 +1,9 @@
 /*
- * Copyright (c) 2002-2003 by OpenSymphony
+ * Copyright (c) 2002-2007 by OpenSymphony
  * All rights reserved.
- */
-/*
- * Created on Aug 30, 2004
- *
- * TODO To change the template for this generated file go to
- * Window - Preferences - Java - Code Style - Code Templates
  */
 package com.opensymphony.oscache.plugins.diskpersistence;
 
-
-/*
- * Copyright (c) 2002-2003 by OpenSymphony
- * All rights reserved.
- */
 import com.opensymphony.oscache.base.CacheEntry;
 import com.opensymphony.oscache.base.Config;
 import com.opensymphony.oscache.base.persistence.CachePersistenceException;
@@ -193,6 +182,29 @@ public final class TestHashDiskPersistenceListener extends TestCase {
             ex.printStackTrace();
             fail("Exception raised!");
         }
+    }
+    
+    private static final byte[] BYTES_1 = {0x00};
+    private static final byte[] BYTES_2 = {0x00, 0x00};
+    private static final byte[] BYTES_3 = {0x00, 0x00, 0x00};
+    private static final byte[] BYTES_4 = {0x01};
+    
+    /**
+     * Test against bug issue CACHE-288.
+     */
+    public void testByteArrayToHexString() {
+        assertFalse("ByteArrayToHexStrings 1 and 2 shouldn't be equal", 
+                HashDiskPersistenceListener.byteArrayToHexString(BYTES_1).
+                equals(HashDiskPersistenceListener.byteArrayToHexString(BYTES_2)));
+        assertFalse("ByteArrayToHexStrings 1 and 3 shouldn't be equal", 
+                HashDiskPersistenceListener.byteArrayToHexString(BYTES_1).
+                equals(HashDiskPersistenceListener.byteArrayToHexString(BYTES_3)));
+        assertFalse("ByteArrayToHexStrings 1 and 4 shouldn't be equal", 
+                HashDiskPersistenceListener.byteArrayToHexString(BYTES_1).
+                equals(HashDiskPersistenceListener.byteArrayToHexString(BYTES_4)));
+        assertFalse("ByteArrayToHexStrings 1 and 4 shouldn't be equal", 
+                HashDiskPersistenceListener.byteArrayToHexString(BYTES_1).
+                equals(HashDiskPersistenceListener.byteArrayToHexString(BYTES_4)));
     }
 
     protected void tearDown() throws Exception {
