@@ -4,8 +4,6 @@
  */
 package com.opensymphony.oscache.base.events;
 
-import java.util.Date;
-
 import com.opensymphony.oscache.base.Cache;
 import com.opensymphony.oscache.general.GeneralCacheAdministrator;
 
