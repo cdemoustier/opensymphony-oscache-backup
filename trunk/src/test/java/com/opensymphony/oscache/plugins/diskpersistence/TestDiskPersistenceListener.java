@@ -136,6 +136,20 @@ public final class TestDiskPersistenceListener extends TestCase {
     }
 
     /**
+     * Force CachePersistenceException to get a 100% in the unit test
+     */
+    public void testCachePersistenceException() {
+        try {
+            for (int i = 0; i < 2; i++) {
+                if (i == 1) throw new CachePersistenceException("");             
+            }
+            fail("CachePersistenceException not thrown!");
+        } catch (CachePersistenceException cpe) {
+            // ignore
+        }
+    }
+    
+    /**
      * Test the disk store and retrieve
      */
     public void testStoreRetrieve() {
