@@ -13,6 +13,9 @@ import java.util.List;
  * @author <a href="&#109;a&#105;&#108;&#116;&#111;:chris&#64;swebtec.&#99;&#111;&#109;">Chris Miller</a>
  */
 public class StringUtil {
+    
+    private StringUtil() {
+    }
 	
     /**
      * Splits a string into substrings based on the supplied delimiter
