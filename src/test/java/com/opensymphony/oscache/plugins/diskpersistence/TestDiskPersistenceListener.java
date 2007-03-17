@@ -141,7 +141,15 @@ public final class TestDiskPersistenceListener extends TestCase {
     public void testCachePersistenceException() {
         try {
             for (int i = 0; i < 2; i++) {
-                if (i == 1) throw new CachePersistenceException("");             
+                if (i == 1) throw new CachePersistenceException("test");             
+            }
+            fail("CachePersistenceException not thrown!");
+        } catch (CachePersistenceException cpe) {
+            // ignore
+        }
+        try {
+            for (int i = 0; i < 2; i++) {
+                if (i == 1) throw new CachePersistenceException();             
             }
             fail("CachePersistenceException not thrown!");
         } catch (CachePersistenceException cpe) {

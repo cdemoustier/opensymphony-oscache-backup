@@ -4,6 +4,7 @@
  */
 package com.opensymphony.oscache.base.algorithm;
 
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -174,6 +175,30 @@ public abstract class TestAbstractCache extends TestCase {
         e.printStackTrace();
         fail("Excpetion was thrown");
       }
+    }
+    
+    public void testMisc() {
+        getCache().clear();
+        assertTrue(getCache().capacity() > 0);
+
+        final String KEY = "testkeymisc";
+        final String CONTENT = "testkeymisc";
+
+        CacheEntry entry = new CacheEntry(KEY, null);
+        entry.setContent(CONTENT);
+        
+        if (getCache().contains(entry) == false) {
+            getCache().put(KEY, entry);
+        }
+        assertTrue(getCache().contains(entry));
+        
+        CacheEntry entry2 = new CacheEntry(KEY+"2", null);
+        entry.setContent(CONTENT+"2");
+        getCache().put(entry.getKey(), entry);
+
+        Enumeration enumeration = getCache().elements();
+        assertTrue(enumeration.hasMoreElements());
+        while (enumeration.hasMoreElements()) enumeration.nextElement();
     }
 
 
