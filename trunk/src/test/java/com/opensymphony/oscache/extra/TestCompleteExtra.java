@@ -49,6 +49,7 @@ public final class TestCompleteExtra extends TestCase {
         suite.addTest(TestCacheEntryEventListenerImpl.suite());
         suite.addTest(TestCacheMapAccessEventListenerImpl.suite());
         suite.addTest(TestScopeEventListenerImpl.suite());
+        suite.addTest(TestStatisticListenerImpl.suite());
 
         return suite;
     }
