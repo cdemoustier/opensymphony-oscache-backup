@@ -49,6 +49,9 @@ public final class TestCompleteEvents extends TestCase {
         suite.addTest(TestCacheEntryEvent.suite());
         suite.addTest(TestCacheMapAccessEvent.suite());
         suite.addTest(TestScopeEvent.suite());
+        suite.addTest(TestCachewideEvent.suite());
+        suite.addTest(TestCachePatternEvent.suite());
+        suite.addTest(TestCacheGroupEvent.suite());
 
         return suite;
     }

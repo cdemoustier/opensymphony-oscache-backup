@@ -86,8 +86,8 @@ public class TestStatisticListenerImpl extends TestCase {
         listener.scopeFlushed(new ScopeEvent(ScopeEventType.SCOPE_FLUSHED, PAGE_SCOPE, new Date()));
 
         listener.cacheFlushed(new CachewideEvent(cache, new Date(), null));
-        listener.cacheGroupFlushed(new CacheGroupEvent(cache, "testGroup", null));
-        listener.cachePatternFlushed(new CachePatternEvent(cache, "testPattern", null));
+        listener.cacheGroupFlushed(new CacheGroupEvent(cache, "testGroup"));
+        listener.cachePatternFlushed(new CachePatternEvent(cache, "testPattern"));
 
         // Assert the counters
         assertEquals(listener.getEntriesAdded(), 1);

@@ -146,6 +146,39 @@ public class TestGeneralCacheAdministrator extends TestAbstractCacheAdministrato
     }
 
     /**
+     * Ensure that item may be flushed by the entry itself
+     */
+    public void testFlushEntry() {
+        // Put some content in cache
+        admin.putInCache(KEY, CONTENT);
+
+        // Call flush pattern with parameters that must NOT flush our object
+        admin.flushEntry(WILL_NOT_FLUSH_PATTERN);
+
+        // Ensure that our object is not gone
+        assertNotNull(checkObj(KEY, NO_REFRESH_NEEDED, false));
+
+        // This time we flush it for real
+        admin.flushEntry(KEY);
+        assertNotNull(checkObj(KEY, NO_REFRESH_NEEDED, true));
+    }
+    
+    /**
+     * Ensure that item may be flushed by flush all
+     */
+    public void testFlushAll() {
+        // Put some content in cache
+        admin.putInCache(KEY, CONTENT);
+
+        // Ensure that our object is not gone
+        assertNotNull(checkObj(KEY, NO_REFRESH_NEEDED, false));
+
+        // This time we flush it for real
+        admin.flushAll();
+        assertNotNull(checkObj(KEY, NO_REFRESH_NEEDED, true));
+    }
+    
+    /**
      * Ensure that the cache groupings work correctly
      */
     public void testGroups() {
