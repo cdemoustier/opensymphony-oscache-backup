@@ -221,6 +221,11 @@
         <testBase file="${src.test}/oscacheDiskOnly.properties" message="Running base tests with disk cache only"/>
     </target>
 
+    <target name="test-base-dc-hash" depends="test-compile" unless="test.failure" description="run base tests">
+        <!-- Rerun tests using Disk Cache Only -->
+        <testBase file="${src.test}/oscacheDiskOnlyHash.properties" message="Running base tests with disk cache hash persistence only"/>
+    </target>
+
     <target name="test-base-dmc" depends="test-compile" unless="test.failure" description="run base tests">
         <!-- ReRun tests using Disk and Memory Cache -->
         <testBase file="${src.test}/oscacheDiskAndMemory.properties" message="Running base tests with disk and memory caches"/>
@@ -231,7 +236,7 @@
         <testBase file="${src.test}/oscacheMemoryAndOverflowToDisk.properties" message="Running base tests with memory and disk overflow caches"/>
     </target>
 
-    <target name="test-base" depends="test-base-mc, test-base-dc, test-base-dmc, test-base-mdoc" description="run all base tests"/>
+    <target name="test-base" depends="test-base-mc, test-base-dc, test-base-dc-hash, test-base-dmc, test-base-mdoc" description="run all base tests"/>
    
     <!-- Run web tests -->   
     <target name="test-web-mc" depends="test-compile, example-war, deploy-example-war" unless="test.failure" if="test.web.baseURL" description="run web tests">
@@ -244,6 +249,11 @@
         <testWeb file="${src.test}/oscacheDiskOnly.properties" message="Running web tests with disk cache only"/>
     </target>
 
+    <target name="test-web-dc-hash" depends="test-compile, example-war, deploy-example-war" unless="test.failure" if="test.web.baseURL" description="run web tests">
+        <!-- Rerun tests using Disk Cache Only -->
+        <testWeb file="${src.test}/oscacheDiskOnlyHash.properties" message="Running web tests with disk cache hash persistence only"/>
+    </target>
+
     <target name="test-web-dmc" depends="test-compile, example-war, deploy-example-war" unless="test.failure" if="test.web.baseURL" description="run web tests">
         <!-- ReRun tests using Disk and Memory Cache -->
         <testWeb file="${src.test}/oscacheDiskAndMemory.properties" message="Running web tests with disk and memory caches"/>
@@ -254,7 +264,7 @@
         <testWeb file="${src.test}/oscacheMemoryAndOverflowToDisk.properties" message="Running web tests with memory and disk overflow caches"/>
     </target>
     
-    <target name="test-web" depends="test-web-mc, test-web-dc, test-web-dmc, test-web-mdoc" description="run all web tests"/>
+    <target name="test-web" depends="test-web-mc, test-web-dc, test-web-dc-hash, test-web-dmc, test-web-mdoc" description="run all web tests"/>
    
     <!-- Run clustering tests -->
     <target name="test-cluster" depends="test-compile" unless="test.failure" if="test-cluster" description="run cluster tests">
