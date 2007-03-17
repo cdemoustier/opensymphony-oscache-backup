@@ -8,6 +8,7 @@ import com.opensymphony.oscache.base.Cache;
 import com.opensymphony.oscache.base.Config;
 import com.opensymphony.oscache.base.EntryRefreshPolicy;
 import com.opensymphony.oscache.base.NeedsRefreshException;
+import com.opensymphony.oscache.util.ClassLoaderUtil;
 import com.opensymphony.oscache.web.ServletCacheAdministrator;
 
 import org.apache.commons.logging.Log;
@@ -343,7 +344,7 @@ public class CacheFilter implements Filter, ICacheKeyProvider, ICacheGroupsProvi
 		String className = config.getInitParameter(classInitParam);
 		if (className != null) {
             try {
-                Class clazz = Class.forName(className);
+                Class clazz = ClassLoaderUtil.loadClass(className, this.getClass());
                 if (!interfaceClass.isAssignableFrom(clazz)) {
                     log.error("OSCache: Specified class '" + className + "' does not implement" + interfaceClass.getName() + ". Using default " + defaultObjectName + ".");
                     return null;
