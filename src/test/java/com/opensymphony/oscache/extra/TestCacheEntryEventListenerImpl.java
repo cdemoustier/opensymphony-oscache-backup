@@ -4,11 +4,14 @@
  */
 package com.opensymphony.oscache.extra;
 
+import java.util.Date;
+
 import com.opensymphony.oscache.base.Cache;
 import com.opensymphony.oscache.base.CacheEntry;
 import com.opensymphony.oscache.base.events.CacheEntryEvent;
 import com.opensymphony.oscache.base.events.CacheGroupEvent;
 import com.opensymphony.oscache.base.events.CachePatternEvent;
+import com.opensymphony.oscache.base.events.CachewideEvent;
 import com.opensymphony.oscache.general.GeneralCacheAdministrator;
 
 import junit.framework.Test;
@@ -64,6 +67,7 @@ public class TestCacheEntryEventListenerImpl extends TestCase {
         assertEquals(listener.getEntryUpdatedCount(), 0);
         assertEquals(listener.getGroupFlushedCount(), 0);
         assertEquals(listener.getPatternFlushedCount(), 0);
+        assertEquals(listener.getCacheFlushedCount(), 0);
 
         // Generate an event of each type
         listener.cacheEntryAdded(event);
@@ -71,6 +75,7 @@ public class TestCacheEntryEventListenerImpl extends TestCase {
         listener.cacheEntryRemoved(event);
         listener.cacheEntryUpdated(event);
 
+        listener.cacheFlushed(new CachewideEvent(cache, new Date(), null));
         listener.cacheGroupFlushed(new CacheGroupEvent(cache, "testGroup", null));
         listener.cachePatternFlushed(new CachePatternEvent(cache, "testPattern", null));
 
