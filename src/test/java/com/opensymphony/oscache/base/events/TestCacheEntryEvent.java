@@ -25,7 +25,7 @@ public final class TestCacheEntryEvent extends TestCase {
      * Constants required for the test
      */
     private final String KEY = "Test cache entry event key";
-    //private final int SCOPE = 3;
+    private final String KEY_2 = "Test cache entry event key 2";
 
     /**
      * Constructor
@@ -52,6 +52,8 @@ public final class TestCacheEntryEvent extends TestCase {
         // Create all the required objects
         GeneralCacheAdministrator admin = new GeneralCacheAdministrator();
         Cache map = new Cache(admin.isMemoryCaching(), admin.isUnlimitedDiskCache(), admin.isOverflowPersistence());
+
+        // test with key
         CacheEntry entry = new CacheEntry(KEY);
         CacheEntryEvent event = new CacheEntryEvent(map, entry, null);
 
@@ -59,5 +61,15 @@ public final class TestCacheEntryEvent extends TestCase {
         assertEquals(event.getEntry(), entry);
         assertEquals(event.getKey(), KEY);
         assertEquals(event.getMap(), map);
+        assertNull(event.getOrigin());
+        
+        CacheEntry entry2 = new CacheEntry(KEY_2);
+        CacheEntryEvent event2 = new CacheEntryEvent(map, entry2);
+
+        // Get back the values and assert them
+        assertEquals(event2.getEntry(), entry2);
+        assertEquals(event2.getKey(), KEY_2);
+        assertEquals(event2.getMap(), map);
+        assertNull(event2.getOrigin());
     }
 }
