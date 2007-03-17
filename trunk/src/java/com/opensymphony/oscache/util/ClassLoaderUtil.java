@@ -13,6 +13,10 @@ package com.opensymphony.oscache.util;
  * bite the bullet and add a dependency.</p>
  */
 public class ClassLoaderUtil {
+    
+    private ClassLoaderUtil() {
+    }
+    
     /**
      * Load a class with a given name.
      *
