@@ -194,7 +194,7 @@ public abstract class TestAbstractCache extends TestCase {
         
         CacheEntry entry2 = new CacheEntry(KEY+"2", null);
         entry.setContent(CONTENT+"2");
-        getCache().put(entry.getKey(), entry);
+        getCache().put(entry2.getKey(), entry2);
 
         Enumeration enumeration = getCache().elements();
         assertTrue(enumeration.hasMoreElements());

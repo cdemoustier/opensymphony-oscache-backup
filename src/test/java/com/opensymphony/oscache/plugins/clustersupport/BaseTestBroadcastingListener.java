@@ -5,7 +5,6 @@
 package com.opensymphony.oscache.plugins.clustersupport;
 
 import com.opensymphony.oscache.base.*;
-import com.opensymphony.oscache.base.events.CacheEntryEventListener;
 
 import junit.framework.TestCase;
 
@@ -86,7 +85,7 @@ public abstract class BaseTestBroadcastingListener extends TestCase {
                 fail(e.getMessage());
             }
 
-            cache.addCacheEventListener(listener, CacheEntryEventListener.class);
+            cache.addCacheEventListener(listener);
         }
     }
 
