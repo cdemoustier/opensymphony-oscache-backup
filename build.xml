@@ -198,6 +198,7 @@
         <mkdir dir="${dist.docs}/clover"/>
         <mkdir dir="${build.test}"/>
         <mkdir dir="${build.clover}"/>
+        <mkdir dir="${build.clover}/history" />
 
 	    <taskdef resource="clovertasks"/>
         <taskdef name="junit" classname="org.apache.tools.ant.taskdefs.optional.junit.JUnitTask"/>
@@ -349,13 +350,6 @@
 
     </target>
 
-   
-    <target name="clover.historypoint" depends="clover-check">
-        <taskdef resource="clovertasks"/>
-        <mkdir dir="${build.clover}/history" />
-	    <clover-historypoint historyDir="${build.clover}/history" />
-    </target>
-
     <target name="clover.report" depends="test">
         <clover-report>
             <current outfile="${dist.docs}/clover">
@@ -363,6 +357,9 @@
                 <format type="html"/>
             </current>
         </clover-report>
+
+        <clover-historypoint historyDir="${build.clover}/history" />
+
         <clover-report>
             <historical outfile="${dist.docs}/clover/historical.pdf" historyDir="${build.clover}/history" />
         </clover-report>
