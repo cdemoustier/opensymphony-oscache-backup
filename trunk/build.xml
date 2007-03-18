@@ -21,8 +21,7 @@
     <property name="common.build" value="../opensymphony/common/osbuild.xml"/>
     <import file="${common.build}"/>
  
-    <!-- TODO use property name="build.clover" value="${build}/clover" -->
-    <property name="clover.initstring" location="${build.test}/testcoverage.db"/>
+    <property name="clover.initstring" location="${build.clover}/coverageBase.db"/>
     
     <!-- project properties -->
 
@@ -198,14 +197,16 @@
         <mkdir dir="${dist.docs}/junit"/>
         <mkdir dir="${dist.docs}/clover"/>
         <mkdir dir="${build.test}"/>
+        <mkdir dir="${build.clover}"/>
 
-        <taskdef resource="clovertasks"/>
+	    <taskdef resource="clovertasks"/>
         <taskdef name="junit" classname="org.apache.tools.ant.taskdefs.optional.junit.JUnitTask"/>
-   
+	
         <javac destdir="${build.test}" debug="${debug}" classpathref="cp" compiler="org.apache.tools.ant.taskdefs.CloverCompilerAdapter">
             <src path="${src.java}"/>
         </javac>
-        <javac destdir="${build.test}" debug="${debug}" classpathref="cp">
+
+	    <javac destdir="${build.test}" debug="${debug}" classpathref="cp">
             <src path="${src.test}"/>
         </javac>
     </target>
@@ -349,6 +350,12 @@
     </target>
 
    
+    <target name="clover.historypoint" depends="clover-check">
+        <taskdef resource="clovertasks"/>
+        <mkdir dir="${build.clover}/history" />
+	    <clover-historypoint historyDir="${build.clover}/history" />
+    </target>
+
     <target name="clover.report" depends="test">
         <clover-report>
             <current outfile="${dist.docs}/clover">
@@ -356,8 +363,11 @@
                 <format type="html"/>
             </current>
         </clover-report>
+        <clover-report>
+            <historical outfile="${dist.docs}/clover/historical.pdf" historyDir="${build.clover}/history" />
+        </clover-report>
     </target>
-
+	
     <target name="junit.report" depends="test">
         <junitreport todir="${dist.docs}/junit">
             <fileset dir="${dist.docs}/junit">
