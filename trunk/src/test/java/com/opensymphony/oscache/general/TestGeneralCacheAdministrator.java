@@ -7,8 +7,6 @@ package com.opensymphony.oscache.general;
 import java.util.Date;
 
 import com.opensymphony.oscache.base.*;
-import com.opensymphony.oscache.base.events.CacheEntryEventListener;
-import com.opensymphony.oscache.base.events.CacheMapAccessEventListener;
 import com.opensymphony.oscache.extra.CacheEntryEventListenerImpl;
 import com.opensymphony.oscache.extra.CacheMapAccessEventListenerImpl;
 
@@ -92,8 +90,8 @@ public class TestGeneralCacheAdministrator extends TestAbstractCacheAdministrato
         cacheMapAccessEventListener = new CacheMapAccessEventListenerImpl();
 
         // Register the listeners on the cache map
-        admin.getCache().addCacheEventListener(cacheEntryEventListener, CacheEntryEventListener.class);
-        admin.getCache().addCacheEventListener(cacheMapAccessEventListener, CacheMapAccessEventListener.class);
+        admin.getCache().addCacheEventListener(cacheEntryEventListener);
+        admin.getCache().addCacheEventListener(cacheMapAccessEventListener);
     }
 
     /**
@@ -266,8 +264,8 @@ public class TestGeneralCacheAdministrator extends TestAbstractCacheAdministrato
 
     protected void tearDown() throws Exception {
         if (admin != null) {
-            admin.getCache().removeCacheEventListener(cacheEntryEventListener, CacheEntryEventListener.class);
-            admin.getCache().removeCacheEventListener(cacheMapAccessEventListener, CacheMapAccessEventListener.class);
+            admin.getCache().removeCacheEventListener(cacheEntryEventListener);
+            admin.getCache().removeCacheEventListener(cacheMapAccessEventListener);
         }
     }
 

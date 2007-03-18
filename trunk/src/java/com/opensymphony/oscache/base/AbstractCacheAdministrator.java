@@ -334,11 +334,9 @@ public abstract class AbstractCacheAdministrator implements java.io.Serializable
                 }
 
                 if (listeners[i] instanceof CacheEntryEventListener) {
-                    cache.addCacheEventListener(listeners[i], CacheEntryEventListener.class);
-                }
-
-                if (listeners[i] instanceof CacheMapAccessEventListener) {
-                    cache.addCacheEventListener(listeners[i], CacheMapAccessEventListener.class);
+                    cache.addCacheEventListener(listeners[i]);
+                } else if (listeners[i] instanceof CacheMapAccessEventListener) {
+                    cache.addCacheEventListener(listeners[i]);
                 }
             }
         }

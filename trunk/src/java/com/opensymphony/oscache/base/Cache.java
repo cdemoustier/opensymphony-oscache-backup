@@ -353,6 +353,20 @@ public class Cache implements Serializable {
      * one of the child interfaces of the {@link CacheEventListener} interface.
      *
      * @param listener  The object that listens to events.
+     * @since 2.4
+     */
+    public void addCacheEventListener(CacheEventListener listener) {
+        // listenerList.add(CacheEventListener.class, listener);
+        listenerList.add(listener.getClass(), listener);
+    }
+    
+    /**
+     * Register a listener for Cache events. The listener must implement
+     * one of the child interfaces of the {@link CacheEventListener} interface.
+     *
+     * @param listener  The object that listens to events.
+     * @param clazz the type of the listener to be added
+     * @deprecated use {@link #addCacheEventListener(CacheEventListener)}
      */
     public void addCacheEventListener(CacheEventListener listener, Class clazz) {
         if (CacheEventListener.class.isAssignableFrom(clazz)) {
@@ -643,9 +657,22 @@ public class Cache implements Serializable {
      * Unregister a listener for Cache events.
      *
      * @param listener  The object that currently listens to events.
+     * @param clazz  The registrated class of listening object.
+     * @deprecated use instead {@link #removeCacheEventListener(CacheEventListener)}
      */
     public void removeCacheEventListener(CacheEventListener listener, Class clazz) {
         listenerList.remove(clazz, listener);
+    }
+
+    /**
+     * Unregister a listener for Cache events.
+     *
+     * @param listener  The object that currently listens to events.
+     * @since 2.4
+     */
+    public void removeCacheEventListener(CacheEventListener listener) {
+        // listenerList.remove(CacheEventListener.class, listener);
+        listenerList.remove(listener.getClass(), listener);
     }
 
     /**
@@ -821,15 +848,16 @@ public class Cache implements Serializable {
         // Process the listeners last to first, notifying
         // those that are interested in this event
         for (int i = listeners.length - 2; i >= 0; i -= 2) {
-            if (listeners[i] == CacheEntryEventListener.class) {
+            if (listeners[i+1] instanceof CacheEntryEventListener) {
+                CacheEntryEventListener listener = (CacheEntryEventListener) listeners[i+1];
                 if (eventType.equals(CacheEntryEventType.ENTRY_ADDED)) {
-                    ((CacheEntryEventListener) listeners[i + 1]).cacheEntryAdded(event);
+                    listener.cacheEntryAdded(event);
                 } else if (eventType.equals(CacheEntryEventType.ENTRY_UPDATED)) {
-                    ((CacheEntryEventListener) listeners[i + 1]).cacheEntryUpdated(event);
+                    listener.cacheEntryUpdated(event);
                 } else if (eventType.equals(CacheEntryEventType.ENTRY_FLUSHED)) {
-                    ((CacheEntryEventListener) listeners[i + 1]).cacheEntryFlushed(event);
+                    listener.cacheEntryFlushed(event);
                 } else if (eventType.equals(CacheEntryEventType.ENTRY_REMOVED)) {
-                    ((CacheEntryEventListener) listeners[i + 1]).cacheEntryRemoved(event);
+                    listener.cacheEntryRemoved(event);
                 }
             }
         }
@@ -851,9 +879,10 @@ public class Cache implements Serializable {
         // Process the listeners last to first, notifying
         // those that are interested in this event
         for (int i = listeners.length - 2; i >= 0; i -= 2) {
-            if (listeners[i] == CacheEntryEventListener.class) {
+            if (listeners[i+1] instanceof CacheEntryEventListener) {
+                CacheEntryEventListener listener = (CacheEntryEventListener) listeners[i + 1];
                 if (eventType.equals(CacheEntryEventType.GROUP_FLUSHED)) {
-                    ((CacheEntryEventListener) listeners[i + 1]).cacheGroupFlushed(event);
+                    listener.cacheGroupFlushed(event);
                 }
             }
         }
@@ -875,8 +904,9 @@ public class Cache implements Serializable {
         // Process the listeners last to first, notifying
         // those that are interested in this event
         for (int i = listeners.length - 2; i >= 0; i -= 2) {
-            if (listeners[i] == CacheMapAccessEventListener.class) {
-                ((CacheMapAccessEventListener) listeners[i + 1]).accessed(event);
+            if (listeners[i+1] instanceof CacheMapAccessEventListener) {
+                CacheMapAccessEventListener listener = (CacheMapAccessEventListener) listeners[i + 1];
+                listener.accessed(event);
             }
         }
     }
@@ -897,9 +927,10 @@ public class Cache implements Serializable {
         // Process the listeners last to first, notifying
         // those that are interested in this event
         for (int i = listeners.length - 2; i >= 0; i -= 2) {
-            if (listeners[i] == CacheEntryEventListener.class) {
+            if (listeners[i+1] instanceof CacheEntryEventListener) {
                 if (eventType.equals(CacheEntryEventType.PATTERN_FLUSHED)) {
-                    ((CacheEntryEventListener) listeners[i + 1]).cachePatternFlushed(event);
+                    CacheEntryEventListener listener = (CacheEntryEventListener) listeners[i+1];
+                    listener.cachePatternFlushed(event);
                 }
             }
         }
@@ -920,9 +951,10 @@ public class Cache implements Serializable {
         // Process the listeners last to first, notifying
         // those that are interested in this event
         for (int i = listeners.length - 2; i >= 0; i -= 2) {
-            if (listeners[i] == CacheEntryEventListener.class) {
+            if (listeners[i] instanceof CacheEntryEventListener) {
                 if (eventType.equals(CachewideEventType.CACHE_FLUSHED)) {
-                    ((CacheEntryEventListener) listeners[i + 1]).cacheFlushed(event);
+                    CacheEntryEventListener listener = (CacheEntryEventListener) listeners[i+1];
+                    listener.cacheFlushed(event);
                 }
             }
         }

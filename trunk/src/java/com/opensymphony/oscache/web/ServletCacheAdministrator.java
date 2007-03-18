@@ -762,7 +762,7 @@ public class ServletCacheAdministrator extends AbstractCacheAdministrator implem
 
             for (int i = 0; i < listeners.length; i++) {
                 if (listeners[i] instanceof ScopeEventListener) {
-                    newCache.addCacheEventListener(listeners[i], ScopeEventListener.class);
+                    newCache.addCacheEventListener(listeners[i]);
                 }
             }
         }
@@ -788,7 +788,7 @@ public class ServletCacheAdministrator extends AbstractCacheAdministrator implem
         // Process the listeners last to first, notifying
         // those that are interested in this event
         for (int i = listeners.length - 2; i >= 0; i -= 2) {
-            if (listeners[i] == ScopeEventListener.class) {
+            if (listeners[i+1] instanceof ScopeEventListener) {
                 ((ScopeEventListener) listeners[i + 1]).scopeFlushed(event);
             }
         }

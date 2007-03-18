@@ -8,7 +8,6 @@ import com.opensymphony.oscache.base.Cache;
 import com.opensymphony.oscache.base.Config;
 import com.opensymphony.oscache.base.FinalizationException;
 import com.opensymphony.oscache.base.InitializationException;
-import com.opensymphony.oscache.base.events.CacheEntryEventListener;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -52,7 +51,7 @@ public final class ListenForClusterTests {
             testcase = new TestJavaGroupsBroadcastingListener("JavaGroups");
             listener = testcase.getListener();
             listener.initialize(cache, testcase.getConfig());
-            cache.addCacheEventListener(listener, CacheEntryEventListener.class);
+            cache.addCacheEventListener(listener);
             listeners.add(listener);
         } catch (InitializationException e) {
             System.out.println("The JavaGroups listener could not be initialized: " + e);
@@ -67,7 +66,7 @@ public final class ListenForClusterTests {
             config.set("cache.cluster.jms.node.name", "cacheNode2");
 
             listener.initialize(cache, config);
-            cache.addCacheEventListener(listener, CacheEntryEventListener.class);
+            cache.addCacheEventListener(listener);
             listeners.add(listener);
         } catch (InitializationException e) {
             System.out.println("The JMS listener could not be initialized: " + e);
