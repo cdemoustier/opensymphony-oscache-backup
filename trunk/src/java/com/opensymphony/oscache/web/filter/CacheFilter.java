@@ -9,12 +9,14 @@ import com.opensymphony.oscache.base.Config;
 import com.opensymphony.oscache.base.EntryRefreshPolicy;
 import com.opensymphony.oscache.base.NeedsRefreshException;
 import com.opensymphony.oscache.util.ClassLoaderUtil;
+import com.opensymphony.oscache.util.StringUtil;
 import com.opensymphony.oscache.web.ServletCacheAdministrator;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Properties;
 
 import javax.servlet.*;
@@ -88,6 +90,7 @@ public class CacheFilter implements Filter, ICacheKeyProvider, ICacheGroupsProvi
     private long cacheControlMaxAge = -60; // defines which max-age in Cache-Control to be set - default is 60 seconds for max-age
     private ICacheKeyProvider cacheKeyProvider = this; // the provider of the cache key - default is the CacheFilter itselfs
     private ICacheGroupsProvider cacheGroupsProvider = this; // the provider of the cache groups - default is the CacheFilter itselfs
+    private List disableCacheOnMethods = null; // caching can be disabled by defining the http methods - default is off
 
     /**
      * Filter clean-up
@@ -338,6 +341,14 @@ public class CacheFilter implements Filter, ICacheKeyProvider, ICacheGroupsProvi
             // setting the refresh period for this cache filter
             setExpiresRefreshPolicy(new ExpiresRefreshPolicy(time));
         }
+        
+        // filter parameter scope
+        String disableCacheOnMethodsParam = config.getInitParameter("disableCacheOnMethods");
+        if (StringUtil.hasLength(disableCacheOnMethodsParam)) {
+            disableCacheOnMethods = StringUtil.split(disableCacheOnMethodsParam, ',');   
+            // log.error("OSCache: Wrong value '" + disableCacheOnMethodsParam + "' for init parameter 'disableCacheOnMethods', defaulting to 'null'.");
+        }
+
     }
 
     private Object instantiateFromInitParam(String classInitParam, Class interfaceClass, String defaultObjectName) {
@@ -439,6 +450,10 @@ public class CacheFilter implements Filter, ICacheKeyProvider, ICacheGroupsProvi
 
         if (cacheable) {
             HttpServletRequest requestHttp = (HttpServletRequest) request;
+            // CACHE-272 don't cache special http request methods
+            if ((disableCacheOnMethods != null) && (disableCacheOnMethods.contains(requestHttp.getMethod()))) {
+                return false;
+            }
             if (nocache == NOCACHE_SESSION_ID_IN_URL) { // don't cache requests if session id is in the URL
                 cacheable = !requestHttp.isRequestedSessionIdFromURL();
             }
@@ -737,6 +752,26 @@ public class CacheFilter implements Filter, ICacheKeyProvider, ICacheGroupsProvi
         if (expiresRefreshPolicy instanceof ExpiresRefreshPolicy) {
             ((ExpiresRefreshPolicy) expiresRefreshPolicy).setRefreshPeriod(time);
         }
+    }
+
+    /**
+     * @link http://java.sun.com/j2ee/sdk_1.3/techdocs/api/javax/servlet/http/HttpServletRequest.html#getMethod()
+     * @return the list of http method names for which cacheing should be disabled
+     * @since 2.4
+     */
+    public List getDisableCacheOnMethods() {
+        return disableCacheOnMethods;
+    }
+
+    /**
+     * <b>disableCacheOnMethods</b> - Defines the http method name for which cacheing should be disabled.
+     * The default value is <code>null</code> for cacheing all request without regarding the method name.
+     * @link http://java.sun.com/j2ee/sdk_1.3/techdocs/api/javax/servlet/http/HttpServletRequest.html#getMethod()
+     * @param disableCacheOnMethods the list of http method names for which cacheing should be disabled
+     * @since 2.4
+     */
+    public void setDisableCacheOnMethods(List disableCacheOnMethods) {
+        this.disableCacheOnMethods = disableCacheOnMethods;
     }
     
     // TODO: check if getter/setter for oscache-properties-file is possible
