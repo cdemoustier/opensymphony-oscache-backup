@@ -27,6 +27,8 @@ import java.util.*;
  */
 public class LRUCache extends AbstractConcurrentReadCache {
 	
+    private static final long serialVersionUID = -7379608101794788534L;
+
     /**
      * Cache queue containing all cache keys.
      */
