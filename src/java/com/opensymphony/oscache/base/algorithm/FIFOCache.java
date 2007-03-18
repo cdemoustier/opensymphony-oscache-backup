@@ -20,7 +20,9 @@ import java.util.*;
  */
 public class FIFOCache extends AbstractConcurrentReadCache {
 
-	/**
+    private static final long serialVersionUID = -10333778645392679L;
+
+    /**
      * A queue containing all cache keys
      */
     private Collection list = new LinkedHashSet();
