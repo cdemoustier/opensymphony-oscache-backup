@@ -765,7 +765,7 @@ public class CacheFilter implements Filter, ICacheKeyProvider, ICacheGroupsProvi
 
     /**
      * <b>disableCacheOnMethods</b> - Defines the http method name for which cacheing should be disabled.
-     * The default value is <code>null</code> for cacheing all request without regarding the method name.
+     * The default value is <code>null</code> for cacheing all requests without regarding the method name.
      * @link http://java.sun.com/j2ee/sdk_1.3/techdocs/api/javax/servlet/http/HttpServletRequest.html#getMethod()
      * @param disableCacheOnMethods the list of http method names for which cacheing should be disabled
      * @since 2.4
