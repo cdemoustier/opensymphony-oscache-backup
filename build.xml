@@ -360,12 +360,13 @@
                 <format type="html"/>
             </current>
         </clover-report>
-
+<!--
         <clover-historypoint historyDir="${build.clover}/history" />
 
         <clover-report>
             <historical outfile="${dist.docs}/clover/historical.pdf" historyDir="${build.clover}/history" />
         </clover-report>
+-->        
     </target>
 	
     <target name="junit.report" depends="test">
