@@ -24,6 +24,7 @@ import javax.servlet.http.HttpServletResponseWrapper;
  * @version $Revision$
  */
 public class CacheHttpServletResponseWrapper extends HttpServletResponseWrapper {
+    
     private final Log log = LogFactory.getLog(this.getClass());
 
     /**
@@ -357,8 +358,10 @@ public class CacheHttpServletResponseWrapper extends HttpServletResponseWrapper 
      * @see javax.servlet.ServletResponseWrapper#reset()
      */
     public void reset() {
+        log.debug("CacheHttpServletResponseWrapper:reset()");
         if (!isCommitted()) {
             super.reset();
+            /*
             cachedWriter = null;
             result = new ResponseContent();
             cacheOut = null;
@@ -367,6 +370,7 @@ public class CacheHttpServletResponseWrapper extends HttpServletResponseWrapper 
             expires = CacheFilter.EXPIRES_ON;
             lastModified = CacheFilter.LAST_MODIFIED_INITIAL;
             cacheControl = -60;
+            */
         } else {
             throw new IllegalStateException("Can't reset CacheHttpServletResponseWrapper, because it's already committed!");
         }
@@ -376,12 +380,15 @@ public class CacheHttpServletResponseWrapper extends HttpServletResponseWrapper 
      * @see javax.servlet.ServletResponseWrapper#resetBuffer()
      */
     public void resetBuffer() {
+        log.debug("CacheHttpServletResponseWrapper:resetBuffer()");
         if (!isCommitted()) {
             super.resetBuffer();
+            /*
             cachedWriter = null;
             result = new ResponseContent();
             cacheOut = null;
             fragment = false;
+            */
             // The resetBuffer method clears content in the buffer if the
             // response is not committed without clearing the headers and status code.
         } else {
