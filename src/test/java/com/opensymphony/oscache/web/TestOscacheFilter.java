@@ -81,7 +81,7 @@ public final class TestOscacheFilter extends TestCase {
         // Try again with a session ID this time. The session ID should get filtered
         // out of the cache key so the content should be the same
         newResponse = invokeURL(baseUrl + "?" + SESSION_ID, 500);
-        assertTrue("new response " + newResponse + " should be the same to " + stringResponse, stringResponse.equals(newResponse));
+        assertTrue("new response by a session id request " + newResponse + " should be the same to " + stringResponse, stringResponse.equals(newResponse));
 
         // Connect again with extra params, the content should be different
         newResponse = invokeURL(baseUrl + "?" + PARAM_1 + "&" + PARAM_2, 1000);
@@ -92,12 +92,12 @@ public final class TestOscacheFilter extends TestCase {
         // Connect again with the parameters in a different order. We should still
         // get the same content.
         newResponse = invokeURL(baseUrl + "?" + PARAM_2 + "&" + PARAM_1, 0);
-        assertTrue(stringResponse.equals(newResponse));
+        assertTrue("order of parameters shouldn't change the response", stringResponse.equals(newResponse));
 
         // Connect again with the same parameters, but throw the session ID into
         // the mix again. The content should remain the same.
         newResponse = invokeURL(baseUrl + "?" + SESSION_ID + "&" + PARAM_1 + "&" + PARAM_2, 0);
-        assertTrue(stringResponse.equals(newResponse));
+        assertTrue("a session id shouldn't change the response either", stringResponse.equals(newResponse));
     }
 
     /**
@@ -114,7 +114,7 @@ public final class TestOscacheFilter extends TestCase {
             String response = invokeURL(url, 500);
             for (int j = 0; j < 3; j++) {
                 String newResponse = invokeURL(url, 500);
-                assertTrue("new response " + newResponse + " should be the same to " + response, response.equals(newResponse));
+                assertTrue("Fast: new response (i="+i+",j="+j+") " + newResponse + " should be the same to " + response, response.equals(newResponse));
             }
         }
     }
