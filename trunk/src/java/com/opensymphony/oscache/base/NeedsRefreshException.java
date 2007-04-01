@@ -1,9 +1,8 @@
 /*
- * Copyright (c) 2002-2003 by OpenSymphony
+ * Copyright (c) 2002-2007 by OpenSymphony
  * All rights reserved.
  */
 package com.opensymphony.oscache.base;
-
 
 /**
  * This exception is thrown when retrieving an item from cache and it is
@@ -20,10 +19,19 @@ package com.opensymphony.oscache.base;
  * @version        $Revision$
  */
 public final class NeedsRefreshException extends Exception {
+
     /**
      * Current object in the cache
      */
     private Object cacheContent = null;
+    
+    /**
+     * Create a NeedsRefreshException
+     */
+    public NeedsRefreshException(String message, Object cacheContent) {
+        super(message);
+        this.cacheContent = cacheContent;
+    }
 
     /**
      * Create a NeedsRefreshException
@@ -32,11 +40,12 @@ public final class NeedsRefreshException extends Exception {
         super();
         this.cacheContent = cacheContent;
     }
-
+    
     /**
      * Retrieve current object in the cache
      */
     public Object getCacheContent() {
         return cacheContent;
     }
+
 }
