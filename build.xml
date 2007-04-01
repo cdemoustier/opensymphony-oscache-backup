@@ -103,8 +103,9 @@
     <target name="deploy-example-war" depends="example-war" if="test.web.deployDir">
         <!-- Use auto deployment of app server, e.g. BEA WLS -->   
         <copy file="${dist}/${name}-example.war" tofile="${test.web.deployDir}/${name}-example.war" overwrite="yes"/>
-        <!-- if your pc is to fast, sleep here for a while -->
-        <sleep minutes="1"/> 
+        <!-- if your pc is to fast, sleep here for a while to allow redeployment of the web app -->
+        <echo message="Deploying example web app and waiting for a while..." level="info"/>
+        <sleep seconds="30"/> 
     </target>
 
     
