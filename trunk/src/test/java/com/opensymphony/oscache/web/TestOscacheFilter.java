@@ -72,7 +72,7 @@ public final class TestOscacheFilter extends TestCase {
         flushCache();
 
         // Call the page for the second time
-        String stringResponse = invokeURL(baseUrl, 500);
+        String stringResponse = invokeURL(baseUrl, 200);
 
         // Connect again, we should have the same content
         String newResponse = invokeURL(baseUrl, 0);
@@ -80,11 +80,11 @@ public final class TestOscacheFilter extends TestCase {
 
         // Try again with a session ID this time. The session ID should get filtered
         // out of the cache key so the content should be the same
-        newResponse = invokeURL(baseUrl + "?" + SESSION_ID, 500);
+        newResponse = invokeURL(baseUrl + "?" + SESSION_ID, 200);
         assertTrue("new response by a session id request " + newResponse + " should be the same to " + stringResponse, stringResponse.equals(newResponse));
 
         // Connect again with extra params, the content should be different
-        newResponse = invokeURL(baseUrl + "?" + PARAM_1 + "&" + PARAM_2, 1000);
+        newResponse = invokeURL(baseUrl + "?" + PARAM_1 + "&" + PARAM_2, 500);
         assertFalse("new response " + newResponse + " expected it to be different to last one.", stringResponse.equals(newResponse));
 
         stringResponse = newResponse;
@@ -106,14 +106,14 @@ public final class TestOscacheFilter extends TestCase {
     public void testOSCacheFilterFast() {
         String baseUrl = constructURL(BASE_PAGE);
 
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < 10; i++) {
             // Flush the cache to avoid getting refreshed content from previous tests
             flushCache();
             // build the url
             String url = baseUrl + "?i=" + i;
-            String response = invokeURL(url, 500);
-            for (int j = 0; j < 3; j++) {
-                String newResponse = invokeURL(url, 500);
+            String response = invokeURL(url, 100);
+            for (int j = 0; j < 5; j++) {
+                String newResponse = invokeURL(url, 100);
                 assertTrue("Fast: new response (i="+i+",j="+j+") " + newResponse + " should be the same to " + response, response.equals(newResponse));
             }
         }
@@ -158,6 +158,12 @@ public final class TestOscacheFilter extends TestCase {
         String stringResponse = invokeURL(flushUrl, 0);
         
         assertTrue("Flushing the cache failed!", stringResponse.indexOf("This is some cache content") > 0);
+        
+        // avoid that flush time is equal to last update time of a new entry
+        try {
+            Thread.sleep(5);
+        } catch (InterruptedException ignore) {
+        }
     }
 
     /**
@@ -205,4 +211,5 @@ public final class TestOscacheFilter extends TestCase {
             return null;
         }
     }
+    
 }
