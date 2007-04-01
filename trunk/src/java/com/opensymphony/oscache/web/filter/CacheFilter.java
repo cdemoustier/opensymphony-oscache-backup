@@ -182,6 +182,9 @@ public class CacheFilter implements Filter, ICacheKeyProvider, ICacheGroupsProvi
                     // Store as the cache content the result of the response
                     cache.putInCache(key, cacheResponse.getContent(), groups, expiresRefreshPolicy, null);
                     updateSucceeded = true;
+                    if (log.isInfoEnabled()) {
+                        log.info("OSCache: New entry added to the cache with key " + key);
+                    }
                 }
             } finally {
                 if (!updateSucceeded) {

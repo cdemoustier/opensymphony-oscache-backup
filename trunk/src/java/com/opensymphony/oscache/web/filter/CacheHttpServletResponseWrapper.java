@@ -101,10 +101,16 @@ public class CacheHttpServletResponseWrapper extends HttpServletResponseWrapper 
      * @return The content
      */
     public ResponseContent getContent() {
-        //Create the byte array
+        // Flush the buffer
+        try {
+            flush();
+        } catch (IOException ignore) {
+        }
+        
+        // Create the byte array
         result.commit();
 
-        //Return the result from this response
+        // Return the result from this response
         return result;
     }
 
@@ -334,10 +340,12 @@ public class CacheHttpServletResponseWrapper extends HttpServletResponseWrapper 
 
         return cachedWriter;
     }
-
-    public void flushBuffer() throws IOException {
-        super.flushBuffer();
-
+    
+    /**
+     * Flushes all streams.
+     * @throws IOException
+     */
+    private void flush() throws IOException {
         if (cacheOut != null) {
             cacheOut.flush();
         }
@@ -347,52 +355,55 @@ public class CacheHttpServletResponseWrapper extends HttpServletResponseWrapper 
         }
     }
 
+    public void flushBuffer() throws IOException {
+        super.flushBuffer();
+        flush();
+    }
+
     /**
+     * Returns a boolean indicating if the response has been committed. 
+     * A commited response has already had its status code and headers written.
+     * 
      * @see javax.servlet.ServletResponseWrapper#isCommitted()
      */
     public boolean isCommitted() {
-        return super.isCommitted() || (result.getOutputStream() == null);
+        return super.isCommitted(); // || (result.getOutputStream() == null);
     }
 
     /**
+     * Clears any data that exists in the buffer as well as the status code and headers.
+     * If the response has been committed, this method throws an IllegalStateException.
      * @see javax.servlet.ServletResponseWrapper#reset()
      */
     public void reset() {
-        log.debug("CacheHttpServletResponseWrapper:reset()");
-        if (!isCommitted()) {
-            super.reset();
-            /*
-            cachedWriter = null;
-            result = new ResponseContent();
-            cacheOut = null;
-            fragment = false;
-            status = SC_OK;
-            expires = CacheFilter.EXPIRES_ON;
-            lastModified = CacheFilter.LAST_MODIFIED_INITIAL;
-            cacheControl = -60;
-            */
-        } else {
-            throw new IllegalStateException("Can't reset CacheHttpServletResponseWrapper, because it's already committed!");
-        }
+        log.info("CacheHttpServletResponseWrapper:reset()");
+        super.reset();
+        /*
+        cachedWriter = null;
+        result = new ResponseContent();
+        cacheOut = null;
+        fragment = false;
+        status = SC_OK;
+        expires = CacheFilter.EXPIRES_ON;
+        lastModified = CacheFilter.LAST_MODIFIED_INITIAL;
+        cacheControl = -60;
+        // time ?
+        */
     }
 
     /**
+     * Clears the content of the underlying buffer in the response without clearing headers or status code. 
+     * If the response has been committed, this method throws an IllegalStateException.
      * @see javax.servlet.ServletResponseWrapper#resetBuffer()
      */
     public void resetBuffer() {
-        log.debug("CacheHttpServletResponseWrapper:resetBuffer()");
-        if (!isCommitted()) {
-            super.resetBuffer();
-            /*
-            cachedWriter = null;
-            result = new ResponseContent();
-            cacheOut = null;
-            fragment = false;
-            */
-            // The resetBuffer method clears content in the buffer if the
-            // response is not committed without clearing the headers and status code.
-        } else {
-            throw new IllegalStateException("Can't reset buffer CacheHttpServletResponseWrapper, because it's already committed!");
-        }
+        log.info("CacheHttpServletResponseWrapper:resetBuffer()");
+        super.resetBuffer();
+        /*
+        //cachedWriter = null;
+        result = new ResponseContent();
+        //cacheOut = null;
+        //fragment = false;
+        */
     }
 }
