@@ -433,12 +433,10 @@ public class Cache implements Serializable {
 			EntryUpdateState removedState = (EntryUpdateState) updateStates.remove(key);
 			if (state != removedState) {
 				if (log.isErrorEnabled()) {
-					log.error("internal error: removed state [" + removedState + "] from key [" + key + "] whereas we expected [" + state + "]");
 					try {
-						throw new Exception("states not equal");
+						throw new Exception("OSCache: internal error: removed state [" + removedState + "] from key [" + key + "] whereas we expected [" + state + "]");
 					} catch (Exception e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+                        log.error(e);
 					}
 				}
 			}
