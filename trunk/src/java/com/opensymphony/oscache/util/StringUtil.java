@@ -55,4 +55,13 @@ public class StringUtil {
     	return (s != null) && (s.length() > 0);
     }
     
+    /**
+     * @param s the string to be checked
+     * @return true if the string parameter is null or doesn't contain any element
+     * @since 2.4 
+     */
+    public static final boolean isEmpty(String s) {
+        return (s == null) || (s.length() == 0);
+    }
+    
 }
