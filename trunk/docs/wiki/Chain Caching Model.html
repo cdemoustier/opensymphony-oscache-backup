@@ -13,15 +13,15 @@
 			    <td valign="top" class="pagebody">
 				    <h2><a name="ChainCachingModel-Discussion"></a>Discussion</h2>
 
-<p><u>Lars wrote:</u><br/>
+<p><ins>Lars wrote:</ins><br/>
 Would it be possible to use the intercepting filter pattern to support all possible cache models with a lot of combination capabilities? It's possible to define the capacity for each cache etc.</p>
 
 <p>DiskPersistence, SoftReferenceCache etc. would implement the Command interface of Commons Chain or a new interface of OSCache.</p>
 
-<p><a href="http://jakarta.apache.org/commons/chain/" title="Visit page outside Confluence">&#104;ttp://jakarta.apache.org/commons/chain/</a><br/>
-<a href="http://java.sun.com/blueprints/corej2eepatterns/Patterns/InterceptingFilter.html" title="Visit page outside Confluence">&#104;ttp://java.sun.com/blueprints/corej2eepatterns/Patterns/InterceptingFilter.html</a></p>
+<p><a href="http://jakarta.apache.org/commons/chain/" title="Visit page outside Confluence">http://jakarta.apache.org/commons/chain/</a><br/>
+<a href="http://java.sun.com/blueprints/corej2eepatterns/Patterns/InterceptingFilter.html" title="Visit page outside Confluence">http://java.sun.com/blueprints/corej2eepatterns/Patterns/InterceptingFilter.html</a></p>
 
-<p><u>Andres wrote:</u><br/>
+<p><ins>Andres wrote:</ins><br/>
 I think that is a good idea but it may be overkill for the most use cases.  Also, not every cache interceptor could have all the capabilities.  In particular, how would you imagine a realistic use case for a cache.get() call.  Should multiple interceptors return values?</p>
 
 <p>I think disk persistence is still in, although I don't think it will be like it is now.  We will be accepting Object keys, so any cache impl will need to accept them.  I have been thinking about a lightweight object db that has persistence built-in but I'm not sure.</p>
@@ -29,13 +29,13 @@ I think that is a good idea but it may be overkill for the most use cases.  Also
 <p>This is definitely an interesting topic and I'd like to discuss it more.<br/>
 Now is the time to make these sort of decisions.</p>
 
-<p><u>Lars wrote:</u><br/>
+<p><ins>Lars wrote:</ins><br/>
 The cache interceptors are cascaded. If the first interceptor doesn't return a value then the 2nd interceptor will be requested.</p>
 
-<p><u>Andres wrote:</u><br/>
+<p><ins>Andres wrote:</ins><br/>
 The scenarios below basically describe a more flexible implementation of the 2 cache (memory and disk) architecture in place.&nbsp; There is no doubt that a chained design can be better.&nbsp; I would be mindful of the abuse that can occur with a inifinitely flexible system.&nbsp; I prefer though to allow people to shoot themselves in the foot but make it extremely easy not to do so by providing very simple out of the box implementations.&nbsp; I have attached a <a href="http://wiki.opensymphony.com/download/attachments/7147/cache+sequences.pdf?version=1" title="cache sequences.pdf attached to Chain Caching Model">simple sequence diagram</a>.&nbsp; I think further documenting the scenarios you have below as well as all the other use cases we intend to provide is the best course of action at this point.&nbsp; All the old code has been torn out.&nbsp; We are at the point where we should be conscious of the new design that we allow to take shape.</p>
 
-<p><u>Lars wrote:</u><br/>
+<p><ins>Lars wrote:</ins><br/>
 The interface needed for the Cache Link (which you describe in a <a href="http://wiki.opensymphony.com/download/attachments/7147/cache+sequences.pdf?version=1" title="cache sequences.pdf attached to Chain Caching Model">simple sequence diagram</a>) is exactly the same interface as the EvictionAlgorithm. The Cache Chain has to handle in which Cache Link a cache content should be. Furthermore the Cache Chain has to put an evicted cache content from the memory cache to the disk cache.</p>
 
 <p>1.) How do you want to synchronize the access to the same cache content? In OSCache 2 this is done by the EntryUpdateState based on the key.<br/>
@@ -47,7 +47,7 @@ The interface needed for the Cache Link (which you describe in a <a href="http:/
 
 <p>I added a <a href="http://wiki.opensymphony.com/download/attachments/7147/CacheChainModel_v1.pdf?version=1" title="CacheChainModel_v1.pdf attached to Chain Caching Model">simple class diagramm</a> and saved the diagramm in the <a href="http://wiki.opensymphony.com/download/attachments/7147/oscache.fpr.gz?version=4" title="oscache.fpr.gz attached to Chain Caching Model">Fujaba format</a>.</p>
 
-<p><u>Andres wrote:</u></p>
+<p><ins>Andres wrote:</ins></p>
 
 <p>The cache chain should have no knowledge of what is in any of the cache links.  However, the issue of eviction is clear.  When a put() is called, the link should return an evicted entry or null if the cache is not full.  The chain will then know if it needs to continue the put into the next link.  To clarify the interfaces, I think a Chain interface should extend Map.  The Link and EvictionAlgorithm should themselves be interfaces.  Link could have implementations such as memory, disk, database.  EvictionAlgorithm could have implementations such as LRU, FIFO, etc....</p>
 
@@ -72,7 +72,7 @@ Maintaining the groups in each link could kill performance.  I think we need a G
 </ol>
 
 
-<p><u>Lars wrote:</u><br/>
+<p><ins>Lars wrote:</ins><br/>
 I think the implementations of the CacheChain interface could be a SimplePipeCacheChain and a SizeBasedCacheChain. The SimplePipeCacheChain is comparable to the current architectur. The SizeBasesCacheChain puts the cache objects to the different CacheLinks based on the cache content sizes, e.g. large images a stored to disk and not in memory.</p>
 
 <p><img src="Chain Caching Model_attachments/CacheChainModel_v3.jpg" align="absmiddle" border="0" /></p>

@@ -15,8 +15,10 @@
 
 <p>A <a href="CacheFilter Tutorial.html" title="CacheFilter Tutorial">tutorial</a> describes how to cache entire pages of your website and what performance improvements can be done with the CacheFilter.</p>
 
+<p>Beginning with release 2.4 you are be able to set/override the CacheFilter initialization parameters at runtime.</p>
+
 <h4><a name="CacheFilter-CacheableContent"></a>Cacheable Content</h4>
-<table cellpadding='5' width='85%' cellspacing='8px' class='noteMacro' border="0" align='center'><colgroup><col width='24'><col></colgroup><tr><td valign='top'><img src="/images/icons/emoticons/warning.gif" width="16" height="16" align="absmiddle" alt="" border="0"></td><td><b class="strong">Cacheable content</b><br /><br/>
+<table cellpadding='5' width='85%' cellspacing='8px' class='noteMacro' border="0" align='center'><colgroup><col width='24'><col></colgroup><tr><td valign='top'><img src="./icons/emoticons/warning.gif" width="16" height="16" align="absmiddle" alt="" border="0"></td><td><b class="strong">Cacheable content</b><br /><br/>
 Note that the filter will only cache content that has a status of 200 (HttpServletResponse.SC_OK).</td></tr></table>
 
 <h3><a name="CacheFilter-Configuringthefilter"></a>Configuring the filter</h3>
@@ -80,8 +82,8 @@ Note that the filter will only cache content that has a status of 200 (HttpServl
 
 <h4><a name="CacheFilter-Parameter%3Aexpires%28NEW%5C%21Since2.2%29"></a><a name="CacheFilter-expires"></a>Parameter: expires (NEW&#33; Since 2.2)</h4>
 
-<p>Defines if the expires header will be sent in the response. Acceptable values are <em>off</em> for don't sending the header, even it is set in the filter chain, <em>on</em> (default) for sending it if it is set in the filter chain and <em>time</em> the expires information will be intialized based on the time parameter and creation time of the content.<table cellpadding='5' width='85%' cellspacing='8px' class='noteMacro' border="0" align='center'><colgroup><col width='24'><col></colgroup><tr><td valign='top'><img src="/images/icons/emoticons/warning.gif" width="16" height="16" align="absmiddle" alt="" border="0"></td><td><b class="strong">Value time</b><br /><br/>
-The last parameter time would force the CacheFilter to send the expires header, because the value is set always. The developer must consider that some browsers evaluate the value and will use the cached content in the browsers cache, until the content is expired. Consequently a flush of the cache in the web application won't update a page in the browser cache. Hence different users may see see a different status of page.</td></tr></table></p>
+<p>Defines if the expires header will be sent in the response. Acceptable values are <em>off</em> for don't sending the header, even it is set in the filter chain, <em>on</em> (default) for sending it if it is set in the filter chain and <em>time</em> the expires information will be intialized based on the time parameter and creation time of the content.<table cellpadding='5' width='85%' cellspacing='8px' class='noteMacro' border="0" align='center'><colgroup><col width='24'><col></colgroup><tr><td valign='top'><img src="./icons/emoticons/warning.gif" width="16" height="16" align="absmiddle" alt="" border="0"></td><td><b class="strong">Value 'time'</b><br /><br/>
+The parameter <em>time</em> would force the CacheFilter to send the expires header, because the value is set always. The developer must consider that some browsers evaluate the value and will use the cached content in the browsers cache, until the content is expired. Consequently a flush of the cache in the web application won't update a page in the browser cache. Hence different users may see see a different status of page.</td></tr></table></p>
 
 <h4><a name="CacheFilter-Parameter%3AICacheKeyProvider%28NEW%5C%21Since2.2%29"></a><a name="CacheFilter-ICacheKeyProvider"></a>Parameter: ICacheKeyProvider (NEW&#33; Since 2.2)</h4>
 
@@ -94,6 +96,20 @@ The last parameter time would force the CacheFilter to send the expires header, 
 <h4><a name="CacheFilter-Parameter%3AEntryRefreshPolicy%28New%5C%21Since2.3%29"></a><a name="CacheFilter-EntryRefreshPolicy"></a>Parameter: EntryRefreshPolicy (New&#33; Since 2.3)</h4>
 
 <p>Specify a class which implements the interface <tt>EntryRefreshPolicy</tt>. A developer can implement a class which provides a different custom cache invalidation policy for a specific cache entry. If not specified, the default policy is timed entry expiry as specified with the <em>time</em> parameter described above. </p>
+
+<h4><a name="CacheFilter-Parameter%3AdisableCacheOnMethods%28New%5C%21Since2.4%29"></a><a name="CacheFilter-disableCacheOnMethods"></a>Parameter: disableCacheOnMethods (New&#33; Since 2.4)</h4>
+
+<p>Specify HTTP method names in a comma separated list for which cacheing should be disabled. The default value is &lt;code&gt;null&lt;/code&gt; for cacheing all requests without regarding the method name. See <a href="http://java.sun.com/j2ee/sdk_1.3/techdocs/api/javax/servlet/http/HttpServletRequest.html#getMethod()" title="Visit page outside Confluence">HttpServletRequest#getMethod</a>, e.g.:</p>
+
+<div class="code"><div class="codeContent">
+<pre class="code-xml"><span class="code-tag">&lt;init-param&gt;</span>
+        <span class="code-tag">&lt;param-name&gt;</span>disableCacheOnMethods<span class="code-tag">&lt;/param-name&gt;</span>
+        <span class="code-tag">&lt;param-value&gt;</span>POST,PUT,DELETE<span class="code-tag">&lt;/param-value&gt;</span>
+    <span class="code-tag">&lt;/init-param&gt;</span></pre>
+</div></div>
+
+<h4><a name="CacheFilter-Parameter%3Aoscachepropertiesfile%28New%5C%21Since2.4%29"></a><a name="CacheFilter-oscachepropertiesfile"></a>Parameter: oscache-properties-file (New&#33; Since 2.4)</h4>
+<p>By specifying a OSCache properties file for a CacheFilter, the developer can run multiple caches each with different <a href="Configuration.html" title="Configuration">configurations</a> tailored to the requirements of the application. In each properties file the developer has to define a unique <a href="Configuration.html#Configuration-cache.key" title="cache.key on Configuration">cache.key</a> otherwise the default properties file is used. If the parameter is not specified, the default properties file will be used. The file has to be put into the classpath, e.g. <em>WEB-INF/classes</em>.</p>
 
                     			    </td>
 		    </tr>
