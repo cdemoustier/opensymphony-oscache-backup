@@ -70,6 +70,22 @@
 		<span class="code-keyword">return</span> Timestamper.next();
 	}
 
+	/**
+	 * Callback to perform any necessary initialization of the underlying cache implementation
+	 * during SessionFactory construction.
+	 *
+	 * @param properties current configuration settings.
+	 */
+	<span class="code-keyword">public</span> void start(Properties properties) <span class="code-keyword">throws</span> CacheException {
+	}
+
+	/**
+	 * Callback to perform any necessary cleanup of the underlying cache implementation
+	 * during SessionFactory.close().
+	 */
+	<span class="code-keyword">public</span> void stop() {
+	}
+
 }</pre>
 </div></div>
 
