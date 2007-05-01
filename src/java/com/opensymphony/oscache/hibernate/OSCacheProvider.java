@@ -26,7 +26,7 @@ import com.opensymphony.oscache.util.StringUtil;
  * To configure a different configuration file use the following parameter in the Hibernate's configuration:
  * <code>com.opensymphony.oscache.configurationResourceName=[path to oscache-hibernate.properties]</code>
  * 
- * @version $Revision$
+ * @version $Revision:$
  */
 public class OSCacheProvider implements CacheProvider {
 

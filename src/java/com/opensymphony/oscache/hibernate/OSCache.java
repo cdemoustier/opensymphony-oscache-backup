@@ -15,7 +15,7 @@ import com.opensymphony.oscache.general.GeneralCacheAdministrator;
  * The OSCache implementation assumes that identifiers have well-behaved <tt>toString()</tt> methods.
  * This implementation <b>must</b> be threadsafe.
  * 
- * @version $Revision$
+ * @version $Revision:$
  */
 public class OSCache implements Cache {
     
