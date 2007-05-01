@@ -1,0 +1,37 @@
+<html>
+    <head>
+        <title>OSCache - 
+         and Compiling OSCache
+        </title>
+	    <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body>
+	    <table class="pagecontent" border="0" cellpadding="0" cellspacing="0" width="100%" bgcolor="#ffffff">
+		    <tr>
+			    <td valign="top" class="pagebody">
+				    <h3><a name="SVNandCompilingOSCache-SVN"></a>SVN</h3>
+
+<p>The OSCache SVN repository is hosted at <a href="http://svn.opensymphony.com/svn/oscache" title="Visit page outside Confluence">http://svn.opensymphony.com/svn/oscache</a>. You can get the sources anonymously by using e.g. <a href="http://subclipse.tigris.org" title="Visit page outside Confluence">Subclipse</a> a <a href="http://subversion.tigris.org" title="Visit page outside Confluence">Subversion</a> Eclipse Plugin.</p>
+
+<p>If you want to build OSCache from SVN, you have to checkout the project <a href="http://svn.opensymphony.com/svn/opensymphony/trunk/" title="Visit page outside Confluence">OpenSymphony</a> also.</p>
+
+<h3><a name="SVNandCompilingOSCache-CompilingOSCache"></a>Compiling OSCache</h3>
+
+<p>Run <tt>build.xml</tt> with <a href="http://ant.apache.org/" title="Visit page outside Confluence">Ant</a> 1.6.5 (or higher) under Java 1.4 or later. From the OSCache directory, type</p>
+
+<ul>
+	<li>ant - to build the oscache.jar</li>
+	<li>ant dist - to build the complete distribution (only for full SVN checkout)</li>
+	<li>ant clean - to clean up</li>
+</ul>
+
+
+<p>You may need to add the <a href="http://www.jayasoft.org/ivy" title="Visit page outside Confluence">Ivy</a> jar to your $ANT_HOME/lib directory if it is not there already.</p>
+
+                    			    </td>
+		    </tr>
+	    </table>
+    </body>
+</html>
