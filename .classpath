@@ -1,9 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src/java"/>
-	<classpathentry output="build/test" kind="src" path="src/test/java"/>
+	<classpathentry kind="src" output="build/test" path="src/test/java"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="lib/servletapi.jar"/>
+	<classpathentry kind="lib" path="lib/servletapi.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="jar:file:/C:/Programme/Java/servlet-2_3-fcs-docs.zip!/"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="lib" path="lib/clover.jar"/>
 	<classpathentry kind="lib" path="lib/commons-logging.jar"/>
 	<classpathentry kind="lib" path="lib/httpunit.jar"/>
@@ -11,5 +15,6 @@
 	<classpathentry kind="lib" path="lib/junit.jar"/>
 	<classpathentry kind="lib" path="lib/junitperf.jar"/>
 	<classpathentry kind="lib" path="lib/jgroups-all.jar"/>
+	<classpathentry kind="lib" path="lib/hibernate3.jar" sourcepath="C:/Programme/Java/hibernate-3.2/src"/>
 	<classpathentry kind="output" path="build/java"/>
 </classpath>
