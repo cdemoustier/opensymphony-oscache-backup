@@ -13,13 +13,13 @@
 			    <td valign="top" class="pagebody">
 				    <h3><a name="Statistics-Description"></a>Description</h3>
 
-<p>With the <a href="http://www.opensymphony.com/oscache/api/com/opensymphony/oscache/base/events/package-summary.html" title="Visit page outside Confluence">cache event handlers</a> a listerner can be implemented to provide cache hits and misses information. You can copy and paste the following code to get a statistic of your OSCache integration. Just change the used logger and the sample helps you to improve the cache key creation and to decide which scope to use. The <em>StatisticListenerImpl</em> should be <a href="Configuration.html" title="Configuration">configured</a> via the <em>cache.event.listeners</em> in the <em>oscache.properties</em>.</p>
+<p>With the <a href="http://www.opensymphony.com/oscache/api/com/opensymphony/oscache/base/events/package-summary.html" title="Visit page outside Confluence">cache event handlers</a> a listerner can be implemented to provide cache hits and misses information. You can copy and paste the following code to get a statistic of your OSCache integration. Just change the used logger and the sample helps you to improve the cache key creation and to decide which scope to use. The <em>SimpleStatisticListenerImpl</em> should be <a href="Configuration.html" title="Configuration">configured</a> via the <em>cache.event.listeners</em> in the <em>oscache.properties</em>.</p>
 
 <h3><a name="Statistics-SampleCode"></a>Sample Code</h3>
 
-<div class="code" style="border-style: solid; "><div class="codeHeader" style="border-bottom-style: solid; "><b>StatisticListenerImpl.java</b></div><div class="codeContent">
+<div class="code" style="border-style: solid; "><div class="codeHeader" style="border-bottom-style: solid; "><b>SimpleStatisticListenerImpl.java</b></div><div class="codeContent">
 <pre class="code-java">/*
- * Copyright (c) 2002-2005 by OpenSymphony
+ * Copyright (c) 2002-2007 by OpenSymphony
  * All rights reserved.
  */
 <span class="code-keyword">package</span> com.opensymphony.oscache.extra;
@@ -40,9 +40,9 @@
  * The consequence is that on retrieving values, the operations that are
  * currently being done won't be counted.
  */
-<span class="code-keyword">public</span> class StatisticListenerImpl <span class="code-keyword">implements</span> CacheMapAccessEventListener, CacheEntryEventListener, ScopeEventListener {
+<span class="code-keyword">public</span> class SimpleStatisticListenerImpl <span class="code-keyword">implements</span> CacheMapAccessEventListener, CacheEntryEventListener, ScopeEventListener {
 
-    <span class="code-keyword">private</span> <span class="code-keyword">static</span> <span class="code-keyword">transient</span> <span class="code-keyword">final</span> Log log = LogFactory.getLog(StatisticListenerImpl.class);
+    <span class="code-keyword">private</span> <span class="code-keyword">static</span> <span class="code-keyword">transient</span> <span class="code-keyword">final</span> Log log = LogFactory.getLog(SimpleStatisticListenerImpl.class);
 
     /**
      * Hit counter
@@ -82,8 +82,8 @@
     /**
      * Constructor, empty <span class="code-keyword">for</span> us
      */
-    <span class="code-keyword">public</span> StatisticListenerImpl() {
-        log.info(<span class="code-quote">"Creation of StatisticListenerImpl"</span>);
+    <span class="code-keyword">public</span> SimpleStatisticListenerImpl() {
+        log.info(<span class="code-quote">"Creation of SimpleStatisticListenerImpl"</span>);
     }
 
     /**
@@ -234,7 +234,7 @@
      * @<span class="code-keyword">return</span> <span class="code-object">String</span>
      */
     <span class="code-keyword">public</span> <span class="code-object">String</span> toString() {
-        <span class="code-keyword">return</span> <span class="code-quote">"StatisticListenerImpl: Hit = "</span> + hitCount + <span class="code-quote">" / "</span> + hitCountSum +
+        <span class="code-keyword">return</span> <span class="code-quote">"SimpleStatisticListenerImpl: Hit = "</span> + hitCount + <span class="code-quote">" / "</span> + hitCountSum
                 + <span class="code-quote">", stale hit = "</span> + staleHitCount + <span class="code-quote">" / "</span> + staleHitCountSum
                 + <span class="code-quote">", miss = "</span> + missCount + <span class="code-quote">" / "</span> + missCountSum
                 + <span class="code-quote">", flush = "</span> + flushCount;
