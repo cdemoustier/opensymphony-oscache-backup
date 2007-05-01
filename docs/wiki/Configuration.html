@@ -50,14 +50,14 @@ The following properties are able to be set in the oscache.properties file:</p>
 <h4><a name="Configuration-cache.persistence.class"></a>cache.persistence.class</h4>
 
 <p>Specifies the class to use for persisting cache entries. This class must implement the PersistenceListener interface. OSCache comes with an implementation that provides filesystem based persistence. Set this property to com.opensymphony.oscache.plugins.diskpersistence.HashDiskPersistenceListener to enable this implementation. By specifying your own class here you should be able to persist cache data using say JDBC or LDAP. NOTE: This class hashes the toString() of the object being cached to produce the file name of the entry. If you prefer readable file names, the parent DiskPersistenceListener can still be used but it will have issues with illegal filesystem characters or long names.</p>
-<table cellpadding='5' width='85%' cellspacing='8px' class='noteMacro' border="0" align='center'><colgroup><col width='24'><col></colgroup><tr><td valign='top'><img src="/images/icons/emoticons/warning.gif" width="16" height="16" align="absmiddle" alt="" border="0"></td><td><b class="strong">Note</b><br />
+<table cellpadding='5' width='85%' cellspacing='8px' class='noteMacro' border="0" align='center'><colgroup><col width='24'><col></colgroup><tr><td valign='top'><img src="./icons/emoticons/warning.gif" width="16" height="16" align="absmiddle" alt="" border="0"></td><td><b class="strong">Note</b><br />
 <p>The HashDiskPersistenceListener and DiskPersistenceListener classes require <b>cache.path</b> to be set in order to know where to persist the files to disk.</p></td></tr></table>
 
 <h4><a name="Configuration-cache.path"></a>cache.path</h4>
 
 <p>This specifies the directory on disk where the caches will be stored. The directory will be created if it doesn't already exist, but remember that OSCache must have permission to write to this location. Avoid sharing the same cache path between different caches, because OSCache has not been designed to handle this.</p>
 
-<table cellpadding='5' width='85%' cellspacing='8px' class='noteMacro' border="0" align='center'><colgroup><col width='24'><col></colgroup><tr><td valign='top'><img src="/images/icons/emoticons/warning.gif" width="16" height="16" align="absmiddle" alt="" border="0"></td><td><b class="strong">Note</b><br />
+<table cellpadding='5' width='85%' cellspacing='8px' class='noteMacro' border="0" align='center'><colgroup><col width='24'><col></colgroup><tr><td valign='top'><img src="./icons/emoticons/warning.gif" width="16" height="16" align="absmiddle" alt="" border="0"></td><td><b class="strong">Note</b><br />
 <p>    For Windows machines, the backslash character '\' needs to be escaped. ie in Windows:</p></td></tr></table>
 <div class="preformatted"><div class="preformattedContent">
 <pre>    cache.path=c:\\myapp\\cache
@@ -92,9 +92,9 @@ The following properties are able to be set in the oscache.properties file:</p>
 <p>It is also of course quite straightforward to write your own event listener. See the <a href="http://www.opensymphony.com/oscache/api" title="Visit page outside Confluence">JavaDoc API</a> for further details and <a href="Statistics.html" title="Statistics">Statistics</a> for an example.</p>
 
 
-<h4><a name="Configuration-cache.key"></a>cache.key</h4>
+<h4><a name="Configuration-cache.key"></a><a name="Configuration-cache.key"></a>cache.key</h4>
 
-<p>This is the key that will be used by the ServletCacheAdministrator (and hence the custom tags) to store the cache object in the application and session scope. The default value when this property is not specified is "__oscache_cache". If you want to access this default value in your code, it is available as com.opensymphony.oscache.base.Const.DEFAULT_CACHE_KEY.</p>
+<p>This is the key that will be used by the ServletCacheAdministrator (and hence the custom tags) to store the cache object in the application and session scope. The default value when this property is not specified is "__oscache_cache". If you want to access this default value in your code, it is available as com.opensymphony.oscache.web.ServletCacheAdministrator.DEFAULT_CACHE_KEY.</p>
 
 <h4><a name="Configuration-cache.use.host.domain.in.key"></a>cache.use.host.domain.in.key</h4>
 
