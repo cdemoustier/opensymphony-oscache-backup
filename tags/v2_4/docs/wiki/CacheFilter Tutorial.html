@@ -1,0 +1,180 @@
+<html>
+    <head>
+        <title>OSCache - 
+        CacheFilter Tutorial
+         </title>
+	    <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body>
+	    <table class="pagecontent" border="0" cellpadding="0" cellspacing="0" width="100%" bgcolor="#ffffff">
+		    <tr>
+			    <td valign="top" class="pagebody">
+				    <h3><a name="CacheFilterTutorial-Introduction"></a>Introduction </h3>
+
+<p><b>OSCache</b> comes with a servlet filter that enables you to transparently cache entire pages of your website, and even binary files. Caching of binary files is extremely useful when they are generated dynamically, e.g. PDF files or images. In addition by using the last modified header the transaction overhead and server load is reduced excellently which speed ups the server response time.</p>
+
+<p>How to configure OSCache to cache entire servlet responses is described in the <a href="CacheFilter.html" title="CacheFilter">configuration page of the CacheFilter</a>. This short tutorial should demonstrate how to make your web site more responsive, and save load on your server. Using the CacheFilter the user will appreciate a faster loading site and will visit it more often.</p>
+
+<h3><a name="CacheFilterTutorial-Improvements"></a>Improvements</h3>
+
+<p>Major improvements have been made to the CacheFilter in the releases 2.2 and 2.3:</p>
+
+<ul>
+	<li>Default initialization of the last modified header which reduces transaction overhead and server load</li>
+	<li>CRON expressions to expire content at specific dates and/or times</li>
+	<li>Preserving more http headers, e.g. the expires header</li>
+	<li>Special handling for fragments of a page</li>
+	<li>Custom cache key generation by subclassing CacheFilter or by implementing a special interface</li>
+	<li>Custom cache groups generation by subclassing CacheFilter or by implementing a special interface</li>
+	<li>Support of GZip filters in the filter chain</li>
+	<li>Avoids session creation for application scope pages</li>
+	<li>Reduced memory consumption</li>
+	<li>Multiple matching cache filters won't dead-lock the response anymore</li>
+	<li>The cache won't be serve the same response twice before the client begins to cache it anymore</li>
+</ul>
+
+
+<h3><a name="CacheFilterTutorial-CacheableContent"></a>Cacheable Content</h3>
+
+<table cellpadding='5' width='85%' cellspacing='8px' class='noteMacro' border="0" align='center'><colgroup><col width='24'><col></colgroup><tr><td valign='top'><img src="./icons/emoticons/warning.gif" width="16" height="16" align="absmiddle" alt="" border="0"></td><td><b class="strong">Cacheable content</b><br />
+<p>Note that the filter will only cache content that has a status of 200 (HttpServletResponse.SC_OK).</p></td></tr></table>
+
+<h3><a name="CacheFilterTutorial-Configuringthefilter"></a>Configuring the filter</h3>
+
+<h4><a name="CacheFilterTutorial-Example1"></a>Example 1</h4>
+
+<p>To configure the filter, add something like the following to your <tt>web.xml</tt> file (obviously you will want to set the URL pattern to match only the content you want to cache; this example will cache all JSP pages for 10 minutes in session scope):</p>
+
+<div class="code"><div class="codeContent">
+<pre class="code-xml"><span class="code-tag">&lt;filter&gt;</span>
+    <span class="code-tag">&lt;filter-name&gt;</span>CacheFilter<span class="code-tag">&lt;/filter-name&gt;</span>
+    <span class="code-tag">&lt;filter-class&gt;</span>com.opensymphony.oscache.web.filter.CacheFilter<span class="code-tag">&lt;/filter-class&gt;</span>
+    <span class="code-tag">&lt;init-param&gt;</span>
+        <span class="code-tag">&lt;param-name&gt;</span>time<span class="code-tag">&lt;/param-name&gt;</span>
+        <span class="code-tag">&lt;param-value&gt;</span>600<span class="code-tag">&lt;/param-value&gt;</span>
+    <span class="code-tag">&lt;/init-param&gt;</span>
+    <span class="code-tag">&lt;init-param&gt;</span>
+        <span class="code-tag">&lt;param-name&gt;</span>scope<span class="code-tag">&lt;/param-name&gt;</span>
+        <span class="code-tag">&lt;param-value&gt;</span>session<span class="code-tag">&lt;/param-value&gt;</span>
+    <span class="code-tag">&lt;/init-param&gt;</span>
+<span class="code-tag">&lt;/filter&gt;</span>
+
+<span class="code-tag">&lt;filter-mapping&gt;</span>
+    <span class="code-tag">&lt;filter-name&gt;</span>CacheFilter<span class="code-tag">&lt;/filter-name&gt;</span>
+    <span class="code-tag">&lt;url-pattern&gt;</span>*.jsp<span class="code-tag">&lt;/url-pattern&gt;</span>
+<span class="code-tag">&lt;/filter-mapping&gt;</span></pre>
+</div></div>
+
+<p>The default duration is one hour and the default scope for the cache is application scope. You can change these settings using <a href="CacheFilter.html" title="CacheFilter">initialization parameters</a>.</p>
+
+<h4><a name="CacheFilterTutorial-Example2"></a>Example 2</h4>
+
+<p>The initialization of the last modified header based on the current time reduces transaction overhead and server load, because the browser can ask the server if the cached content in the browser cache was changed on the server since the last request. If the content wasn't changed , the server will response with the status 304 (not modified).</p>
+
+<p>Furthermore if the <a href="CacheFilter.html#CacheFilter-expires" title="expires on CacheFilter">expires parameter</a> is the set to <em>time</em>, the server will send the date and time after which the content is considered stale. Then common browsers won't request the server anymore until the cached content is considered stale. The example will cache the content for one hour by default and the expires date and time will be calculated based on the creation time and the <em>time</em> parameter (default is one hour).</p>
+
+<div class="code"><div class="codeContent">
+<pre class="code-xml"><span class="code-tag">&lt;filter&gt;</span>
+    <span class="code-tag">&lt;filter-name&gt;</span>CacheFilterStaticContent<span class="code-tag">&lt;/filter-name&gt;</span>
+    <span class="code-tag">&lt;filter-class&gt;</span>com.opensymphony.oscache.web.filter.CacheFilter<span class="code-tag">&lt;/filter-class&gt;</span>
+    <span class="code-tag">&lt;init-param&gt;</span>
+        <span class="code-tag">&lt;param-name&gt;</span>expires<span class="code-tag">&lt;/param-name&gt;</span>
+        <span class="code-tag">&lt;param-value&gt;</span>time<span class="code-tag">&lt;/param-value&gt;</span>
+    <span class="code-tag">&lt;/init-param&gt;</span>
+<span class="code-tag">&lt;/filter&gt;</span>
+
+<span class="code-tag">&lt;filter-mapping&gt;</span>
+    <span class="code-tag">&lt;filter-name&gt;</span>CacheFilterStaticContent<span class="code-tag">&lt;/filter-name&gt;</span>
+    <span class="code-tag">&lt;url-pattern&gt;</span>*.jsp<span class="code-tag">&lt;/url-pattern&gt;</span>
+<span class="code-tag">&lt;/filter-mapping&gt;</span></pre>
+</div></div>
+
+<h3><a name="CacheFilterTutorial-Usingthefilter"></a>Using the filter</h3>
+
+<h4><a name="CacheFilterTutorial-Example1%3AICacheKeyProvider"></a>Example 1: ICacheKeyProvider</h4>
+
+<p>A simple example how to use the <a href="CacheFilter.html#CacheFilter-ICacheKeyProvider" title="ICacheKeyProvider on CacheFilter">ICacheKeyProvider</a> parameter of the CacheFilter. The cache key in constructed with the http request URI and with two request parameters <em>pageid</em> and <em>pagination</em>.</p>
+
+<div class="code"><div class="codeContent">
+<pre class="code-java"><span class="code-keyword">import</span> javax.servlet.http.HttpServletRequest;
+
+<span class="code-keyword">import</span> com.opensymphony.oscache.base.Cache;
+<span class="code-keyword">import</span> com.opensymphony.oscache.web.ServletCacheAdministrator;
+<span class="code-keyword">import</span> com.opensymphony.oscache.web.filter.ICacheKeyProvider;
+
+<span class="code-keyword">public</span> class ExampleCacheKeyProvider <span class="code-keyword">implements</span> ICacheKeyProvider {
+
+    <span class="code-keyword">public</span> <span class="code-object">String</span> createCacheKey(HttpServletRequest httpRequest, ServletCacheAdministrator scAdmin, Cache cache) {
+
+        <span class="code-comment">// buffer <span class="code-keyword">for</span> the cache key
+</span>        <span class="code-object">StringBuffer</span> buffer = <span class="code-keyword">new</span> <span class="code-object">StringBuffer</span>(100);
+        
+        <span class="code-comment">// part 1 of the key: the request uri
+</span>        buffer.append(httpRequest.getRequestURI());
+        
+        <span class="code-comment">// separation
+</span>        buffer.append('_');
+
+        <span class="code-comment">// part 2 of the key: the page id
+</span>        buffer.append(httpRequest.getParameter(<span class="code-quote">"pageid"</span>));
+        
+        <span class="code-comment">// separation
+</span>        buffer.append('_');
+        
+        <span class="code-comment">// part 3 of the key: the pagination
+</span>        buffer.append(httpRequest.getParameter(<span class="code-quote">"pagination"</span>));
+        
+        <span class="code-keyword">return</span> buffer.toString();
+    }
+
+}</pre>
+</div></div>
+
+<p>You can use session attributes values for the cache key also, if request parameters aren't available or e.g. security settings have to be add to the cache key.</p>
+
+<h4><a name="CacheFilterTutorial-Example2%3AFlush"></a>Example 2: Flush</h4>
+
+<p>The flush example shows how to flush a CacheFilter with scope <em>application</em> based on group names. In this example the http servlet request of the user is required to get the cache object.</p>
+
+<div class="code"><div class="codeContent">
+<pre class="code-java"><span class="code-keyword">import</span> com.opensymphony.oscache.base.Cache;
+<span class="code-keyword">import</span> com.opensymphony.oscache.web.ServletCacheAdministrator;
+
+<span class="code-keyword">import</span> java.util.Collection;
+<span class="code-keyword">import</span> java.util.Iterator;
+
+<span class="code-keyword">import</span> javax.servlet.http.HttpServletRequest;
+<span class="code-keyword">import</span> javax.servlet.jsp.PageContext;
+
+<span class="code-keyword">public</span> class OSCacheAdmin {
+    
+    /**
+     * flush the CacheFilter according to dependent group
+     *
+     * @param request the HttpServletRequest of the user
+     * @param groupNames a string collection of group names
+     */
+    <span class="code-keyword">public</span> <span class="code-keyword">static</span> void flushCacheGroup(HttpServletRequest request, Collection groupNames) {
+    	Cache cache = ServletCacheAdministrator.getInstance(request.getSession().getServletContext()).getCache(request, PageContext.APPLICATION_SCOPE); 
+        Iterator groups = groupNames.iterator();
+        <span class="code-keyword">while</span> (groups.hasNext()) {
+            <span class="code-object">String</span> group = (<span class="code-object">String</span>) groups.next();
+            cache.flushGroup(group);
+        }
+    }
+}</pre>
+</div></div>
+
+<p>If you're CacheFilter is running with scope <em>session</em>, you have to get the cache as follows:</p>
+
+<div class="code"><div class="codeContent">
+<pre class="code-java">Cache cache = ServletCacheAdministrator.getInstance(request.getSession(<span class="code-keyword">true</span>).getServletContext()).getCache(request, PageContext.SESSION_SCOPE);</pre>
+</div></div>
+
+                    			    </td>
+		    </tr>
+	    </table>
+    </body>
+</html>

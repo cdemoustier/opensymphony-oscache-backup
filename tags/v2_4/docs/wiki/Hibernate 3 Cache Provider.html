@@ -1,0 +1,94 @@
+<html>
+    <head>
+        <title>OSCache - 
+        Hibernate 3 Cache Provider
+         </title>
+	    <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body>
+	    <table class="pagecontent" border="0" cellpadding="0" cellspacing="0" width="100%" bgcolor="#ffffff">
+		    <tr>
+			    <td valign="top" class="pagebody">
+				    <p>Patched version of OSCacheProvider.java for Hibernate 3.0 - originally created by Mathias Bogaert.</p>
+
+<div class="code" style="border-style: solid; "><div class="codeHeader" style="border-bottom-style: solid; "><b>OSCacheProvider.java</b></div><div class="codeContent">
+<pre class="code-java"><span class="code-keyword">import</span> java.util.Properties;
+<span class="code-keyword">import</span> org.hibernate.util.PropertiesHelper;
+<span class="code-keyword">import</span> org.hibernate.util.StringHelper;
+<span class="code-keyword">import</span> org.hibernate.cache.*;
+<span class="code-keyword">import</span> com.opensymphony.oscache.base.CacheEntry;
+<span class="code-keyword">import</span> com.opensymphony.oscache.base.Config;
+
+/**
+ * Support <span class="code-keyword">for</span> OpenSymphony OSCache. This implementation assumes
+ * that identifiers have well-behaved &lt;tt&gt;toString()&lt;/tt&gt; methods.
+ */
+<span class="code-keyword">public</span> class OSCacheProvider <span class="code-keyword">implements</span> CacheProvider {
+
+	/** 
+	 * The &lt;tt&gt;OSCache&lt;/tt&gt; refresh period property suffix. 
+	 */
+	<span class="code-keyword">public</span> <span class="code-keyword">static</span> <span class="code-keyword">final</span> <span class="code-object">String</span> OSCACHE_REFRESH_PERIOD = <span class="code-quote">"refresh.period"</span>;
+	/** 
+	 * The &lt;tt&gt;OSCache&lt;/tt&gt; CRON expression property suffix. 
+	 */
+	<span class="code-keyword">public</span> <span class="code-keyword">static</span> <span class="code-keyword">final</span> <span class="code-object">String</span> OSCACHE_CRON = <span class="code-quote">"cron"</span>;
+	
+	<span class="code-keyword">private</span> <span class="code-keyword">static</span> <span class="code-keyword">final</span> Properties OSCACHE_PROPERTIES = <span class="code-keyword">new</span> Config().getProperties();
+
+	/**
+	 * Builds a <span class="code-keyword">new</span> {@link Cache} instance, and gets it's properties from the OSCache {@link Config}
+	 * which reads the properties file (&lt;code&gt;oscache.properties&lt;/code&gt;) from the classpath.
+	 * If the file cannot be found or loaded, an the defaults are used.
+	 *
+	 * @param region
+	 * @param properties
+	 * @<span class="code-keyword">return</span>
+	 * @<span class="code-keyword">throws</span> CacheException
+	 */
+	<span class="code-keyword">public</span> Cache buildCache(<span class="code-object">String</span> region, Properties properties) <span class="code-keyword">throws</span> CacheException {
+
+		<span class="code-object">int</span> refreshPeriod = PropertiesHelper.getInt(
+			StringHelper.qualify(region, OSCACHE_REFRESH_PERIOD), 
+			OSCACHE_PROPERTIES, 
+			CacheEntry.INDEFINITE_EXPIRY
+		);
+		<span class="code-object">String</span> cron = OSCACHE_PROPERTIES.getProperty( StringHelper.qualify(region, OSCACHE_CRON) );
+
+		<span class="code-comment">// construct the cache        
+</span>        <span class="code-keyword">return</span> <span class="code-keyword">new</span> OSCache(refreshPeriod, cron, region);
+	}
+
+	<span class="code-keyword">public</span> <span class="code-object">long</span> nextTimestamp() {
+		<span class="code-keyword">return</span> Timestamper.next();
+	}
+
+	<span class="code-keyword">public</span> <span class="code-object">boolean</span> isMinimalPutsEnabledByDefault() {
+		<span class="code-keyword">return</span> <span class="code-keyword">false</span>;
+	}
+
+	/**
+	 * Callback to perform any necessary cleanup of the underlying cache implementation
+	 * during SessionFactory.close().
+	 */
+	<span class="code-keyword">public</span> void stop() {
+	}
+
+	/**
+	 * Callback to perform any necessary initialization of the underlying cache implementation
+	 * during SessionFactory construction.
+	 *
+	 * @param properties current configuration settings.
+	 */
+	<span class="code-keyword">public</span> void start(Properties properties) <span class="code-keyword">throws</span> CacheException {
+	}    
+}</pre>
+</div></div>
+
+                    			    </td>
+		    </tr>
+	    </table>
+    </body>
+</html>

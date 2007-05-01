@@ -1,0 +1,118 @@
+<html>
+    <head>
+        <title>OSCache - 
+        CacheFilter
+         </title>
+	    <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body>
+	    <table class="pagecontent" border="0" cellpadding="0" cellspacing="0" width="100%" bgcolor="#ffffff">
+		    <tr>
+			    <td valign="top" class="pagebody">
+				    <p><b>OSCache</b> comes with a servlet filter that enables you to transparently cache entire pages of your website, and even binary files. Caching of binary files is extremely useful when they are generated dynamically, e.g. PDF files or images.</p>
+
+<p>A <a href="CacheFilter Tutorial.html" title="CacheFilter Tutorial">tutorial</a> describes how to cache entire pages of your website and what performance improvements can be done with the CacheFilter.</p>
+
+<p>Beginning with release 2.4 you are be able to set/override the CacheFilter initialization parameters at runtime.</p>
+
+<h4><a name="CacheFilter-CacheableContent"></a>Cacheable Content</h4>
+<table cellpadding='5' width='85%' cellspacing='8px' class='noteMacro' border="0" align='center'><colgroup><col width='24'><col></colgroup><tr><td valign='top'><img src="./icons/emoticons/warning.gif" width="16" height="16" align="absmiddle" alt="" border="0"></td><td><b class="strong">Cacheable content</b><br /><br/>
+Note that the filter will only cache content that has a status of 200 (HttpServletResponse.SC_OK).</td></tr></table>
+
+<h3><a name="CacheFilter-Configuringthefilter"></a>Configuring the filter</h3>
+
+<p>To configure the filter, use the <tt>oscache.properties</tt> to <a href="Configuration.html" title="Configuration">configure</a> the core settings of OSCache and add something like the following to your <tt>web.xml</tt> file:</p>
+
+<div class="code"><div class="codeContent">
+<pre class="code-xml"><span class="code-tag">&lt;filter&gt;</span>
+    <span class="code-tag">&lt;filter-name&gt;</span>CacheFilter<span class="code-tag">&lt;/filter-name&gt;</span>
+    <span class="code-tag">&lt;filter-class&gt;</span>com.opensymphony.oscache.web.filter.CacheFilter<span class="code-tag">&lt;/filter-class&gt;</span>
+    <span class="code-tag">&lt;init-param&gt;</span>
+        <span class="code-tag">&lt;param-name&gt;</span>time<span class="code-tag">&lt;/param-name&gt;</span>
+        <span class="code-tag">&lt;param-value&gt;</span>600<span class="code-tag">&lt;/param-value&gt;</span>
+    <span class="code-tag">&lt;/init-param&gt;</span>
+    <span class="code-tag">&lt;init-param&gt;</span>
+        <span class="code-tag">&lt;param-name&gt;</span>scope<span class="code-tag">&lt;/param-name&gt;</span>
+        <span class="code-tag">&lt;param-value&gt;</span>session<span class="code-tag">&lt;/param-value&gt;</span>
+    <span class="code-tag">&lt;/init-param&gt;</span>
+<span class="code-tag">&lt;/filter&gt;</span>
+
+<span class="code-tag">&lt;filter-mapping&gt;</span>
+    <span class="code-tag">&lt;filter-name&gt;</span>CacheFilter<span class="code-tag">&lt;/filter-name&gt;</span>
+    <span class="code-tag">&lt;url-pattern&gt;</span>*.jsp<span class="code-tag">&lt;/url-pattern&gt;</span>
+<span class="code-tag">&lt;/filter-mapping&gt;</span></pre>
+</div></div>
+<p>Obviously you will want to set the URL pattern to match only the content you want to cache; this example will cache all JSP pages for 10 minutes in session scope. The default duration is one hour and the default scope for the cache is application scope. </p>
+
+<p>If the <a href="#CacheFilter-ICacheKeyProvider" title="ICacheKeyProvider on CacheFilter">ICacheKeyProvider</a> parameter isn't set, the CacheFilter will use the HTTP request URI and the QueryString to create the cache key. </p>
+
+<p>You can change the CacheFilter settings using the following initialization parameters.</p>
+
+<h4><a name="CacheFilter-Parameter%3Atime"></a><a name="CacheFilter-time"></a>Parameter: time</h4>
+
+<p>The time parameter sets the cache time (in seconds) for the content. The default cache time is one hour.</p>
+
+<p>Specifying <em>&#45;1</em> (indefinite expiry) as the cache time will ensure a content does not become stale until it is either explicitly flushed or the expires refresh policy causes the entry to expire.</p>
+
+<h4><a name="CacheFilter-Parameter%3Ascope"></a><a name="CacheFilter-scope"></a>Parameter: scope</h4>
+
+<p>The scope parameter lets you set the scope to cache content in. Valid values for the scope are <em>application</em> (default) and <em>session</em>.</p>
+
+<h4><a name="CacheFilter-Parameter%3Acron%28NEW%5C%21Since2.3%29"></a><a name="CacheFilter-cron"></a>Parameter: cron (NEW&#33; Since 2.3)</h4>
+
+<p>A cron expression that determines when the page content will expire. This allows content to be expired at particular dates and/or times, rather than once a cache entry reaches a certain age. See <a href="Cron Expressions.html" title="Cron Expressions">Cron Expressions</a> to read more about this attribute. Please consider that the (default) time value is still evaluated, hence the time value should be set to indefinite expiry.</p>
+
+<h4><a name="CacheFilter-Parameter%3Afragment%28NEW%5C%21Since2.2%29"></a><a name="CacheFilter-fragment"></a>Parameter: fragment (NEW&#33; Since 2.2)</h4>
+
+<p>Defines if the filter handles fragments of a page. Acceptable values are <em>auto</em> for auto detect, <em>no</em> for false and <em>yes</em> for true. The default value is auto detect which checks the <em>javax.servlet.include.request_uri</em> request attribute. Fragments of a page shouldn't be gzipped or evaluate the last modified header.</p>
+
+<h4><a name="CacheFilter-Parameter%3Anocache%28NEW%5C%21Since2.2%29"></a><a name="CacheFilter-nocache"></a>Parameter: nocache (NEW&#33; Since 2.2)</h4>
+
+<p>Defines which objects shouldn't be cached. Acceptable values are <em>off</em> (default) for caching all objects and <em>sessionIdInURL</em> for don't cache page if the session id is contained in the URL.</p>
+
+<h4><a name="CacheFilter-Parameter%3AlastModified%28NEW%5C%21Since2.2%29"></a><a name="CacheFilter-lastModified"></a>Parameter: lastModified (NEW&#33; Since 2.2)</h4>
+
+<p>Defines if the last modified header will be sent in the response. Acceptable values are <em>off</em> for don't sending the header, even it is set in the filter chain, <em>on</em> for sending it if it is set in the filter chain and <em>initial</em> (default) the last modified information will be set based on current time.</p>
+
+<h4><a name="CacheFilter-Parameter%3Amaxage%28NEW%5C%21Since2.3.1%29"></a><a name="CacheFilter-maxage"></a>Parameter: max-age (NEW&#33; Since 2.3.1)</h4>
+
+<p>Specifies the maximum amount of time in seconds that the cache content will be considered new in the browser's cache. The browser will retrieve the content from it's own cache for the amount of time without requesting the web server again. The default max-age time is 60 seconds. Combined with the <a href="#CacheFilter-lastModified" title="lastModified on CacheFilter">last modified header</a> the transaction overhead and server load is reduced excellently which speed ups the server response time. Further parameters are <em>no init</em> for don't initializing the max-age cache control and <em>time</em> to set max-age based on the time parameter and creation time of the content (expiration timestamp minus current timestamp) by each request.</p>
+
+<h4><a name="CacheFilter-Parameter%3Aexpires%28NEW%5C%21Since2.2%29"></a><a name="CacheFilter-expires"></a>Parameter: expires (NEW&#33; Since 2.2)</h4>
+
+<p>Defines if the expires header will be sent in the response. Acceptable values are <em>off</em> for don't sending the header, even it is set in the filter chain, <em>on</em> (default) for sending it if it is set in the filter chain and <em>time</em> the expires information will be intialized based on the time parameter and creation time of the content.<table cellpadding='5' width='85%' cellspacing='8px' class='noteMacro' border="0" align='center'><colgroup><col width='24'><col></colgroup><tr><td valign='top'><img src="./icons/emoticons/warning.gif" width="16" height="16" align="absmiddle" alt="" border="0"></td><td><b class="strong">Value 'time'</b><br /><br/>
+The parameter <em>time</em> would force the CacheFilter to send the expires header, because the value is set always. The developer must consider that some browsers evaluate the value and will use the cached content in the browsers cache, until the content is expired. Consequently a flush of the cache in the web application won't update a page in the browser cache. Hence different users may see see a different status of page.</td></tr></table></p>
+
+<h4><a name="CacheFilter-Parameter%3AICacheKeyProvider%28NEW%5C%21Since2.2%29"></a><a name="CacheFilter-ICacheKeyProvider"></a>Parameter: ICacheKeyProvider (NEW&#33; Since 2.2)</h4>
+
+<p>Specify a class which implements the interface <tt>ICacheKeyProvider</tt>. A developer can implement a class which provides cache keys based on the request, the servlect cache administrator and the cache.</p>
+
+<h4><a name="CacheFilter-Parameter%3AICacheGroupsProvider%28NEW%5C%21Since2.2%29"></a><a name="CacheFilter-ICacheGroupsProvider"></a>Parameter: ICacheGroupsProvider (NEW&#33; Since 2.2)</h4>
+
+<p>Specify a class which implements the interface <tt>ICacheGroupsProvider</tt>. A developer can implement a class which provides cache groups based on the request, the servlect cache administrator and the cache.</p>
+
+<h4><a name="CacheFilter-Parameter%3AEntryRefreshPolicy%28New%5C%21Since2.3%29"></a><a name="CacheFilter-EntryRefreshPolicy"></a>Parameter: EntryRefreshPolicy (New&#33; Since 2.3)</h4>
+
+<p>Specify a class which implements the interface <tt>EntryRefreshPolicy</tt>. A developer can implement a class which provides a different custom cache invalidation policy for a specific cache entry. If not specified, the default policy is timed entry expiry as specified with the <em>time</em> parameter described above. </p>
+
+<h4><a name="CacheFilter-Parameter%3AdisableCacheOnMethods%28New%5C%21Since2.4%29"></a><a name="CacheFilter-disableCacheOnMethods"></a>Parameter: disableCacheOnMethods (New&#33; Since 2.4)</h4>
+
+<p>Specify HTTP method names in a comma separated list for which cacheing should be disabled. The default value is &lt;code&gt;null&lt;/code&gt; for cacheing all requests without regarding the method name. See <a href="http://java.sun.com/j2ee/sdk_1.3/techdocs/api/javax/servlet/http/HttpServletRequest.html#getMethod()" title="Visit page outside Confluence">HttpServletRequest#getMethod</a>, e.g.:</p>
+
+<div class="code"><div class="codeContent">
+<pre class="code-xml"><span class="code-tag">&lt;init-param&gt;</span>
+        <span class="code-tag">&lt;param-name&gt;</span>disableCacheOnMethods<span class="code-tag">&lt;/param-name&gt;</span>
+        <span class="code-tag">&lt;param-value&gt;</span>POST,PUT,DELETE<span class="code-tag">&lt;/param-value&gt;</span>
+    <span class="code-tag">&lt;/init-param&gt;</span></pre>
+</div></div>
+
+<h4><a name="CacheFilter-Parameter%3Aoscachepropertiesfile%28New%5C%21Since2.4%29"></a><a name="CacheFilter-oscachepropertiesfile"></a>Parameter: oscache-properties-file (New&#33; Since 2.4)</h4>
+<p>By specifying a OSCache properties file for a CacheFilter, the developer can run multiple caches each with different <a href="Configuration.html" title="Configuration">configurations</a> tailored to the requirements of the application. In each properties file the developer has to define a unique <a href="Configuration.html#Configuration-cache.key" title="cache.key on Configuration">cache.key</a> otherwise the default properties file is used. If the parameter is not specified, the default properties file will be used. The file has to be put into the classpath, e.g. <em>WEB-INF/classes</em>.</p>
+
+                    			    </td>
+		    </tr>
+	    </table>
+    </body>
+</html>

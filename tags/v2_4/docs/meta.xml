@@ -1,0 +1,209 @@
+<project>
+   <name>OSCache</name>
+   <jiraId>10001</jiraId>
+   <jiraName>CACHE</jiraName>
+   <confluenceName>CACHE</confluenceName>
+   <svn>true</svn>
+
+    <forums>
+        <usersId>4</usersId>
+        <cvsId>12</cvsId>
+    </forums>
+
+    <evaluating>
+        <item>
+            <name>Overview</name>
+            <url>wiki/What%20is%20OSCache.html</url>
+        </item>
+        <item>
+            <name>Feature List</name>
+            <url>wiki/Feature%20List.html</url>
+        </item>
+        <item>
+            <name>Requirements</name>
+            <url>wiki/Requirements.html</url>
+        </item>
+        <item>
+            <name>Installation Guide</name>
+            <url>wiki/Installation%20Guide.html</url>
+        </item>
+        <item>
+            <name>Configuration Guide</name>
+            <url>wiki/Configuration.html</url>
+        </item>
+    </evaluating>
+
+    <docs>
+        <url>wiki/Documentation.html</url>
+        <items>
+            <item>
+                <name>FAQ</name>
+                <url>wiki/FAQ.html</url>
+            </item>
+            <item>
+                <name>Tag Reference</name>
+                <url>wiki/JSP%20Tags.html</url>
+            </item>
+            <item>
+                <name>The Caching Filter</name>
+                <url>wiki/CacheFilter.html</url>
+            </item>
+            <item>
+                <name>Cron Expressions</name>
+                <url>wiki/Cron%20Expressions.html</url>
+            </item>
+            <item>
+                <name>OSCache and Hibernate</name>
+                <url>wiki/Hibernate.html</url>
+            </item>
+            <item>
+                <name>Clustering</name>
+                <url>wiki/Clustering.html</url>
+            </item>
+        </items>
+    </docs>
+
+    <owners>
+       <person>
+           <name>Andres March</name>
+           <email>me at andresmarch dot com</email>
+       </person>
+   </owners>
+
+   <developers>
+	<person>
+           <name>Lars Torunski</name>
+           <email>ltorunski at t-online dot de</email>
+       </person>
+       <person>
+           <name>Chris Miller</name>
+           <email>chris_overseas at hotmail dot com</email>
+       </person>
+   </developers>
+
+   <releases>
+       <release>
+           <version>2.4</version>
+           <date>05/01/2007</date>
+           <jiraId>21660</jiraId>
+           <downloads>
+               <download>
+                   <url>https://oscache.dev.java.net/files/documents/629/57136/oscache-2.4-full.zip</url>
+                   <name>Full</name>
+               </download>
+           </downloads>
+       </release>
+       <release>
+           <version>2.3.2</version>
+           <date>07/23/2006</date>
+           <jiraId>21651</jiraId>
+           <downloads>
+               <download>
+                   <url>https://oscache.dev.java.net/files/documents/629/37840/oscache-2.3.2-full.zip</url>
+                   <name>Full</name>
+               </download>
+           </downloads>
+       </release>
+       <release>
+           <version>2.3.1</version>
+           <date>06/19/2006</date>
+           <jiraId>21630</jiraId>
+           <downloads>
+               <download>
+                   <url>https://oscache.dev.java.net/files/documents/629/36361/oscache-2.3.1-full.zip</url>
+                   <name>Full</name>
+               </download>
+           </downloads>
+       </release>
+       <release>
+           <version>2.3</version>
+           <date>03/06/2006</date>
+           <jiraId>21570</jiraId>
+           <downloads>
+               <download>
+                   <url>https://oscache.dev.java.net/files/documents/629/30345/oscache-2.3-full.zip</url>
+                   <name>Full</name>
+               </download>
+           </downloads>
+       </release>
+       <release>
+           <version>2.2 Final</version>
+           <date>11/06/2005</date>
+           <jiraId>21550</jiraId>
+           <downloads>
+               <download>
+                   <url>https://oscache.dev.java.net/files/documents/629/23623/oscache-2.2-full.zip</url>
+                   <name>Full</name>
+               </download>
+           </downloads>
+       </release>
+       <release>
+           <version>2.2 RC</version>
+           <date>09/18/2005</date>
+           <jiraId>21450</jiraId>
+           <downloads>
+               <download>
+                   <url>https://oscache.dev.java.net/files/documents/629/20854/oscache-2.2-rc-full.zip</url>
+                   <name>Full</name>
+               </download>
+           </downloads>
+       </release>
+       <release>
+           <version>2.1.1</version>
+           <date>5/01/2005</date>
+           <jiraId>21441</jiraId>
+           <downloads>
+               <download>
+                   <url>https://oscache.dev.java.net/files/documents/629/13962/oscache-2.1.1-full.zip</url>
+                   <name>Full</name>
+               </download>
+           </downloads>
+       </release>
+       <release>
+           <version>2.1</version>
+           <date>1/18/2005</date>
+           <jiraId>21223</jiraId>
+           <downloads>
+               <download>
+                   <url>https://oscache.dev.java.net/files/documents/629/10654/oscache-2.1-full.zip</url>
+                   <name>Full</name>
+               </download>
+           </downloads>
+       </release>
+       <release>
+           <version>2.0.2</version>
+           <date>1/22/2004</date>
+           <jiraId>21251</jiraId>
+           <downloads>
+               <download>
+                   <url>https://oscache.dev.java.net/files/documents/629/2653/oscache-2.0.2-full.zip</url>
+                   <name>Full</name>
+               </download>
+           </downloads>
+       </release>
+       <release>
+           <version>2.0.1</version>
+           <date>1/04/2003</date>
+           <jiraId>21250</jiraId>
+           <downloads>
+               <download>
+                   <url>https://oscache.dev.java.net/files/documents/629/1580/oscache-2.0.1-full.zip</url>
+                   <name>Full</name>
+               </download>
+           </downloads>
+       </release>
+       <release>
+           <version>2.0</version>
+           <date>09/22/2003</date>
+           <jiraId>21222</jiraId>
+           <downloads>
+               <download>
+                   <url>https://oscache.dev.java.net/files/documents/629/1051/oscache_2_0_full.zip</url>
+                   <name>Full</name>
+               </download>
+           </downloads>
+       </release>
+       
+   </releases>
+
+</project>
