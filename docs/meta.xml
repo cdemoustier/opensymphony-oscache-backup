@@ -83,6 +83,17 @@
 
    <releases>
        <release>
+           <version>2.4</version>
+           <date>05/01/2007</date>
+           <jiraId>21660</jiraId>
+           <downloads>
+               <download>
+                   <url>https://oscache.dev.java.net/files/documents/629/57136/oscache-2.4-full.zip</url>
+                   <name>Full</name>
+               </download>
+           </downloads>
+       </release>
+       <release>
            <version>2.3.2</version>
            <date>07/23/2006</date>
            <jiraId>21651</jiraId>
