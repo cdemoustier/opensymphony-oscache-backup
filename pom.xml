@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>opensymphony</groupId>
+    <artifactId>oscache</artifactId>
+    <version>2.4</version>
+    <name>OSCache</name>
+    <description>
+        OSCache is a caching solution that includes a JSP tag library
+        and set of classes to perform fine grained dynamic caching of
+        JSP content, servlet responses or arbitrary objects.
+    </description>
+    <url>http://www.opensymphony.com/oscache/</url>
+    <organization>
+        <name>OpenSymphony</name>
+        <url>http://www.opensymphony.com/</url>
+    </organization>
+    <issueManagement>
+        <system>JIRA</system>
+        <url>http://jira.opensymphony.com/browse/CACHE</url>
+    </issueManagement>
+    <mailingLists>
+        <mailingList>
+            <name>User discussion and support list for OSCache</name>
+            <post>mailto:users@oscache.dev.java.net</post>
+            <subscribe>https://oscache.dev.java.net/servlets/ProjectMailingListList</subscribe>
+            <archive>https://oscache.dev.java.net/servlets/SummarizeList?listName=users&by=date</archive>
+            <otherArchives>
+                <otherArchive>http://forums.opensymphony.com/forum.jspa?forumID=4</otherArchive>
+            </otherArchives>
+        </mailingList>
+    </mailingLists>
+    <scm>
+        <url>http://svn.opensymphony.com/svn/oscache/trunk/</url>
+    </scm>
+    <licenses>
+        <license>
+            <name>The OpenSymphony Software License 1.1</name>
+            <url>http://opensymphony.com/webwork/license.action</url>
+            <comments>
+                This license is derived and fully compatible with the Apache Software
+                License - see http://www.apache.org/LICENSE.txt
+            </comments>
+        </license>
+    </licenses>
+    <dependencies>
+        <dependency>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+            <version>1.1</version>
+        </dependency>
+    </dependencies>
+</project>
