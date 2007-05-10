@@ -25,7 +25,7 @@
             <name>User discussion and support list for OSCache</name>
             <post>mailto:users@oscache.dev.java.net</post>
             <subscribe>https://oscache.dev.java.net/servlets/ProjectMailingListList</subscribe>
-            <archive>https://oscache.dev.java.net/servlets/SummarizeList?listName=users&by=date</archive>
+            <archive>https://oscache.dev.java.net/servlets/SummarizeList?listName=users</archive>
             <otherArchives>
                 <otherArchive>http://forums.opensymphony.com/forum.jspa?forumID=4</otherArchive>
             </otherArchives>
