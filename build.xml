@@ -74,7 +74,7 @@
     <!-- Prepares the build directory -->
     <target name="prepare" depends="init">
         <mkdir dir="${build.java}/META-INF"/>
-        <copy file="${src}/etc/${name}.tld" tofile="${build.java}/META-INF/taglib.tld"/>
+        <copy file="${src}/etc/META-INF/${name}.tld" tofile="${build.java}/META-INF/taglib.tld"/>
     </target>
 
 
@@ -327,7 +327,7 @@
         <copy file="${build}/${name}-${version}.jar" todir="${tmp.dir}"/>
         
         <copy file="${src}/etc/oscache.properties" tofile="${tmp.dir}/etc/oscache.properties"/>
-        <copy file="${src}/etc/${name}.tld" tofile="${tmp.dir}/etc/${name}.tld"/>
+        <copy file="${src}/etc/META-INF/${name}.tld" tofile="${tmp.dir}/etc/META-INF/${name}.tld"/>
         <copy file="readme.txt" tofile="${tmp.dir}/readme.txt" failonerror="false"/>
 
         <zip zipfile="${dist}/${name}-${version}-full.zip" basedir="${tmp.dir}" includes="**"/>
