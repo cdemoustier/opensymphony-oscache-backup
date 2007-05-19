@@ -47,6 +47,7 @@ public final class TestCompleteGeneral extends TestCase {
         // Add all the tests suite of all the project classes
         TestSuite suite = new TestSuite("Test all General cache package");
         suite.addTest(TestGeneralCacheAdministrator.suite());
+        suite.addTest(TestConcurrent.suite());
 
         return suite;
     }
