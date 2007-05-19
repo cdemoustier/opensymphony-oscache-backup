@@ -571,7 +571,7 @@ public class ServletCacheAdministrator extends AbstractCacheAdministrator implem
                 try {
                     java.security.MessageDigest digest = java.security.MessageDigest.getInstance("MD5");
                     byte[] b = digest.digest(generatedKey.getBytes());
-                    cBuffer.append("_");
+                    cBuffer.append('_');
 
                     // Base64 encoding allows for unwanted slash characters.
                     cBuffer.append(toBase64(b).replace('/', '_'));
