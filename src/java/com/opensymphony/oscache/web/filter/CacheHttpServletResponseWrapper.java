@@ -72,7 +72,7 @@ public class CacheHttpServletResponseWrapper extends HttpServletResponseWrapper 
             // setting a default last modified value based on object creation and remove the millis
             if (lastModified == CacheFilter.LAST_MODIFIED_INITIAL) {
                 long current = System.currentTimeMillis();
-    			current = current - (current % 1000);
+                current = current - (current % 1000);
                 result.setLastModified(current);
                 super.setDateHeader(CacheFilter.HEADER_LAST_MODIFIED, result.getLastModified());
             }
@@ -83,7 +83,7 @@ public class CacheHttpServletResponseWrapper extends HttpServletResponseWrapper 
             }
             // setting the cache control with max-age 
             if (this.cacheControl == CacheFilter.MAX_AGE_TIME) {
-            	// set the count down
+                // set the count down
                 long maxAge = System.currentTimeMillis();
                 maxAge = maxAge - (maxAge % 1000) + time;
                 result.setMaxAge(maxAge);
@@ -91,6 +91,8 @@ public class CacheHttpServletResponseWrapper extends HttpServletResponseWrapper 
             } else if (this.cacheControl != CacheFilter.MAX_AGE_NO_INIT) {
                 result.setMaxAge(this.cacheControl);
                 super.addHeader(CacheFilter.HEADER_CACHE_CONTROL, "max-age=" + (-this.cacheControl));
+            } else if (this.cacheControl == CacheFilter.MAX_AGE_NO_INIT ) {
+                result.setMaxAge(this.cacheControl);
             }
         }
     }
