@@ -4,7 +4,7 @@
     <info organisation="opensymphony" module="oscache"
           revision="2.4.1"
           status="integration"
-          publication="20070519120000">
+          publication="20070609120000">
         <license name="Apache" url="http://www.apache.org/licenses/LICENSE-2.0.txt"/>
         <ivyauthor name="opensymphony" url="http://www.opensymphony.com/"/>
 
