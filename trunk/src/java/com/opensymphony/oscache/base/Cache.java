@@ -147,7 +147,7 @@ public class Cache implements Serializable {
      * @return the maximum number of items to cache can hold.
      */
     public int getCapacity() {
-    	return cacheMap.getMaxEntries();
+        return cacheMap.getMaxEntries();
     }
 
     /**
@@ -255,55 +255,55 @@ public class Cache implements Serializable {
         // NeedsRefreshException
         if (this.isStale(cacheEntry, refreshPeriod, cronExpiry)) {
 
-        	//Get access to the EntryUpdateState instance and increment the usage count during the potential sleep
-        	EntryUpdateState updateState = getUpdateState(key);
+            //Get access to the EntryUpdateState instance and increment the usage count during the potential sleep
+            EntryUpdateState updateState = getUpdateState(key);
             try {
-            	synchronized (updateState) {
-            		if (updateState.isAwaitingUpdate() || updateState.isCancelled()) {
-            			// No one else is currently updating this entry - grab ownership
-            			updateState.startUpdate();
-            			
-            			if (cacheEntry.isNew()) {
-            				accessEventType = CacheMapAccessEventType.MISS;
-            			} else {
-            				accessEventType = CacheMapAccessEventType.STALE_HIT;
-            			}
-            		} else if (updateState.isUpdating()) {
-            			// Another thread is already updating the cache. We block if this
-            			// is a new entry, or blocking mode is enabled. Either putInCache()
-            			// or cancelUpdate() can cause this thread to resume.
-            			if (cacheEntry.isNew() || blocking) {
-            				do {
-            					try {
-            						updateState.wait();
-            					} catch (InterruptedException e) {
-            					}
-            				} while (updateState.isUpdating());
-            				
-            				if (updateState.isCancelled()) {
-            					// The updating thread cancelled the update, let this one have a go. 
-            					// This increments the usage count for this EntryUpdateState instance
-            					updateState.startUpdate();
-            					
-            					if (cacheEntry.isNew()) {
-            						accessEventType = CacheMapAccessEventType.MISS;
-            					} else {
-            						accessEventType = CacheMapAccessEventType.STALE_HIT;
-            					}
-            				} else if (updateState.isComplete()) {
-            					reload = true;
-            				} else {
-            					log.error("Invalid update state for cache entry " + key);
-            				}
-            			}
-            		} else {
-            			reload = true;
-            		}
-            	}
+                synchronized (updateState) {
+                    if (updateState.isAwaitingUpdate() || updateState.isCancelled()) {
+                        // No one else is currently updating this entry - grab ownership
+                        updateState.startUpdate();
+                        
+                        if (cacheEntry.isNew()) {
+                            accessEventType = CacheMapAccessEventType.MISS;
+                        } else {
+                            accessEventType = CacheMapAccessEventType.STALE_HIT;
+                        }
+                    } else if (updateState.isUpdating()) {
+                        // Another thread is already updating the cache. We block if this
+                        // is a new entry, or blocking mode is enabled. Either putInCache()
+                        // or cancelUpdate() can cause this thread to resume.
+                        if (cacheEntry.isNew() || blocking) {
+                            do {
+                                try {
+                                    updateState.wait();
+                                } catch (InterruptedException e) {
+                                }
+                            } while (updateState.isUpdating());
+                            
+                            if (updateState.isCancelled()) {
+                                // The updating thread cancelled the update, let this one have a go. 
+                                // This increments the usage count for this EntryUpdateState instance
+                                updateState.startUpdate();
+                                
+                                if (cacheEntry.isNew()) {
+                                    accessEventType = CacheMapAccessEventType.MISS;
+                                } else {
+                                    accessEventType = CacheMapAccessEventType.STALE_HIT;
+                                }
+                            } else if (updateState.isComplete()) {
+                                reload = true;
+                            } else {
+                                log.error("Invalid update state for cache entry " + key);
+                            }
+                        }
+                    } else {
+                        reload = true;
+                    }
+                }
             } finally {
-            	//Make sure we release the usage count for this EntryUpdateState since we don't use it anymore. If the current thread started the update, then the counter was
-            	//increased by one in startUpdate()
-            	releaseUpdateState(updateState, key);
+                //Make sure we release the usage count for this EntryUpdateState since we don't use it anymore. If the current thread started the update, then the counter was
+                //increased by one in startUpdate()
+                releaseUpdateState(updateState, key);
             }
         }
 
@@ -407,15 +407,15 @@ public class Cache implements Serializable {
 
                 if (state != null) {
                     synchronized (state) {
-                    	int usageCounter = state.cancelUpdate();
+                        int usageCounter = state.cancelUpdate();
                         state.notify();
                         
                         checkEntryStateUpdateUsage(key, state, usageCounter);
                     }
                 } else {
-        			if (log.isErrorEnabled()) {
-        				log.error("internal error: expected to get a state from key [" + key + "]");
-        			}
+                    if (log.isErrorEnabled()) {
+                        log.error("internal error: expected to get a state from key [" + key + "]");
+                    }
                 }
             }
         }
@@ -426,24 +426,24 @@ public class Cache implements Serializable {
      * 
      * Warning: This method should always be called while holding both the updateStates field and the state parameter
      * @throws Exception
-	 */
-	private void checkEntryStateUpdateUsage(String key, EntryUpdateState state, int usageCounter) {
-		//Clean up the updateStates map to avoid a memory leak once no thread is using this EntryUpdateState instance anymore.
-		if (usageCounter ==0) {
-			EntryUpdateState removedState = (EntryUpdateState) updateStates.remove(key);
-			if (state != removedState) {
-				if (log.isErrorEnabled()) {
-					try {
-						throw new Exception("OSCache: internal error: removed state [" + removedState + "] from key [" + key + "] whereas we expected [" + state + "]");
-					} catch (Exception e) {
+     */
+    private void checkEntryStateUpdateUsage(String key, EntryUpdateState state, int usageCounter) {
+        //Clean up the updateStates map to avoid a memory leak once no thread is using this EntryUpdateState instance anymore.
+        if (usageCounter == 0) {
+            EntryUpdateState removedState = (EntryUpdateState) updateStates.remove(key);
+            if (state != removedState) {
+                if (log.isErrorEnabled()) {
+                    try {
+                        throw new Exception("OSCache: internal error: removed state [" + removedState + "] from key [" + key + "] whereas we expected [" + state + "]");
+                    } catch (Exception e) {
                         log.error(e);
-					}
-				}
-			}
-		}
-	}
+                    }
+                }
+            }
+        }
+    }
 
-	/**
+    /**
      * Flush all entries in the cache on the given date/time.
      *
      * @param date The date at which all cache entries will be flushed.
@@ -751,8 +751,8 @@ public class Cache implements Serializable {
                 updateState = new EntryUpdateState();
                 updateStates.put(key, updateState);
             } else {
-            	//Otherwise indicate that we start using it to prevent its removal until all threads are done with it.
-            	updateState.incrementUsageCounter();
+                //Otherwise indicate that we start using it to prevent its removal until all threads are done with it.
+                updateState.incrementUsageCounter();
             }
         }
 
@@ -766,9 +766,9 @@ public class Cache implements Serializable {
      */
     protected void releaseUpdateState(EntryUpdateState state, String key) {
         synchronized (updateStates) {
-        	int usageCounter = state.decrementUsageCounter();
-        	checkEntryStateUpdateUsage(key, state, usageCounter);
-        }    	
+            int usageCounter = state.decrementUsageCounter();
+            checkEntryStateUpdateUsage(key, state, usageCounter);
+        }       
     }
     
     /**
@@ -797,12 +797,12 @@ public class Cache implements Serializable {
                     int usageCounter = state.completeUpdate();
                     state.notifyAll();
                     
-                	checkEntryStateUpdateUsage(key, state, usageCounter);
+                    checkEntryStateUpdateUsage(key, state, usageCounter);
 
                 }
             } else {
-            	//If putInCache() was called directly (i.e. not as a result of a NeedRefreshException) then no EntryUpdateState would be found. 
-           	}
+                //If putInCache() was called directly (i.e. not as a result of a NeedRefreshException) then no EntryUpdateState would be found. 
+            }
         }
     }
 
@@ -949,7 +949,7 @@ public class Cache implements Serializable {
         // Process the listeners last to first, notifying
         // those that are interested in this event
         for (int i = listeners.length - 2; i >= 0; i -= 2) {
-            if (listeners[i] instanceof CacheEntryEventListener) {
+            if (listeners[i+1] instanceof CacheEntryEventListener) {
                 if (eventType.equals(CachewideEventType.CACHE_FLUSHED)) {
                     CacheEntryEventListener listener = (CacheEntryEventListener) listeners[i+1];
                     listener.cacheFlushed(event);
@@ -986,19 +986,19 @@ public class Cache implements Serializable {
     /**
      * @return the total number of cache entries held in this cache. 
      */
-	public int getSize() {
-		synchronized(cacheMap) {
-			return cacheMap.size();
-		}
-	}
+    public int getSize() {
+        synchronized(cacheMap) {
+            return cacheMap.size();
+        }
+    }
 
     /**
      * Test support only: return the number of EntryUpdateState instances within the updateStates map. 
      */
     protected int getNbUpdateState() {
-    	synchronized(updateStates) {
-    		return updateStates.size();
-    	}
+        synchronized(updateStates) {
+            return updateStates.size();
+        }
     }
     
     
@@ -1006,9 +1006,9 @@ public class Cache implements Serializable {
      * Test support only: return the number of entries currently in the cache map
      * @deprecated use getSize() 
      */
-	public int getNbEntries() {
-		synchronized(cacheMap) {
-			return cacheMap.size();
-		}
-	}
+    public int getNbEntries() {
+        synchronized(cacheMap) {
+            return cacheMap.size();
+        }
+    }
 }
