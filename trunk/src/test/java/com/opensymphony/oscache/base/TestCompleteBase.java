@@ -54,6 +54,7 @@ public final class TestCompleteBase extends TestCase {
         suite.addTest(TestCacheEntry.suite());
         suite.addTest(TestCache.suite());
         suite.addTest(TestConcurrency.suite());
+        suite.addTest(TestConcurrency2.suite());
         suite.addTest(TestCompleteAlgorithm.suite());
         suite.addTest(TestCompleteEvents.suite());
 
