@@ -11,6 +11,9 @@
                 <ivy pattern="http://ivyrep.opensymphony.com/[organisation]/[module]/ivy-[revision].xml"/>
                 <artifact pattern="http://ivyrep.opensymphony.com/[organisation]/[module]/[artifact]-[revision].[type]"/>
             </url>
+            <url name="maven2.opensymphony">
+                <artifact pattern="http://maven2.opensymphony.com/[organisation]/[module]/[revision]/[module]-[revision].[type]"/>
+            </url>
             <url name="contegix">
                 <ivy pattern="http://repository.contegix.com/ivyrep/[organisation]/[module]/ivy-[revision].xml"/>
                 <artifact pattern="http://repository.contegix.com/ivyrep/[organisation]/[module]/[artifact]-[revision].[type]"/>

@@ -4,7 +4,7 @@
     <info organisation="opensymphony" module="oscache"
           revision="2.4.1"
           status="integration"
-          publication="20070701120000">
+          publication="20070706120000">
         <license name="Apache" url="http://www.apache.org/licenses/LICENSE-2.0.txt"/>
         <ivyauthor name="opensymphony" url="http://www.opensymphony.com/"/>
 
@@ -36,7 +36,7 @@
         <dependency org="httpunit" name="httpunit" rev="1.6" conf="build->*"/>
         <dependency org="com/clarkware" name="junitperf" rev="1.9.1" conf="build->*"/>
         <dependency org="org.hibernate" name="hibernate3" rev="3.2.3" conf="build->*" />
-        <dependency org="net.sourceforge.groboutils" name="groboutils" rev="5.0" conf="build->*" />
+        <dependency org="net/sourceforge/groboutils" name="groboutils-core" rev="5" conf="build->*" />
         <!--
         <dependency org="backport-util-concurrent" name="backport-util-concurrent" rev="3.0" conf="build->*" />
          -->
