@@ -1,0 +1,127 @@
+<html>
+    <head>
+        <title>OSCache - 
+        Chain Caching Model
+         </title>
+	    <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body>
+	    <table class="pagecontent" border="0" cellpadding="0" cellspacing="0" width="100%" bgcolor="#ffffff">
+		    <tr>
+			    <td valign="top" class="pagebody">
+				    <h2><a name="ChainCachingModel-Discussion"></a>Discussion</h2>
+
+<p><ins>Lars wrote:</ins><br/>
+Would it be possible to use the intercepting filter pattern to support all possible cache models with a lot of combination capabilities? It's possible to define the capacity for each cache etc.</p>
+
+<p>DiskPersistence, SoftReferenceCache etc. would implement the Command interface of Commons Chain or a new interface of OSCache.</p>
+
+<p><a href="http://jakarta.apache.org/commons/chain/" title="Visit page outside Confluence">http://jakarta.apache.org/commons/chain/</a><br/>
+<a href="http://java.sun.com/blueprints/corej2eepatterns/Patterns/InterceptingFilter.html" title="Visit page outside Confluence">http://java.sun.com/blueprints/corej2eepatterns/Patterns/InterceptingFilter.html</a></p>
+
+<p><ins>Andres wrote:</ins><br/>
+I think that is a good idea but it may be overkill for the most use cases.  Also, not every cache interceptor could have all the capabilities.  In particular, how would you imagine a realistic use case for a cache.get() call.  Should multiple interceptors return values?</p>
+
+<p>I think disk persistence is still in, although I don't think it will be like it is now.  We will be accepting Object keys, so any cache impl will need to accept them.  I have been thinking about a lightweight object db that has persistence built-in but I'm not sure.</p>
+
+<p>This is definitely an interesting topic and I'd like to discuss it more.<br/>
+Now is the time to make these sort of decisions.</p>
+
+<p><ins>Lars wrote:</ins><br/>
+The cache interceptors are cascaded. If the first interceptor doesn't return a value then the 2nd interceptor will be requested.</p>
+
+<p><ins>Andres wrote:</ins><br/>
+The scenarios below basically describe a more flexible implementation of the 2 cache (memory and disk) architecture in place.&nbsp; There is no doubt that a chained design can be better.&nbsp; I would be mindful of the abuse that can occur with a inifinitely flexible system.&nbsp; I prefer though to allow people to shoot themselves in the foot but make it extremely easy not to do so by providing very simple out of the box implementations.&nbsp; I have attached a <a href="http://wiki.opensymphony.com/download/attachments/7147/cache+sequences.pdf?version=1" title="cache sequences.pdf attached to Chain Caching Model">simple sequence diagram</a>.&nbsp; I think further documenting the scenarios you have below as well as all the other use cases we intend to provide is the best course of action at this point.&nbsp; All the old code has been torn out.&nbsp; We are at the point where we should be conscious of the new design that we allow to take shape.</p>
+
+<p><ins>Lars wrote:</ins><br/>
+The interface needed for the Cache Link (which you describe in a <a href="http://wiki.opensymphony.com/download/attachments/7147/cache+sequences.pdf?version=1" title="cache sequences.pdf attached to Chain Caching Model">simple sequence diagram</a>) is exactly the same interface as the EvictionAlgorithm. The Cache Chain has to handle in which Cache Link a cache content should be. Furthermore the Cache Chain has to put an evicted cache content from the memory cache to the disk cache.</p>
+
+<p>1.) How do you want to synchronize the access to the same cache content? In OSCache 2 this is done by the EntryUpdateState based on the key.<br/>
+2.) Should the Cache Chain contain all the cache keys without knowing in which Cache Link the content is? Or should each Cache Link contain it's own cache keys?</p>
+
+<p>Some other points:<br/>
+3.) Please update the java doc of EvictionAlgorithm, because some parameters are wrong.<br/>
+4.) currently you synchronize the cache events, I think there maybe a performance loss, because in my environments a lot of events are fired</p>
+
+<p>I added a <a href="http://wiki.opensymphony.com/download/attachments/7147/CacheChainModel_v1.pdf?version=1" title="CacheChainModel_v1.pdf attached to Chain Caching Model">simple class diagramm</a> and saved the diagramm in the <a href="http://wiki.opensymphony.com/download/attachments/7147/oscache.fpr.gz?version=4" title="oscache.fpr.gz attached to Chain Caching Model">Fujaba format</a>.</p>
+
+<p><ins>Andres wrote:</ins></p>
+
+<p>The cache chain should have no knowledge of what is in any of the cache links.  However, the issue of eviction is clear.  When a put() is called, the link should return an evicted entry or null if the cache is not full.  The chain will then know if it needs to continue the put into the next link.  To clarify the interfaces, I think a Chain interface should extend Map.  The Link and EvictionAlgorithm should themselves be interfaces.  Link could have implementations such as memory, disk, database.  EvictionAlgorithm could have implementations such as LRU, FIFO, etc....</p>
+
+<p>1.) In my branch, I have synchronized the entire cache on each cache access.  I think this will still be fast enough and will surely be more stable.  basically, get, put, and remove are sync'd.  I do not think we need to achieve a highly concurrent cache in order to provide a solution that is hundreds of times faster than db or disk access.</p>
+
+<p>However, we could add functionality the improves performance but does not cause deadlocks, such as a write behind feature on puts, so that puts get queued and another thread does the work when it has time. </p>
+
+<p>2.) I don't think this would be wise.  I don't think the chain should have knowledge of the keys.  I think all it should have is references to the links and stateless logic.  Either way each link would need to keep its own keys, therefore putting them in the chain would add another map that would have to be accessed and slow performance.</p>
+
+<p>There are 3 places I believe the keys must exist: in the store (duh), in the algorithm (or we could generalize this as any metrics collector), and in the groups map.</p>
+
+<p>Group functionality is a similar issue.  I had wanted to drop this functionality but it seems the people that use cache tags (I never have yet) really depend on them.  This functionality is unique to OSCache as far as I am aware.<br/>
+Maintaining the groups in each link could kill performance.  I think we need a GroupManager that exists outside of the cache links and is referenced from the chain.  This way it is only called once per chain.  One disadvantage would be that when a group is removed each remove would have to be called on each link until it found the correct store. </p>
+
+<p>3./4.) Yeah, that is sort of borrowed code and is not necessary.  However, we need to be mindful of the access to the listener list.  The easiest way is to probably make the list implementation a SynchronizedArrayList or something.</p>
+
+<p>The way I am thinking the current code in my branch could be moved over to a chain model is:</p>
+<ol>
+	<li>most of the BaseCache code gets put into the chain minus the algorithm and group map code.</li>
+	<li>the MemoryCache gets turned into one of the link implementations and gets the algorithm reference</li>
+	<li>the group map code gets refactored into a GroupManager and called from the chain.</li>
+</ol>
+
+
+<p><ins>Lars wrote:</ins><br/>
+I think the implementations of the CacheChain interface could be a SimplePipeCacheChain and a SizeBasedCacheChain. The SimplePipeCacheChain is comparable to the current architectur. The SizeBasesCacheChain puts the cache objects to the different CacheLinks based on the cache content sizes, e.g. large images a stored to disk and not in memory.</p>
+
+<p><img src="Chain Caching Model_attachments/CacheChainModel_v3.jpg" align="absmiddle" border="0" /></p>
+
+<p>The default CacheChain should be the SimplePipeCacheChain. The SizeBasedCacheChain can be implemented as part of a 3.1 release.</p>
+
+<h2><a name="ChainCachingModel-Scenariostobecheckedandtested"></a>Scenarios to be checked and tested</h2>
+
+<p>Configuration with a LRU algorithm: (1) MemoryCache &#45;<del>&gt; (2) SoftRefCache &#45;</del>&gt; (3) DiskPersistCache</p>
+
+<h3><a name="ChainCachingModel-ScenarioA%3AGetforaobjectinSoftRefCache"></a>Scenario A: Get for a object in SoftRefCache</h3>
+
+<ol>
+	<li>the cache object x1 is in the SoftRefCache</li>
+	<li>the 1st getEntry will return null for the MemoryCache</li>
+	<li>the 2nd getEntry will find the cache object x1 in SoftRefCache</li>
+	<li>cache object x1 has to be removed from the SoftRefCache and has to put into the 1st cache (or maybe in the previous cache &lt;&#45; design decission).</li>
+	<li>the cache object x1 will edge out the cache object xi (LRU) from the MemoryCache and the cache object xi has to me removed from the MemoryCache and to put in the next cache (SoftRefCache).</li>
+</ol>
+
+
+<h3><a name="ChainCachingModel-ScenarioB%3AGetforaobjectinDiskPersistCache"></a>Scenario B: Get for a object in DiskPersistCache</h3>
+
+<ol>
+	<li>the cache object x2 is in the DiskPersistCache</li>
+	<li>the 1st getEntry will return null for the MemoryCache</li>
+	<li>the 2nd getEntry will return null for the SoftRefCache</li>
+	<li>the 3rd getEntry will find the cache object x2 in DiskPersistCache</li>
+	<li>cache object x2 has to be removed from the DiskPersistCache and has to put into the 1st cache. The cache object x2 will edge out xj in MemoryCache, which has to be put in SoftRefCache. Hence xj will edge out xk in SoftRefCache, which has to be put in DiskPersistCache</li>
+</ol>
+
+
+<h3><a name="ChainCachingModel-ScenarioC%3APutanewobject"></a>Scenario C: Put a new object</h3>
+
+<ol>
+	<li>the new cache object x3 should be put into the cache</li>
+	<li>the cache object x3 will be edge out a cache object xa from MemoryCache</li>
+	<li>xa has to be put into SoftRefCache, where xa will edge out xb</li>
+	<li>xb has to be put in DiskPersistCache, where xb will edge out xc</li>
+	<li>until DiskPersistCache is not unlimited the xc cache object has to be removed from cache. Hence the cache key for xc has to be removed from the map.</li>
+</ol>
+
+
+<h3><a name="ChainCachingModel-ScenarioD%3APutastaleobjectorgetastaleobject"></a>Scenario D: Put a stale object or get a stale object</h3>
+
+<p><b>TODO</b></p>
+
+                    			    </td>
+		    </tr>
+	    </table>
+    </body>
+</html>

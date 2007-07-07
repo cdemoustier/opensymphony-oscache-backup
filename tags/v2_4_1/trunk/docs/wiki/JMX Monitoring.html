@@ -1,0 +1,68 @@
+<html>
+    <head>
+        <title>OSCache - 
+         Monitoring
+        </title>
+	    <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body>
+	    <table class="pagecontent" border="0" cellpadding="0" cellspacing="0" width="100%" bgcolor="#ffffff">
+		    <tr>
+			    <td valign="top" class="pagebody">
+				    <p>New in OSCache 2.4 is support for JMX monitoring and administration via the <a href="http://www.springframework.org" title="Visit page outside Confluence">Spring Framework</a>.</p>
+
+<p>In oscache.properties, enable the statistic listener:</p>
+
+<div class="preformatted"><div class="preformattedContent">
+<pre>cache.event.listeners= com.opensymphony.oscache.extra.StatisticListenerImpl
+</pre>
+</div></div>
+
+<p>Then add this to the Spring application context</p>
+
+<div class="code"><div class="codeContent">
+<pre class="code-xml">&lt;!-- create mbeanserver, this doesn't need to be done if running on an Appserver with 
+it's own JMX server, such as Tomcat --&gt;
+<span class="code-tag">&lt;bean id=<span class="code-quote">"mbeanServer"</span> class=<span class="code-quote">"org.springframework.jmx.support.MBeanServerFactoryBean"</span>/&gt;</span>
+
+<span class="code-tag"><span class="code-comment">&lt;!-- create a connector on port 1109 --&gt;</span></span>
+&lt;bean id=<span class="code-quote">"registry"</span>
+	class=<span class="code-quote">"org.springframework.remoting.rmi.RmiRegistryFactoryBean"</span>&gt;
+	<span class="code-tag">&lt;property name=<span class="code-quote">"port"</span>&gt;</span>
+		<span class="code-tag">&lt;value&gt;</span>1109<span class="code-tag">&lt;/value&gt;</span>
+	<span class="code-tag">&lt;/property&gt;</span>
+<span class="code-tag">&lt;/bean&gt;</span>
+
+&lt;bean id=<span class="code-quote">"serverConnector"</span> depends-on=<span class="code-quote">"registry"</span>
+	class=<span class="code-quote">"org.springframework.jmx.support.ConnectorServerFactoryBean"</span>&gt;
+	<span class="code-tag">&lt;property name=<span class="code-quote">"objectName"</span>&gt;</span>
+		<span class="code-tag">&lt;value&gt;</span>connector:name=rmi<span class="code-tag">&lt;/value&gt;</span>
+	<span class="code-tag">&lt;/property&gt;</span>
+	<span class="code-tag">&lt;property name=<span class="code-quote">"serviceUrl"</span>&gt;</span>
+		<span class="code-tag">&lt;value&gt;</span>service:jmx:rmi://localhost/jndi/rmi://localhost:1109/jmxconnector<span class="code-tag">&lt;/value&gt;</span>
+	<span class="code-tag">&lt;/property&gt;</span>			
+<span class="code-tag">&lt;/bean&gt;</span>  
+
+<span class="code-tag"><span class="code-comment">&lt;!-- export the oscache stats beans --&gt;</span></span>
+&lt;bean id=<span class="code-quote">"exporter"</span>
+      class=<span class="code-quote">"org.springframework.jmx.export.MBeanExporter"</span>&gt;
+	<span class="code-tag">&lt;property name=<span class="code-quote">"beans"</span>&gt;</span>
+		<span class="code-tag">&lt;map&gt;</span>   
+                <span class="code-tag">&lt;entry key=<span class="code-quote">"bean:name=StatisticListenerImpl"</span>&gt;</span>
+				<span class="code-tag">&lt;value&gt;</span>StatisticListenerImpl<span class="code-tag">&lt;/value&gt;</span>
+		<span class="code-tag">&lt;/entry&gt;</span>	                
+		<span class="code-tag">&lt;/map&gt;</span>
+	<span class="code-tag">&lt;/property&gt;</span>
+<span class="code-tag">&lt;/bean&gt;</span>
+
+<span class="code-tag"><span class="code-comment">&lt;!-- oscache stats bean --&gt;</span></span>
+<span class="code-tag">&lt;bean id=<span class="code-quote">"StatisticListenerImpl"</span> class=<span class="code-quote">"com.opensymphony.oscache.extra.StatisticListenerImpl"</span>/&gt;</span></pre>
+</div></div>
+
+                    			    </td>
+		    </tr>
+	    </table>
+    </body>
+</html>

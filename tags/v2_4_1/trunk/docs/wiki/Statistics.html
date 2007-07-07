@@ -1,0 +1,249 @@
+<html>
+    <head>
+        <title>OSCache - 
+        Statistics
+         </title>
+	    <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body>
+	    <table class="pagecontent" border="0" cellpadding="0" cellspacing="0" width="100%" bgcolor="#ffffff">
+		    <tr>
+			    <td valign="top" class="pagebody">
+				    <h3><a name="Statistics-Description"></a>Description</h3>
+
+<p>With the <a href="http://www.opensymphony.com/oscache/api/com/opensymphony/oscache/base/events/package-summary.html" title="Visit page outside Confluence">cache event handlers</a> a listerner can be implemented to provide cache hits and misses information. You can copy and paste the following code to get a statistic of your OSCache integration. Just change the used logger and the sample helps you to improve the cache key creation and to decide which scope to use. The <em>SimpleStatisticListenerImpl</em> should be <a href="Configuration.html" title="Configuration">configured</a> via the <em>cache.event.listeners</em> in the <em>oscache.properties</em>.</p>
+
+<h3><a name="Statistics-SampleCode"></a>Sample Code</h3>
+
+<div class="code" style="border-style: solid; "><div class="codeHeader" style="border-bottom-style: solid; "><b>SimpleStatisticListenerImpl.java</b></div><div class="codeContent">
+<pre class="code-java">/*
+ * Copyright (c) 2002-2007 by OpenSymphony
+ * All rights reserved.
+ */
+<span class="code-keyword">package</span> com.opensymphony.oscache.extra;
+
+<span class="code-keyword">import</span> org.apache.commons.logging.Log;
+<span class="code-keyword">import</span> org.apache.commons.logging.LogFactory;
+
+<span class="code-keyword">import</span> com.opensymphony.oscache.base.Cache;
+<span class="code-keyword">import</span> com.opensymphony.oscache.base.events.*;
+
+/**
+ * A simple implementation of a statistic reporter which uses the
+ * CacheMapAccessEventListener, CacheEntryEventListener and ScopeEventListener.
+ * It uses the events to count the cache hit and misses and of course the
+ * flushes.
+ * &lt;p&gt;
+ * We are not using any <span class="code-keyword">synchronized</span> so that <span class="code-keyword">this</span> does not become a bottleneck.
+ * The consequence is that on retrieving values, the operations that are
+ * currently being done won't be counted.
+ */
+<span class="code-keyword">public</span> class SimpleStatisticListenerImpl <span class="code-keyword">implements</span> CacheMapAccessEventListener, CacheEntryEventListener, ScopeEventListener {
+
+    <span class="code-keyword">private</span> <span class="code-keyword">static</span> <span class="code-keyword">transient</span> <span class="code-keyword">final</span> Log log = LogFactory.getLog(SimpleStatisticListenerImpl.class);
+
+    /**
+     * Hit counter
+     */
+    <span class="code-keyword">private</span> <span class="code-object">int</span> hitCount = 0;
+
+    /**
+     * Miss counter
+     */
+    <span class="code-keyword">private</span> <span class="code-object">int</span> missCount = 0;
+
+    /**
+     * Stale hit counter
+     */
+    <span class="code-keyword">private</span> <span class="code-object">int</span> staleHitCount = 0;
+
+    /**
+     * Hit counter sum
+     */
+    <span class="code-keyword">private</span> <span class="code-object">int</span> hitCountSum = 0;
+
+    /**
+     * Miss counter sum
+     */
+    <span class="code-keyword">private</span> <span class="code-object">int</span> missCountSum = 0;
+
+    /**
+     * Stale hit counter
+     */
+    <span class="code-keyword">private</span> <span class="code-object">int</span> staleHitCountSum = 0;
+
+    /**
+     * Flush hit counter
+     */
+    <span class="code-keyword">private</span> <span class="code-object">int</span> flushCount = 0;
+
+    /**
+     * Constructor, empty <span class="code-keyword">for</span> us
+     */
+    <span class="code-keyword">public</span> SimpleStatisticListenerImpl() {
+        log.info(<span class="code-quote">"Creation of SimpleStatisticListenerImpl"</span>);
+    }
+
+    /**
+     * This method handles an event each time the cache is accessed
+     * 
+     * @param event The event triggered when the cache was accessed
+     * @see com.opensymphony.oscache.base.events.CacheMapAccessEventListener#accessed(CacheMapAccessEvent)
+     */
+    <span class="code-keyword">public</span> void accessed(CacheMapAccessEvent event) {
+        <span class="code-object">String</span> result = <span class="code-quote">"N/A"</span>;
+
+        <span class="code-comment">// Retrieve the event type and update the counters
+</span>        CacheMapAccessEventType type = event.getEventType();
+
+        <span class="code-comment">// Handles a hit event
+</span>        <span class="code-keyword">if</span> (type == CacheMapAccessEventType.HIT) {
+            hitCount++;
+            result = <span class="code-quote">"HIT"</span>;
+        }
+        <span class="code-comment">// Handles a stale hit event
+</span>        <span class="code-keyword">else</span> <span class="code-keyword">if</span> (type == CacheMapAccessEventType.STALE_HIT) {
+            staleHitCount++;
+            result = <span class="code-quote">"STALE HIT"</span>;
+        }
+        <span class="code-comment">// Handles a miss event
+</span>        <span class="code-keyword">else</span> <span class="code-keyword">if</span> (type == CacheMapAccessEventType.MISS) {
+            missCount++;
+            result = <span class="code-quote">"MISS"</span>;
+        }
+
+        <span class="code-keyword">if</span> (log.isDebugEnabled()) {
+            log.debug(<span class="code-quote">"ACCESS : "</span> + result + <span class="code-quote">": "</span> + event.getCacheEntryKey());
+            log.debug(<span class="code-quote">"STATISTIC : Hit = "</span> + hitCount + <span class="code-quote">", stale hit ="</span>
+                    + staleHitCount + <span class="code-quote">", miss = "</span> + missCount);
+        }
+    }
+    
+    /**
+     * Logs the flush of the cache.
+     * 
+     * @param info the string to be logged.
+     */
+    <span class="code-keyword">private</span> void flushed(<span class="code-object">String</span> info) {
+        flushCount++;
+
+        hitCountSum += hitCount;
+        staleHitCountSum += staleHitCount;
+        missCountSum += missCount;
+
+        <span class="code-keyword">if</span> (log.isInfoEnabled()) {
+            log.info(<span class="code-quote">"FLUSH : "</span> + info);
+            log.info(<span class="code-quote">"STATISTIC SUM : "</span> + <span class="code-quote">"Hit = "</span> + hitCountSum
+                    + <span class="code-quote">", stale hit = "</span> + staleHitCountSum + <span class="code-quote">", miss = "</span>
+                    + missCountSum + <span class="code-quote">", flush = "</span> + flushCount);
+        }
+
+        hitCount = 0;
+        staleHitCount = 0;
+        missCount = 0;
+    }
+
+    /**
+     * Event fired when a specific or all scopes are flushed.
+     * 
+     * @param event ScopeEvent
+     * @see com.opensymphony.oscache.base.events.ScopeEventListener#scopeFlushed(ScopeEvent)
+     */
+    <span class="code-keyword">public</span> void scopeFlushed(ScopeEvent event) {
+        flushed(<span class="code-quote">"scope "</span> + ScopeEventListenerImpl.SCOPE_NAMES[event.getScope()]);
+    }
+
+    /**
+     * Event fired when an entry is added to the cache.
+     * 
+     * @param event CacheEntryEvent
+     * @see com.opensymphony.oscache.base.events.CacheEntryEventListener#cacheEntryAdded(CacheEntryEvent)
+     */
+    <span class="code-keyword">public</span> void cacheEntryAdded(CacheEntryEvent event) {
+        <span class="code-comment">// <span class="code-keyword">do</span> nothing
+</span>    }
+
+    /**
+     * Event fired when an entry is flushed from the cache.
+     * 
+     * @param event CacheEntryEvent
+     * @see com.opensymphony.oscache.base.events.CacheEntryEventListener#cacheEntryFlushed(CacheEntryEvent)
+     */
+    <span class="code-keyword">public</span> void cacheEntryFlushed(CacheEntryEvent event) {
+        <span class="code-comment">// <span class="code-keyword">do</span> nothing, because a group or other flush is coming
+</span>        <span class="code-keyword">if</span> (!Cache.NESTED_EVENT.equals(event.getOrigin())) {
+            flushed(<span class="code-quote">"entry "</span> + event.getKey() + <span class="code-quote">" / "</span> + event.getOrigin());
+        }
+    }
+
+    /**
+     * Event fired when an entry is removed from the cache.
+     * 
+     * @param event CacheEntryEvent
+     * @see com.opensymphony.oscache.base.events.CacheEntryEventListener#cacheEntryRemoved(CacheEntryEvent)
+     */
+    <span class="code-keyword">public</span> void cacheEntryRemoved(CacheEntryEvent event) {
+        <span class="code-comment">// <span class="code-keyword">do</span> nothing
+</span>    }
+
+    /**
+     * Event fired when an entry is updated in the cache.
+     * 
+     * @param event CacheEntryEvent
+     * @see com.opensymphony.oscache.base.events.CacheEntryEventListener#cacheEntryUpdated(CacheEntryEvent)
+     */
+    <span class="code-keyword">public</span> void cacheEntryUpdated(CacheEntryEvent event) {
+        <span class="code-comment">// <span class="code-keyword">do</span> nothing
+</span>    }
+
+    /**
+     * Event fired when a group is flushed from the cache.
+     * 
+     * @param event CacheGroupEvent
+     * @see com.opensymphony.oscache.base.events.CacheEntryEventListener#cacheGroupFlushed(CacheGroupEvent)
+     */
+    <span class="code-keyword">public</span> void cacheGroupFlushed(CacheGroupEvent event) {
+        flushed(<span class="code-quote">"group "</span> + event.getGroup());
+    }
+
+    /**
+     * Event fired when a key pattern is flushed from the cache.
+     * 
+     * @param event CachePatternEvent
+     * @see com.opensymphony.oscache.base.events.CacheEntryEventListener#cachePatternFlushed(CachePatternEvent)
+     */
+    <span class="code-keyword">public</span> void cachePatternFlushed(CachePatternEvent event) {
+        flushed(<span class="code-quote">"pattern "</span> + event.getPattern());
+    }
+
+    /**
+     * An event that is fired when an entire cache gets flushed.
+     * 
+     * @param event CachewideEvent
+     * @see com.opensymphony.oscache.base.events.CacheEntryEventListener#cacheFlushed(CachewideEvent)
+     */
+    <span class="code-keyword">public</span> void cacheFlushed(CachewideEvent event) {
+        flushed(<span class="code-quote">"wide "</span> + event.getDate());
+    }
+
+    /**
+     * Return the counters in a string form
+     *
+     * @<span class="code-keyword">return</span> <span class="code-object">String</span>
+     */
+    <span class="code-keyword">public</span> <span class="code-object">String</span> toString() {
+        <span class="code-keyword">return</span> <span class="code-quote">"SimpleStatisticListenerImpl: Hit = "</span> + hitCount + <span class="code-quote">" / "</span> + hitCountSum
+                + <span class="code-quote">", stale hit = "</span> + staleHitCount + <span class="code-quote">" / "</span> + staleHitCountSum
+                + <span class="code-quote">", miss = "</span> + missCount + <span class="code-quote">" / "</span> + missCountSum
+                + <span class="code-quote">", flush = "</span> + flushCount;
+    }
+}</pre>
+</div></div> 
+
+                    			    </td>
+		    </tr>
+	    </table>
+    </body>
+</html>

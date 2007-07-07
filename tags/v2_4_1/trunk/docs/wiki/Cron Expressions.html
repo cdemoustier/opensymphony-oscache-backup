@@ -1,0 +1,85 @@
+<html>
+    <head>
+        <title>OSCache - 
+         Expressions
+        </title>
+	    <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body>
+	    <table class="pagecontent" border="0" cellpadding="0" cellspacing="0" width="100%" bgcolor="#ffffff">
+		    <tr>
+			    <td valign="top" class="pagebody">
+				    <p>Prior to version 2.0 of <b>OSCache</b>, content expiry could only be specified in terms of how long a piece of content had been in the cache, ie, it was based on the age of the content. If you needed to expire it at a particular time of day or on a specific date, you had to write a custom RefreshPolicy class.</p>
+
+<p><b>OSCache 2.0</b> now gives you the ability to expire content at specific dates and/or times based on a cron expression.</p>
+
+<h3><a name="CronExpressions-WhatisaCronExpression%3F"></a>What is a Cron Expression?</h3>
+
+<p>Many of you are probably already familiar with the unix cron program. For those that aren't, cron is a daemon process that allows users to execute commands or scripts automatically at user-configurable dates and times. The important part as far as OSCache is concerned is the cron expression syntax that allows users to dictate when commands should be executed - you can now use the same syntax to expire content in OSCache! A cron expression is a simple text string that specifies particular dates and/or times that are matched against.</p>
+
+<h3><a name="CronExpressions-HowDoesOSCacheMatchAgainstanExpression%3F"></a>How Does OSCache Match Against an Expression?</h3>
+
+<p><b>OSCache</b> uses cron expressions in a manner that might seem 'backwards' to what you might initially expect. When using a cron expression to test if a cache entry is stale, OSCache finds the date and time (prior to the current time) that most recently matches the supplied expression. This date/time is used as the expiry time - entries that were placed in the cache prior to this expiry time are considered stale and result in a NeedsRefreshException being thrown.</p>
+
+<p>As an example, suppose you specify a cron expiry that matches every hour, on the hour ("0 * * * *"). If the current time is 10:42pm, then any content that was placed in the cache prior to 10:00pm would be considered stale.</p>
+
+<h3><a name="CronExpressions-WhatistheDifferenceBetweentheRefreshPeriodandaCronExpression%3F"></a>What is the Difference Between the Refresh Period and a Cron Expression?</h3>
+
+<p>The difference between the refresh period and a cron expression is that the refresh period specifies the maximum allowable age of a cache entry, whilst a cron expression specifies specific expiry times, regardless of how old an entry is. Eg imagine caching an object at 10:29am. With a refresh period of 30 minutes that entry would expire at 10:59am. With a cron expression of "0,30 * * * *" that entry would expire at 10:30am.</p>
+
+<h3><a name="CronExpressions-TheCronExpressionSyntax"></a>The Cron Expression Syntax</h3>
+
+<p>A cron expression consists of the following 5 fields:</p>
+
+<ul>
+	<li><b>Minute</b> - specifies what minute of the hour to expire content on. It is a number between 0 and 59.</li>
+	<li><b>Hour</b> - determines what hour of the day content will expire on. It is specified using the 24-hour clock, so the values must be between 0 (midnight) and 23 (11pm).</li>
+	<li><b>DOM</b> - the Day of the Month. This is a number from 1 to 31. It indicates what day the content should expire on. For example, to expire content on the 10th of every month, set this field to 10.</li>
+	<li><b>Month</b> - month of the year to expire the content. This can be specified either numerically (1 through 12), or by using the actual month name (eg 'January'). Month names are case-insensitive and only the first three characters are taken into account - the rest are ignored.</li>
+	<li><b>DOW</b> - The Day of the Week that the content should be expired on. This can be a numeric value (0-6, where 0 = Sunday, 1 = Monday, ..., 6 = Saturday), or you can use the actual day name. As is the case with month names, DOW names are case-insensitive and only the first three characters matter.</li>
+</ul>
+
+
+<p>If you don't want to specify a value for a particular field (ie you want the cron expression to match all values for that field), just use a * character for the field value.</p>
+
+<p>As an example, an expression that expired content at 11:45pm each day during April would look like this: "45 23 * April *".</p>
+
+<p><b>OSCache</b> also allows you to optionally specify lists, ranges and intervals (or even a combination of all three) within each field:</p>
+
+<ul>
+	<li><b>Lists</b> - items in a list are delimited using the ',' character. Content expiry times will be matched against all values in the list for that field. For example, "0,15,30,45 * * * *" will expire content every quarter-hour on the quarter hour.</li>
+	<li><b>Ranges</b> - ranges are specified using the '-' character. A range will include all values from the start to the end value (inclusive). For example, "* * * Jan-June *" will expire content every minute only during the first 6 months of the year.</li>
+	<li><b>Intervals</b> - an interval is specified using the '/' character. The value to the left of the '/' character indicates either the starting point or the range of values that should be incremented over, while the value to the right of the '/' specifies the interval or step size. Some examples -
+<div class="preformatted"><div class="preformattedContent">
+<pre>"10/20 * * * *" is equivalent to "10,30,50 * * * *", 
+while "10-45/20 * * * *" would only match 10 and 30 minutes past the hour, since 50 is outside the specified range.</pre>
+</div></div> 
+<div class="preformatted"><div class="preformattedContent">
+<pre>Supplying '*' as the left-hand value of an interval will match the same values as if you had specified a range over all possible values.
+Eg "*/10 * * * *" matches minutes 0,10,20,30,40 and 50.
+</pre>
+</div></div></li>
+</ul>
+
+
+<p>To have a look at further examples of both valid and invalid syntax, it is suggested you take a look at the JUnit test cases in the com.opensymphony.oscache.util.TestFastCronParser class. This class is located under the src/core/test directory. For examples of how to specify cron expiry times using the taglibs, see the <a href="JSP Tags.html" title="JSP Tags">Tag Reference</a> and the cronTest.jsp file in the example web application.</p>
+
+<h3><a name="CronExpressions-Notes"></a>Notes</h3>
+
+<ul>
+	<li>You can specify both a cron expression and a refresh interval at the same time if you like. This is useful in cases where you always want to expire content at midnight, but you also never want it to be more than 6 hours old.</li>
+	<li>Specifying out of range values, such as a 13 in the month field, will cause a ParseException to be thrown.</li>
+	<li>If a DOM is specified that cannot exist given the allowable months, a ParseException will be thrown. For example, "* * 31 Feb *" will fail because no date will ever match the 31st February!</li>
+	<li>The DOM and DOW fields cannot both be specified at the same time. One must always be set to '*' otherwise a ParseException will be thrown.</li>
+	<li>Leap years and local daylight savings time are taken into account. Eg "0 0 29 Feb *" will match midnight on the 29th February, ie only once every 4 years.</li>
+	<li>Currently the time used to match the cron expression against is always based on the local time on the server. If there is demand support for specifying an alternate timezone may</li>
+</ul>
+
+
+                    			    </td>
+		    </tr>
+	    </table>
+    </body>
+</html>

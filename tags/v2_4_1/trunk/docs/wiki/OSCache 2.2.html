@@ -1,0 +1,226 @@
+<html>
+    <head>
+        <title>OSCache - 
+        OSCache 2.2
+         </title>
+	    <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body>
+	    <table class="pagecontent" border="0" cellpadding="0" cellspacing="0" width="100%" bgcolor="#ffffff">
+		    <tr>
+			    <td valign="top" class="pagebody">
+				    <h3><a name="OSCache2.2-ReleaseNotesFinal"></a>Release Notes - Final</h3>
+
+<p>(6th November 2005 - by Lars Torunski)</p>
+
+<h4><a name="OSCache2.2-Additionallytothe2.2RCOSCache2.2RCimprovements%2Cthefinalreleasewasenhancedby%3A"></a>Additionally to the <a href="OSCache 2.2 RC.html" title="OSCache 2.2 RC">2.2 RC</a> improvements, the final release was enhanced by:</h4>
+
+<ul>
+	<li>Allow cache group definition in CacheFilter</li>
+	<li>Option to specify when to send Expires-Header</li>
+	<li>Allow disabling initial set of the last modified header</li>
+	<li>Continuous Integration and Dependency Management with Ivy</li>
+	<li>Update to JGroups 2.2.8</li>
+</ul>
+
+
+<h4><a name="OSCache2.2-JIRAIssueList"></a>JIRA Issue List</h4>
+
+<p><a name="jiraissues">
+    <table  width="100%" cellspacing="0" class="grid">
+        <tr>
+            <th colspan="4" style="text-align: left;">
+                                    <a href="/spaces/doexportspace.action?key=CACHE&macro.refresh=true#jiraissues"><img src="/images/icons/refresh_16.png" height="16" width="16" border="0" align="right" title="refresh"/></a>
+                                <a href="http://jira.opensymphony.com/secure/IssueNavigator.jspa?&pid=10001&fixfor=21550&sorter/field=issuekey&sorter/order=DESC&tempMax=25&reset=true&">OpenSymphony JIRA</a>
+                <span class="smalltext">(12 issues)</span>
+            </th>
+        </tr>
+        <tr>
+                        <th style="text-align: left;">
+                T                                                                                                                                                                            </th>
+                        <th style="text-align: left;">
+                                Key                                                                                                                                                            </th>
+                        <th style="text-align: left;">
+                                                Summary                                                                                                                                            </th>
+                        <th style="text-align: left;">
+                                                                                                                Status                                                                            </th>
+                    </tr>
+                                            <tr class="rowNormal">
+                                                            <td nowrap="true">
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-223"><img src="http://jira.opensymphony.com/secure/IssueNavigator.jspa?reset=true&pid=10001&fixfor=21550&sorter/field=issuekey&sorter/order=DESC/images/icons/bug.gif" alt="Bug" border="0" /></a>
+                                    </td>
+                                <td nowrap="true">
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-223">CACHE-223</a>
+                                    </td>
+                                <td >
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-223">completeUpdate never being called after startUpdate() has been called, OSCache hangs for that key</a>
+                                    </td>
+                                <td nowrap="true">
+                                            <img src="http://jira.opensymphony.com/secure/IssueNavigator.jspa?reset=true&pid=10001&fixfor=21550&sorter/field=issuekey&sorter/order=DESC/images/icons/status_closed.gif" alt="Closed" border="0" />Closed
+                                    </td>
+                            </tr>
+                                    <tr class="rowAlternate">
+                                                            <td nowrap="true">
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-211"><img src="http://jira.opensymphony.com/secure/IssueNavigator.jspa?reset=true&pid=10001&fixfor=21550&sorter/field=issuekey&sorter/order=DESC/images/icons/task.gif" alt="Task" border="0" /></a>
+                                    </td>
+                                <td nowrap="true">
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-211">CACHE-211</a>
+                                    </td>
+                                <td >
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-211">Create check sums for the distribution files</a>
+                                    </td>
+                                <td nowrap="true">
+                                            <img src="http://jira.opensymphony.com/secure/IssueNavigator.jspa?reset=true&pid=10001&fixfor=21550&sorter/field=issuekey&sorter/order=DESC/images/icons/status_closed.gif" alt="Closed" border="0" />Closed
+                                    </td>
+                            </tr>
+                                    <tr class="rowNormal">
+                                                            <td nowrap="true">
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-210"><img src="http://jira.opensymphony.com/secure/IssueNavigator.jspa?reset=true&pid=10001&fixfor=21550&sorter/field=issuekey&sorter/order=DESC/images/icons/task.gif" alt="Task" border="0" /></a>
+                                    </td>
+                                <td nowrap="true">
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-210">CACHE-210</a>
+                                    </td>
+                                <td >
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-210">Review: If last test-base and last test-web overwrite previous unit test reports</a>
+                                    </td>
+                                <td nowrap="true">
+                                            <img src="http://jira.opensymphony.com/secure/IssueNavigator.jspa?reset=true&pid=10001&fixfor=21550&sorter/field=issuekey&sorter/order=DESC/images/icons/status_closed.gif" alt="Closed" border="0" />Closed
+                                    </td>
+                            </tr>
+                                    <tr class="rowAlternate">
+                                                            <td nowrap="true">
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-204"><img src="http://jira.opensymphony.com/secure/IssueNavigator.jspa?reset=true&pid=10001&fixfor=21550&sorter/field=issuekey&sorter/order=DESC/images/icons/improvement.gif" alt="Improvement" border="0" /></a>
+                                    </td>
+                                <td nowrap="true">
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-204">CACHE-204</a>
+                                    </td>
+                                <td >
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-204">Allow disabling initial set of the last modified header</a>
+                                    </td>
+                                <td nowrap="true">
+                                            <img src="http://jira.opensymphony.com/secure/IssueNavigator.jspa?reset=true&pid=10001&fixfor=21550&sorter/field=issuekey&sorter/order=DESC/images/icons/status_closed.gif" alt="Closed" border="0" />Closed
+                                    </td>
+                            </tr>
+                                    <tr class="rowNormal">
+                                                            <td nowrap="true">
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-203"><img src="http://jira.opensymphony.com/secure/IssueNavigator.jspa?reset=true&pid=10001&fixfor=21550&sorter/field=issuekey&sorter/order=DESC/images/icons/task.gif" alt="Task" border="0" /></a>
+                                    </td>
+                                <td nowrap="true">
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-203">CACHE-203</a>
+                                    </td>
+                                <td >
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-203">Change JSP tag URI in pages of example war</a>
+                                    </td>
+                                <td nowrap="true">
+                                            <img src="http://jira.opensymphony.com/secure/IssueNavigator.jspa?reset=true&pid=10001&fixfor=21550&sorter/field=issuekey&sorter/order=DESC/images/icons/status_closed.gif" alt="Closed" border="0" />Closed
+                                    </td>
+                            </tr>
+                                    <tr class="rowAlternate">
+                                                            <td nowrap="true">
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-202"><img src="http://jira.opensymphony.com/secure/IssueNavigator.jspa?reset=true&pid=10001&fixfor=21550&sorter/field=issuekey&sorter/order=DESC/images/icons/bug.gif" alt="Bug" border="0" /></a>
+                                    </td>
+                                <td nowrap="true">
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-202">CACHE-202</a>
+                                    </td>
+                                <td >
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-202">Expires header should not be inital set in fragments</a>
+                                    </td>
+                                <td nowrap="true">
+                                            <img src="http://jira.opensymphony.com/secure/IssueNavigator.jspa?reset=true&pid=10001&fixfor=21550&sorter/field=issuekey&sorter/order=DESC/images/icons/status_closed.gif" alt="Closed" border="0" />Closed
+                                    </td>
+                            </tr>
+                                    <tr class="rowNormal">
+                                                            <td nowrap="true">
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-201"><img src="http://jira.opensymphony.com/secure/IssueNavigator.jspa?reset=true&pid=10001&fixfor=21550&sorter/field=issuekey&sorter/order=DESC/images/icons/bug.gif" alt="Bug" border="0" /></a>
+                                    </td>
+                                <td nowrap="true">
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-201">CACHE-201</a>
+                                    </td>
+                                <td >
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-201">Defined interface for ICacheKeyProvider not used in CacheFilter</a>
+                                    </td>
+                                <td nowrap="true">
+                                            <img src="http://jira.opensymphony.com/secure/IssueNavigator.jspa?reset=true&pid=10001&fixfor=21550&sorter/field=issuekey&sorter/order=DESC/images/icons/status_closed.gif" alt="Closed" border="0" />Closed
+                                    </td>
+                            </tr>
+                                    <tr class="rowAlternate">
+                                                            <td nowrap="true">
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-199"><img src="http://jira.opensymphony.com/secure/IssueNavigator.jspa?reset=true&pid=10001&fixfor=21550&sorter/field=issuekey&sorter/order=DESC/images/icons/task.gif" alt="Task" border="0" /></a>
+                                    </td>
+                                <td nowrap="true">
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-199">CACHE-199</a>
+                                    </td>
+                                <td >
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-199">Continuous Integration and Dependency Management with Ivy</a>
+                                    </td>
+                                <td nowrap="true">
+                                            <img src="http://jira.opensymphony.com/secure/IssueNavigator.jspa?reset=true&pid=10001&fixfor=21550&sorter/field=issuekey&sorter/order=DESC/images/icons/status_closed.gif" alt="Closed" border="0" />Closed
+                                    </td>
+                            </tr>
+                                    <tr class="rowNormal">
+                                                            <td nowrap="true">
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-198"><img src="http://jira.opensymphony.com/secure/IssueNavigator.jspa?reset=true&pid=10001&fixfor=21550&sorter/field=issuekey&sorter/order=DESC/images/icons/task.gif" alt="Task" border="0" /></a>
+                                    </td>
+                                <td nowrap="true">
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-198">CACHE-198</a>
+                                    </td>
+                                <td >
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-198">Update to JGroups 2.2.8</a>
+                                    </td>
+                                <td nowrap="true">
+                                            <img src="http://jira.opensymphony.com/secure/IssueNavigator.jspa?reset=true&pid=10001&fixfor=21550&sorter/field=issuekey&sorter/order=DESC/images/icons/status_closed.gif" alt="Closed" border="0" />Closed
+                                    </td>
+                            </tr>
+                                    <tr class="rowAlternate">
+                                                            <td nowrap="true">
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-196"><img src="http://jira.opensymphony.com/secure/IssueNavigator.jspa?reset=true&pid=10001&fixfor=21550&sorter/field=issuekey&sorter/order=DESC/images/icons/improvement.gif" alt="Improvement" border="0" /></a>
+                                    </td>
+                                <td nowrap="true">
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-196">CACHE-196</a>
+                                    </td>
+                                <td >
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-196">Option to specify when to send Expires-Header</a>
+                                    </td>
+                                <td nowrap="true">
+                                            <img src="http://jira.opensymphony.com/secure/IssueNavigator.jspa?reset=true&pid=10001&fixfor=21550&sorter/field=issuekey&sorter/order=DESC/images/icons/status_closed.gif" alt="Closed" border="0" />Closed
+                                    </td>
+                            </tr>
+                                    <tr class="rowNormal">
+                                                            <td nowrap="true">
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-195"><img src="http://jira.opensymphony.com/secure/IssueNavigator.jspa?reset=true&pid=10001&fixfor=21550&sorter/field=issuekey&sorter/order=DESC/images/icons/improvement.gif" alt="Improvement" border="0" /></a>
+                                    </td>
+                                <td nowrap="true">
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-195">CACHE-195</a>
+                                    </td>
+                                <td >
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-195">Allow cache group generation in CacheFilter</a>
+                                    </td>
+                                <td nowrap="true">
+                                            <img src="http://jira.opensymphony.com/secure/IssueNavigator.jspa?reset=true&pid=10001&fixfor=21550&sorter/field=issuekey&sorter/order=DESC/images/icons/status_closed.gif" alt="Closed" border="0" />Closed
+                                    </td>
+                            </tr>
+                                    <tr class="rowAlternate">
+                                                            <td nowrap="true">
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-194"><img src="http://jira.opensymphony.com/secure/IssueNavigator.jspa?reset=true&pid=10001&fixfor=21550&sorter/field=issuekey&sorter/order=DESC/images/icons/task.gif" alt="Task" border="0" /></a>
+                                    </td>
+                                <td nowrap="true">
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-194">CACHE-194</a>
+                                    </td>
+                                <td >
+                                            <a href="http://jira.opensymphony.com/browse/CACHE-194">Update Documentation</a>
+                                    </td>
+                                <td nowrap="true">
+                                            <img src="http://jira.opensymphony.com/secure/IssueNavigator.jspa?reset=true&pid=10001&fixfor=21550&sorter/field=issuekey&sorter/order=DESC/images/icons/status_closed.gif" alt="Closed" border="0" />Closed
+                                    </td>
+                            </tr>
+            </table>
+</p>
+
+
+                    			    </td>
+		    </tr>
+	    </table>
+    </body>
+</html>

@@ -1,0 +1,60 @@
+<html>
+    <head>
+        <title>OSCache - 
+        Spring
+         </title>
+	    <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body>
+	    <table class="pagecontent" border="0" cellpadding="0" cellspacing="0" width="100%" bgcolor="#ffffff">
+		    <tr>
+			    <td valign="top" class="pagebody">
+				    <h2><a name="Spring-Configuringa%7B%7BGeneralCacheAdministrator%7D%7D"></a>Configuring a <tt>GeneralCacheAdministrator</tt></h2>
+
+<p>A <a href="API Usage.html" title="API Usage">GeneralCacheAdministrator</a> instance that picks up configuration from an <a href="Configuration.html" title="Configuration">oscache.properties</a> file can be configured within Spring using the following code:</p>
+<div class="code"><div class="codeContent">
+<pre class="code-xml"><span class="code-tag">&lt;bean id=<span class="code-quote">"cacheAdministrator"</span> class=<span class="code-quote">"com.opensymphony.oscache.general.GeneralCacheAdministrator"</span> destroy-method=<span class="code-quote">"destroy"</span>/&gt;</span></pre>
+</div></div>
+<p>Notice that a <tt>destory-method</tt> is configured to ensure that the <tt>GeneralCacheAdministrator</tt> is closed down gracefully.</p>
+
+<p>If you'd prefer to keep all your configuration inside the Spring configuration, you can omit the <tt>oscache.properties</tt> file and pass in any properties you want to the <tt>GeneralCacheAdministrator</tt> constructor like so:</p>
+<div class="code"><div class="codeContent">
+<pre class="code-xml"><span class="code-tag">&lt;bean id=<span class="code-quote">"cacheAdministrator"</span> class=<span class="code-quote">"com.opensymphony.oscache.general.GeneralCacheAdministrator"</span> destroy-method=<span class="code-quote">"destroy"</span>&gt;</span>
+    <span class="code-tag">&lt;constructor-arg index=<span class="code-quote">"0"</span>&gt;</span>
+        <span class="code-tag">&lt;props&gt;</span>
+            <span class="code-tag">&lt;prop key=<span class="code-quote">"cache.memory"</span>&gt;</span>true<span class="code-tag">&lt;/prop&gt;</span>
+        <span class="code-tag">&lt;/props&gt;</span>
+    <span class="code-tag">&lt;/constructor-arg&gt;</span>
+<span class="code-tag">&lt;/bean&gt;</span></pre>
+</div></div>
+
+<h2><a name="Spring-ConfiguringaCache"></a>Configuring a Cache</h2>
+
+<p>You can configure a <tt>Cache</tt> instance directly using the following snippet of code:</p>
+<div class="code"><div class="codeContent">
+<pre class="code-xml"><span class="code-tag">&lt;bean id=<span class="code-quote">"cache"</span> class=<span class="code-quote">"com.opensymphony.oscache.base.Cache"</span>&gt;</span>
+    <span class="code-tag">&lt;constructor-arg index=<span class="code-quote">"0"</span>&gt;</span>
+        <span class="code-tag">&lt;value&gt;</span>true<span class="code-tag">&lt;/value&gt;</span> <span class="code-tag"><span class="code-comment">&lt;!-- useMemoryCaching --&gt;</span></span>
+    <span class="code-tag">&lt;constructor-arg&gt;</span>
+    <span class="code-tag">&lt;constructor-arg index=<span class="code-quote">"1"</span>&gt;</span>
+        <span class="code-tag">&lt;value&gt;</span>true<span class="code-tag">&lt;/value&gt;</span> <span class="code-tag"><span class="code-comment">&lt;!-- unlimitedDiskCache --&gt;</span></span>
+    <span class="code-tag">&lt;constructor-arg&gt;</span>
+    <span class="code-tag">&lt;constructor-arg index=<span class="code-quote">"2"</span>&gt;</span>
+        <span class="code-tag">&lt;value&gt;</span>true<span class="code-tag">&lt;/value&gt;</span> <span class="code-tag"><span class="code-comment">&lt;!-- overflowPersistence --&gt;</span></span>
+    <span class="code-tag">&lt;constructor-arg&gt;</span>
+<span class="code-tag">&lt;/bean&gt;</span></pre>
+</div></div>
+<p>Alternatively, you can pick up the <tt>Cache</tt> from the <tt>GeneralCacheAdministrator</tt> like so:</p>
+<div class="code"><div class="codeContent">
+<pre class="code-xml"><span class="code-tag">&lt;bean id=<span class="code-quote">"cacheAdministrator"</span> class=<span class="code-quote">"com.opensymphony.oscache.general.GeneralCacheAdministrator"</span> destroy-method=<span class="code-quote">"destroy"</span>/&gt;</span>
+
+<span class="code-tag">&lt;bean id=<span class="code-quote">"cache"</span> factory-bean=<span class="code-quote">"cacheAdministrator"</span> factory-method=<span class="code-quote">"getCache"</span>/&gt;</span></pre>
+</div></div>
+
+                    			    </td>
+		    </tr>
+	    </table>
+    </body>
+</html>
