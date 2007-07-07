@@ -1,0 +1,96 @@
+<html>
+    <head>
+        <title>OSCache - 
+        OSCache 2.0 beta 1
+         </title>
+	    <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body>
+	    <table class="pagecontent" border="0" cellpadding="0" cellspacing="0" width="100%" bgcolor="#ffffff">
+		    <tr>
+			    <td valign="top" class="pagebody">
+				    <h3><a name="OSCache2.0beta1-ReleaseNotes"></a>Release Notes</h3>
+
+<p>(19th July 2003 - by Chris Miller)</p>
+<h4><a name="OSCache2.0beta1-NewFeatures%3A"></a>New Features:</h4>
+
+<ul>
+	<li><a href="http://jira.opensymphony.com/browse/CACHE-11" title="Visit page outside Confluence">CACHE-11 </a> Cache grouping support. This allows cache entries to be placed into an arbitrary group or groups and flushed with a single flushGroup() call.</li>
+	<li><a href="http://jira.opensymphony.com/browse/CACHE-30" title="Visit page outside Confluence">CACHE-30 </a> Added support for expiring cache entries based on a cron expression. Entries that are older than the date/time that most recently matches the cron expression will be considered stale. This is exposed to the cache tag via the 'cron' attribute. See cronTest.jsp for examples.</li>
+	<li>Event listener support has been refactored and improved. It is now possible to specify a comma-delimited list of event listeners using this property. Previously only one class could be specified. Events listed here should implement the CacheEntryEventListener and/or the ScopeEventListener interfaces.</li>
+	<li>New event CacheMapAccessEvent.STALE_HIT. This event is fired when an attempt is made to retrieve and entry from the cache, and the entry is found but is stale.</li>
+	<li>Clustering support has been added as an event listener. Currently it is implemented using <a href="http://www.javagroups.com" title="Visit page outside Confluence">JavaGroups </a>. To enable, just add the BroadcastingCacheEventListener class to the cache.event.listeners property.</li>
+	<li>Now uses Jakarta Commons Logging for all log messages. This means that the cache.debug configuration property is now ignored - use whatever logging configuration is appropriate for your logging setup instead. -Fabian Crabus</li>
+	<li><a href="http://jira.opensymphony.com/browse/CACHE-14" title="Visit page outside Confluence">CACHE-14, Matthias Nott </a> Now allows for content to be cached indefinitely without expiration.</li>
+	<li>The build.xml &lt;javac ...&gt; directives now specify debug="true".</li>
+	<li>Performance boost: When OSCache is running on JRE 1.4 or higher, LRUCache and FIFOCache use a LinkedHashSet instead of a LinkedList.</li>
+	<li>Japloy is now used to ensure source is consistently formatted.</li>
+	<li>Test cases now work on non-windows platforms. Also coverage reports added courtesy of clover.</li>
+</ul>
+
+
+<h4><a name="OSCache2.0beta1-Changesthatmayaffectbackwardscompatibility%3A"></a>Changes that may affect backwards compatibility:</h4>
+
+<ul>
+	<li>The cache.entryevent.classes property in the configuration file has been renamed to cache.event.listeners, since it accepts CacheEntryEventListener, ScopeEventListener and CacheMapAccessEventListener types.</li>
+	<li>The cache.persistence.classes property has been renamed to cache.persistence.class since it is only possible to specify one PersistenceListener.</li>
+	<li>For consistency, cache.unlimited_disk is now cache.unlimited.disk and cache.useHostDomainInKey is now cache.use.host.domain.in.key.</li>
+	<li>The oscache.tld file now uses a taglib 1.2 DTD.</li>
+	<li>To build OSCache, JDK 1.4.x or higher is required. There is however no runtime dependency on JDK 1.4.x.</li>
+	<li>The Cache.flushPattern() method and &lt;cache:flush pattern="..."/&gt; are deprecated. You are instead encouraged to group your cache entries when you add them to the cache and then use the Cache.flushGroup() method or the &lt;cache:flush group="..."/&gt; tag to flush an entire cache group.</li>
+	<li>Disk persistence now puts all files in the same directory. This has a number of side effects. Keys &gt;255 chars will cause problems. Also, similar keys might get mapped to the same file. For example, it is very inadvisable to have two keys with the names 'my_key' and 'my.key'.</li>
+	<li>GeneralCacheAdministrator is no longer static. Users that relied on this behaviour can still hold onto a static reference to it with minor code changes.</li>
+	<li>When a NeedsRefreshException is thrown, it is now vital that the cache entry is either updated, or Cache.cancelUpdate(key) is called to release the lock on this cache entry. This is a consequence of the fix for <a href="http://jira.opensymphony.com/browse/CACHE-42" title="Visit page outside Confluence">CACHE-42 </a>.</li>
+	<li>CacheProperties class was removed. It didn't work on 1.7.5 anyway. The same effect can be achieved by specifying a subclass of Properties.</li>
+	<li>Autogenerated cache keys now contain the request method (eg, HEAD, GET, etc).</li>
+	<li>OSCache has been repackaged from "com.opensymphony.module.oscache.&#42;" to "com.opensymphony.oscache.&#42;". Any code or configuration files that refer to "com.opensymphony.module.oscache" will need to be updated.</li>
+</ul>
+
+
+<h4><a name="OSCache2.0beta1-BugFixes%3A"></a>Bug Fixes:</h4>
+
+<ul>
+	<li><a href="http://jira.opensymphony.com/browse/CACHE-4" title="Visit page outside Confluence">CACHE-4 </a> WebSphere 3.5.x compatibility.</li>
+	<li><a href="http://jira.opensymphony.com/browse/CACHE-5" title="Visit page outside Confluence">CACHE-5 </a> Added a mode attribute to the cache tag to allow content to be cached but not sent to the output stream. See oscacheTest.jsp for an example.</li>
+	<li><a href="http://jira.opensymphony.com/browse/CACHE-7" title="Visit page outside Confluence">CACHE-7 </a> "cache" Tag has no "setEncoding" method.</li>
+	<li><a href="http://jira.opensymphony.com/browse/CACHE-9" title="Visit page outside Confluence">CACHE-9 </a> It could be useful being able to specify directories relative to the web application dir. for config file and cache dir. Use new properties aware getInstance method.</li>
+	<li><a href="http://jira.opensymphony.com/browse/CACHE-10" title="Visit page outside Confluence">CACHE-10 </a> Cannot write and use custom class implementing CacheProperties.</li>
+	<li><a href="http://jira.opensymphony.com/browse/CACHE-13" title="Visit page outside Confluence">CACHE-13 </a> AbstractConcurrentReadCache loops indefinitely when persistRetrieve() returns null.</li>
+	<li><a href="http://jira.opensymphony.com/browse/CACHE-14" title="Visit page outside Confluence">CACHE-14 </a> You can now specify an unlimited refresh time by supplying a negative value for the duration.</li>
+	<li><a href="http://jira.opensymphony.com/browse/CACHE-17" title="Visit page outside Confluence">CACHE-17 </a> An example war is now included - "ant example-war". Once deployed this can be tested using "ant test-web".</li>
+	<li><a href="http://jira.opensymphony.com/browse/CACHE-26" title="Visit page outside Confluence">CACHE-26 </a> Security hole whereby certain keys can overwrite any file.</li>
+	<li><a href="http://jira.opensymphony.com/browse/CACHE-28" title="Visit page outside Confluence">CACHE-28 </a> URLs can now be used as keys with disk persistence.</li>
+	<li><a href="http://jira.opensymphony.com/browse/CACHE-31" title="Visit page outside Confluence">CACHE-31 </a> and <a href="http://jira.opensymphony.com/browse/CACHE-33" title="Visit page outside Confluence">CACHE-33 </a> The cache tag's refresh attribute will now be taken into account even if a custom refresh policy has been specified.</li>
+	<li><a href="http://jira.opensymphony.com/browse/CACHE-34" title="Visit page outside Confluence">CACHE-34 </a> Setting properties with AbstractCacheAdministrators. New getInstance method added to ServletCacheAdministrator that takes in properties.</li>
+	<li><a href="http://jira.opensymphony.com/browse/CACHE-35" title="Visit page outside Confluence">CACHE-35 </a> CacheFilter needs to distinguish between HEAD and GET requests.</li>
+	<li><a href="http://jira.opensymphony.com/browse/CACHE-39" title="Visit page outside Confluence">CACHE-39 </a> and <a href="http://jira.opensymphony.com/browse/CACHE-44" title="Visit page outside Confluence">CACHE-44 </a> Synchronization with LRUCache fixed.</li>
+	<li><a href="http://jira.opensymphony.com/browse/CACHE-42" title="Visit page outside Confluence">CACHE-42 </a> Threads will no longer race to (re)build expired or new cache entries. By default stale content will be served if available. This behaviour can be changed by setting oscache.blocking=true, which will instead cause threads to block until the new cache entry is available.</li>
+	<li><a href="http://jira.opensymphony.com/browse/CACHE-43" title="Visit page outside Confluence">CACHE-43 </a> Taglibs have been made spec-compliant. They now follow the guidelines at <a href="http://jakarta.apache.org/taglibs/guidelines.html" title="Visit page outside Confluence">http://jakarta.apache.org/taglibs/guidelines.html</a>.</li>
+	<li>Some synchronization issues were fixed in LRUCache.getItem() and AbstractConcurrentReadCache.setMaxEntries().</li>
+	<li>ScopeEventListener classes were previously not able to be specified in the configuration even though the dispatching code was implemented. ScopeEventListeners can now be specified using the cache.event.listeners configuration property.</li>
+	<li>CacheMapAccessEvents now only fire when an attempt is made to retrieve the actual cache content for external use. Previously these events were being fired in circumstances that were not of statistical interest - for example HIT and MISS events were being fired when updating or flushing entries from the cache.</li>
+	<li>Minor bug in oscacheTestMultipleTagNoKey.jsp - some of the tag refresh times weren't correctly specified.</li>
+	<li>cachetest.jsp - the 'refresh' functionality wasn't working because the addition of the refresh parameter caused the cache key to be different. The key is now specified explicitly.</li>
+	<li>EntryRefreshPolicy is now serializable so it can be persisted to the disk cache.</li>
+	<li>ServletCacheAdministrator now sorts request parameters and filters out jsessionid so they have no impact on the generated cache key.</li>
+	<li>CacheFilter only caches successful responses (status code == SC_OK).</li>
+</ul>
+
+
+<h4><a name="OSCache2.0beta1-KnownProblems%3A%28thesehaveexistedforsometimeinthe1.x.xversionsandwillbeaddressedinanupcoming2.x.xrelease%29"></a>Known Problems: (these have existed for some time in the 1.x.x versions and will be addressed in an upcoming 2.x.x release)</h4>
+
+<ul>
+	<li>Session caches (created using the ServletCacheAdministrator) have some known limitations:<br/>
+          o Due to a workaround in the code, it is possible for a system under heavy load to get its persistent session caches confused across sessions.<br/>
+          o Session caches will not work in a clustered environment.<br/>
+          o Session caches have the same settings global settings applied to them as the application scope cache. This means that if you want a persistent cache for the application scope cache, the session caches will use it too.</li>
+</ul>
+
+
+                    			    </td>
+		    </tr>
+	    </table>
+    </body>
+</html>

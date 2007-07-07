@@ -1,0 +1,28 @@
+<html>
+    <head>
+        <title>OSCache - 
+        OSCache 1.7.5
+         </title>
+	    <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body>
+	    <table class="pagecontent" border="0" cellpadding="0" cellspacing="0" width="100%" bgcolor="#ffffff">
+		    <tr>
+			    <td valign="top" class="pagebody">
+				    <h3><a name="OSCache1.7.5-ReleaseNotes"></a>Release Notes</h3>
+<p>(5th January 2002 - by Mike Cannon-Brookes, mike@atlassian.com)</p>
+
+<ul>
+	<li>Fixed up logging system slightly. All errors should now be logged with logError() and normal messages with log()</li>
+	<li>Fixed bug in build file which put oscache.properties inside the oscache.jar (resulting in it being loaded badly in some containers)</li>
+	<li>Changed cache.capacity in the default oscache.properties file to 1000. This means up to 1000 items will be cached in the default setup, and LRUCache will be used (100 seemed too small)</li>
+</ul>
+
+
+                    			    </td>
+		    </tr>
+	    </table>
+    </body>
+</html>

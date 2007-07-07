@@ -1,0 +1,145 @@
+<html>
+<head>
+<title>OSCache - Installation Guide</title>
+<link rel="stylesheet" href="styles/site.css" type="text/css" />
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+</head>
+
+<body>
+<table class="pagecontent" border="0" cellpadding="0" cellspacing="0"
+	width="100%" bgcolor="#ffffff">
+	<tr>
+		<td valign="top" class="pagebody">
+		<p>This installation guide shows you how to configure OSCache 2.4
+		for use inside your JSP pages. It assumes you have <a
+			href="https://oscache.dev.java.net/servlets/ProjectDocumentList"
+			title="Visit page outside Confluence">downloaded the latest
+		version</a>, which requires at least <b>Java 1.4</b> and a <b>Servlet
+		2.3</b> container (part of J2EE 1.3). Read the <a href="Requirements.html"
+			title="Requirements">Requirements</a> for more details.</p>
+
+		<p>If you intend to use OSCache via the <a href="API Usage.html"
+			title="API Usage">API</a> rather than via the <a href="JSP Tags.html"
+			title="JSP Tags">taglibs</a>, these instructions do not apply. Just
+		make sure <tt>oscache.jar</tt> and <tt>commons-logging.jar</tt> are
+		somewhere on your application's classpath.</p>
+
+		<h4><a name="InstallationGuide-ExtractionSteps"></a>Extraction
+		Steps</h4>
+
+		<ol>
+			<li>Extract the downloaded file to a directory of your choosing.</li>
+			<li>Put the oscache.jar file in the <tt>/WEB-INF/lib</tt>
+			directory</li>
+			<li>Make sure <tt>commons-logging.jar</tt> is on your classpath
+			(normally this also means putting it in <tt>/WEB-INF/lib</tt>).</li>
+			<li>Put the <tt>/etc/oscache.properties</tt> file in the <tt>/WEB-INF/classes</tt>
+			directory and edit the properties contained within it (for example if
+			you want disk caching, configure the persistence listener and edit
+			the <tt>cache.path</tt> property to point to where you want the cache
+			files stored on disk). See the <a href="configuration.html"
+				title="Configuration">Configuration Guide</a> for further details on
+			what options are available.</li>
+			<li>Your directory structure should now look something like
+			this:
+			<div class="panel">
+			<div class="panelContent">
+			<p>$WEB_APPLICATION/WEB-INF/lib/oscache.jar<br />
+			$WEB_APPLICATION/WEB-INF/classes/oscache.properties</p>
+			</div>
+			</div>
+			</li>
+		</ol>
+
+
+		<table cellpadding='5' width='85%' cellspacing='8px' class='infoMacro'
+			border="0" align='center'>
+			<colgroup>
+				<col width='24'>
+				<col>
+			</colgroup>
+			<tr>
+				<td valign='top'><img src="./icons/emoticons/information.gif"
+					width="16" height="16" align="absmiddle" alt="" border="0"></td>
+				<td><b class="strong">Windows</b><br />
+				<p>Remember to escape any \ characters in Windows paths - e.g.
+				if you want cache files to go in c:\cachedir, the <tt>cache.path</tt>
+				property should be set to c:\ \cachedir.</p>
+				</td>
+			</tr>
+		</table>
+
+		<h4><a name="InstallationGuide-InstallationSteps"></a>Installation
+		Steps</h4>
+
+		<ol>
+			<li>Now add the appropriate <a href="JSP Tags.html"
+				title="JSP Tags">JSP Tags</a> to your JSP files and you're done.</li>
+			<li>It should work properly. <a
+				href="mailto:users@oscache.dev.java.net"
+				title="Send mail to Tell us on the mailing list">Tell us on the
+			mailing list</a> if it doesn't work in your container.</li>
+		</ol>
+
+
+		<h4><a name="InstallationGuide-FurtherInformation"></a>Further
+		Information</h4>
+
+		<table class="sectionMacro" border="0" cellpadding="5" cellspacing="0"
+			width="100%">
+			<tbody>
+				<tr>
+
+					<td class="confluenceTd" valign="top" width="50%">
+
+					<table cellpadding='5' width='85%' cellspacing='8px'
+						class='infoMacro' border="0" align='center'>
+						<colgroup>
+							<col width='24'>
+							<col>
+						</colgroup>
+						<tr>
+							<td valign='top'><img
+								src="./icons/emoticons/information.gif" width="16" height="16"
+								align="absmiddle" alt="" border="0"></td>
+							<td><b class="strong">Logging</b><br />
+							<p>OSCache uses <a
+								href="http://jakarta.apache.org/commons/logging/"
+								title="Visit page outside Confluence">Jakarta Commons
+							Logging</a> for logging any messages. Please see the <a
+								href="http://jakarta.apache.org/commons/logging/guide.html#Configuration"
+								title="Visit page outside Confluence">Commons Logging
+							documentation</a> for details on logging configuration.</p>
+							</td>
+						</tr>
+					</table>
+					</td>
+
+					<td class="confluenceTd" valign="top" width="50%">
+
+					<table cellpadding='5' width='85%' cellspacing='8px'
+						class='tipMacro' border="0" align='center'>
+						<colgroup>
+							<col width='24'>
+							<col>
+						</colgroup>
+						<tr>
+							<td valign='top'><img src="./icons/emoticons/check.gif"
+								width="16" height="16" align="absmiddle" alt="" border="0"></td>
+							<td><b class="strong">Debugging</b><br />
+							<p>Note that OSCache has been compiled with debugging
+							information enabled so you should be able to use your favourite
+							debugger to step through the source if need be.</p>
+							</td>
+						</tr>
+					</table>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+
+		</td>
+	</tr>
+</table>
+</body>
+</html>

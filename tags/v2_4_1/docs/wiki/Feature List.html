@@ -1,0 +1,133 @@
+<html>
+    <head>
+        <title>OSCache - 
+        Feature List
+         </title>
+	    <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body>
+	    <table class="pagecontent" border="0" cellpadding="0" cellspacing="0" width="100%" bgcolor="#ffffff">
+		    <tr>
+			    <td valign="top" class="pagebody">
+				    <h3><a name="FeatureList-OSCacheFeatures"></a>OSCache Features</h3>
+
+<h4><a name="FeatureList-Fastinmemorycaching"></a>Fast in-memory caching</h4>
+
+<ul>
+	<li>OSCache allows you to store dynamic content (eg for 30 minutes) in memory. Each further request is served directly from the memory cache, resulting in dramatic speed increases.</li>
+	<li>The cache is keyed programmatically. This means you can calculate a cache key that works for your situation. For example an ecommerce site might use product ID as keys, or content site might use an article date and article ID combination.</li>
+	<li>The cache is stored in standard scopes that any JSP programmer is familiar with (application or session). The session scope allows you to have different cached content per user. This is one unlike any other caching system we've ever seen.</li>
+</ul>
+
+
+<h4><a name="FeatureList-Persistentondiskcaching"></a>Persistent on-disk caching</h4>
+
+<ul>
+	<li>OSCache can also write the cache to disk. This provides caching across server restarts, and caching of datasets that do not fit into memory. Caching can be configured to use memory or file caching, or a combination of both.</li>
+	<li>If you want to persist the cache to somewhere other than disk, you can plug in a custom PersistenceListener. This allows you to persist the cache to anywhere (for example to a database via JDBC or to LDAP via JNDI).</li>
+	<li>When using both disk caching and memory caching. It is possible to limit the cache size to avoid using too much memory but let disk cache unlimited, resulting in browser style complementary disk cache. When cached objects are removed from memory, they are still on disk. If the item is needed again and it is not expired the cache file will be used. This also gives fault tolerance if the server crashes.</li>
+	<li>Persistence can also be switched to overflow mode using the property oscache.persistence.overflow.only. This changes the default behavior (of persisting every cache entry when there is a listener) to only persist when the memory cache capacity has been reached.</li>
+</ul>
+
+
+<h4><a name="FeatureList-ExcellentPerformance"></a>Excellent Performance</h4>
+
+<ul>
+	<li>Written with performance in mind.</li>
+	<li>Mulitple cache requests can be handled concurrently.</li>
+	<li>Only one requesting thread needs to update an expired cache entry even if multiple threads are requesting it simultaneously. Other threads can be configured to either receive the recently-expired object, or block until the cached object is updated. Similarly, when a new entry is being added to the cache, other threads requesting that entry will block until it is ready rather than run off and race to build the same object. In a high load environment this can provide enormous performance benefits.</li>
+	<li>Automatically takes advantage of JRE 1.4 or higher if available.</li>
+</ul>
+
+
+<h4><a name="FeatureList-Clusteringsupport"></a>Clustering support</h4>
+
+<ul>
+	<li>OSCache can easily be configured to cluster across multiple boxes. This provides both scalability and failover support without any changes required in your caching code.</li>
+</ul>
+
+
+<h4><a name="FeatureList-FlexibleCachingSystem"></a>Flexible Caching System</h4>
+
+<ul>
+	<li>OSCache allows you to cache portions of JSP pages, arbitrary Java objects, and even entire servlet responses.</li>
+	<li>Cache capacity can be set allowing you to limit the number of cached objects.</li>
+	<li>Multiple caching algorithms are supported such as LRU (Least Recently Used), FIFO (First In First Out), or unlimited. It is also possible to plug in your own custom algorithm.</li>
+	<li>You are given a huge amount of control over the way cached objects expire. Objects can be cached indefinitely, expired once they reach a certain age, or expired based on a cron expression. Programmatic flushing is also possible, and if that is still not enough pluggable RefreshPolicies allow custom refresh strategies.</li>
+	<li>Cached objects can be grouped together however you like, allowing for powerful management of cached data. This is an extremely useful feature that is far more powerful than what other caching solutions typically offer (such as the flushing of cache keys that match a particular pattern).</li>
+	<li>Fully event driven! OSCache fires events for various happenings 'under the hood' such as cache entry events (adding, updating, flushing and removing) and cache accesses (hit, stale hit and miss). It is easy to add your own event handlers.</li>
+	<li>Multiple caches can be created, each with their own unique configuration.</li>
+</ul>
+
+
+<h4><a name="FeatureList-SimpleJSPTagLibrary"></a>Simple JSP Tag Library</h4>
+
+<ul>
+	<li>The <a href="JSP Tags.html" title="JSP Tags">tag library</a> to perform and control the caching is very simple. See the Tag Reference for more information.</li>
+</ul>
+
+
+<h4><a name="FeatureList-CachingFilter"></a>Caching Filter</h4>
+
+<ul>
+	<li>A Servlet 2.3 Filter allows for caching of entire pages and generated binary files (like dynamically created images or PDF files).</li>
+	<li>Caching of binary files is extremely useful when they are generated dynamically and the average creation time is long.</li>
+	<li>The <a href="CacheFilter.html" title="CacheFilter">CacheFilter</a> is using the last modified header to reduce excellently the transaction overhead and server load which speed ups the server response time.</li>
+</ul>
+
+
+<h4><a name="FeatureList-ComprehensiveAPI"></a>Comprehensive API</h4>
+
+<ul>
+	<li>For the ultimate control, OSCache can be used through its straightforward API. You can instantiate, configure and control multiple caches programmatically. It would be possible for example to create one small in-memory cache that held currency conversion rates and was updated daily at 2am, while another cache could be purely disk based and used for holding dynamically created images.</li>
+</ul>
+
+
+<h4><a name="FeatureList-ExceptionHandling"></a>Exception Handling</h4>
+
+<ul>
+	<li>OSCache provides a way for your site to gracefully tolerate errors. This is not error prevention, rather if an error occurs it should not stop your site from functioning. For example if your database goes down, normally your product descriptions will not be browsable. Using OSCache you can cache those descriptions so you can still browse them.</li>
+</ul>
+
+
+<h4><a name="FeatureList-CacheFlushing"></a>Cache Flushing</h4>
+
+<ul>
+	<li>Flushing of caches can be controlled via JSP Tags, so these functions can easily be built into your administration interface.</li>
+	<li>There is programmatic control over what caches are flushed (eg all caches or just a particular scope).</li>
+	<li>Cached objects can be expired in a number of ways. Objects can be told to expire once they reach a certain age, or, through the use of cron expressions, on particular dates and/or times (eg it is trivial to make an object expire every weekday at 3am). If this is not enough, you can expire objects programmatically as required, or plug in your own custom RefreshPolicy class that can dynamically decide when an object should be flushed.</li>
+	<li>Entire groups of objects can be easily flushed from the cache. For example suppose you were caching product data as well as entire pages of your website. When a product was updated, you could flush not just the product object but also all the pages that contain information about that product. No more waiting for the cached objects to expire before the updated content shows up on your site!</li>
+</ul>
+
+
+<h4><a name="FeatureList-Portablecaching"></a>Portable caching</h4>
+
+<ul>
+	<li>Pure Java, this means it is platform independent.</li>
+	<li>OSCache is compliant with Servlet 2.3 and JSP 1.2 standards, which means it should work in the latest generation of servlet containers and application servers.</li>
+</ul>
+
+
+<h4><a name="FeatureList-i18nAware"></a>i18n Aware</h4>
+
+<ul>
+	<li>The caching is i18n aware and supports all encodings.</li>
+</ul>
+
+
+<h4><a name="FeatureList-SolidReputation"></a>Solid Reputation</h4>
+
+<ul>
+	<li>Thousands of downloads, hundreds of users on the <a href="https://oscache.dev.java.net/servlets/ProjectMailingListList" title="Visit page outside Confluence">mailing list</a>.</li>
+	<li>Comprehensive <a href="http://www.junit.org/" title="Visit page outside Confluence">JUnit</a> test suite that covers every aspect of OSCache, including a web stress test and various concurrent cache access scenarios. To back this up, the kind folks at <a href="http://www.cortexebusiness.com.au/" title="Visit page outside Confluence">Cortex</a> have supplied us with a <a href="http://www.thecortex.net/clover/" title="Visit page outside Confluence">Clover</a> license to provide detailed code coverage analysis of our unit tests.</li>
+	<li>We have solid <a href="http://jira.opensymphony.com/" title="Visit page outside Confluence">issue tracking</a> using <a href="http://www.atlassian.com/software/jira" title="Visit page outside Confluence">JIRA</a> to keep track of any feature requests, bug reports and development progress. <a href="http://www.atlassian.com/software/jira" title="Visit page outside Confluence">JIRA</a> is provided courtesy of <a href="http://www.atlassian.com/" title="Visit page outside Confluence">Atlassian</a>.</li>
+</ul>
+
+
+                    			    </td>
+		    </tr>
+	    </table>
+    </body>
+</html>
