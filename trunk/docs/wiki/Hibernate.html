@@ -1,0 +1,144 @@
+<html>
+<head>
+<title>OSCache - Hibernate</title>
+<link rel="stylesheet" href="styles/site.css" type="text/css" />
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+</head>
+
+<body>
+<table class="pagecontent" border="0" cellpadding="0" cellspacing="0"
+	width="100%" bgcolor="#ffffff">
+	<tr>
+		<td valign="top" class="pagebody">
+		<p><a href="http://www.hibernate.org/"
+			title="Visit page outside Confluence">Hibernate</a> is a powerful,
+		ultra-high performance object/relational persistence and query service
+		for Java. Hibernate lets you develop persistent objects following
+		common Java idiom - including association, inheritance, polymorphism,
+		composition and the Java collections framework. Extremely
+		fine-grained, richly typed object models are possible.</p>
+
+		<p>Hibernate 3.2 features support for plugin cache providers and
+		is designed to integrate with distributed caches (3.2 also implements
+		more aggressive use of the cache). <b>net.sf.hibernate.cache.CacheProvider</b>
+		is the extension point for user-defined cache integration.</p>
+
+		<p><a href="http://www.hibernate.org/6.html"
+			title="Visit page outside Confluence">Hibernate Core 3.2.3 GA</a> or
+		higher is required.</p>
+
+		<table cellpadding='5' width='85%' cellspacing='8px'
+			class='warningMacro' border="0" align='center'>
+			<colgroup>
+				<col width='24'>
+				<col>
+			</colgroup>
+			<tr>
+				<td valign='top'><img src="./icons/emoticons/forbidden.gif"
+					width="16" height="16" align="absmiddle" alt="" border="0"></td>
+				<td><b class="strong">Warning</b><br />
+				<p>Unfortunately, at this time the OSCacheProvider distributed
+				with Hibernate 3.2 is not suited to clustering with OSCache. A patch
+				has been submitted to the Hibernate team but not yet applied. Even
+				if you do not require clustering, we recommend use of
+				OSCacheProvider and OSCache for Hibernate 3.2 delivered by OSCache
+				2.4 and higher. The OSCache only allows a single cache.capacity
+				setting and saves memory.</p>
+				</td>
+			</tr>
+		</table>
+
+		<h3><a name="Hibernate-hibernate.cache.providerclass"></a>hibernate.cache.provider_class</h3>
+
+		<p>OSCache and Hibernate 3.2 integrate though OSCacheProvider.</p>
+
+		<table cellpadding='5' width='85%' cellspacing='8px' class='infoMacro'
+			border="0" align='center'>
+			<colgroup>
+				<col width='24'>
+				<col>
+			</colgroup>
+			<tr>
+				<td valign='top'><img src="./icons/emoticons/information.gif"
+					width="16" height="16" align="absmiddle" alt="" border="0"></td>
+				<td><b class="strong">Clustering</b><br />
+				<p>The clustered cache invalidation only works for entity
+				updates when usage="nonstrict-read-write".</p>
+				</td>
+			</tr>
+		</table>
+
+		<p>To enable OSCache for Hibernate's second level cache add the
+		following line to Hibernate's configuration e.g. <em>hibernate.cfg.xml</em>:</p>
+
+		<div class="code">
+		<div class="codeHeader"><b>hibernate.cfg.xml</b></div>
+		<div class="codeContent"><pre class="code-xml"><span
+			class="code-tag">&lt;property name=<span class="code-quote">"hibernate.cache.provider_class"</span>&gt;</span>com.opensymphony.oscache.hibernate.OSCacheProvider<span
+			class="code-tag">&lt;/property&gt;</span></pre></div>
+		</div>
+
+		<p>The default refresh period is <a
+			href="http://www.opensymphony.com/oscache/api/com/opensymphony/oscache/base/CacheEntry.html#INDEFINITE_EXPIRY"
+			title="Visit page outside Confluence">CacheEntry.INDEFINITE_EXPIRY</a>.
+		The first time a cacheable query is done, the cache has no effect on
+		speed. On the second and successive queries, the cache will be
+		populated and available to be hit.</p>
+
+		<table cellpadding='5' width='85%' cellspacing='8px' class='noteMacro'
+			border="0" align='center'>
+			<colgroup>
+				<col width='24'>
+				<col>
+			</colgroup>
+			<tr>
+				<td valign='top'><img src="./icons/emoticons/warning.gif"
+					width="16" height="16" align="absmiddle" alt="" border="0"></td>
+				<td><b class="strong">Object Identifiers</b><br />
+				<p>Object identifiers must have well-behaved toString() methods,
+				because OSCache uses the toString() method for the key of the cache.
+				Therefore it needs to create a unique identifier for the object
+				being stored.</p>
+				</td>
+			</tr>
+		</table>
+
+		<h3><a name="Hibernate-CacheRegionConfiguration"></a>Cache Region
+		Configuration</h3>
+
+		<p>To modify the refresh period, CRON expression, add the region
+		configuration to your <a href="Configuration.html"
+			title="Configuration">oscache.properties</a> file, as demonstrated
+		below:</p>
+
+		<div class="preformatted">
+		<div class="preformattedContent"><pre>[region].refresh.period = 4000
+[region].cron = * * 31 Feb *
+</pre></div>
+		</div>
+
+		<p>The com.mypackage.domain.Customer is Hibernate's internal cache
+		region, which defaults to the classname, and which can be altered by
+		setting Hibernate's configuration property <a
+			href="http://www.hibernate.org/hib_docs/reference/en/html/session-configuration.html"
+			title="Visit page outside Confluence">hibernate.cache.region_prefix</a>
+		.</p>
+
+		<h3><a
+			name="Hibernate-ConfigureadifferentconfigurationfileforHibernate"></a>Configure
+		a different configuration file for Hibernate</h3>
+
+		<p>To configure a different configuration file use the following
+		parameter in the Hibernate's configuration:</p>
+		<div class="code">
+		<div class="codeHeader"><b>hibernate.cfg.xml</b></div>
+		<div class="codeContent"><pre class="code-xml"><span
+			class="code-tag">&lt;property name=<span class="code-quote">"com.opensymphony.oscache.configurationResourceName"</span>&gt;</span>path to oscache-hibernate.properties<span
+			class="code-tag">&lt;/property&gt;</span></pre></div>
+		</div>
+
+		</td>
+	</tr>
+</table>
+</body>
+</html>

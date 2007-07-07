@@ -1,0 +1,390 @@
+<?xml version="1.0" ?>
+
+<!-- OSCache build file - http://www.opensymphony.com/oscache -->
+<project name="oscache" default="jar" basedir=".">
+
+    <!-- overridden properties (must be before the import!) -->
+   
+    <property name="compile.version" value="1.4"/>
+    <property name="test.compile.version" value="1.4"/>
+
+    <property name="lib.optional" value="${lib}/plugins"/> <!-- overwritten -->
+    <property name="jar.excludes" value="test/**, docs/**, *.war, **/*.html"/>
+
+    <property name="tmp.dir" value="tmp"/> <!-- ??? -->
+
+    <!-- This property must match with what is included in the oscache.properties files -->
+    <property name="test.cache.path" value="/tmp/cachetagscache"/>
+
+    <!-- debug -->   
+    <property name="debug" value="true"/>
+
+    <!-- import common osbuild.xml -->
+    
+    <property name="common.build" value="../opensymphony/common/osbuild.xml"/>
+    <import file="${common.build}"/>
+ 
+    <property name="clover.initstring" location="${build.clover}/coverageBase.db"/>
+    
+    <!-- project properties -->
+
+    <property name="src.webapp" value="${src}/webapp"/> <!-- new -->
+ 
+    <patternset id="src.test.pattern.base">
+        <include name="**/TestComplete*.class"/>
+        <exclude name="**/web/*.*"/>
+        <exclude name="**/clustersupport/*.*"/>
+    </patternset>
+
+    <patternset id="src.test.pattern.web">
+        <include name="**/web/TestComplete*.class"/>
+        <include name="**/web/TestLoadComplete*.class"/>
+    </patternset>
+
+    <patternset id="src.test.pattern.cluster">
+        <include name="**/TestCompleteCluster.class"/>
+    </patternset>
+   
+    <!-- init -->
+    
+    <target name="init" depends="ivy-check,common.init">
+        <taskdef name="ivy-configure" classname="fr.jayasoft.ivy.ant.IvyConfigure"/>
+        <taskdef name="ivy-resolve" classname="fr.jayasoft.ivy.ant.IvyResolve"/>
+        <taskdef name="ivy-retrieve" classname="fr.jayasoft.ivy.ant.IvyRetrieve"/>
+        <taskdef name="ivy-publish" classname="fr.jayasoft.ivy.ant.IvyPublish"/>
+        <taskdef name="ivy-report" classname="fr.jayasoft.ivy.ant.IvyReport"/>
+        <taskdef name="ivy-deliver" classname="fr.jayasoft.ivy.ant.IvyDeliver"/>
+
+        <ivy-retrieve/>
+    </target>
+ 
+    <!-- Ivy -->   
+    
+    <target name="ivyrep.copy-ivy" depends="init">
+        <ivy-deliver deliverpattern="${ivyrep.path}/opensymphony/${name}/[artifact]-[revision].[ext]"
+                     pubrevision="${version}-${TIME}" pubdate="${TIME}"/>
+    </target>
+
+    <available property="ivy.available" classname="fr.jayasoft.ivy.ant.IvyRetrieve"/>
+   
+    <target name="ivy-check" unless="ivy.available">
+        <fail message="Please download Ivy at http://www.jayasoft.org/ivy and copy ivy.jar to ${ant.home}${file.separator}lib"/>
+    </target>
+   
+    <!-- Prepares the build directory -->
+    <target name="prepare" depends="init">
+        <mkdir dir="${build.java}/META-INF"/>
+        <copy file="${src}/etc/META-INF/taglib.tld" tofile="${build.java}/META-INF/taglib.tld"/>
+    </target>
+
+
+    <!-- Compiles the core source code -->
+    <target name="compile" depends="prepare">
+        <javac srcdir="${src.java}" destdir="${build.java}" includes="com/opensymphony/oscache/**" debug="${debug}" classpathref="cp" source="${compile.version}" target="${compile.version}"/>
+    </target>
+
+
+    <!-- Prepares and compiles the web application, which includes the web test suite -->
+    <target name="example-war" depends="jar">
+        <mkdir dir="${build}/webapp"/>
+        <mkdir dir="${dist}"/>
+
+        <javac srcdir="${src.webapp}/WEB-INF/classes" destdir="${build}/webapp" includes="com/opensymphony/oscache/**" debug="${debug}" classpath="${build.java}" classpathref="cp"/>
+
+        <war destfile="${dist}/${name}-example.war" basedir="${src.webapp}" webxml="${src.webapp}/WEB-INF/web.xml" excludes="WEB-INF/web.xml">
+            <lib file="${build}/${name}-${version}.jar"/>
+            <lib file="${lib}/commons-logging.jar"/>
+            <classes dir="${build}/webapp"/>
+        </war>
+    </target>
+
+    
+    <!-- Deploy example war for the test web -->
+    <target name="deploy-example-war" depends="example-war" if="test.web.deployDir">
+        <!-- Use auto deployment of app server, e.g. BEA WLS -->   
+        <copy file="${dist}/${name}-example.war" tofile="${test.web.deployDir}/${name}-example.war" overwrite="yes"/>
+        <!-- if your pc is to fast, sleep here for a while to allow redeployment of the web app -->
+        <echo message="Deploying example web app and waiting for a while..." level="info"/>
+        <sleep seconds="30"/> 
+    </target>
+
+    
+    <!-- Build a usable jar file -->
+    <target name="jar" depends="compile">
+        <mkdir dir="${build}"/>
+
+        <jar jarfile="${build}/${name}-${version}.jar" basedir="${build.java}" excludes="${jar.excludes}">
+            <manifest>
+                <attribute name="Implementation-Title" value="${fullname}"/>
+                <attribute name="Implementation-Version" value="${version}"/>
+                <attribute name="Implementation-Vendor" value="OpenSymphony"/>
+            </manifest>
+        </jar>
+    </target>
+ 
+ 
+    <!-- macrodef for tests -->
+    
+    <macrodef name="testBase">
+        <attribute name="file"/>
+        <attribute name="message"/>
+        <sequential>
+            <echo message="@{message}" level="info"/>
+            <copy file="@{file}" tofile="${build.test}/oscache.properties" overwrite="yes"/>
+         
+            <!-- Clear out any previous persistent cache directory -->
+            <delete dir="${test.cache.path}" failonerror="false"/>
+
+            <junit printsummary="yes" haltonfailure="no" haltonerror="yes" fork="yes" failureproperty="test.failure">
+                <classpath>
+                    <pathelement location="${build.test}"/>
+                    <path refid="cp"/>
+                </classpath>
+
+                <formatter type="xml"/>
+
+                <batchtest todir="${dist.docs}/junit">
+                    <fileset dir="${build.test}">
+                        <patternset refid="src.test.pattern.base"/>
+                    </fileset>
+                </batchtest>
+            </junit>
+         
+            <!-- Clear out persistent cache directory -->
+            <delete dir="${test.cache.path}" failonerror="false"/>
+   
+        </sequential>
+    </macrodef>
+    
+    <macrodef name="testWeb">
+        <attribute name="file"/>
+        <attribute name="message"/>
+        <sequential>
+            <echo message="@{message}" level="info"/>
+            <copy file="@{file}" tofile="${build.test}/oscache.properties" overwrite="yes"/>
+         
+            <!-- Clear out any previous persistent cache directory -->
+            <delete dir="${test.cache.path}" failonerror="false"/>
+
+            <javac srcdir="${src.test}" destdir="${build.test}" includes="com/opensymphony/oscache/web/**" debug="${debug}" classpath="${build}" classpathref="cp"/>
+
+            <java classname="com.opensymphony.oscache.web.CheckDeployment" failonerror="true" classpath="${build.test}" fork="yes">
+                <arg value="${test.web.baseURL}"/>
+            </java>
+
+            <junit printsummary="yes" haltonfailure="no" haltonerror="yes" fork="yes" failureproperty="test.failure">
+                <sysproperty key="test.web.baseURL" value="${test.web.baseURL}"/>
+                <classpath>
+                    <pathelement location="${build.test}"/>
+                    <pathelement location="${build}"/>
+                    <path refid="cp"/>
+                </classpath>
+
+                <formatter type="xml"/>
+                <formatter type="plain" useFile="false"/>
+                
+                <batchtest todir="${dist.docs}/junit">
+                    <fileset dir="${build.test}">
+                        <patternset refid="src.test.pattern.web"/>
+                    </fileset>
+                </batchtest>
+            </junit>
+            
+            <!-- Clear out persistent cache directory -->
+            <delete dir="${test.cache.path}" failonerror="false"/>
+            
+        </sequential>
+    </macrodef>
+
+    <!-- Compiling sources for junit tests and clover -->   
+    <target name="test-compile" depends="junit-check, clover-check">
+        <mkdir dir="${dist.docs}/junit"/>
+        <mkdir dir="${dist.docs}/clover"/>
+        <mkdir dir="${build.test}"/>
+        <mkdir dir="${build.clover}"/>
+        <mkdir dir="${build.clover}/history" />
+
+	    <taskdef resource="clovertasks"/>
+        <taskdef name="junit" classname="org.apache.tools.ant.taskdefs.optional.junit.JUnitTask"/>
+	
+        <javac destdir="${build.test}" debug="${debug}" classpathref="cp" source="${test.compile.version}" target="${test.compile.version}" compiler="org.apache.tools.ant.taskdefs.CloverCompilerAdapter">
+            <src path="${src.java}"/>
+        </javac>
+
+	    <javac destdir="${build.test}" debug="${debug}" classpathref="cp" source="${test.compile.version}" target="${test.compile.version}">
+            <src path="${src.test}"/>
+        </javac>
+    </target>
+
+    <!-- Run base tests -->   
+    <target name="test-base-mc" depends="test-compile" unless="test.failure" description="run base tests">
+        <!-- Run tests using Memory Cache Only -->
+        <testBase file="${src.test}/oscacheMemoryOnly.properties" message="Running base tests with memory cache only"/>
+    </target>
+
+    <target name="test-base-dc" depends="test-compile" unless="test.failure" description="run base tests">
+        <!-- Rerun tests using Disk Cache Only -->
+        <testBase file="${src.test}/oscacheDiskOnly.properties" message="Running base tests with disk cache only"/>
+    </target>
+
+    <target name="test-base-dc-hash" depends="test-compile" unless="test.failure" description="run base tests">
+        <!-- Rerun tests using Disk Cache Only -->
+        <testBase file="${src.test}/oscacheDiskOnlyHash.properties" message="Running base tests with disk cache hash persistence only"/>
+    </target>
+
+    <target name="test-base-dmc" depends="test-compile" unless="test.failure" description="run base tests">
+        <!-- ReRun tests using Disk and Memory Cache -->
+        <testBase file="${src.test}/oscacheDiskAndMemory.properties" message="Running base tests with disk and memory caches"/>
+    </target>
+
+    <target name="test-base-mdoc" depends="test-compile" unless="test.failure" description="run base tests">
+        <!-- ReRun tests using Memory and Disk Overflow Cache -->   
+        <testBase file="${src.test}/oscacheMemoryAndOverflowToDisk.properties" message="Running base tests with memory and disk overflow caches"/>
+    </target>
+
+    <target name="test-base" depends="test-base-mc, test-base-dc, test-base-dc-hash, test-base-dmc, test-base-mdoc" description="run all base tests"/>
+   
+    <!-- Run web tests -->   
+    <target name="test-web-mc" depends="test-compile, example-war, deploy-example-war" unless="test.failure" if="test.web.baseURL" description="run web tests">
+        <!-- Run tests using Memory Cache Only -->
+        <testWeb file="${src.test}/oscacheMemoryOnly.properties" message="Running web tests with memory cache only"/>
+    </target>
+
+    <target name="test-web-dc" depends="test-compile, example-war, deploy-example-war" unless="test.failure" if="test.web.baseURL" description="run web tests">
+        <!-- Rerun tests using Disk Cache Only -->
+        <testWeb file="${src.test}/oscacheDiskOnly.properties" message="Running web tests with disk cache only"/>
+    </target>
+
+    <target name="test-web-dc-hash" depends="test-compile, example-war, deploy-example-war" unless="test.failure" if="test.web.baseURL" description="run web tests">
+        <!-- Rerun tests using Disk Cache Only -->
+        <testWeb file="${src.test}/oscacheDiskOnlyHash.properties" message="Running web tests with disk cache hash persistence only"/>
+    </target>
+
+    <target name="test-web-dmc" depends="test-compile, example-war, deploy-example-war" unless="test.failure" if="test.web.baseURL" description="run web tests">
+        <!-- ReRun tests using Disk and Memory Cache -->
+        <testWeb file="${src.test}/oscacheDiskAndMemory.properties" message="Running web tests with disk and memory caches"/>
+    </target>
+
+    <target name="test-web-mdoc" depends="test-compile, example-war, deploy-example-war" unless="test.failure" if="test.web.baseURL" description="run web tests">
+        <!-- ReRun tests using Memory and Disk Overflow Cache -->   
+        <testWeb file="${src.test}/oscacheMemoryAndOverflowToDisk.properties" message="Running web tests with memory and disk overflow caches"/>
+    </target>
+    
+    <target name="test-web" depends="test-web-mc, test-web-dc, test-web-dc-hash, test-web-dmc, test-web-mdoc" description="run all web tests"/>
+   
+    <!-- Run clustering tests -->
+    <target name="test-cluster" depends="test-compile" unless="test.failure" if="test-cluster" description="run cluster tests">
+        <echo message="Running tests with memory caches and clustering" level="info"/>
+     
+        <!-- Clear out any previous persistent cache directory -->
+        <delete dir="${test.cache.path}" failonerror="false"/>
+
+        <junit printsummary="yes" haltonfailure="no" haltonerror="yes" fork="yes" failureproperty="test.failure">
+            <classpath>
+                <pathelement location="${build.test}"/>
+                <path refid="cp"/>
+            </classpath>
+
+            <formatter type="xml"/>
+
+            <batchtest todir="${dist.docs}/junit">
+                <fileset dir="${build.test}">
+                    <patternset refid="src.test.pattern.cluster"/>
+                </fileset>
+            </batchtest>
+        </junit>
+     
+        <!-- Clear out persistent cache directory -->
+        <delete dir="${test.cache.path}" failonerror="false"/>
+    </target>
+
+    
+    <!-- Run JUnit tests using different combinations of disk and memory caching -->
+    <target name="test" depends="test-base, test-web, test-cluster" description="run all tests"/>
+ 
+    
+    <!-- Create the distribution zip files -->
+    <target name="dist" depends="jar, docs, example-war">
+        <!-- copy the standard file -->
+        <copy file="${build}/${name}-${version}.jar" tofile="${dist}/${name}-${version}.jar"/>
+   
+        <!-- create the full package -->
+        <mkdir dir="${tmp.dir}/docs"/>
+        <mkdir dir="${tmp.dir}/src"/>
+        <mkdir dir="${tmp.dir}/lib"/>
+        <mkdir dir="${tmp.dir}/etc"/>
+
+        <copy todir="${tmp.dir}/docs">
+            <fileset dir="${dist.docs}"/>
+        </copy>
+        <copy todir="${tmp.dir}/src">
+            <fileset dir="${src}" excludes="etc/**"/>
+        </copy>
+        
+        <copy file="${lib}/commons-logging.jar" todir="${tmp.dir}/lib"/>
+        <copy file="${lib}/jgroups-all.jar" todir="${tmp.dir}/lib"/>
+
+        <copy file="${build}/${name}-${version}.jar" todir="${tmp.dir}"/>
+        
+        <copy file="${src}/etc/oscache.properties" tofile="${tmp.dir}/etc/oscache.properties"/>
+        <copy file="${src}/etc/META-INF/taglib.tld" tofile="${tmp.dir}/etc/META-INF/${name}.tld"/>
+        <copy file="readme.txt" tofile="${tmp.dir}/readme.txt" failonerror="false"/>
+
+        <zip zipfile="${dist}/${name}-${version}-full.zip" basedir="${tmp.dir}" includes="**"/>
+
+        <!-- Remove everything that's not in the binary release -->
+        <delete dir="${tmp.dir}/src"/>
+        <delete dir="${tmp.dir}/${lib.build}"/>
+        <delete dir="${tmp.dir}/docs/junit"/>
+        <delete dir="${tmp.dir}/docs/clover"/>
+        <delete file="${tmp.lib}/jgroups-all.jar"/>
+
+        <zip zipfile="${dist}/${name}-${version}-binary.zip" basedir="${tmp.dir}" includes="**"/>
+
+        <delete dir="${tmp.dir}"/>
+     
+        <!-- Creates checksum for the distribution files -->   
+        <checksum>
+          <fileset dir="${dist}">
+            <include name="*.jar"/>
+            <include name="*.zip"/>
+            <include name="*.war"/>
+          </fileset>
+        </checksum>
+
+    </target>
+
+    <target name="clover.report" depends="test">
+        <clover-report>
+            <current outfile="${dist.docs}/clover">
+                <fileset dir="${src.java}" excludes="**/Test*"/>
+                <format type="html"/>
+            </current>
+        </clover-report>
+<!--
+        <clover-historypoint historyDir="${build.clover}/history" />
+
+        <clover-report>
+            <historical outfile="${dist.docs}/clover/historical.pdf" historyDir="${build.clover}/history" />
+        </clover-report>
+-->        
+    </target>
+	
+    <target name="junit.report" depends="test">
+        <junitreport todir="${dist.docs}/junit">
+            <fileset dir="${dist.docs}/junit">
+                <include name="TEST-*.xml"/>
+            </fileset>
+            <report format="frames" todir="${dist.docs}/junit"/>
+        </junitreport>
+     
+        <!-- we fail here (instead of in the test target) so that the reports get generated first) -->
+        <fail if="test.failure" message="Tests did not all pass, failing!"/>
+    </target>
+
+    <target name="reports" depends="common.reports">
+        <mkdir dir="${dist.docs}/dependencies"/>
+        <ivy-report todir="${dist.docs}/dependencies" graph="false"/>
+    </target>
+    
+</project>
