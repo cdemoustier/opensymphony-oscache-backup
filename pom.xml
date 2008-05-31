@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>opensymphony</groupId>
     <artifactId>oscache</artifactId>
-    <version>2.4.1</version>
+    <version>2.4.2</version>
     <name>OSCache</name>
     <description>
         OSCache is a caching solution that includes a JSP tag library

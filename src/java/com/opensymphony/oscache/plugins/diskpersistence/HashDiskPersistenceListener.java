@@ -11,6 +11,9 @@ import java.io.File;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 /**
  * Persists cache data to disk. Provides a hash of the standard key name as the file name.
  *
@@ -22,6 +25,8 @@ import java.security.NoSuchAlgorithmException;
  */
 public class HashDiskPersistenceListener extends AbstractDiskPersistenceListener {
     
+    private static final Log LOG = LogFactory.getLog(HashDiskPersistenceListener.class);
+
     private static final int DIR_LEVELS = 3;
     
     public final static String HASH_ALGORITHM_KEY = "cache.persistence.disk.hash.algorithm";
@@ -45,7 +50,7 @@ public class HashDiskPersistenceListener extends AbstractDiskPersistenceListener
                 md = MessageDigest.getInstance(HashDiskPersistenceListener.DEFAULT_HASH_ALGORITHM);
             }
         } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
+        	LOG.warn("No hash algorithm available for disk persistence", e);
             throw new RuntimeException("No hash algorithm available for disk persistence", e);
         }
 
