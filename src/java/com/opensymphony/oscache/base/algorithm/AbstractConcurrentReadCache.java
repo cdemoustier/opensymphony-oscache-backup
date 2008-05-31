@@ -367,18 +367,22 @@ public abstract class AbstractConcurrentReadCache extends AbstractMap implements
             log.debug("getGroup called (group=" + groupName + ")");
         }
 
-        Set groupEntries = null;
-
+        Set memoryGroupEntries = null;
         if (memoryCaching && (groups != null)) {
-            groupEntries = (Set) getGroupForReading(groupName);
+            memoryGroupEntries = (Set) getGroupForReading(groupName);
         }
 
-        if (groupEntries == null) {
-            // Not in the map, try the persistence layer
-            groupEntries = persistRetrieveGroup(groupName);
+        // CACHE-309
+        Set persistGroupEntries = persistRetrieveGroup(groupName);
+        
+        if (memoryGroupEntries != null) {
+        	if (persistGroupEntries != null) {
+        		memoryGroupEntries.addAll(persistGroupEntries);
+        	}
+            return memoryGroupEntries;
         }
-
-        return groupEntries;
+        
+        return persistGroupEntries;
     }
 
     /**
