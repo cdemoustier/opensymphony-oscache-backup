@@ -13,7 +13,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import java.io.*;
-
 import java.util.Set;
 
 import javax.servlet.jsp.PageContext;
@@ -30,6 +29,9 @@ import javax.servlet.jsp.PageContext;
  * @author <a href="mailto:amarch@soe.sony.com">Andres March</a>
  */
 public abstract class AbstractDiskPersistenceListener implements PersistenceListener, Serializable {
+	
+    private static final Log LOG = LogFactory.getLog(AbstractDiskPersistenceListener.class);
+
     public final static String CACHE_PATH_KEY = "cache.path";
 
     /**
@@ -315,10 +317,10 @@ public abstract class AbstractDiskPersistenceListener implements PersistenceList
                 } 
             }
         } catch (Exception e) {
-            throw new CachePersistenceException("Unable to remove '" + file + "' from the cache: " + e);
+            throw new CachePersistenceException("Unable to remove file '" + file + "' from the disk cache.", e);
         }
         if (file.exists() && count == 0) {
-            throw new CachePersistenceException("Unable to delete '" + file + "' from the cache. "+DELETE_COUNT+" attempts at "+DELETE_THREAD_SLEEP+" milliseconds intervals.");
+            throw new CachePersistenceException("Unable to delete '" + file + "' from the disk cache. "+DELETE_COUNT+" attempts at "+DELETE_THREAD_SLEEP+" milliseconds intervals.");
         }
     }
 
@@ -340,7 +342,7 @@ public abstract class AbstractDiskPersistenceListener implements PersistenceList
                     filepath.mkdirs();
                 }
             } catch (Exception e) {
-                throw new CachePersistenceException("Unable to create the directory " + filepath);
+                throw new CachePersistenceException("Unable to create the directory " + filepath, e);
             }
         }
 
@@ -356,12 +358,14 @@ public abstract class AbstractDiskPersistenceListener implements PersistenceList
                     try {
                         oout.close();
                     } catch (Exception e) {
+                    	LOG.warn("Problem closing file of disk cache.", e);
                     }
                 }
             } finally {
                 try {
                     fout.close();
                 } catch (Exception e) {
+                	LOG.warn("Problem closing file of disk cache.", e);
                 }
             }
         } catch (Exception e) {
@@ -373,7 +377,7 @@ public abstract class AbstractDiskPersistenceListener implements PersistenceList
                 } catch (InterruptedException ignore) {
                 } 
             }
-            throw new CachePersistenceException("Unable to write '" + file + "' in the cache. Exception: " + e.getClass().getName() + ", Message: " + e.getMessage());
+            throw new CachePersistenceException("Unable to write file '" + file + "' in the disk cache.", e);
         }
     }
 
@@ -483,7 +487,7 @@ public abstract class AbstractDiskPersistenceListener implements PersistenceList
         try {
             fileExist = file.exists();
         } catch (Exception e) {
-            throw new CachePersistenceException("Unable to verify if " + file + " exists: " + e);
+            throw new CachePersistenceException("Unable to verify if file '" + file + "' exists.", e);
         }
 
         // Read the file if it exists
@@ -499,7 +503,7 @@ public abstract class AbstractDiskPersistenceListener implements PersistenceList
                 // This is when the item will be invalidated (written or deleted)
                 // during read.
                 // The cache has the logic to retry reading.
-                throw new CachePersistenceException("Unable to read '" + file.getAbsolutePath() + "' from the cache: " + e);
+                throw new CachePersistenceException("Unable to read file '" + file.getAbsolutePath() + "' from the disk cache.", e);
             } finally {
               // HHDE: no need to close in. Will be closed by oin
                 try {

@@ -354,7 +354,7 @@ public class TestConcurrency extends TestCase {
                     Thread inspectedThread = spawnedThreads[threadIndex];
 
                     try {
-                        inspectedThread.join(maxWaitForEachThread * 1000);
+                        inspectedThread.join(maxWaitForEachThread * 1000L);
                     } catch (InterruptedException e) {
                         fail("Thread #" + threadIndex + " was interrupted");
                     }

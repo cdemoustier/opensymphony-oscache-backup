@@ -26,4 +26,8 @@ public final class CachePersistenceException extends Exception {
     public CachePersistenceException(String msg) {
         super(msg);
     }
+    
+    public CachePersistenceException(String message, Throwable cause) {
+        super(message, cause);
+    }
 }
