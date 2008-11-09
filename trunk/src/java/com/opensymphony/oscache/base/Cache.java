@@ -281,7 +281,7 @@ public class Cache implements Serializable {
                             } while (updateState.isUpdating());
                             
                             if (updateState.isCancelled()) {
-                                // The updating thread cancelled the update, let this one have a go. 
+                                // The updating thread canceled the update, let this one have a go. 
                                 // This increments the usage count for this EntryUpdateState instance
                                 updateState.startUpdate();
                                 
