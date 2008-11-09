@@ -5,7 +5,6 @@
 package com.opensymphony.oscache.web;
 
 import com.opensymphony.oscache.base.*;
-import com.opensymphony.oscache.base.events.CacheEventListener;
 import com.opensymphony.oscache.base.events.ScopeEvent;
 import com.opensymphony.oscache.base.events.ScopeEventListener;
 import com.opensymphony.oscache.base.events.ScopeEventType;
@@ -755,17 +754,6 @@ public class ServletCacheAdministrator extends AbstractCacheAdministrator implem
         config.set(HASH_KEY_SESSION_ID, sessionId);
 
         newCache = (ServletCache) configureStandardListeners(newCache);
-
-        if (config.getProperty(CACHE_ENTRY_EVENT_LISTENERS_KEY) != null) {
-            // Add any event listeners that have been specified in the configuration
-            CacheEventListener[] listeners = getCacheEventListeners();
-
-            for (int i = 0; i < listeners.length; i++) {
-                if (listeners[i] instanceof ScopeEventListener) {
-                    newCache.addCacheEventListener(listeners[i]);
-                }
-            }
-        }
 
         return newCache;
     }
