@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2003 by OpenSymphony
+ * Copyright (c) 2002-2008 by OpenSymphony
  * All rights reserved.
  */
 package com.opensymphony.oscache.web.filter;
@@ -39,6 +39,8 @@ public class CacheHttpServletResponseWrapper extends HttpServletResponseWrapper 
     private long expires = CacheFilter.EXPIRES_ON;
     private long lastModified = CacheFilter.LAST_MODIFIED_INITIAL;
     private long cacheControl = -60;
+    private int etagOption = CacheFilter.ETAG_WEAK;
+    private String etag = null;
 
     /**
      * Constructor
@@ -46,7 +48,7 @@ public class CacheHttpServletResponseWrapper extends HttpServletResponseWrapper 
      * @param response The servlet response
      */
     public CacheHttpServletResponseWrapper(HttpServletResponse response) {
-        this(response, false, Long.MAX_VALUE, CacheFilter.EXPIRES_ON, CacheFilter.LAST_MODIFIED_INITIAL, -60);
+        this(response, false, Long.MAX_VALUE, CacheFilter.EXPIRES_ON, CacheFilter.LAST_MODIFIED_INITIAL, -60, CacheFilter.ETAG_WEAK);
     }
 
     /**
@@ -58,16 +60,18 @@ public class CacheHttpServletResponseWrapper extends HttpServletResponseWrapper 
      * @param lastModified defines if last modified header will be send, @see CacheFilter
      * @param expires defines if expires header will be send, @see CacheFilter
      * @param cacheControl defines if cache control header will be send, @see CacheFilter
+     * @param etagOption defines if the ETag header will be send, @see CacheFilter
      */
-    public CacheHttpServletResponseWrapper(HttpServletResponse response, boolean fragment, long time, long lastModified, long expires, long cacheControl) {
+    public CacheHttpServletResponseWrapper(HttpServletResponse response, boolean fragment, long time, long lastModified, long expires, long cacheControl, int etagOption) {
         super(response);
         result = new ResponseContent();
         this.fragment = fragment;
         this.expires = expires;
         this.lastModified = lastModified;
         this.cacheControl = cacheControl;
+        this.etagOption = etagOption;
         
-        // only set inital values for last modified and expires, when a complete page is cached
+        // only set initial values for last modified and expires, when a complete page is cached
         if (!fragment) {
             // setting a default last modified value based on object creation and remove the millis
             if (lastModified == CacheFilter.LAST_MODIFIED_INITIAL) {
@@ -205,6 +209,10 @@ public class CacheHttpServletResponseWrapper extends HttpServletResponseWrapper 
             result.setContentEncoding(value);
         }
 
+        if (CacheFilter.HEADER_ETAG.equalsIgnoreCase(name)) {
+            result.setETag(value);
+        }
+
         super.setHeader(name, value);
     }
 
@@ -225,6 +233,10 @@ public class CacheHttpServletResponseWrapper extends HttpServletResponseWrapper 
 
         if (CacheFilter.HEADER_CONTENT_ENCODING.equalsIgnoreCase(name)) {
             result.setContentEncoding(value);
+        }
+
+        if (CacheFilter.HEADER_ETAG.equalsIgnoreCase(name)) {
+            result.setETag(value);
         }
 
         super.addHeader(name, value);
@@ -358,13 +370,20 @@ public class CacheHttpServletResponseWrapper extends HttpServletResponseWrapper 
     }
 
     public void flushBuffer() throws IOException {
+        // The weak ETag is content size + lastModified
+        if (etag == null) {
+            if (etagOption == CacheFilter.ETAG_WEAK) {
+        	    etag = "W/\"" + result.getSize() + "-" + result.getLastModified() + "\"";
+        	    result.setETag(etag);
+            }
+        } 
         super.flushBuffer();
         flush();
     }
 
     /**
      * Returns a boolean indicating if the response has been committed. 
-     * A commited response has already had its status code and headers written.
+     * A committed response has already had its status code and headers written.
      * 
      * @see javax.servlet.ServletResponseWrapper#isCommitted()
      */
@@ -389,6 +408,7 @@ public class CacheHttpServletResponseWrapper extends HttpServletResponseWrapper 
         expires = CacheFilter.EXPIRES_ON;
         lastModified = CacheFilter.LAST_MODIFIED_INITIAL;
         cacheControl = -60;
+        etag = null;
         // time ?
         */
     }

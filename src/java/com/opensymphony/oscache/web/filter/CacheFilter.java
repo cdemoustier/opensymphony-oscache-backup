@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2007 by OpenSymphony
+ * Copyright (c) 2002-2008 by OpenSymphony
  * All rights reserved.
  */
 package com.opensymphony.oscache.web.filter;
@@ -43,6 +43,7 @@ public class CacheFilter implements Filter, ICacheKeyProvider, ICacheGroupsProvi
     public static final String HEADER_IF_MODIFIED_SINCE = "If-Modified-Since";
     public static final String HEADER_CACHE_CONTROL = "Cache-Control";
     public static final String HEADER_ACCEPT_ENCODING = "Accept-Encoding";
+    public static final String HEADER_ETAG = "ETag";
 
     // Fragment parameter
     public static final int FRAGMENT_AUTODETECT = -1;
@@ -62,6 +63,11 @@ public class CacheFilter implements Filter, ICacheKeyProvider, ICacheGroupsProvi
     public static final long EXPIRES_OFF = 0;
     public static final long EXPIRES_ON = 1;
     public static final long EXPIRES_TIME = -1;
+    
+    // ETag parameter
+    public static final int ETAG_OFF = 0;
+    public static final int ETAG_WEAK = 1;
+    //public static final int ETAG_STRONG = 2;
     
     // Cache Control
     public static final long MAX_AGE_NO_INIT = Long.MIN_VALUE;
@@ -87,6 +93,7 @@ public class CacheFilter implements Filter, ICacheKeyProvider, ICacheGroupsProvi
     private int nocache = NOCACHE_OFF; // defines special no cache option for the requests - default is off
     private long lastModified = LAST_MODIFIED_INITIAL; // defines if the last-modified-header will be sent - default is intial setting
     private long expires = EXPIRES_ON; // defines if the expires-header will be sent - default is on
+    private int etag = ETAG_WEAK; // defines the type of the etag header - default is weak
     private long cacheControlMaxAge = -60; // defines which max-age in Cache-Control to be set - default is 60 seconds for max-age
     private ICacheKeyProvider cacheKeyProvider = this; // the provider of the cache key - default is the CacheFilter itselfs
     private ICacheGroupsProvider cacheGroupsProvider = this; // the provider of the cache groups - default is the CacheFilter itselfs
@@ -171,7 +178,7 @@ public class CacheFilter implements Filter, ICacheKeyProvider, ICacheGroupsProvi
                     log.info("OSCache: New cache entry, cache stale or cache scope flushed for " + key);
                 }
 
-                CacheHttpServletResponseWrapper cacheResponse = new CacheHttpServletResponseWrapper((HttpServletResponse) response, fragmentRequest, time * 1000L, lastModified, expires, cacheControlMaxAge);
+                CacheHttpServletResponseWrapper cacheResponse = new CacheHttpServletResponseWrapper((HttpServletResponse) response, fragmentRequest, time * 1000L, lastModified, expires, cacheControlMaxAge, etag);
                 chain.doFilter(request, cacheResponse);
                 cacheResponse.flushBuffer();
 
@@ -308,6 +315,18 @@ public class CacheFilter implements Filter, ICacheKeyProvider, ICacheGroupsProvi
             }
         }
 
+        // filter parameter expires
+        String etagParam = config.getInitParameter("etag");
+        if (etagParam != null) {
+            if ("off".equalsIgnoreCase(etagParam)) {
+                setETag(ETAG_OFF);
+            } else if ("weak".equalsIgnoreCase(etagParam)) {
+                setETag(ETAG_WEAK);
+            } else {
+                log.error("OSCache: Wrong value '" + etagParam + "' for init parameter 'etag', defaulting to 'weak'.");
+            }
+        }
+        
         // filter parameter Cache-Control
         String cacheControlMaxAgeParam = config.getInitParameter("max-age");
         if (cacheControlMaxAgeParam != null) {
@@ -416,7 +435,7 @@ public class CacheFilter implements Filter, ICacheKeyProvider, ICacheGroupsProvi
      * Checks if the request was filtered before, so
      * guarantees to be executed once per request. You
      * can override this methods to define a more specific
-     * behaviour.
+     * behavior.
      *
      * @param request checks if the request was filtered before.
      * @return true if it is the first execution
@@ -426,7 +445,7 @@ public class CacheFilter implements Filter, ICacheKeyProvider, ICacheGroupsProvi
     }
 
     /*
-     * isCacheableInternal gurarantees that the log information is correct.
+     * isCacheableInternal guarantees that the log information is correct.
      * 
      * @param request The servlet request
      * @return Returns a boolean indicating if the request can be cached or not.
@@ -443,7 +462,7 @@ public class CacheFilter implements Filter, ICacheKeyProvider, ICacheGroupsProvi
 
     /**
      * isCacheable is a method allowing a subclass to decide if a request is
-     * cachable or not.
+     * cacheable or not.
      * 
      * @param request The servlet request
      * @return Returns a boolean indicating if the request can be cached or not.
@@ -466,7 +485,7 @@ public class CacheFilter implements Filter, ICacheKeyProvider, ICacheGroupsProvi
     }
     
     /*
-     * isCacheableInternal gurarantees that the log information is correct.
+     * isCacheableInternal guarantees that the log information is correct.
      * 
      * @param cacheResponse the HTTP servlet response
      * @return Returns a boolean indicating if the response can be cached or not.
@@ -475,7 +494,7 @@ public class CacheFilter implements Filter, ICacheKeyProvider, ICacheGroupsProvi
         final boolean cacheable = isCacheable(cacheResponse);
 
         if (log.isDebugEnabled()) {
-            log.debug("OSCache: the response " + ((cacheable) ? "is" : "is not") + " cachable.");
+            log.debug("OSCache: the response " + ((cacheable) ? "is" : "is not") + " cacheable.");
         }
         
         return cacheable;
@@ -483,7 +502,7 @@ public class CacheFilter implements Filter, ICacheKeyProvider, ICacheGroupsProvi
 
     /**
      * isCacheable is a method allowing subclass to decide if a response is
-     * cachable or not.
+     * cacheable or not.
      * 
      * @param cacheResponse the HTTP servlet response
      * @return Returns a boolean indicating if the response can be cached or not.
@@ -553,7 +572,7 @@ public class CacheFilter implements Filter, ICacheKeyProvider, ICacheGroupsProvi
     /**
      * <b>ICacheGroupsProvider</b> - Class implementing the interface <code>ICacheGroupsProvider</code>.
      * A developer can implement a method which provides cache groups based on the request, 
-     * the servlect cache administrator and cache. The parameter has to be not <code>null</code>.
+     * the servlet cache administrator and cache. The parameter has to be not <code>null</code>.
      *
      * @param cacheGroupsProvider the cacheGroupsProvider to set
      * @since 2.4
@@ -649,6 +668,27 @@ public class CacheFilter implements Filter, ICacheKeyProvider, ICacheGroupsProvi
     }
 
     /**
+	 * @return the etag
+	 * @since 2.4.2
+	 */
+	public int getETag() {
+		return etag;
+	}
+
+	/**
+     * <b>etag</b> - defines if the Entity tag (ETag) HTTP header is sent in the response. Acceptable values are
+     * <code>ETAG_OFF</code> for don't sending the header, even it is set in the filter chain, 
+     * <code>ETAG_WEAK</code> (default) for generating a Weak ETag by concatenating the content length and the last modified time in milliseconds. 
+     * 
+     * @param etag the etag to set
+     * @since 2.4.2
+   	 */
+	public void setETag(int etag) {
+        if ((etag < ETAG_OFF) || (etag > ETAG_WEAK)) throw new IllegalArgumentException("ETag value out of range.");
+		this.etag = etag;
+	}
+
+	/**
      * @return the expiresRefreshPolicy
      * @since 2.4
      */
