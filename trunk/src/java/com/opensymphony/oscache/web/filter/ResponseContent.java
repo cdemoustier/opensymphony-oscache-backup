@@ -29,6 +29,7 @@ public class ResponseContent implements Serializable {
     private long expires = Long.MAX_VALUE;
     private long lastModified = -1;
     private long maxAge = -60;
+    private String etag = null;
 
     public String getContentType() {
         return contentType;
@@ -58,7 +59,15 @@ public class ResponseContent implements Serializable {
         this.contentEncoding = contentEncoding;
     }
 
-    /**
+    public String getETag() {
+        return etag;
+    }
+
+    public void setETag(String etag) {
+        this.etag = etag;
+    }
+
+   /**
      * Set the Locale. We capture this so that when we serve this data from
      * cache, we can set the correct locale on the response.
      */
@@ -67,31 +76,31 @@ public class ResponseContent implements Serializable {
     }
 
     /**
-     * @return the expires date and time in miliseconds when the content will be stale
+     * @return the expires date and time in milliseconds when the content will be stale
      */
     public long getExpires() {
         return expires;
     }
 
     /**
-     * Sets the expires date and time in miliseconds.
-     * @param value time in miliseconds when the content will expire
+     * Sets the expires date and time in milliseconds.
+     * @param value time in milliseconds when the content will expire
      */
     public void setExpires(long value) {
         expires = value;
     }
 
 	/**
-	 * Returns the max age of the content in miliseconds. If expires header and cache control are
+	 * Returns the max age of the content in milliseconds. If expires header and cache control are
 	 * enabled both, both will be equal. 
-	 * @return the max age of the content in miliseconds, if -1 max-age is disabled
+	 * @return the max age of the content in milliseconds, if -1 max-age is disabled
 	 */
 	public long getMaxAge() {
 		return maxAge;
 	}
 
 	/**
-	 * Sets the max age date and time in miliseconds. If the parameter is -1, the max-age parameter
+	 * Sets the max age date and time in milliseconds. If the parameter is -1, the max-age parameter
 	 * won't be set by default in the Cache-Control header.
 	 * @param value sets the intial
 	 */
@@ -165,6 +174,11 @@ public class ResponseContent implements Serializable {
                 // add the last modified header
                 if (lastModified != -1) {
                     httpResponse.setDateHeader(CacheFilter.HEADER_LAST_MODIFIED, lastModified);
+                }
+                
+                // add the etag header
+                if (etag != null) {
+                    httpResponse.addHeader(CacheFilter.HEADER_ETAG, etag);
                 }
                 
                 // add the expires header
