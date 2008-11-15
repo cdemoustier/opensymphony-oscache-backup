@@ -30,6 +30,7 @@ public class ResponseContent implements Serializable {
     private long lastModified = -1;
     private long maxAge = -60;
     private String etag = null;
+    private String contentDisposition = null;
 
     public String getContentType() {
         return contentType;
@@ -65,6 +66,14 @@ public class ResponseContent implements Serializable {
 
     public void setETag(String etag) {
         this.etag = etag;
+    }
+
+    public String getContentDisposition() {
+        return contentDisposition;
+    }
+
+    public void setContentDisposition(String contentDisposition) {
+        this.contentDisposition = contentDisposition;
     }
 
    /**
@@ -179,6 +188,11 @@ public class ResponseContent implements Serializable {
                 // add the etag header
                 if (etag != null) {
                     httpResponse.addHeader(CacheFilter.HEADER_ETAG, etag);
+                }
+                
+                // add the content disposition header
+                if(contentDisposition != null) {
+                    httpResponse.addHeader(CacheFilter.HEADER_CONTENT_DISPOSITION, contentDisposition);
                 }
                 
                 // add the expires header
