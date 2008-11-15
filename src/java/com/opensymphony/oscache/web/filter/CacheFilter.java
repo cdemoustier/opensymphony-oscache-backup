@@ -44,6 +44,7 @@ public class CacheFilter implements Filter, ICacheKeyProvider, ICacheGroupsProvi
     public static final String HEADER_CACHE_CONTROL = "Cache-Control";
     public static final String HEADER_ACCEPT_ENCODING = "Accept-Encoding";
     public static final String HEADER_ETAG = "ETag";
+    public static final String HEADER_CONTENT_DISPOSITION = "Content-Disposition";
 
     // Fragment parameter
     public static final int FRAGMENT_AUTODETECT = -1;

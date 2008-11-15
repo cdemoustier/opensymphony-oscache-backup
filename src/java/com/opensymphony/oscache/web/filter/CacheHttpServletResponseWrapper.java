@@ -212,6 +212,10 @@ public class CacheHttpServletResponseWrapper extends HttpServletResponseWrapper 
         if (CacheFilter.HEADER_ETAG.equalsIgnoreCase(name)) {
             result.setETag(value);
         }
+        
+        if (CacheFilter.HEADER_CONTENT_DISPOSITION.equalsIgnoreCase(name)) {
+            result.setContentDisposition(value);
+        }
 
         super.setHeader(name, value);
     }
@@ -237,6 +241,10 @@ public class CacheHttpServletResponseWrapper extends HttpServletResponseWrapper 
 
         if (CacheFilter.HEADER_ETAG.equalsIgnoreCase(name)) {
             result.setETag(value);
+        }
+
+        if (CacheFilter.HEADER_CONTENT_DISPOSITION.equalsIgnoreCase(name)) {
+            result.setContentDisposition(value);
         }
 
         super.addHeader(name, value);
