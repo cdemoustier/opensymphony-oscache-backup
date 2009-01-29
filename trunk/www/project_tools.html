@@ -1,4 +1,23 @@
+<script type="text/javascript">
+function replaceLinks() {
+    try {
+        var tools = document.getElementById("projecttools");
+        var links = tools.getElementsByTagName("a");
+        for (i=0; i < links.length; i++) {
+            if (links[i].getAttribute("href").indexOf("ProjectIssues") > -1) {
+                links[i].setAttribute("href", "http://jira.opensymphony.com/browse/CACHE");
+                links[i].innerHTML="JIRA Issue Tracker";
+            }
+
+            if (links[i].getAttribute("href").indexOf("ProjectForumView") > -1) {
+                links[i].setAttribute("href", "http://forums.opensymphony.com/forum.jspa?forumID=4");
+                links[i].innerHTML="User Forum";
+            }
+        }
+    } catch (e) {}
+}
+window.onload=replaceLinks;
+</script>
 <div><a href="http://www.opensymphony.com">OpenSymphony</a></div>
 <div><a href="http://www.opensymphony.com/oscache/wiki/Documentation.html">Documentation</a></div>
-<div><a href="http://jira.opensymphony.com/browse/CACHE">Bug Tracker</a></div>
 <div><a href="http://wiki.opensymphony.com/display/CACHE">Wiki</a></div>
