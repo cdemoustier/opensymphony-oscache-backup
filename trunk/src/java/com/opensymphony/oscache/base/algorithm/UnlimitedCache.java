@@ -18,7 +18,7 @@ import org.apache.commons.logging.LogFactory;
  */
 public final class UnlimitedCache extends AbstractConcurrentReadCache {
 	
-    private static final long serialVersionUID = 7615611393249532285L;
+    private static transient final long serialVersionUID = 7615611393249532285L;
     
     private final Log log = LogFactory.getLog(this.getClass());
 
