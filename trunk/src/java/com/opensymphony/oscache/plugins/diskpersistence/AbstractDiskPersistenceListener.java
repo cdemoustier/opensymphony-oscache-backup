@@ -30,7 +30,12 @@ import javax.servlet.jsp.PageContext;
  */
 public abstract class AbstractDiskPersistenceListener implements PersistenceListener, Serializable {
 	
+    private static final long serialVersionUID = 6679402628276452293L;
+
     private static final Log LOG = LogFactory.getLog(AbstractDiskPersistenceListener.class);
+
+    /** lock for workaround the Sun Bug ID 4742723 */ 
+    private static final Object MKDIRS_LOCK = new Object();
 
     public final static String CACHE_PATH_KEY = "cache.path";
 
@@ -279,7 +284,10 @@ public abstract class AbstractDiskPersistenceListener implements PersistenceList
                         log.info("cache.path '" + cachePathStr + "' does not exist, creating");
                     }
 
-                    cachePath.mkdirs();
+                    // http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=4742723
+                    synchronized (MKDIRS_LOCK) {
+                        cachePath.mkdirs();
+                    }
                 }
 
                 if (!cachePath.isDirectory()) {
@@ -339,7 +347,10 @@ public abstract class AbstractDiskPersistenceListener implements PersistenceList
 
             try {
                 if (!filepath.exists()) {
-                    filepath.mkdirs();
+                    // http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=4742723
+                    synchronized (MKDIRS_LOCK) {
+                        filepath.mkdirs();
+                    }
                 }
             } catch (Exception e) {
                 throw new CachePersistenceException("Unable to create the directory " + filepath, e);
